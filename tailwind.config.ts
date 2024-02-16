@@ -14,6 +14,7 @@ const config: Config = {
       fontColor: '#333333',
     },
   },
+
   plugins: [],
 };
 export default config;

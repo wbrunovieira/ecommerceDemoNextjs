@@ -1,6 +1,14 @@
+import Container from '@/components/Container';
 import Header from '@/components/Header';
-import Image from 'next/image';
+import type { NextPage } from 'next';
 
-export default function Home() {
-  return <Header />;
-}
+const Home: NextPage = () => {
+  return (
+    <>
+      <Container>
+        <Header />
+      </Container>
+    </>
+  );
+};
+export default Home;
