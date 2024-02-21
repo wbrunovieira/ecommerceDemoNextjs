@@ -5,8 +5,11 @@ import type { NextPage } from 'next';
 const Home: NextPage = () => {
   return (
     <>
+      <Header />
       <Container>
-        <Header />
+        <div>
+          <h1>Corpo da Pagina</h1>
+        </div>
       </Container>
     </>
   );
