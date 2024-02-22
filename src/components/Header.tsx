@@ -3,11 +3,12 @@ import { BsInstagram, BsFacebook, BsTiktok } from 'react-icons/bs';
 import Image from 'next/image';
 import logo from '/public/logo-prov.svg';
 import SearchBox from './SearchBox';
+import { Button } from './Button';
 
 const Header = () => {
   return (
-    <header className='bg-primary h-32 flex justify-center items-end flex-col'>
-      <div className='flex justify-between items-end w-full px-4 max-w-7xl'>
+    <header className='bg-primary h-32 flex justify-center items-end flex-col mx-auto '>
+      <div className='flex justify-between items-end w-full px-4 max-w-7xl mb-4'>
         <div className='social-icons flex gap-3'>
           <a
             href='https://instagram.com'
@@ -38,6 +39,7 @@ const Header = () => {
       <div className='flex justify-between items-end w-full px-4 max-w-7xl'>
         <Image src={logo} alt='logo' width={100} height={100} />
         <SearchBox />
+        <Button variant='outline'>Login</Button>
       </div>
     </header>
   );
