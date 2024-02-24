@@ -39,7 +39,6 @@ const Header = () => {
       <div className='flex justify-between items-end w-full px-4 max-w-7xl'>
         <Image src={logo} alt='logo' width={100} height={100} />
         <SearchBox />
-        <Button variant='outline'>Login</Button>
       </div>
     </header>
   );
