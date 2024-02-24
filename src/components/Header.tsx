@@ -3,7 +3,7 @@ import { BsInstagram, BsFacebook, BsTiktok } from 'react-icons/bs';
 import Image from 'next/image';
 import logo from '/public/logo-prov.svg';
 import SearchBox from './SearchBox';
-import { Button } from './Button';
+import Button from './Button';
 
 const Header = () => {
   return (
@@ -39,6 +39,9 @@ const Header = () => {
       <div className='flex justify-between items-end w-full px-4 max-w-7xl'>
         <Image src={logo} alt='logo' width={100} height={100} />
         <SearchBox />
+        <Button variant='secondary' size='small'>
+          Login
+        </Button>
       </div>
     </header>
   );

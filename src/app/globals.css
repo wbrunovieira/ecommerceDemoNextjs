@@ -15,3 +15,7 @@ body {
   color: rgb(var(--fontColor));
   background: rgb(var(--background-rgb));
 }
+
+.text-white-important {
+  color: #ffffff !important;
+}
