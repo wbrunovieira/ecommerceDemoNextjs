@@ -2,10 +2,11 @@ import { BsSearch } from 'react-icons/bs';
 
 const SearchBox = () => {
   return (
-    <div className='flex justify-end items-center w-4/5'>
-      <div className='relative w-4/5 '>
+    <div className='flex justify-center items-center w-full'>
+      <div className='relative max-w-lg'>
         <input
-          type='text'
+          style={{ width: '500px' }}
+          type='search'
           placeholder='Digite o nome do produto'
           className='text-fontcolor text-xs light pl-4 pr-10 py-2 rounded-full focus:outline-none focus:border-pink-500 transition-colors w-full'
         />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BsInstagram, BsFacebook, BsTiktok } from 'react-icons/bs';
+import { BsInstagram, BsFacebook, BsTiktok, BsCart4 } from 'react-icons/bs';
 import Image from 'next/image';
 import logo from '/public/logo-prov.svg';
 import SearchBox from './SearchBox';
@@ -7,8 +7,8 @@ import Button from './Button';
 
 const Header = () => {
   return (
-    <header className='bg-primary h-32 flex justify-center items-end flex-col mx-auto '>
-      <div className='flex justify-between items-end w-full px-4 max-w-7xl mb-4'>
+    <header className='bg-primary h-32 flex justify-center items-center flex-col mx-auto px-16 '>
+      <div className='flex justify-between items-center w-full mb-4'>
         <div className='social-icons flex gap-3'>
           <a
             href='https://instagram.com'
@@ -36,12 +36,17 @@ const Header = () => {
           Entrega grátis a partir de R$ 200,00
         </p>
       </div>
-      <div className='flex justify-between items-end w-full px-4 max-w-7xl'>
+      <div className='flex justify-between items-center w-full  text-secondary'>
         <Image src={logo} alt='logo' width={100} height={100} />
-        <SearchBox />
-        <Button variant='secondary' size='small'>
-          Login
-        </Button>
+        <div className='w-full'>
+          <SearchBox />
+        </div>
+        <div className='flex gap-4'>
+          <Button variant='secondary' size='small'>
+            Login
+          </Button>
+          <BsCart4 size={32} />
+        </div>
       </div>
     </header>
   );
