@@ -7,7 +7,7 @@ import Button from './Button';
 
 const Header = () => {
   return (
-    <header className='bg-primary h-32 flex justify-center items-center flex-col mx-auto px-16 '>
+    <header className='bg-primary h-32 flex justify-center items-center flex-col mx-auto px-16  pt-4'>
       <div className='flex justify-between items-center w-full mb-4'>
         <div className='social-icons flex gap-3'>
           <a
@@ -36,8 +36,15 @@ const Header = () => {
           Entrega grátis a partir de R$ 200,00
         </p>
       </div>
+      <hr className='w-full border-t line-white ' />
       <div className='flex justify-between items-center w-full  text-secondary'>
-        <Image src={logo} alt='logo' width={100} height={100} />
+        <Image
+          src={logo}
+          alt='logo'
+          width={100}
+          height={100}
+          className='mt-4 mb-4'
+        />
         <div className='w-full'>
           <SearchBox />
         </div>

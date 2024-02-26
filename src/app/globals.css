@@ -12,10 +12,12 @@
 }
 
 body {
-  color: rgb(var(--fontColor));
   background: rgb(var(--background-rgb));
 }
 
 .text-white-important {
   color: #ffffff !important;
+}
+.line-white {
+  color: rgba(255, 255, 255, 0.2) !important;
 }
