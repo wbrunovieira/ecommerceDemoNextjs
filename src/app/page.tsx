@@ -1,5 +1,7 @@
 import Container from '@/components/Container';
 import Header from '@/components/Header';
+import { motion } from 'framer-motion';
+import { ImagesSlider } from '@/components/ui/images-slider';
 import type { NextPage } from 'next';
 
 const Home: NextPage = () => {
@@ -8,7 +10,19 @@ const Home: NextPage = () => {
       <Header />
       <Container>
         <div>
-          <h1>Corpo da Pagina</h1>
+          <ImagesSlider
+            className='h-[20rem]'
+            images={[
+              '/images/foto1.jpg',
+              '/images/foto2.jpg',
+              '/images/foto3.jpg',
+              '/images/foto4.jpg',
+            ]}
+            autoplay={true}
+            direction='up'
+          >
+            <h1>teste</h1>
+          </ImagesSlider>
         </div>
       </Container>
     </>
