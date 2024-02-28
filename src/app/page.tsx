@@ -5,6 +5,8 @@ import { ImagesSlider } from '@/components/ui/images-slider';
 import type { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+import Sidebar from '@/components/SideBar';
+import ProductList from '@/components/ProductList';
 
 const Home: NextPage = () => {
   return (
@@ -120,6 +122,11 @@ const Home: NextPage = () => {
             </Link>
           </div>
         </div>
+
+        <section className='flex'>
+          <Sidebar />
+          <ProductList />
+        </section>
       </Container>
     </>
   );
