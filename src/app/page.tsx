@@ -123,7 +123,7 @@ const Home: NextPage = () => {
           </div>
         </div>
 
-        <section className='flex'>
+        <section className='flex mt-2'>
           <Sidebar />
           <ProductList />
         </section>

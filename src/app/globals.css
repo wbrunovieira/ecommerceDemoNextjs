@@ -25,3 +25,46 @@ body {
 .border-light {
   border-color: #ededed !important;
 }
+
+.descont-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  background-color: #46c389;
+  color: #ffffff;
+  font-size: 12px;
+  max-width: 42px;
+
+  top: -15px;
+  left: 15;
+  z-index: 1;
+}
+
+.promocao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  background-color: black;
+  color: #ffffff;
+  font-size: 11px;
+  max-width: 142px;
+  z-index: 5;
+  transform: rotate(-45deg);
+
+  overflow: hidden;
+  top: 30px;
+  left: 10px;
+}
+
+.promocao1 {
+  background-color: black;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  right: 0px;
+  top: 32px;
+}

@@ -1,18 +1,36 @@
 import React from 'react';
+import Card from './Card';
 
 const ProductList = () => {
-  const cards = Array.from({ length: 12 }, (_, index) => index + 1);
-
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4'>
-      {cards.map((card) => (
-        <div key={card} className='bg-white p-4 shadow rounded-lg'>
-          <h2 className='text-xl font-bold'>Card {card}</h2>
-          <p className='text-gray-500'>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          </p>
-        </div>
-      ))}
+      <Card
+        title='Produto 1'
+        category='Lingerie'
+        precoAntigo={150}
+        precoNovo={120}
+        emPromocao={false}
+        desconto={15}
+        imageSRC='/images/foto1.jpg'
+      />
+      <Card
+        title='Produto 2'
+        category='Lingerie'
+        precoAntigo={80}
+        precoNovo={60}
+        emPromocao={true}
+        desconto={10}
+        imageSRC='/images/foto1.jpg'
+      />
+      <Card
+        title='Produto 3'
+        category='Lingerie'
+        precoAntigo={80}
+        precoNovo={60}
+        emPromocao={true}
+        desconto={10}
+        imageSRC='/images/foto1.jpg'
+      />
     </div>
   );
 };
