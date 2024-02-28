@@ -19,5 +19,9 @@ body {
   color: #ffffff !important;
 }
 .line-white {
-  color: rgba(255, 255, 255, 0.2) !important;
+  color: rgba(255, 255, 255, 0) !important;
+}
+
+.border-light {
+  border-color: #ededed !important;
 }
