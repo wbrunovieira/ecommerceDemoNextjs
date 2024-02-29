@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Sidebar from '@/components/SideBar';
 import ProductList from '@/components/ProductList';
+import Footer from '@/components/Footer';
 
 const Home: NextPage = () => {
   return (
@@ -128,6 +129,7 @@ const Home: NextPage = () => {
           <ProductList />
         </section>
       </Container>
+      <Footer />
     </>
   );
 };

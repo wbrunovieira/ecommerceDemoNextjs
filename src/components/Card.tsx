@@ -22,7 +22,7 @@ const Card: React.FC<CardProps> = ({
   category,
 }) => {
   return (
-    <div className='max-w-sm rounded  shadow-lg bg-white m-2'>
+    <div className='max-w-sm rounded  shadow-lg bg-white m-2 h-96 '>
       <div className='relative overflow-hidden'>
         <Image
           className='w-full relative'
