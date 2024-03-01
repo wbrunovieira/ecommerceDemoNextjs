@@ -25,6 +25,9 @@ body {
 .border-light {
   border-color: #ededed !important;
 }
+.border-light2 {
+  border-color: #787878 !important;
+}
 
 .descont-badge {
   display: flex;
