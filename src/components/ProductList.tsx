@@ -7,7 +7,6 @@ const ProductList = () => {
       <Card
         title='Produto 1'
         category='Lingerie'
-        precoAntigo={150}
         precoNovo={120}
         emPromocao={false}
         eNovidade={true}
@@ -19,7 +18,7 @@ const ProductList = () => {
         category='Lingerie'
         precoAntigo={80}
         precoNovo={60}
-        emPromocao={true}
+        eNovidade={true}
         desconto={10}
         imageSRC='/images/foto1.jpg'
       />
@@ -30,6 +29,62 @@ const ProductList = () => {
         precoNovo={60}
         emPromocao={true}
         desconto={10}
+        imageSRC='/images/foto1.jpg'
+      />
+
+      <Card
+        title='Produto 3'
+        category='Lingerie'
+        precoAntigo={80}
+        precoNovo={60}
+        emPromocao={true}
+        desconto={10}
+        imageSRC='/images/foto1.jpg'
+      />
+
+      <Card
+        title='Produto 3'
+        category='Lingerie'
+        precoAntigo={80}
+        precoNovo={60}
+        emPromocao={true}
+        desconto={10}
+        imageSRC='/images/foto1.jpg'
+      />
+
+      <Card
+        title='Produto 3'
+        category='Lingerie'
+        precoAntigo={80}
+        precoNovo={60}
+        emPromocao={true}
+        imageSRC='/images/foto1.jpg'
+      />
+
+      <Card
+        title='Produto 3'
+        category='Lingerie'
+        precoAntigo={80}
+        precoNovo={60}
+        emPromocao={true}
+        imageSRC='/images/foto1.jpg'
+      />
+
+      <Card
+        title='Produto 3'
+        category='Lingerie'
+        precoNovo={60}
+        eNovidade={true}
+        desconto={20}
+        imageSRC='/images/foto1.jpg'
+      />
+
+      <Card
+        title='Produto 3'
+        category='Lingerie'
+        precoNovo={60}
+        eNovidade={true}
+        desconto={20}
         imageSRC='/images/foto1.jpg'
       />
     </div>
