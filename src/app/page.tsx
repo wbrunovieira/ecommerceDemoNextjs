@@ -5,8 +5,6 @@ import Link from 'next/link';
 import Container from '@/components/Container';
 import Sidebar from '@/components/SideBar';
 import ProductList from '@/components/ProductList';
-import Footer from '@/components/Footer';
-import Header from '@/components/Header';
 
 import { ImagesSlider } from '@/components/ui/images-slider';
 
