@@ -1,18 +1,18 @@
-import Container from '@/components/Container';
-import Header from '@/components/Header';
-import { motion } from 'framer-motion';
-import { ImagesSlider } from '@/components/ui/images-slider';
 import type { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
+
+import Container from '@/components/Container';
 import Sidebar from '@/components/SideBar';
 import ProductList from '@/components/ProductList';
 import Footer from '@/components/Footer';
+import Header from '@/components/Header';
+
+import { ImagesSlider } from '@/components/ui/images-slider';
 
 const Home: NextPage = () => {
   return (
     <>
-      <Header />
       <Container>
         <div>
           <ImagesSlider
@@ -129,7 +129,6 @@ const Home: NextPage = () => {
           <ProductList />
         </section>
       </Container>
-      <Footer />
     </>
   );
 };
