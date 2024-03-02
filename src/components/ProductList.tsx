@@ -10,6 +10,7 @@ const ProductList = () => {
         precoAntigo={150}
         precoNovo={120}
         emPromocao={false}
+        eNovidade={true}
         desconto={15}
         imageSRC='/images/foto1.jpg'
       />

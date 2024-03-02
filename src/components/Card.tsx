@@ -8,6 +8,7 @@ interface CardProps {
   precoAntigo?: number;
   precoNovo: number;
   emPromocao?: boolean;
+  eNovidade?: boolean;
   desconto?: number;
   imageSRC: string;
 }
@@ -20,6 +21,7 @@ const Card: React.FC<CardProps> = ({
   desconto,
   imageSRC,
   category,
+  eNovidade,
 }) => {
   return (
     <div className='max-w-sm rounded  shadow-lg bg-white m-2 h-96 '>
@@ -32,8 +34,13 @@ const Card: React.FC<CardProps> = ({
           alt={title}
         />
         {emPromocao && (
-          <div className='absolute promocao1 transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs'>
+          <div className='absolute promocao1 transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase'>
             PROMOÇÃO
+          </div>
+        )}{' '}
+        {eNovidade && (
+          <div className='absolute novidade transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase'>
+            Novidade
           </div>
         )}
         {desconto && <div className='descont-badge'>{`${desconto}%`}</div>}

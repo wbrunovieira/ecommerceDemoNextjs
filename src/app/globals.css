@@ -71,3 +71,14 @@ body {
   right: 0px;
   top: 32px;
 }
+
+.novidade {
+  background-color: var(--color-primary);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  right: 0px;
+  top: 32px;
+}
