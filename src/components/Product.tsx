@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import Button from './Button';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
 
 register();
@@ -36,6 +36,7 @@ const Product: React.FC<ProductProps> = ({
   fabricante,
 }) => {
   const swiperElRef = useRef(null);
+  const [mainImage, setMainImage] = useState(images[0]);
 
   useEffect(() => {
     if (swiperElRef.current) {
@@ -65,12 +66,13 @@ const Product: React.FC<ProductProps> = ({
         <div className='md:w-1/2 flex flex-col'>
           <div className='flex flex-wrap md:flex-nowrap flex-col'>
             <Image
-              src={images[0]}
+              src={mainImage}
               alt='Main Product Image'
               className='w-full h-auto object-cover mb-4'
-              width={300}
-              height={300}
+              width={250}
+              height={250}
             />
+
             <div className='swiper-container md:w-1/2'>
               <Swiper
                 slidesPerView={3}
@@ -78,14 +80,14 @@ const Product: React.FC<ProductProps> = ({
                 pagination={{ clickable: true }}
               >
                 {images.slice(1).map((image, index) => (
-                  <SwiperSlide key={index}>
+                  <SwiperSlide key={index} onClick={() => setMainImage(image)}>
                     <Image
                       src={image}
                       alt={`Product Image ${index + 2}`}
                       width={100}
                       height={100}
                       layout='responsive'
-                      className='w-full h-auto object-cover'
+                      className='w-full h-auto object-cover cursor-pointer'
                     />
                   </SwiperSlide>
                 ))}
