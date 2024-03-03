@@ -18,10 +18,12 @@ const Home: NextPage = () => {
             id='12021545454'
             price={20.0}
             images={[
-              '/images/foto1.jpg',
-              '/images/foto2.jpg',
-              '/images/foto3.jpg',
-              '/images/foto4.jpg',
+              '/images/liz1.webp',
+              '/images/liz2.webp',
+              '/images/liz3.webp',
+              '/images/liz4.webp',
+              '/images/liz5.webp',
+              '/images/liz6.webp',
             ]}
             description='Uma calcinha coringa, para o dia a dia, na modelagem mais vendida da Liz. Tenha uma de cada cor e colecione!'
           />

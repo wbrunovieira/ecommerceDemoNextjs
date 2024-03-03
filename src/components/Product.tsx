@@ -1,5 +1,18 @@
+'use client';
 import Image from 'next/image';
 import Button from './Button';
+
+import { useRef, useEffect } from 'react';
+import { register } from 'swiper/element/bundle';
+
+register();
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/virtual';
+import Navigation from 'swiper';
 
 interface ProductProps {
   title: string;
@@ -22,6 +35,26 @@ const Product: React.FC<ProductProps> = ({
   categoria,
   fabricante,
 }) => {
+  const swiperElRef = useRef(null);
+
+  useEffect(() => {
+    if (swiperElRef.current) {
+      (swiperElRef.current as HTMLElement).addEventListener(
+        'swiperprogress',
+        (e) => {
+          const [swiper, progress] = (e as CustomEvent).detail;
+          console.log(progress);
+        }
+      );
+
+      (swiperElRef.current as HTMLElement).addEventListener(
+        'swiperslidechange',
+        (e) => {
+          console.log('slide changed');
+        }
+      );
+    }
+  }, []);
   return (
     <div className='flex flex-col ml-4'>
       <div className='w-full'>
@@ -30,40 +63,33 @@ const Product: React.FC<ProductProps> = ({
 
       <div className='flex flex-col md:flex-row'>
         <div className='md:w-1/2 flex flex-col'>
-          <div className='flex flex-wrap md:flex-nowrap'>
+          <div className='flex flex-wrap md:flex-nowrap flex-col'>
             <Image
               src={images[0]}
               alt='Main Product Image'
               className='w-full h-auto object-cover mb-4'
-              width={400}
-              height={400}
+              width={300}
+              height={300}
             />
-            <div className='md:hidden flex'>
-              {images.slice(1, 4).map((image, index) => (
-                <Image
-                  key={index}
-                  src={image}
-                  alt={`Product Image ${index + 2}`}
-                  width={200}
-                  height={150}
-                  className='w-1/3 h-auto object-cover mr-2 mb-2'
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className='md:w-1/2 flex flex-col '>
-            <div className='hidden md:block flex'>
-              {images.slice(1, 4).map((image, index) => (
-                <Image
-                  key={index}
-                  src={image}
-                  alt={`Product Image ${index + 2}`}
-                  className='w-full h-auto object-cover mb-2'
-                  width={100}
-                  height={100}
-                />
-              ))}
+            <div className='swiper-container md:w-1/2'>
+              <Swiper
+                slidesPerView={3}
+                navigation={true}
+                pagination={{ clickable: true }}
+              >
+                {images.slice(1).map((image, index) => (
+                  <SwiperSlide key={index}>
+                    <Image
+                      src={image}
+                      alt={`Product Image ${index + 2}`}
+                      width={100}
+                      height={100}
+                      layout='responsive'
+                      className='w-full h-auto object-cover'
+                    />
+                  </SwiperSlide>
+                ))}
+              </Swiper>
             </div>
           </div>
         </div>
