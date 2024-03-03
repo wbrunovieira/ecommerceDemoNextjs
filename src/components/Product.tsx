@@ -122,22 +122,24 @@ const Product: React.FC<ProductProps> = ({
             <h3 className='text-lg font-bold'>Cores</h3>
 
             <div className='flex gap-2'>
-              <div className='w-4 h-4 rounded-full bg-[#ff0000]'></div>
-              <div className='w-4 h-4 rounded-full bg-[#000000]'></div>
-              <div className='w-4 h-4 rounded-full border border-[#243c5a] bg-[#ffffff]'></div>
-              <div className='w-4 h-4 rounded-full bg-[#00ff00]'></div>
-              <div className='w-4 h-4 rounded-full bg-[#fff00f]'></div>
+              {color?.map((colorValue, index) => (
+                <div
+                  key={index}
+                  className='w-4 h-4 rounded-full '
+                  style={{ backgroundColor: colorValue }}
+                ></div>
+              ))}
             </div>
           </div>
           <div className='mt-8 flex-initial border border-light rounded px-8 py-2 max-w-64'>
             <h3 className='text-lg font-bold'>Tamanhos</h3>
 
             <div className='flex gap-2 justify-start p-2 w-60'>
-              <div className='border border-light rounded p-2'>PP</div>
-              <div className='border border-light rounded p-2'>P</div>
-              <div className='border border-light rounded p-2'>M</div>
-              <div className='border border-light rounded p-2'>G</div>
-              <div className='border border-light rounded p-2'>GG</div>
+              {size?.map((sizeValue, index) => (
+                <div key={index} className='border border-light rounded p-2'>
+                  {sizeValue}
+                </div>
+              ))}
             </div>
           </div>
 
