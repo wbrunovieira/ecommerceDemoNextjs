@@ -82,3 +82,13 @@ body {
   right: 0px;
   top: 32px;
 }
+.swiper-button-next,
+.swiper-button-prev {
+  color: var(--color-secondary) !important;
+}
+
+.swiper-container {
+  width: 250px !important;
+
+  height: 350px !important;
+}

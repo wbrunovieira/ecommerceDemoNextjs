@@ -23,6 +23,8 @@ interface ProductProps {
   material?: string;
   categoria: string;
   fabricante: string;
+  color?: string[];
+  size?: string[];
 }
 
 const Product: React.FC<ProductProps> = ({
@@ -34,6 +36,8 @@ const Product: React.FC<ProductProps> = ({
   material,
   categoria,
   fabricante,
+  color,
+  size,
 }) => {
   const swiperElRef = useRef(null);
   const [mainImage, setMainImage] = useState(images[0]);
@@ -78,16 +82,22 @@ const Product: React.FC<ProductProps> = ({
                 slidesPerView={3}
                 navigation={true}
                 pagination={{ clickable: true }}
+                spaceBetween={20}
+                centeredSlides={true}
+                autoplay
               >
                 {images.slice(1).map((image, index) => (
-                  <SwiperSlide key={index} onClick={() => setMainImage(image)}>
+                  <SwiperSlide
+                    key={index}
+                    onClick={() => setMainImage(image)}
+                    className='mySlide'
+                  >
                     <Image
                       src={image}
                       alt={`Product Image ${index + 2}`}
-                      width={100}
-                      height={100}
-                      layout='responsive'
-                      className='w-full h-auto object-cover cursor-pointer'
+                      width={150}
+                      height={150}
+                      className='w-10 object-cover cursor-pointer'
                     />
                   </SwiperSlide>
                 ))}
@@ -119,6 +129,18 @@ const Product: React.FC<ProductProps> = ({
               <div className='w-4 h-4 rounded-full bg-[#fff00f]'></div>
             </div>
           </div>
+          <div className='mt-8 flex-initial border border-light rounded px-8 py-2 max-w-64'>
+            <h3 className='text-lg font-bold'>Tamanhos</h3>
+
+            <div className='flex gap-2 justify-start p-2 w-60'>
+              <div className='border border-light rounded p-2'>PP</div>
+              <div className='border border-light rounded p-2'>P</div>
+              <div className='border border-light rounded p-2'>M</div>
+              <div className='border border-light rounded p-2'>G</div>
+              <div className='border border-light rounded p-2'>GG</div>
+            </div>
+          </div>
+
           <div className='border border-light rounded px-8 py-2 max-w-48'>
             <p>R$ {price},00</p>
           </div>
