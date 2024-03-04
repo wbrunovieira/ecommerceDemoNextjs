@@ -13,6 +13,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/virtual';
 import Navigation from 'swiper';
+import SimilarProducts from './SimilarProducts';
 
 interface ProductProps {
   title: string;
@@ -184,6 +185,11 @@ const Product: React.FC<ProductProps> = ({
               Comprar
             </Button>
           </div>
+          <SimilarProducts
+            image='/images/liz1.webp'
+            title='Sutia'
+            price={120}
+          />
         </div>
       </div>
     </div>
