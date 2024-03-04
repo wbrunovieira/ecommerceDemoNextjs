@@ -14,15 +14,10 @@ const SimilarProducts: React.FC<SimilarProductsProps> = ({
 }) => {
   return (
     <div className='flex flex-col h-auto w-auto'>
-      <div className='w-full flex mb-4 '>
-        <h2 className='text-lg text-primaryDark font-semibold border border-light rounded p-4 whitespace-nowrap'>
-          Produtos Parecidos
-        </h2>
-      </div>
-      <div className='flex border border-light rounded p-4'>
+      <div className='flex border border-light rounded p-4 shadow'>
         <div>
           <Image
-            className='border rounded'
+            className='border rounded-md '
             src={image}
             alt='liz1'
             width={100}
@@ -41,7 +36,7 @@ const SimilarProducts: React.FC<SimilarProductsProps> = ({
             <p className='text-xs mt-2 mb-2'>Lista de Desejos</p>
           </div>
           <p className='text-sm text-fontColor font-semibold text-center'>
-            {price}
+            R$ {price},00
           </p>
           <div className='flex justify-center items-center py-2 mt-2 border border-light rounded'>
             <Image
