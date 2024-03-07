@@ -3,13 +3,23 @@ import type { NextPage } from 'next';
 import Container from '@/components/Container';
 import Sidebar from '@/components/SideBar';
 import Product from '@/components/Product';
+import Filters from '@/components/Filters';
 
 const Home: NextPage = () => {
   return (
     <>
       <Container>
         <section className='flex mt-2'>
-          <Sidebar />
+          <div className='flex flex-col gap-2'>
+            <Sidebar />
+            {/* <Filters
+              price={120}
+              color={null}
+              sizes={['P', 'M', 'G', 'GG']}
+              brands={[]}
+              material={null}
+            /> */}
+          </div>
           <Product
             title='Calcinha Biquini 50030'
             material='Algodão'

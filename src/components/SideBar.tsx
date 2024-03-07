@@ -19,8 +19,8 @@ const Sidebar = () => {
   ];
 
   return (
-    <nav className='flex flex-col gap-2'>
-      <div className='flex flex-col w-64 border border-light p-4 mt-2'>
+    <nav className='flex flex-col gap-2 mr-4'>
+      <div className='flex flex-col w-48 border border-light rounded p-4 mt-2'>
         <h2 className='text-primaryDark text-base tracking-wider'>
           Categorias
         </h2>
@@ -40,8 +40,10 @@ const Sidebar = () => {
         ))}
       </div>
 
-      <div className='flex flex-col w-64 border border-light p-4 mt-2'>
-        <h2 className='text-primaryDark text-base tracking-wider'>Marcas</h2>
+      <div className='flex flex-col w-48 border border-light p-4 mt-2 rounded'>
+        <h2 className='text-primaryDark text-base tracking-wider rounded'>
+          Marcas
+        </h2>
         {sidebarFabricantes.map((item, index) => (
           <div key={index}>
             <Link href={item.title} className='flex items-center py-4'>

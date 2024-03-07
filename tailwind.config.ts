@@ -1,3 +1,4 @@
+import PreviousMap from 'postcss/lib/previous-map';
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
@@ -9,6 +10,7 @@ const config: Config = {
   theme: {
     colors: {
       primary: '#F0B1CC',
+      primaryLight: '#fcf3f7',
       secondary: '#D3686C',
       primaryDark: '#540002',
       fontColor: '#333333',

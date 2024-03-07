@@ -7,7 +7,7 @@ import Button from './Button';
 
 const Header = () => {
   return (
-    <header className='bg-primary h-32 flex justify-center items-center flex-col mx-auto px-16  pt-4'>
+    <header className='bg-gradient-to-r from-primary to-primaryLight h-32 flex justify-center items-center flex-col mx-auto px-16  pt-4'>
       <div className='flex justify-between items-center w-full mb-4'>
         <div className='social-icons flex gap-3'>
           <a
