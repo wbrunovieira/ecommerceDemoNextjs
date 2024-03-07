@@ -3,7 +3,6 @@ import type { NextPage } from 'next';
 import Container from '@/components/Container';
 import Sidebar from '@/components/SideBar';
 import Product from '@/components/Product';
-import Filters from '@/components/Filters';
 
 const Home: NextPage = () => {
   return (

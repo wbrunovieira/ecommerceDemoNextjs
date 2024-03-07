@@ -7,6 +7,7 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+
   theme: {
     colors: {
       primary: '#F0B1CC',
@@ -16,7 +17,5 @@ const config: Config = {
       fontColor: '#333333',
     },
   },
-
-  plugins: [],
 };
 export default config;
