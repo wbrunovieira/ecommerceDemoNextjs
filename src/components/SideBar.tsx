@@ -21,17 +21,26 @@ const Sidebar = () => {
   return (
     <nav className='flex flex-col gap-2 mr-4'>
       <div className='flex flex-col w-48 border border-light rounded p-4 mt-2'>
-        <h2 className='text-primaryDark text-base tracking-wider'>
+        <h2 className='text-primaryDark text-base tracking-wider mb-2'>
           Categorias
         </h2>
+        <hr className='border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4' />
         {sidebarItems.map((item, index) => (
-          <div key={index}>
-            <Link href={item.title} className='flex items-center py-4'>
+          <div
+            key={index}
+            className={`flex items-center py-1 ${
+              index < sidebarItems.length - 1 ? 'border-b border-light' : ''
+            }`}
+          >
+            <Link
+              href={item.title}
+              className='flex items-center py-2 space-x-2'
+            >
               <Image
                 src={item.src}
                 width={20}
                 height={20}
-                alt=''
+                alt={item.title}
                 className='mr-2'
               ></Image>
               <div className='text-xs'>{item.title}</div>
@@ -41,9 +50,10 @@ const Sidebar = () => {
       </div>
 
       <div className='flex flex-col w-48 border border-light p-4 mt-2 rounded'>
-        <h2 className='text-primaryDark text-base tracking-wider rounded'>
+        <h2 className='text-primaryDark text-base tracking-wider rounded '>
           Marcas
         </h2>
+        <hr className='border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4' />
         {sidebarFabricantes.map((item, index) => (
           <div key={index}>
             <Link href={item.title} className='flex items-center py-4'>

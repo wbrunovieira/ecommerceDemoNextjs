@@ -27,7 +27,7 @@ const Home: NextPage = () => {
             <h1>teste</h1>
           </ImagesSlider>
         </div>
-        <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='max-w-7xl mx-auto  mt-4'>
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
             <div className='flex rounded-md border border-light hover:border-slate-400 p-2'>
               <div className='flex'>
