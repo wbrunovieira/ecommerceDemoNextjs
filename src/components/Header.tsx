@@ -52,7 +52,12 @@ const Header = () => {
           <Button variant='secondary' size='small'>
             Login
           </Button>
-          <BsCart4 size={32} />
+          <div className='relative'>
+            <BsCart4 size={32} />
+            <span className='absolute -bottom-2 -right-4 opacity-70 bg-primaryDark text-primaryLight border border-primaryDark text-xs rounded-full px-2 py-2 min-w-[20px] h-[20px] flex items-center justify-center'>
+              5
+            </span>
+          </div>
         </div>
       </div>
     </header>
