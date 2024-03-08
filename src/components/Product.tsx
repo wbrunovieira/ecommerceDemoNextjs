@@ -159,21 +159,6 @@ const Product: React.FC<ProductProps> = ({
                 ))}
               </div>
             </div>
-            {/* <div className='mt-4 rounded px-2 py-2 max-w-48'>
-              <h3 className='text-base text-primaryDark  font-semibold'>
-                Cores
-              </h3>
-
-              <div className='flex gap-2'>
-                {color?.map((colorValue, index) => (
-                  <div
-                    key={index}
-                    className='w-4 h-4 rounded-full '
-                    style={{ backgroundColor: colorValue }}
-                  ></div>
-                ))}
-              </div>
-            </div> */}
 
             <div className='mt-2 flex-initial rounded px-2 py-2 max-w-64'>
               <h3 className='text-base font-semibold text-primaryDark'>

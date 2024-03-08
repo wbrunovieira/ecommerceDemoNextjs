@@ -1,11 +1,21 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect, use } from 'react';
+
 import { BsInstagram, BsFacebook, BsTiktok, BsCart4 } from 'react-icons/bs';
 import Image from 'next/image';
 import logo from '/public/logo-prov.svg';
 import SearchBox from './SearchBox';
 import Button from './Button';
+import FloatCart from './FloatCart';
 
 const Header = () => {
+  const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+
+  const toggleCartModal = () => {
+    setIsCartModalOpen(!isCartModalOpen);
+  };
+
   return (
     <header className='bg-gradient-to-r from-primary to-primaryLight h-32 flex justify-center items-center flex-col mx-auto px-16  pt-4'>
       <div className='flex justify-between items-center w-full mb-4'>
@@ -52,12 +62,17 @@ const Header = () => {
           <Button variant='secondary' size='small'>
             Login
           </Button>
-          <div className='relative'>
+          <button
+            onClick={toggleCartModal}
+            className='flex items-center justify-center'
+          >
             <BsCart4 size={32} />
-            <span className='absolute -bottom-2 -right-4 opacity-70 bg-primaryDark text-primaryLight border border-primaryDark text-xs rounded-full px-2 py-2 min-w-[20px] h-[20px] flex items-center justify-center'>
-              5
+            <span className='absolute -bottom-2 -right-4 opacity-70 bg-primaryDark text-primaryLight border border-primaryDark text-[10px] rounded-full px-2 py-2 min-w-[20px] h-[20px] flex items-center justify-center'>
+              5{' '}
+              {/* Substitua o 5 pela quantidade dinâmica de itens no carrinho, se necessário */}
             </span>
-          </div>
+          </button>
+          {isCartModalOpen && <FloatCart onClose={toggleCartModal} />}
         </div>
       </div>
     </header>
