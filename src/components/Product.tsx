@@ -48,6 +48,7 @@ const Product: React.FC<ProductProps> = ({
   const swiperElRef = useRef(null);
   const [mainImage, setMainImage] = useState(images[0]);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   useEffect(() => {
     if (swiperElRef.current) {
       (swiperElRef.current as HTMLElement).addEventListener(
@@ -138,7 +139,27 @@ const Product: React.FC<ProductProps> = ({
                 Adicionar aos Favoritos
               </span>
             </div>
+
             <div className='mt-4 rounded px-2 py-2 max-w-48'>
+              <h3 className='text-base text-primaryDark font-semibold'>
+                Cores
+              </h3>
+              <div className='flex gap-2 mt-2'>
+                {color?.map((colorValue, index) => (
+                  <button
+                    key={index}
+                    className={`w-4 h-4 rounded-full border border-transparent ${
+                      selectedColor === colorValue
+                        ? 'ring-2 ring-offset-2 shadow-lg ring-secondary'
+                        : ''
+                    }`}
+                    style={{ backgroundColor: colorValue }}
+                    onClick={() => setSelectedColor(colorValue)}
+                  ></button>
+                ))}
+              </div>
+            </div>
+            {/* <div className='mt-4 rounded px-2 py-2 max-w-48'>
               <h3 className='text-base text-primaryDark  font-semibold'>
                 Cores
               </h3>
@@ -152,20 +173,8 @@ const Product: React.FC<ProductProps> = ({
                   ></div>
                 ))}
               </div>
-            </div>
-            {/* <div className='mt-2 flex-initial rounded px-2 py-2 max-w-64'>
-              <h3 className='text-base font-semibold text-primaryDark '>
-                Tamanhos
-              </h3>
-
-              <div className='flex gap-2 justify-start p-2 w-60'>
-                {size?.map((sizeValue, index) => (
-                  <div key={index} className='border border-light rounded p-2'>
-                    {sizeValue}
-                  </div>
-                ))}
-              </div>
             </div> */}
+
             <div className='mt-2 flex-initial rounded px-2 py-2 max-w-64'>
               <h3 className='text-base font-semibold text-primaryDark'>
                 Tamanhos
