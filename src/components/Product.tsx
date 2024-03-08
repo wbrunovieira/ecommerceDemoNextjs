@@ -49,6 +49,15 @@ const Product: React.FC<ProductProps> = ({
   const [mainImage, setMainImage] = useState(images[0]);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const incrementQuantity = () => {
+    setQuantity((prevQuantity) => prevQuantity + 1);
+  };
+
+  const decrementQuantity = () => {
+    setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
+  };
+
   useEffect(() => {
     if (swiperElRef.current) {
       (swiperElRef.current as HTMLElement).addEventListener(
@@ -164,7 +173,7 @@ const Product: React.FC<ProductProps> = ({
               <h3 className='text-base font-semibold text-primaryDark'>
                 Tamanhos
               </h3>
-              <div className='flex gap-2 justify-start p-2 w-60'>
+              <div className='flex gap-2 justify-start p-2 w-60 cursor-pointer'>
                 {size?.map((sizeValue, index) => (
                   <div
                     key={index}
@@ -190,13 +199,19 @@ const Product: React.FC<ProductProps> = ({
             <div className='flex items-center p-2 max-w-md rounded-md'>
               <div className='flex items-center mr-4'>
                 <span className='flex justify-center items-center w-8 h-8 bg-primaryDark text-primaryLight font-bold rounded-full border border-primaryDark'>
-                  1
+                  {quantity}
                 </span>
                 <div className='flex ml-2'>
-                  <button className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold border-r-2 border-primaryDark'>
+                  <button
+                    className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold border-r-2 border-primaryDark'
+                    onClick={incrementQuantity}
+                  >
                     +
                   </button>
-                  <button className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold'>
+                  <button
+                    className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold'
+                    onClick={decrementQuantity}
+                  >
                     -
                   </button>
                 </div>

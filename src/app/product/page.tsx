@@ -19,7 +19,15 @@ const Home: NextPage = () => {
             fabricante='Liz'
             id='12021545454'
             price={20.0}
-            color={['#000', '#ff0000']}
+            color={[
+              '#000000',
+              '#FFFFFF',
+              '#FF0000',
+              '#FFE4C4',
+              '#FFC0CB',
+              '#000080',
+              '#808080',
+            ]}
             size={['P', 'M', 'G', 'GG']}
             images={[
               '/images/liz1.webp',

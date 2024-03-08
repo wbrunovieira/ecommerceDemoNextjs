@@ -3,7 +3,7 @@ import Image from 'next/image';
 import React from 'react';
 
 interface FloatCartProps {
-  onClose: () => void; // Adiciona a propriedade onClose como uma função que não retorna nada
+  onClose: () => void;
 }
 
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
@@ -14,7 +14,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
   };
   return (
     <div
-      className='fixed top-28 right-2 flex items-center justify-center z-50 bg-primaryLight border rounded-md shadow-xl border-secondary bg-opacity-50'
+      className='fixed top-28 right-2 flex items-center justify-center z-50 bg-primaryLight border rounded-md shadow-xl border-secondary bg-opacity-80'
       onClick={handleClickOutside}
     >
       <div
