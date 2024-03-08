@@ -30,7 +30,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
 
         <div className='flex justify-center items-center gap-2  border-b-2 border-light pb-4'>
           <h2 className='text-xl font-bold'>Carrinho - </h2>
-          <span className='fontbold text-xl'>4 itens</span>
+          <span className='fontbold text-xl'>3 itens</span>
         </div>
         <div className='flex flex-col pt-4'>
           {/* Cart items */}
