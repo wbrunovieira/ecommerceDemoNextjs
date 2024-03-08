@@ -47,7 +47,7 @@ const Product: React.FC<ProductProps> = ({
 }) => {
   const swiperElRef = useRef(null);
   const [mainImage, setMainImage] = useState(images[0]);
-
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
   useEffect(() => {
     if (swiperElRef.current) {
       (swiperElRef.current as HTMLElement).addEventListener(
@@ -76,11 +76,13 @@ const Product: React.FC<ProductProps> = ({
   return (
     <section>
       <div className='flex flex-col ml-2'>
-        <div className='w-full'>
-          <h2 className='text-2xl font-bold mb-2 w-full'>{title}</h2>
+        <div className='w-full border-b-2 border-primary '>
+          <h2 className='text-2xl font-bold mb-2 w-full text-primaryDark border-x-primary'>
+            {title}
+          </h2>
         </div>
 
-        <div className='flex flex-col md:flex-row'>
+        <div className='flex flex-col md:flex-row mt-4'>
           <div className='flex flex-col'>
             <div className='flex flex-wrap md:flex-nowrap flex-col h-10'>
               <Image
@@ -136,8 +138,10 @@ const Product: React.FC<ProductProps> = ({
                 Adicionar aos Favoritos
               </span>
             </div>
-            <div className='mt-4 border-y-2 border-light rounded px-8 py-2 max-w-48'>
-              <h3 className='text-md text-primaryDark  font-bold'>Cores</h3>
+            <div className='mt-4 rounded px-2 py-2 max-w-48'>
+              <h3 className='text-base text-primaryDark  font-semibold'>
+                Cores
+              </h3>
 
               <div className='flex gap-2'>
                 {color?.map((colorValue, index) => (
@@ -149,8 +153,10 @@ const Product: React.FC<ProductProps> = ({
                 ))}
               </div>
             </div>
-            <div className='mt-4 flex-initial border-y-2 border-light rounded px-8 py-2 max-w-64'>
-              <h3 className='text-md font-bold text-primaryDark '>Tamanhos</h3>
+            {/* <div className='mt-2 flex-initial rounded px-2 py-2 max-w-64'>
+              <h3 className='text-base font-semibold text-primaryDark '>
+                Tamanhos
+              </h3>
 
               <div className='flex gap-2 justify-start p-2 w-60'>
                 {size?.map((sizeValue, index) => (
@@ -159,22 +165,37 @@ const Product: React.FC<ProductProps> = ({
                   </div>
                 ))}
               </div>
+            </div> */}
+            <div className='mt-2 flex-initial rounded px-2 py-2 max-w-64'>
+              <h3 className='text-base font-semibold text-primaryDark'>
+                Tamanhos
+              </h3>
+              <div className='flex gap-2 justify-start p-2 w-60'>
+                {size?.map((sizeValue, index) => (
+                  <div
+                    key={index}
+                    className={`border rounded p-2 ${
+                      selectedSize === sizeValue
+                        ? 'bg-primary text-white'
+                        : 'border-light'
+                    }`}
+                    onClick={() => setSelectedSize(sizeValue)}
+                  >
+                    {sizeValue}
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* <div className='my-4 px-4 py-2 border-r-4 border-secondary shadow-2xl p-2 rounded-md whitespace-nowrap  w-32'>
-              <p className='text-secondary font-semibold text-lg'>
-                R$ {price},00
-              </p>
-            </div> */}
             <div className='my-4 px-4 py-2 border-r-4 border-secondary shadow-lg rounded-md bg-primaryLight w-auto'>
               <p className='text-primaryDark font-semibold text-lg'>
                 R$ {price},00
               </p>
             </div>
 
-            <div className='flex items-center p-2 max-w-md border border-primaryDark rounded-md bg-primaryLight'>
+            <div className='flex items-center p-2 max-w-md rounded-md'>
               <div className='flex items-center mr-4'>
-                <span className='flex justify-center items-center w-8 h-8 bg-primary text-primaryDark font-bold rounded-full border border-primaryDark'>
+                <span className='flex justify-center items-center w-8 h-8 bg-primaryDark text-primaryLight font-bold rounded-full border border-primaryDark'>
                   1
                 </span>
                 <div className='flex ml-2'>
@@ -186,9 +207,6 @@ const Product: React.FC<ProductProps> = ({
                   </button>
                 </div>
               </div>
-              <button className='flex-grow text-primaryLight bg-primaryDark hover:bg-secondary font-bold py-2 px-4 rounded'>
-                Adicionar ao Carrinho
-              </button>
             </div>
             <div className='flex w-96 mt-4'>
               <Button variant='secondary' size='large'>
@@ -217,9 +235,9 @@ const Product: React.FC<ProductProps> = ({
           </div>
         </div>
       </div>
-      <div className='flex flex-col gap-2 w-auto'>
-        <div className='w-full flex  '>
-          <h2 className='text-lg text-primaryDark font-semibold border border-light rounded p-4 whitespace-nowrap'>
+      <div className='flex flex-col gap-2 w-auto border-t-2 border-primary mt-4'>
+        <div className='w-full flex mt-4 '>
+          <h2 className='text-lg text-primaryDark shadow-lg font-semibold border-r-4 border-secondary rounded p-4 whitespace-nowrap'>
             Produtos Parecidos
           </h2>
         </div>
