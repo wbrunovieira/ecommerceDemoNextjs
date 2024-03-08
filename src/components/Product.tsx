@@ -136,8 +136,8 @@ const Product: React.FC<ProductProps> = ({
                 Adicionar aos Favoritos
               </span>
             </div>
-            <div className='mt-4 border border-light rounded px-8 py-2 max-w-48'>
-              <h3 className='text-lg font-bold'>Cores</h3>
+            <div className='mt-4 border-y-2 border-light rounded px-8 py-2 max-w-48'>
+              <h3 className='text-md text-primaryDark  font-bold'>Cores</h3>
 
               <div className='flex gap-2'>
                 {color?.map((colorValue, index) => (
@@ -149,8 +149,8 @@ const Product: React.FC<ProductProps> = ({
                 ))}
               </div>
             </div>
-            <div className='mt-4 flex-initial border border-light rounded px-8 py-2 max-w-64'>
-              <h3 className='text-lg font-bold'>Tamanhos</h3>
+            <div className='mt-4 flex-initial border-y-2 border-light rounded px-8 py-2 max-w-64'>
+              <h3 className='text-md font-bold text-primaryDark '>Tamanhos</h3>
 
               <div className='flex gap-2 justify-start p-2 w-60'>
                 {size?.map((sizeValue, index) => (
@@ -161,8 +161,13 @@ const Product: React.FC<ProductProps> = ({
               </div>
             </div>
 
-            <div className='my-4 px-4 py-2 border-r-4 border-secondary shadow-2xl p-2 rounded-md whitespace-nowrap  w-32'>
+            {/* <div className='my-4 px-4 py-2 border-r-4 border-secondary shadow-2xl p-2 rounded-md whitespace-nowrap  w-32'>
               <p className='text-secondary font-semibold text-lg'>
+                R$ {price},00
+              </p>
+            </div> */}
+            <div className='my-4 px-4 py-2 border-r-4 border-secondary shadow-lg rounded-md bg-primaryLight w-auto'>
+              <p className='text-primaryDark font-semibold text-lg'>
                 R$ {price},00
               </p>
             </div>
@@ -185,7 +190,11 @@ const Product: React.FC<ProductProps> = ({
                 Adicionar ao Carrinho
               </button>
             </div>
-
+            <div className='flex w-96 mt-4'>
+              <Button variant='secondary' size='large'>
+                Comprar
+              </Button>
+            </div>
             <div className='flex flex-col mt-4 border border-light rounded px-8 py-2 w-52 text-xs text-[#676666] '>
               <div className='flex gap-2 '>
                 <p className='font-semibold'>SKU: </p>
@@ -204,11 +213,6 @@ const Product: React.FC<ProductProps> = ({
                 <p className='font-semibold'>Fabricante: </p>
                 <p>{fabricante}</p>
               </div>
-            </div>
-            <div className='flex w-96 mt-4'>
-              <Button variant='secondary' size='large'>
-                Comprar
-              </Button>
             </div>
           </div>
         </div>
