@@ -75,13 +75,13 @@ const Product: React.FC<ProductProps> = ({
   ];
   return (
     <section>
-      <div className='flex flex-col ml-4'>
+      <div className='flex flex-col ml-2'>
         <div className='w-full'>
           <h2 className='text-2xl font-bold mb-2 w-full'>{title}</h2>
         </div>
 
         <div className='flex flex-col md:flex-row'>
-          <div className='md:w-1/2 flex flex-col'>
+          <div className='flex flex-col'>
             <div className='flex flex-wrap md:flex-nowrap flex-col h-10'>
               <Image
                 src={mainImage}
@@ -119,11 +119,13 @@ const Product: React.FC<ProductProps> = ({
               </div>
             </div>
           </div>
-          <div className='flex flex-col gap-2 p-4'>
+          <div className='flex flex-col gap-2 p-2 '>
             <div className='flex w-96'>
-              <p className='mt-4'>{description}</p>
+              <p className=' border-r-4 border-secondary shadow-2xl p-4 rounded-md'>
+                {description}
+              </p>
             </div>
-            <div className='flex gap-4 mt-8'>
+            <div className='flex gap-4 mt-4'>
               <Image
                 src='/icons/heart-icon.svg'
                 alt='Heart Icon'
@@ -134,7 +136,7 @@ const Product: React.FC<ProductProps> = ({
                 Adicionar aos Favoritos
               </span>
             </div>
-            <div className='mt-8 border border-light rounded px-8 py-2 max-w-48'>
+            <div className='mt-4 border border-light rounded px-8 py-2 max-w-48'>
               <h3 className='text-lg font-bold'>Cores</h3>
 
               <div className='flex gap-2'>
@@ -147,7 +149,7 @@ const Product: React.FC<ProductProps> = ({
                 ))}
               </div>
             </div>
-            <div className='mt-8 flex-initial border border-light rounded px-8 py-2 max-w-64'>
+            <div className='mt-4 flex-initial border border-light rounded px-8 py-2 max-w-64'>
               <h3 className='text-lg font-bold'>Tamanhos</h3>
 
               <div className='flex gap-2 justify-start p-2 w-60'>
@@ -159,24 +161,32 @@ const Product: React.FC<ProductProps> = ({
               </div>
             </div>
 
-            <div className='border border-light rounded px-8 py-2 max-w-48'>
-              <p>R$ {price},00</p>
+            <div className='my-4 px-4 py-2 border-r-4 border-secondary shadow-2xl p-2 rounded-md whitespace-nowrap  w-32'>
+              <p className='text-secondary font-semibold text-lg'>
+                R$ {price},00
+              </p>
             </div>
-            <div className='border border-light rounded px-4 py-2 max-w-96'>
-              <div className='flex bg-[#EDEDED] w-20'>
-                <p className='px-4 py-2 flex justify-center items-center  border-[#550000] border-2 '>
+
+            <div className='flex items-center p-2 max-w-md border border-primaryDark rounded-md bg-primaryLight'>
+              <div className='flex items-center mr-4'>
+                <span className='flex justify-center items-center w-8 h-8 bg-primary text-primaryDark font-bold rounded-full border border-primaryDark'>
                   1
-                </p>
-                <div className='flex bg-[#EDEDED] border-[#550000] border border-l-0  '>
-                  <button className='text-base font-light px-4 py-2'>+</button>
-                  <button className='text-base font-light px-4 py-2'>-</button>
-                </div>
-                <div className='flex p-4'>
-                  <p className=' whitespace-nowrap'>Adcionar Ao Carrinho</p>
+                </span>
+                <div className='flex ml-2'>
+                  <button className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold border-r-2 border-primaryDark'>
+                    +
+                  </button>
+                  <button className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold'>
+                    -
+                  </button>
                 </div>
               </div>
+              <button className='flex-grow text-primaryLight bg-primaryDark hover:bg-secondary font-bold py-2 px-4 rounded'>
+                Adicionar ao Carrinho
+              </button>
             </div>
-            <div className='flex flex-col mt-8 border border-light rounded px-8 py-2 w-52 text-xs text-[#676666] '>
+
+            <div className='flex flex-col mt-4 border border-light rounded px-8 py-2 w-52 text-xs text-[#676666] '>
               <div className='flex gap-2 '>
                 <p className='font-semibold'>SKU: </p>
                 <p>{id}</p>
@@ -196,7 +206,7 @@ const Product: React.FC<ProductProps> = ({
               </div>
             </div>
             <div className='flex w-96 mt-4'>
-              <Button variant='secondary' size='small'>
+              <Button variant='secondary' size='large'>
                 Comprar
               </Button>
             </div>
@@ -228,51 +238,6 @@ const Product: React.FC<ProductProps> = ({
               </SwiperSlide>
             ))}
           </Swiper>
-          {/* <SimilarProducts
-            image='/images/liz1.webp'
-            title='Sutia'
-            price={120}
-          />
-          <SimilarProducts
-            image='/images/liz1.webp'
-            title='Sutia'
-            price={120}
-          />
-          <SimilarProducts
-            image='/images/liz1.webp'
-            title='Sutia'
-            price={120}
-          />
-          <SimilarProducts
-            image='/images/liz1.webp'
-            title='Sutia'
-            price={120}
-          /> */}
-          {/* <SimilarProducts
-            image='/images/liz1.webp'
-            title='Sutia'
-            price={120}
-          />
-          <SimilarProducts
-            image='/images/liz1.webp'
-            title='Sutia'
-            price={120}
-          />
-          <SimilarProducts
-            image='/images/liz1.webp'
-            title='Sutia'
-            price={120}
-          />
-          <SimilarProducts
-            image='/images/liz1.webp'
-            title='Sutia'
-            price={120}
-          />
-          <SimilarProducts
-            image='/images/liz1.webp'
-            title='Sutia'
-            price={120}
-          /> */}
         </div>
       </div>
     </section>

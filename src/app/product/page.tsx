@@ -9,15 +9,8 @@ const Home: NextPage = () => {
     <>
       <Container>
         <section className='flex mt-2'>
-          <div className='flex flex-col gap-2'>
+          <div className='flex flex-col '>
             <Sidebar />
-            {/* <Filters
-              price={120}
-              color={null}
-              sizes={['P', 'M', 'G', 'GG']}
-              brands={[]}
-              material={null}
-            /> */}
           </div>
           <Product
             title='Calcinha Biquini 50030'
