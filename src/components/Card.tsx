@@ -24,8 +24,8 @@ const Card: React.FC<CardProps> = ({
   eNovidade,
 }) => {
   return (
-    <div className='max-w-sm rounded shadow-lg bg-white m-2 h-96 flex flex-col'>
-      <div className='relative overflow-hidden flex-shrink-0'>
+    <div className='max-w-sm rounded-md shadow-lg bg-white m-2 h-96 flex flex-col'>
+      <div className='relative overflow-hidden flex-shrink-0 rounded-md'>
         <Image
           className='w-full'
           src={imageSRC}
