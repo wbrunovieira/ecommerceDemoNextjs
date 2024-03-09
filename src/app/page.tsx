@@ -16,7 +16,7 @@ const Home: NextPage = () => {
           <ImagesSlider
             className='h-[20rem]'
             images={[
-              '/images/foto1.jpg',
+              '/images/foto1banner2.png',
               '/images/foto2.jpg',
               '/images/foto3.jpg',
               '/images/foto4.jpg',
