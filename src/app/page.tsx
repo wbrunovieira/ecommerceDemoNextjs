@@ -17,9 +17,9 @@ const Home: NextPage = () => {
             className='h-[20rem]'
             images={[
               '/images/foto1banner2.png',
-              '/images/foto2.jpg',
-              '/images/foto3.jpg',
-              '/images/foto4.jpg',
+              '/images/foto2-2.jpg',
+              '/images/foto3-2.jpg',
+              '/images/foto4-3.jpg',
             ]}
             autoplay={true}
             direction='up'
