@@ -105,3 +105,46 @@ body {
   -webkit-transition: 0.2s;
   transition: opacity 0.2s;
 }
+
+.custom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: 'left search right';
+  grid-auto-rows: minmax(100px, auto);
+}
+
+/* Componentes identificados por classes para simulação */
+.left {
+  grid-area: left;
+}
+
+.searchBox {
+  grid-area: search;
+  display: block; /* ou flex, dependendo de como o SearchBox é estruturado */
+  width: 100%; /* Ajuste conforme necessário */
+  height: auto;
+}
+
+.right {
+  grid-area: right;
+}
+
+@media (max-width: 668px) {
+  .custom-grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+      'left right'
+      'search search';
+  }
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .custom-header {
+    height: 300px;
+    margin: 0;
+    padding: 0 8px;
+  }
+}

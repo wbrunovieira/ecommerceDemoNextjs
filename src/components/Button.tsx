@@ -18,7 +18,7 @@ const Button: React.FC<ButtonProps> = ({
     secondary: 'bg-secondary hover:bg-primary text-white rounded-md',
   };
   const sizeStyles = {
-    small: 'text-sm px-3 py-2',
+    small: 'text-xs px-3 py-2',
     medium: 'text-md px-4 py-2',
     large: 'text-lg px-5 py-3',
   };

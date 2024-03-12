@@ -104,7 +104,7 @@ const Header = () => {
   };
 
   return (
-    <header className='bg-header-bg bg-cover bg-center h-36 flex justify-between items-center flex-col w-screen pt-4 px-8 mx-auto py-4'>
+    <header className='bg-header-bg bg-cover bg-center h-36 flex justify-between items-center flex-col w-screen pt-4 px-8 mx-auto py-4 sm:h-48 md:h-48 lg:h-36 custom-header'>
       <div className='flex justify-between items-center w-full mb-4 mt-4'>
         <div className='social-icons flex gap-3'>
           <a
@@ -135,15 +135,15 @@ const Header = () => {
         </p>
       </div>
 
-      <div className='grid grid-cols-3 items-center justify-between w-full text-secondary '>
-        <div className='flex justify-start'>
+      <div className='custom-grid items-center justify-between w-full text-secondary "'>
+        <div className='flex justify-start left'>
           <Image src={logo} alt='logo' width={200} height={200} className='' />
         </div>
 
-        <div className='flex justify-center '>
+        <div className='flex justify-center search'>
           <SearchBox />
         </div>
-        <div className='flex justify-end gap-4 '>
+        <div className='flex justify-end gap-4 right'>
           <Button variant='secondary' size='small'>
             Login
           </Button>
@@ -161,6 +161,32 @@ const Header = () => {
           {isCartModalOpen && <FloatCart onClose={toggleCartModal} />}
         </div>
       </div>
+      {/* <div className='grid grid-cols-3 items-center justify-between w-full text-secondary "'>
+        <div className='flex justify-start'>
+          <Image src={logo} alt='logo' width={200} height={200} className='' />
+        </div>
+
+        <div className='flex justify-center '>
+          <SearchBox />
+        </div>
+        <div className='flex justify-end gap-4'>
+          <Button variant='secondary' size='small'>
+            Login
+          </Button>
+          <button
+            onClick={toggleCartModal}
+            className='flex items-center justify-center hover:scale-110 transition duration-300 bg-primaryLight rounded-full p-2 h-12 w-12'
+          >
+            <div className='relative'>
+              <BsCart4 size={32} />
+              <span className='absolute -bottom-2 -right-4 opacity-70 bg-primaryDark text-primaryLight border border-primaryDark text-[10px] rounded-full px-2 py-2 min-w-[20px] h-[20px] flex items-center justify-center'>
+                3
+              </span>
+            </div>
+          </button>
+          {isCartModalOpen && <FloatCart onClose={toggleCartModal} />}
+        </div>
+      </div> */}
     </header>
   );
 };
