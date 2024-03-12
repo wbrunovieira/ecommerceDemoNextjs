@@ -8,7 +8,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Container>
-        <section className='flex mt-2'>
+        <section className='flex mt-2 gap-8'>
           <div className='flex flex-col '>
             <Sidebar />
           </div>
