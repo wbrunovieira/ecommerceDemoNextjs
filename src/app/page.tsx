@@ -24,7 +24,14 @@ const Home: NextPage = () => {
             autoplay={true}
             direction='up'
           >
-            <h1>teste</h1>
+            <div className='z-10 -m-10  bg-primaryLight/[.7] p-4  rounded-lg'>
+              <h1 className='text-primaryDark text-5xl '>
+                Agora também <br /> estamos juntas na internet.
+              </h1>
+              <p className='text-secondary'>
+                Faça o seu pedido que entregamos na sua casa.
+              </p>
+            </div>
           </ImagesSlider>
         </div>
         <div className='max-w-7xl mx-auto  mt-4'>
