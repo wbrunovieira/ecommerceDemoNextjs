@@ -2,7 +2,7 @@ import { BsSearch } from 'react-icons/bs';
 
 const SearchBox = () => {
   return (
-    <div className='flex justify-center items-center w-full'>
+    <div className='flex justify-center items-center w-full sm:w-1/3 md:w-1/3 lg:w-full'>
       <div className='relative max-w-lg'>
         <input
           style={{ width: '500px' }}
