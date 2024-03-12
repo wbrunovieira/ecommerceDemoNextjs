@@ -24,7 +24,7 @@ const Home: NextPage = () => {
             autoplay={true}
             direction='up'
           >
-            <div className='z-10 -m-10  bg-primaryLight/[.7] p-4  rounded-lg'>
+            <div className='z-10  bg-primaryLight/[.7] p-4  rounded-lg'>
               <h1 className='text-primaryDark text-4xl font-extrabold pb-2'>
                 Agora também <br /> estamos juntas na internet.
               </h1>
