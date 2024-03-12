@@ -140,10 +140,10 @@ const Header = () => {
           <Image src={logo} alt='logo' width={200} height={200} className='' />
         </div>
 
-        <div className='flex justify-center'>
+        <div className='flex justify-center '>
           <SearchBox />
         </div>
-        <div className='flex justify-end gap-4'>
+        <div className='flex justify-end gap-4 '>
           <Button variant='secondary' size='small'>
             Login
           </Button>
