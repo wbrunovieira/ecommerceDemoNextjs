@@ -9,6 +9,7 @@ import SearchBox from './SearchBox';
 import Button from './Button';
 import FloatCart from './FloatCart';
 import AnimatedFlower from './AnimatedFlower';
+import Link from 'next/link';
 
 const Header = () => {
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
@@ -53,7 +54,9 @@ const Header = () => {
 
       <div className='custom-grid items-center justify-between w-full text-secondary "'>
         <div className='flex justify-start left w-48'>
-          <Logo />
+          <Link href='/' passHref className='w-48'>
+            <Logo />
+          </Link>
         </div>
 
         <div className='flex justify-center search'>

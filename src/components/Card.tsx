@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 import Button from './Button';
+import Link from 'next/link';
 
 interface CardProps {
   title: string;
@@ -63,9 +64,11 @@ const Card: React.FC<CardProps> = ({
           </p>
         </div>
         <div className='pb-2'>
-          <Button variant='secondary' size='small'>
-            Comprar
-          </Button>
+          <Link href='/product/ '>
+            <Button variant='secondary' size='small'>
+              Comprar
+            </Button>
+          </Link>
         </div>
       </div>
     </div>
