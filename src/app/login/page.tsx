@@ -1,12 +1,9 @@
 import React from 'react';
-import Login from '../../components/Login';
+import LoginLayout from './LoginLayout'; // Ajuste o caminho conforme necessário
+import LoginForm from '../../components/Login'; // Ajuste o caminho conforme necessário
 
-const Page: React.FC = () => {
-  return (
-    <div className='fixed inset-0 z-10 flex items-center justify-center bg-black bg-opacity-80'>
-      <Login />
-    </div>
-  );
+const LoginPage = () => {
+  return <LoginForm />;
 };
 
-export default Page;
+export default LoginPage;
