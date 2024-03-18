@@ -17,16 +17,16 @@ const CadastroForm = () => {
         <div className='relative z-10 bg-primary p-16 border-2 border-y-primaryDark rounded-lg shadow-lg'>
           <h2 className='text-2xl font-bold text-secondary mb-4'>Cadastro</h2>
           <form className='flex flex-col '>
-            <label htmlFor='name' className='text-white-important '>
+            <label htmlFor='name' className='text-white-important text-xs'>
               Nome Completo
             </label>
             <input
               id='name'
               type='text'
-              placeholder='name'
+              placeholder='Nome'
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
             />
-            <label htmlFor='email' className='text-white-important '>
+            <label htmlFor='email' className='text-white-important text-xs'>
               Email
             </label>
             <input
@@ -35,7 +35,7 @@ const CadastroForm = () => {
               placeholder='Email'
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
             />
-            <label htmlFor='email' className='text-white-important '>
+            <label htmlFor='email' className='text-white-important text-xs'>
               Senha
             </label>
             <input
@@ -44,7 +44,7 @@ const CadastroForm = () => {
               placeholder='Senha'
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
             />
-            <label htmlFor='email' className='text-white-important '>
+            <label htmlFor='email' className='text-white-important text-xs'>
               Repetir a senha
             </label>
             <input
