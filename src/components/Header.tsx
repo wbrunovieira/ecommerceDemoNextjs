@@ -63,9 +63,11 @@ const Header = () => {
           <SearchBox />
         </div>
         <div className='flex justify-end gap-4 right'>
-          <Button variant='secondary' size='small'>
-            Login
-          </Button>
+          <Link href='/login' passHref>
+            <Button variant='secondary' size='small'>
+              Login
+            </Button>
+          </Link>
           <button
             onClick={toggleCartModal}
             className='flex items-center justify-center hover:scale-110 transition duration-300 bg-primaryLight rounded-full p-2 h-12 w-12'
