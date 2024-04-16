@@ -38,9 +38,6 @@ const Login = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('Estado atualizado:', inputs);
-  }, [inputs]);
   return (
     <div className='fixed inset-0 flex items-center justify-center'>
       <div className='bg-primaryLight p-96 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-96 md:p-48 sm:w-full'>
