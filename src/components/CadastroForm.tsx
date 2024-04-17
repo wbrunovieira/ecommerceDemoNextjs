@@ -1,8 +1,8 @@
 'use client';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { FcGoogle } from 'react-icons/fc';
-
-import React, { useState, ChangeEvent, FormEvent } from 'react';
 
 type CadastroFormInputs = {
   name: string;
@@ -118,6 +118,7 @@ const CadastroForm = () => {
             <button
               type='button'
               className='bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105'
+              onClick={() => signIn('google')}
             >
               <FcGoogle className='mr-2' size={24} />
               Login com Google
