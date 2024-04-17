@@ -1,4 +1,6 @@
 'use client';
+import { redirect } from 'next/navigation';
+import { FcGoogle } from 'react-icons/fc';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 type LoginFormInputs = {
@@ -32,8 +34,10 @@ const Login = () => {
     console.log('data ', data);
     if (response.ok) {
       localStorage.setItem('accessToken', data.access_token);
+
       console.log('Login Successful:', data);
     } else {
+      redirect('/cadastro');
       console.error('Login Failed:', data);
     }
   };
@@ -75,6 +79,13 @@ const Login = () => {
               className='bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105'
             >
               Acessar
+            </button>
+            <button
+              type='button'
+              className='bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105'
+            >
+              <FcGoogle className='mr-2' size={24} />
+              Login com Google
             </button>
             <button
               type='button'
