@@ -2,6 +2,7 @@
 import { redirect } from 'next/navigation';
 import { FcGoogle } from 'react-icons/fc';
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 type LoginFormInputs = {
@@ -89,12 +90,14 @@ const Login = () => {
               <FcGoogle className='mr-2' size={24} />
               Login com Google
             </button>
-            <button
-              type='button'
-              className='bg-secondary text-white-important px-2  text-xs py-1 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105'
-            >
-              Cadastro
-            </button>
+            <Link href='/cadastro'>
+              <button
+                type='button'
+                className='bg-secondary text-white-important px-2  text-xs py-1 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105'
+              >
+                Cadastro
+              </button>
+            </Link>
           </form>
         </div>
       </div>
