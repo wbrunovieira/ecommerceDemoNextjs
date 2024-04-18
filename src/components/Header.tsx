@@ -68,9 +68,11 @@ const Header = () => {
         <div className='flex justify-end gap-4 right'>
           {status === 'authenticated' ? (
             <>
-              <span className='text-secondary transition duration-300 hover:scale-110'>
-                Olá, {session.user.name}!
-              </span>
+              <Link href={`/user/${session.user.id}`} passHref>
+                <span className='text-secondary transition duration-300 hover:scale-110'>
+                  Olá, {session.user.name}!
+                </span>
+              </Link>
               <Link href='/api/auth/signout' passHref>
                 <Button variant='secondary' size='small'>
                   Logout
