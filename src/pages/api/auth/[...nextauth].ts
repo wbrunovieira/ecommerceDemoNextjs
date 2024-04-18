@@ -1,6 +1,17 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import { Profile } from 'next-auth';
+import { User as NextAuthUser } from 'next-auth';
 
+interface ExtendedProfile extends Profile {
+  sub?: string;
+  picture?: string;
+}
+
+interface ExtendedUser extends NextAuthUser {
+  sub?: string;
+  picture?: string;
+}
 export default NextAuth({
   providers: [
     GoogleProvider({
@@ -17,6 +28,8 @@ export default NextAuth({
   ],
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
   },
   callbacks: {
     async signIn({ account, profile }) {
@@ -26,26 +39,32 @@ export default NextAuth({
       }
       return false;
     },
-    jwt: async ({ token, account }) => {
-      if (account && account.access_token) {
-        token.accessToken = account.access_token;
-      } else if (!token.accessToken) {
-        token.accessToken = '';
+
+    jwt: async ({ token, account, profile }) => {
+      console.log('Dados do JWT:', { token, account, profile });
+      if (account && profile) {
+        token.sub = (profile as any).sub;
+        token.picture = (profile as any).picture;
       }
       return token;
     },
     async redirect({ url, baseUrl }) {
       console.log('Redirect callback chamado:', { url, baseUrl });
-      return baseUrl;
+
+      return '/auth/signin';
     },
-    async session({ session, token }) {
+    session: async ({ session, token }) => {
+      console.log('Dados da sessão:', { session, token });
       session.user = {
         name: token.name ?? '',
         email: token.email ?? '',
         image: token.picture ?? '',
-      };
-      session.token = token;
+        sub: token.sub ?? '',
+      } as ExtendedUser;
 
+      session.token = {
+        access_token: String(token.accessToken ?? ''),
+      };
       return session;
     },
   },

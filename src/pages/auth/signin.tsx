@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 interface User {
   name: string;
   email: string;
+  sub: string;
+  image: string;
 }
 
 interface GoogleUser {
@@ -13,14 +15,13 @@ interface GoogleUser {
   sub: string;
   picture: string;
 }
+
 interface Token {
   access_token: string;
 }
+
 interface CustomSession {
-  user: {
-    name: string;
-    email: string;
-  };
+  user: User;
   token: Token;
 }
 
@@ -28,55 +29,86 @@ const mapUserToGoogleUser = (user: User): GoogleUser => {
   return {
     name: user.name,
     email: user.email,
-    sub: '',
-    picture: '',
+    sub: user.sub,
+    picture: user.image,
   };
 };
 
 const SignInPage = () => {
   const { data: session, status } = useSession();
-  console.log('Status da sessão:', status); // "authenticated", "unauthenticated", "loading"
-  console.log('Dados da sessão:', session);
   const router = useRouter();
 
-  const handleSignIn = async () => {
-    try {
-      console.log('Tentando fazer login...');
+  useEffect(() => {
+    console.log('useEffect chamado!');
+    if (status === 'authenticated') {
+      console.log('Usuário autenticado:', session.user);
+      console.log('Dados da sessão:', session);
 
-      await signIn('google', { callbackUrl: 'http://localhost:3000/' });
+      const googleUser = mapUserToGoogleUser(session.user as User);
+      console.log('Usuário do Google:', googleUser);
+      const accessToken = session.token.access_token;
+      sendGoogleUserData(googleUser, accessToken).then(() => {
+        console.log('Redirecionando para a home...so que nao');
+        router.replace('/');
+      });
+    }
+  }, [status, session, router]);
+
+  const handleSignIn = async () => {
+    console.log('Tentando fazer login...');
+    const result = await signIn('google', {
+      redirect: false,
+      callbackUrl: 'http://localhost:3000/',
+    });
+
+    if (result && result.ok) {
       console.log('Login feito com sucesso!');
-    } catch (error) {
-      console.error('Erro ao tentar fazer login:', error);
+
+      if (session) {
+        const googleUser = mapUserToGoogleUser(session.user as User);
+        const accessToken = session.token.access_token;
+        sendGoogleUserData(googleUser, accessToken).then(() => {
+          console.log('Redirecionando para a home...');
+          router.replace('/');
+        });
+      } else {
+        throw new Error('Sessão não está disponível após o login.');
+      }
+    } else {
+      console.error('Falha ao tentar fazer login');
     }
   };
 
-  const sendGoogleUserData = async (user: User, accessToken: string) => {
-    try {
-      console.log('user', user);
-      console.log('Enviando dados para o servidor: ', JSON.stringify(user));
-      console.log('Token de acesso:', accessToken);
+  const sendGoogleUserData = async (user: GoogleUser, accessToken: string) => {
+    console.log('Dados enviados para o servidor:', {
+      name: user.name,
+      email: user.email,
+      googleUserId: user.sub,
+      profileImageUrl: user.picture,
+    });
+    const payload = {
+      name: user.name,
+      email: user.email,
+      googleUserId: user.sub,
+      profileImageUrl: user.picture,
+    };
 
+    try {
       const response = await fetch('http://localhost:3333/accounts/google', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
+      console.log(
+        'Resposta do servidor:',
+        response.status,
+        response.statusText,
+        response
+      );
       const data = await response.json();
       console.log('Resposta do servidor:', data);
       if (!response.ok) {
         throw new Error('Falha ao enviar dados ao servidor');
-      }
-      if (response.ok) {
-        console.log(
-          'Informações do Google enviadas com sucesso para o servidor.'
-        );
-      } else {
-        console.error(
-          'Erro ao enviar informações do Google para o servidor:',
-          response.statusText
-        );
       }
     } catch (error) {
       console.error(
@@ -86,52 +118,14 @@ const SignInPage = () => {
     }
   };
 
-  useEffect(() => {
-    console.log('Executando useEffect');
-    if (session) {
-      console.log('Sessão:', session);
-      const googleUser = mapUserToGoogleUser(session.user as User);
-      console.log('Usuário do Google:', googleUser);
-      const accessToken = session.token.access_token;
-      console.log('Token de acesso:', accessToken);
-      sendGoogleUserData(googleUser, accessToken);
-      console.log('Redirecionando...');
-
-      router.replace('/');
-    }
-  }, [session, router]);
-
-  if (session) {
-    return null;
-  }
-
   return (
     <div className='flex justify-center items-center h-screen'>
-      <div
-        id='g_id_onload'
-        data-client_id='437479723854-9dsas2i7couh1d1s838t3rkmi8vh1kin.apps.googleusercontent.com'
-        data-context='signin'
-        data-ux_mode='popup'
-        data-callback='loginFromGoogle'
-        data-auto_select='true'
-        data-itp_support='true'
-      ></div>
-      <div
-        className='g_id_signin'
-        data-type='standard'
-        data-shape='pill'
-        data-theme='outline'
-        data-text='continue_with'
-        data-size='large'
-        data-logo_alignment='left'
+      <button
+        onClick={handleSignIn}
+        className='px-6 py-3 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
       >
-        <button
-          onClick={handleSignIn}
-          className='px-6 py-3 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
-        >
-          Entrar com Google
-        </button>
-      </div>
+        Entrar com Google
+      </button>
     </div>
   );
 };
