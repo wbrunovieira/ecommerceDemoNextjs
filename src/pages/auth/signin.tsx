@@ -39,36 +39,27 @@ const SignInPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('useEffect chamado!');
     if (status === 'authenticated') {
-      console.log('Usuário autenticado:', session.user);
-      console.log('Dados da sessão:', session);
-
       const googleUser = mapUserToGoogleUser(session.user as User);
-      console.log('Usuário do Google:', googleUser);
+
       const accessToken = session.token.access_token;
       sendGoogleUserData(googleUser, accessToken).then(() => {
-        console.log('Redirecionando para a home...so que nao');
         router.replace('/');
       });
     }
   }, [status, session, router]);
 
   const handleSignIn = async () => {
-    console.log('Tentando fazer login...');
     const result = await signIn('google', {
       redirect: false,
       callbackUrl: 'http://localhost:3000/',
     });
 
     if (result && result.ok) {
-      console.log('Login feito com sucesso!');
-
       if (session) {
         const googleUser = mapUserToGoogleUser(session.user as User);
         const accessToken = session.token.access_token;
         sendGoogleUserData(googleUser, accessToken).then(() => {
-          console.log('Redirecionando para a home...');
           router.replace('/');
         });
       } else {
@@ -80,12 +71,6 @@ const SignInPage = () => {
   };
 
   const sendGoogleUserData = async (user: GoogleUser, accessToken: string) => {
-    console.log('Dados enviados para o servidor:', {
-      name: user.name,
-      email: user.email,
-      googleUserId: user.sub,
-      profileImageUrl: user.picture,
-    });
     const payload = {
       name: user.name,
       email: user.email,
@@ -99,14 +84,9 @@ const SignInPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-      console.log(
-        'Resposta do servidor:',
-        response.status,
-        response.statusText,
-        response
-      );
+
       const data = await response.json();
-      console.log('Resposta do servidor:', data);
+
       if (!response.ok) {
         throw new Error('Falha ao enviar dados ao servidor');
       }

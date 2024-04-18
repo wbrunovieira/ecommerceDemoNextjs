@@ -33,7 +33,7 @@ export default NextAuth({
   },
   callbacks: {
     async signIn({ account, profile }) {
-      console.log('SignIn callback chamado:', { account, profile });
+     
       if (account?.provider === 'google') {
         return true;
       }
@@ -41,7 +41,7 @@ export default NextAuth({
     },
 
     jwt: async ({ token, account, profile }) => {
-      console.log('Dados do JWT:', { token, account, profile });
+     
       if (account && profile) {
         token.sub = (profile as any).sub;
         token.picture = (profile as any).picture;
@@ -49,12 +49,12 @@ export default NextAuth({
       return token;
     },
     async redirect({ url, baseUrl }) {
-      console.log('Redirect callback chamado:', { url, baseUrl });
+     
 
       return '/auth/signin';
     },
     session: async ({ session, token }) => {
-      console.log('Dados da sessão:', { session, token });
+     
       session.user = {
         name: token.name ?? '',
         email: token.email ?? '',

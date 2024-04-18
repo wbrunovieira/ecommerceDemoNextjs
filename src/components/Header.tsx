@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { BsInstagram, BsFacebook, BsTiktok, BsCart4 } from 'react-icons/bs';
 import Image from 'next/image';
 import Logo from '/public/images/LogoStylos.svg';
+import { useSession } from 'next-auth/react';
 
 import SearchBox from './SearchBox';
 import Button from './Button';
@@ -12,6 +13,8 @@ import AnimatedFlower from './AnimatedFlower';
 import Link from 'next/link';
 
 const Header = () => {
+  const { data: session, status } = useSession();
+
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
 
   const toggleCartModal = () => {
@@ -63,11 +66,24 @@ const Header = () => {
           <SearchBox />
         </div>
         <div className='flex justify-end gap-4 right'>
-          <Link href='/login' passHref>
-            <Button variant='secondary' size='small'>
-              Login
-            </Button>
-          </Link>
+          {status === 'authenticated' ? (
+            <>
+              <span className='text-secondary transition duration-300 hover:scale-110'>
+                Olá, {session.user.name}!
+              </span>
+              <Link href='/api/auth/signout' passHref>
+                <Button variant='secondary' size='small'>
+                  Logout
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <Link href='/login' passHref>
+              <Button variant='secondary' size='small'>
+                Login
+              </Button>
+            </Link>
+          )}
           <button
             onClick={toggleCartModal}
             className='flex items-center justify-center hover:scale-110 transition duration-300 bg-primaryLight rounded-full p-2 h-12 w-12'
