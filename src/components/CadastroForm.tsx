@@ -1,47 +1,32 @@
 'use client';
-import React, { useState, ChangeEvent, FormEvent } from 'react';
+import React, { useState, SyntheticEvent } from 'react';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { FcGoogle } from 'react-icons/fc';
+import { useRouter } from 'next/navigation';
 
-type CadastroFormInputs = {
-  name: string;
-  email: string;
-  password: string;
-  repeatPassword: string;
-};
 const CadastroForm = () => {
-  const [formData, setFormData] = useState<CadastroFormInputs>({
-    name: '',
-    email: '',
-    password: '',
-    repeatPassword: '',
-  });
+  const [name, setName] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const router = useRouter();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
 
-    try {
-      const response = await fetch('http://localhost:3333/accounts', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
-        console.log('Cadastro realizado com sucesso!');
-      } else {
-        console.error('Erro ao cadastrar:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Erro ao cadastrar:', error);
+    const result = await signIn('credentials', {
+      name,
+      email,
+      password,
+      redirect: false,
+    });
+
+    if (result?.error) {
+      console.log(result);
+      return;
     }
+
+    router.replace('/');
   };
 
   return (
@@ -58,6 +43,7 @@ const CadastroForm = () => {
         </div>
         <div className='relative z-10 bg-primary p-16 border-2 border-y-primaryDark rounded-lg shadow-lg'>
           <h2 className='text-2xl font-bold text-secondary mb-4'>Cadastro</h2>
+
           <form onSubmit={handleSubmit} className='flex flex-col '>
             <label htmlFor='name' className='text-white-important text-xs'>
               Nome Completo
@@ -67,8 +53,8 @@ const CadastroForm = () => {
               type='text'
               name='name'
               placeholder='Nome'
-              value={formData.name}
-              onChange={handleChange}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
             />
             <label htmlFor='email' className='text-white-important text-xs'>
@@ -78,9 +64,9 @@ const CadastroForm = () => {
               id='email'
               type='email'
               name='email'
-              placeholder='Email'
-              value={formData.email}
-              onChange={handleChange}
+              placeholder='email'
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
             />
             <label htmlFor='email' className='text-white-important text-xs'>
@@ -91,8 +77,8 @@ const CadastroForm = () => {
               type='password'
               name='password'
               placeholder='Senha'
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
             />
             <label htmlFor='email' className='text-white-important text-xs'>
@@ -102,8 +88,6 @@ const CadastroForm = () => {
               id='repeatPassword'
               type='password'
               name='repeatPassword'
-              value={formData.repeatPassword}
-              onChange={handleChange}
               placeholder='Repetir a senha'
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
             />

@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import { SessionProvider } from 'next-auth/react';
-import type { Session } from 'next-auth';
 
 import './globals.css';
 
@@ -8,7 +6,7 @@ import { Montserrat } from 'next/font/google';
 
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
-import AuthProvider from '@/components/AuthProvider';
+import NextAuthSessionProvider from '@/providers/sessionProvider';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
 
@@ -19,20 +17,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-  session,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-  session?: Session;
-}>) {
+}) {
   return (
-    <AuthProvider>
-      <html lang='pt-BR'>
-        <body className={montserrat.className}>
+    <html lang='pt-BR'>
+      <body className={montserrat.className}>
+        <NextAuthSessionProvider>
           <Header />
           {children}
+
           <Footer />
-        </body>
-      </html>
-    </AuthProvider>
+        </NextAuthSessionProvider>
+      </body>
+    </html>
   );
 }

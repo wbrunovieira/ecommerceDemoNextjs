@@ -1,26 +1,16 @@
-'use client';
-
-import React, { useState } from 'react';
+import React from 'react';
 import { BsInstagram, BsFacebook, BsTiktok, BsCart4 } from 'react-icons/bs';
-import Image from 'next/image';
-import Logo from '/public/images/LogoStylos.svg';
-import { useSession } from 'next-auth/react';
 
+import Logo from '/public/images/LogoStylos.svg';
+import CartButton from './CartButton';
 import SearchBox from './SearchBox';
-import Button from './Button';
-import FloatCart from './FloatCart';
+
 import AnimatedFlower from './AnimatedFlower';
 import Link from 'next/link';
 
+import LogginButton from './LogginButton';
+
 const Header = () => {
-  const { data: session, status } = useSession();
-
-  const [isCartModalOpen, setIsCartModalOpen] = useState(false);
-
-  const toggleCartModal = () => {
-    setIsCartModalOpen(!isCartModalOpen);
-  };
-
   return (
     <header className='bg-header-bg bg-cover bg-center h-36 flex justify-between items-center flex-col w-screen pt-4 px-8 mx-auto py-4 sm:h-48 md:h-48 lg:h-36 custom-header'>
       <div className='flex justify-between items-center w-full mb-4 mt-4'>
@@ -66,38 +56,8 @@ const Header = () => {
           <SearchBox />
         </div>
         <div className='flex justify-end gap-4 right'>
-          {status === 'authenticated' ? (
-            <>
-              <Link href={`/user/${session.user.id}`} passHref>
-                <span className='text-secondary transition duration-300 hover:scale-110'>
-                  Olá, {session.user.name}!
-                </span>
-              </Link>
-              <Link href='/api/auth/signout' passHref>
-                <Button variant='secondary' size='small'>
-                  Logout
-                </Button>
-              </Link>
-            </>
-          ) : (
-            <Link href='/login' passHref>
-              <Button variant='secondary' size='small'>
-                Login
-              </Button>
-            </Link>
-          )}
-          <button
-            onClick={toggleCartModal}
-            className='flex items-center justify-center hover:scale-110 transition duration-300 bg-primaryLight rounded-full p-2 h-12 w-12'
-          >
-            <div className='relative'>
-              <BsCart4 size={32} />
-              <span className='absolute -bottom-2 -right-4 opacity-70 bg-primaryDark text-primaryLight border border-primaryDark text-[10px] rounded-full px-2 py-2 min-w-[20px] h-[20px] flex items-center justify-center'>
-                3
-              </span>
-            </div>
-          </button>
-          {isCartModalOpen && <FloatCart onClose={toggleCartModal} />}
+          <LogginButton />
+          <CartButton />
         </div>
         <AnimatedFlower />
       </div>

@@ -4,44 +4,28 @@ import { FcGoogle } from 'react-icons/fc';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
-type LoginFormInputs = {
-  email: string;
-  password: string;
-};
+import { useRouter } from 'next/navigation';
+import React, { SyntheticEvent, useState } from 'react';
+
 const Login = () => {
-  console.log('Componente Login carregado');
-  const [inputs, setInputs] = useState<LoginFormInputs>({
-    email: '',
-    password: '',
-  });
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setInputs((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    console.log('handleSubmit');
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    const response = await fetch('http://localhost:3333/sessions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(inputs),
+    const result = await signIn('credentials', {
+      email,
+      password,
+      redirect: false,
     });
-    console.log('response ', response);
-    const data = await response.json();
-    console.log('data ', data);
-    if (response.ok) {
-      localStorage.setItem('accessToken', data.access_token);
 
-      console.log('Login Successful:', data);
-    } else {
-      redirect('/cadastro');
-      console.error('Login Failed:', data);
+    if (result?.error) {
+      console.log(result);
+      return;
     }
+
+    router.replace('/');
   };
 
   return (
@@ -64,17 +48,17 @@ const Login = () => {
               type='email'
               name='email'
               placeholder='Email'
-              value={inputs.email}
+              value={email}
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 '
-              onChange={handleChange}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type='password'
               name='password'
               placeholder='Senha'
-              value={inputs.password}
+              value={password}
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32'
-              onChange={handleChange}
+              onChange={(e) => setPassword(e.target.value)}
             />
             <button
               type='submit'
