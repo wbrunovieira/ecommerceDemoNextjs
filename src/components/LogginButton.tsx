@@ -39,7 +39,14 @@ const LogginButton = () => {
       </div>
     );
   } else {
-    return <button onClick={() => signIn()}>Entrar</button>;
+    return (
+      <button
+        className='flex text-secondary transition duration-300 hover:scale-110 text-xs font-semibold border px-4 py-2 h-6 rounded-md bg-primaryLight items-center mt-4'
+        onClick={() => signIn()}
+      >
+        login
+      </button>
+    );
   }
 };
 
