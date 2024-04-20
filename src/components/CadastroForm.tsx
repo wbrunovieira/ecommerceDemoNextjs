@@ -44,19 +44,23 @@ const CadastroForm = () => {
         <div className='relative z-10 bg-primary p-16 border-2 border-y-primaryDark rounded-lg shadow-lg'>
           <h2 className='text-2xl font-bold text-secondary mb-4'>Cadastro</h2>
 
-          <form onSubmit={handleSubmit} className='flex flex-col '>
+          <form onSubmit={handleSubmit} className='flex flex-col container '>
             <label htmlFor='name' className='text-white-important text-xs'>
-              Nome Completo
+              Nome
             </label>
             <input
               id='name'
               type='text'
               name='name'
-              placeholder='Nome'
+              required
+              placeholder='nome'
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
+              className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4 focus:border-primaryDark focus:ring-4 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary required  invalid:border-red-400 placeholder-primary peer peer-invalid:text-red-500 '
             />
+            <p className='invisible peer-invalid:visible peer-focus:invisible text-xs text-primaryDark mt-[-12px]'>
+              Esqueceu de colocar o seu nome. :(
+            </p>
             <label htmlFor='email' className='text-white-important text-xs'>
               Email
             </label>
@@ -64,11 +68,15 @@ const CadastroForm = () => {
               id='email'
               type='email'
               name='email'
+              required
               placeholder='email'
               onChange={(e) => setEmail(e.target.value)}
               value={email}
-              className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
+              className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary invalid:border-red-400 placeholder-primary'
             />
+            <p className='invisible peer-invalid:visible peer-focus:invisible text-xs text-primaryDark mt-[-12px]'>
+              vamos precisar do seu email. :(
+            </p>
             <label htmlFor='email' className='text-white-important text-xs'>
               Senha
             </label>
@@ -76,10 +84,11 @@ const CadastroForm = () => {
               id='password'
               type='password'
               name='password'
+              required
               placeholder='Senha'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
+              className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary placeholder-primary'
             />
             <label htmlFor='email' className='text-white-important text-xs'>
               Repetir a senha
@@ -88,8 +97,9 @@ const CadastroForm = () => {
               id='repeatPassword'
               type='password'
               name='repeatPassword'
+              required
               placeholder='Repetir a senha'
-              className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4'
+              className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary placeholder-primary'
             />
 
             <button

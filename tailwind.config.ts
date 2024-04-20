@@ -16,10 +16,16 @@ const config: Config = {
       primaryDark: '#540002',
       fontColor: '#333333',
     },
+
     extend: {
       backgroundImage: {
         'header-bg': "url('/images/banner5.svg')",
       },
+    },
+  },
+  variants: {
+    extend: {
+      borderColor: ['invalid'],
     },
   },
 };
