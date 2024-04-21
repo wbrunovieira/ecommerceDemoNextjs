@@ -73,32 +73,50 @@ const nextAuthOptions: NextAuthOptions = {
       profile?: ExtendedProfile;
     }) {
       if (account?.provider === 'google') {
-        const picture = profile?.picture;
-        const endpoint = 'http://localhost:3333/accounts/google';
+        const endpointCheck = 'http://localhost:3333/accounts/check';
+        const endpointCreate = 'http://localhost:3333/accounts/google';
+        console.log('profile', profile);
         const payload = {
           name: profile?.name,
           email: profile?.email,
           googleUserId: profile?.sub,
           profileImageUrl: profile?.picture || '',
         };
+        console.log('payload', payload);
+        console.log('email', profile?.email);
 
-        const response = await fetch(endpoint, {
+        const responseCheck = await fetch(endpointCheck, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(payload),
+          body: JSON.stringify({ email: profile?.email }),
         });
+        console.log('responseCheck', responseCheck);
 
-        const data = await response.json();
+        const responseText = await responseCheck.text();
+        const userExists = responseText.trim().toLowerCase() === 'true';
+        console.log('userExists', userExists);
 
-        if (response.ok) {
+        if (responseCheck.ok && userExists) {
+          console.log('Usuário já existe');
           return true;
-        } else {
-          return false;
+        } else if (responseCheck.ok && !userExists) {
+          console.log('Usuário não existe');
+          const responseCreate = await fetch(endpointCreate, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+          console.log('responseCreate', responseCreate);
+          return responseCreate.ok;
         }
+        console.log('chegou aqui no false do fim 1');
       }
-      return true;
+      console.log('chegou aqui no false do fim');
+      return false;
     },
     async jwt({
       token,
@@ -112,24 +130,29 @@ const nextAuthOptions: NextAuthOptions = {
       profile?: ExtendedProfile;
     }) {
       if (account && user) {
+        console.log('account no jwt', account);
         token.accessToken = user.accessToken;
         token.user = user;
       }
 
       if (account && !user && account.access_token) {
+        console.log('account no jwt 2', account);
         token.accessToken = account.access_token;
       }
       if (account && profile && account.provider === 'google') {
+        console.log('account no jwt 3', account);
         token.sub = profile.sub;
         token.picture = profile.picture;
       }
 
+      console.log('token no jwt', token);
       return token;
     },
 
     async session({ session, token }) {
+      console.log('session', session);
       session = token.user as any;
-
+      console.log('session no session', session);
       return session;
     },
   },
