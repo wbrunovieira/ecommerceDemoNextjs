@@ -1,10 +1,11 @@
 'use client';
-import React, { useState, SyntheticEvent } from 'react';
+import React, { useState, SyntheticEvent, useRef } from 'react';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { FcGoogle } from 'react-icons/fc';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
+import { gsap } from 'gsap';
 
 interface ErrorMessages {
   name: string;
@@ -19,6 +20,7 @@ const CadastroForm = () => {
   const [password, setPassword] = useState<string>('');
   const [repeatPassword, setRepeatPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isGoogleSignInDisabled, setIsGoogleSignInDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState<ErrorMessages>({
     name: '',
     email: '',
@@ -27,10 +29,35 @@ const CadastroForm = () => {
   });
   const router = useRouter();
 
+  const googleBtnRef = useRef<HTMLButtonElement>(null);
+  const googleIconWrapperRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLSpanElement>(null);
+
   const togglePasswordVisibility = (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
     setShowPassword(!showPassword);
+  };
+  const handleGoogleSignInClick = async () => {
+    setIsGoogleSignInDisabled(true);
+    const tl = gsap.timeline();
+    tl.to(textRef.current, { opacity: 0, duration: 0.4 })
+      .to(
+        googleBtnRef.current,
+        { scale: 0.95, backgroundColor: '#ccc', duration: 0.4 },
+        '<'
+      )
+      .fromTo(
+        googleIconWrapperRef.current,
+        { rotation: 0, x: 0, transformOrigin: 'center center' },
+        { rotation: 360, x: 100, duration: 1, ease: 'none' },
+        '<'
+      );
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await signIn('google');
+
+    setIsGoogleSignInDisabled(false);
   };
 
   const handleBlur = (field: keyof ErrorMessages, value: string) => {
@@ -135,6 +162,7 @@ const CadastroForm = () => {
             </label>
             <input
               id='name'
+              autoComplete='name'
               type='text'
               name='name'
               required
@@ -154,6 +182,7 @@ const CadastroForm = () => {
             <input
               id='email'
               type='email'
+              autoComplete='email'
               name='email'
               required
               placeholder='email'
@@ -177,6 +206,7 @@ const CadastroForm = () => {
                 type={showPassword ? 'text' : 'password'}
                 name='password'
                 required
+                autoComplete='password'
                 placeholder='Senha'
                 onBlur={() => handleBlur('password', password)}
                 value={password}
@@ -230,17 +260,17 @@ const CadastroForm = () => {
                   />
                 )}
               </span>
-              {errorMessage.password && (
-                <p className='text-red-500 text-xs italic'>
-                  {errorMessage.password}
-                </p>
-              )}
-              {errorMessage.repeatPassword && (
-                <p className='text-primaryDark w-48 rounded-md text-xs mb-4 bg-primaryLight p-2'>
-                  {errorMessage.repeatPassword}
-                </p>
-              )}
             </div>
+            {errorMessage.password && (
+              <p className='text-red-500 text-xs italic'>
+                {errorMessage.password}
+              </p>
+            )}
+            {errorMessage.repeatPassword && (
+              <p className='text-primaryDark w-48 rounded-md text-xs mb-4 bg-primaryLight p-2'>
+                {errorMessage.repeatPassword}
+              </p>
+            )}
 
             <button
               type='submit'
@@ -251,11 +281,17 @@ const CadastroForm = () => {
 
             <button
               type='button'
+              disabled={isGoogleSignInDisabled}
+              ref={googleBtnRef}
               className='bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105'
-              onClick={() => signIn('google')}
+              onClick={handleGoogleSignInClick}
             >
-              <FcGoogle className='mr-2' size={24} />
-              Login com Google
+              <div ref={googleIconWrapperRef}>
+                <FcGoogle className='mr-2' size={24} />
+              </div>
+              <span ref={textRef} className='mr-2'>
+                Login com Google
+              </span>
             </button>
           </form>
         </div>
