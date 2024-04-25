@@ -117,7 +117,19 @@ const CadastroForm = () => {
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    console.log('submit', name, email, password, repeatPassword);
 
+    gsap.to('#submitButton', {
+      scale: 0.95,
+      duration: 0.2,
+      ease: 'power1.out',
+    });
+    gsap.to('#submitButton', {
+      scale: 1,
+      duration: 0.2,
+      ease: 'power1.out',
+    });
+    console.log('depois da animacao');
     if (password !== repeatPassword) {
       setErrorMessage((prev) => ({
         ...prev,
@@ -173,7 +185,9 @@ const CadastroForm = () => {
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4 focus:border-primaryDark focus:ring-4 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary required  placeholder-primary  '
             />
             {errorMessage.name && (
-              <p className='text-red-500 text-xs italic'>{errorMessage.name}</p>
+              <p className='text-redAtention text-xs italic'>
+                {errorMessage.name}
+              </p>
             )}
 
             <label htmlFor='email' className='text-white-important text-xs'>
@@ -192,7 +206,7 @@ const CadastroForm = () => {
               className='px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary invalid:border-red-400 placeholder-primary'
             />
             {errorMessage.email && (
-              <p className='text-red-500 text-xs italic'>
+              <p className='text-redAtention text-xs italic'>
                 {errorMessage.email}
               </p>
             )}
@@ -227,7 +241,7 @@ const CadastroForm = () => {
                 )}
               </span>
               {errorMessage.password && (
-                <p className='text-red-500 text-xs italic'>
+                <p className='text-redAtention  text-xs italic'>
                   {errorMessage.password}
                 </p>
               )}
@@ -262,7 +276,7 @@ const CadastroForm = () => {
               </span>
             </div>
             {errorMessage.password && (
-              <p className='text-red-500 text-xs italic'>
+              <p className='text-redAtention text-xs italic'>
                 {errorMessage.password}
               </p>
             )}
@@ -274,6 +288,7 @@ const CadastroForm = () => {
 
             <button
               type='submit'
+              id='submitButton'
               className='bg-secondary mb-4 text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105'
             >
               Cadastrar

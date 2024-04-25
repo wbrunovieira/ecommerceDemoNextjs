@@ -20,30 +20,47 @@ const nextAuthOptions: NextAuthOptions = {
       async authorize(credentials, req) {
         console.log('Autorizando com credenciais:', credentials);
         if (!credentials) {
+          console.log('Credenciais não fornecidas');
           return null;
         }
-        const isSignUp = !!credentials.name;
-        const endpoint = isSignUp
-          ? 'http://localhost:3333/accounts'
-          : 'http://localhost:3333/sessions';
-        const response = await fetch(endpoint, {
+
+        const responseCheck = await fetch(
+          'http://localhost:3333/accounts/check',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: credentials.email }),
+          }
+        );
+        console.log('responseCheck', responseCheck);
+
+        const exists = await responseCheck.text();
+        console.log('exists', exists);
+        if (exists.trim() === 'true') {
+          console.log('Usuário já existe, falha ao criar novo usuário');
+          return null;
+        }
+
+        const response = await fetch('http://localhost:3333/accounts', {
           method: 'POST',
-          headers: {
-            'Content-type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            name: credentials?.name,
-            email: credentials?.email,
-            password: credentials?.password,
+            name: credentials.name,
+            email: credentials.email,
+            password: credentials.password,
           }),
         });
+        console.log('response', response);
 
         const user = await response.json();
+        console.log('user', user);
 
         if (user && response.ok) {
+          console.log('Usuário criado com sucesso:', user);
           return user;
         }
 
+        console.log('Falha ao criar usuário');
         return null;
       },
     }),
@@ -60,7 +77,7 @@ const nextAuthOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: '/cadastro',
+    signIn: '/login',
   },
   callbacks: {
     async signIn({
@@ -116,7 +133,7 @@ const nextAuthOptions: NextAuthOptions = {
         console.log('chegou aqui no false do fim 1');
       }
       console.log('chegou aqui no false do fim');
-      return false;
+      return true;
     },
     async jwt({
       token,
@@ -130,17 +147,27 @@ const nextAuthOptions: NextAuthOptions = {
       profile?: ExtendedProfile;
     }) {
       if (account && user) {
-        console.log('account no jwt', account);
+        console.log('account no jwt account e user', account);
         token.accessToken = user.accessToken;
         token.user = user;
       }
 
-      if (account && !user && account.access_token) {
-        console.log('account no jwt 2', account);
+      if (account && user) {
+        token.user = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+        };
+      } else if (account && !user && account.access_token) {
+        console.log('account no user', account);
         token.accessToken = account.access_token;
       }
       if (account && profile && account.provider === 'google') {
-        console.log('account no jwt 3', account);
+        console.log(
+          'account no jwt account, profile e account.provider google',
+          account
+        );
         token.sub = profile.sub;
         token.picture = profile.picture;
       }
@@ -150,8 +177,22 @@ const nextAuthOptions: NextAuthOptions = {
     },
 
     async session({ session, token }) {
-      console.log('session', session);
-      session = token.user as any;
+      // console.log('session', session);
+      // session = token.user as any;
+      // console.log('session no session', session);
+      console.log('session original', session);
+      console.log('token no session', token);
+      if (token.user) {
+        session.user = token.user;
+        console.log('session.user', session.user); // Adiciona usuário à sessão se presente no token
+      }
+      console.log('Tipo de profileImageUrl:', typeof token.profileImageUrl);
+      console.log('Valor de profileImageUrl:', token.profileImageUrl);
+
+      // Você pode também querer adicionar informações específicas de provedores externos
+      // if (typeof token.picture === 'string') {
+      //   session.user?.image = token.picture; // Adiciona a imagem do perfil, se disponível
+      // }
       console.log('session no session', session);
       return session;
     },

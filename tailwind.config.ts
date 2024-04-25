@@ -15,6 +15,7 @@ const config: Config = {
       secondary: '#D3686C',
       primaryDark: '#540002',
       fontColor: '#333333',
+      redAtention: '#EB312C',
     },
 
     extend: {

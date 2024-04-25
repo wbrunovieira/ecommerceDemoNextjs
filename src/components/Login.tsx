@@ -1,5 +1,5 @@
 'use client';
-import { redirect } from 'next/navigation';
+
 import { FcGoogle } from 'react-icons/fc';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -81,6 +81,12 @@ const Login = () => {
               >
                 Cadastro
               </button>
+            </Link>
+
+            <Link href='/' legacyBehavior>
+              <a className='bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-32 md:w-32 sm:w-32 transition duration-300 hover:scale-105 mt-8'>
+                Voltar
+              </a>
             </Link>
           </form>
         </div>
