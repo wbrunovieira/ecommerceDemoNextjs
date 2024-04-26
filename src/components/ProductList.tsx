@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 
 import Card from './Card';
+import Link from 'next/link';
 
 interface Produto {
   id: string;
@@ -13,6 +14,7 @@ interface Produto {
   isNew: boolean;
   discount: number;
   images: string[];
+  finalPrice: number;
 }
 
 const ProductList = () => {
@@ -38,17 +40,18 @@ const ProductList = () => {
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4'>
       {produtos.map((produto) => (
-        <Card
-          key={produto.id}
-          title={produto.name}
-          category={produto.description}
-          precoAntigo={produto.onSale ? produto.price : undefined}
-          precoNovo={produto.FinalPrice || produto.price}
-          emPromocao={produto.onSale}
-          desconto={produto.discount}
-          imageSRC={produto.images[0]}
-          eNovidade={produto.isNew}
-        />
+        <Link key={produto.id} href={`/product/${produto.id}`} passHref>
+          <Card
+            title={produto.name}
+            category={produto.description}
+            precoAntigo={produto.onSale ? produto.price : undefined}
+            precoNovo={produto.FinalPrice || produto.price}
+            emPromocao={produto.onSale}
+            desconto={produto.discount}
+            imageSRC={produto.images[0]}
+            eNovidade={produto.isNew}
+          />
+        </Link>
       ))}
     </div>
   );

@@ -11,7 +11,7 @@ interface CardProps {
   emPromocao?: boolean;
   eNovidade?: boolean;
   desconto?: number;
-  imageSRC?: string; // Tornando opcional para tratar a possibilidade de não estar definido
+  imageSRC?: string;
 }
 
 const Card: React.FC<CardProps> = ({
@@ -24,12 +24,11 @@ const Card: React.FC<CardProps> = ({
   category,
   eNovidade,
 }) => {
-  // Verifica se a URL da imagem é válida ou define uma imagem padrão
   const validImageSRC = imageSRC
     ? imageSRC.startsWith('http')
       ? imageSRC
       : `/${imageSRC}`
-    : '/images/foto1.jpg'; // Define '/images/default.jpg' como imagem padrão
+    : '/images/foto1.jpg';
 
   return (
     <div className='max-w-sm rounded-md shadow-lg bg-white m-2 h-96 flex flex-col'>
@@ -40,7 +39,7 @@ const Card: React.FC<CardProps> = ({
           width={400}
           height={300}
           alt={title}
-          unoptimized // use essa propriedade se as imagens não estão sendo servidas de um provedor otimizado
+          unoptimized
         />
         {emPromocao && (
           <div className='absolute promocao1 transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase'>
