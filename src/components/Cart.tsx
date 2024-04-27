@@ -4,14 +4,14 @@ import Image from 'next/image';
 import { BsTrash } from 'react-icons/bs';
 interface Product {
   id: string;
-  qtd: number;
+  quantity: number;
   title: string;
   image: string;
   price: number;
 }
 const Cart = () => {
   const cartItems = useCartStore((state: any) => state.cartItems);
-  const addToCart = useCartStore((state: any) => state.addToCart);
+
   const removeFromCart = useCartStore((state: any) => state.removeFromCart);
 
   return (
@@ -37,7 +37,7 @@ const Cart = () => {
                 <h2 className='text-base font-semibold text-primaryDark '>
                   QTD{' '}
                 </h2>
-                <h2 className='text-base font-light mb-2'> 1</h2>
+                <h2 className='text-base font-light mb-2'> {item.quantity}</h2>
               </div>
               <div className='flex flex-col justify-center items-center'>
                 <h2 className='text-base font-semibold text-primaryDark '>
@@ -52,7 +52,15 @@ const Cart = () => {
                   Preço{' '}
                 </p>
                 <p className='text-base font-light mb-2 whitespace-nowrap'>
-                  {item.price}
+                  {item.price.toFixed(2)}
+                </p>
+              </div>
+              <div className='flex flex-col justify-center items-center'>
+                <p className='text-base font-semibold text-primaryDark '>
+                  Total{' '}
+                </p>
+                <p className='text-base font-light mb-2 whitespace-nowrap'>
+                  {(item.price * item.quantity).toFixed(2)}
                 </p>
               </div>
               <div className='flex flex-col justify-center items-center ml-4'>
@@ -68,7 +76,16 @@ const Cart = () => {
         </div>
 
         <div className='mt-8'>
-          <h2 className='text-2xl font-semibold mb-2'>Total: R$ 60,00</h2>
+          <h2 className='text-2xl font-semibold mb-2'>
+            Total: R${' '}
+            {cartItems
+              .reduce(
+                (acc: number, item: Product) =>
+                  acc + item.price * item.quantity,
+                0
+              )
+              .toFixed(2)}
+          </h2>
           <button className='bg-primary text-primaryDark py-2 px-4 rounded'>
             Checkout
           </button>
