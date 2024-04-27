@@ -2,9 +2,11 @@
 import React, { useState } from 'react';
 import { BsCart4 } from 'react-icons/bs';
 import FloatCart from './FloatCart';
+import { useCartStore } from '@/context/store';
 
 const CartButton = () => {
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const cartItems = useCartStore((state: any) => state.cartItems);
 
   const toggleCartModal = () => {
     setIsCartModalOpen(!isCartModalOpen);
@@ -19,7 +21,7 @@ const CartButton = () => {
         <div className='relative'>
           <BsCart4 size={32} />
           <span className='absolute -bottom-2 -right-4 opacity-70 bg-primaryDark text-primaryLight border border-primaryDark text-[10px] rounded-full px-2 py-2 min-w-[20px] h-[20px] flex items-center justify-center'>
-            3
+            {cartItems.length}
           </span>
         </div>
       </button>
