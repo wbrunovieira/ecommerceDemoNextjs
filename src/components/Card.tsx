@@ -18,6 +18,7 @@ interface CardProps {
 
 interface ProductCart {
   id: string;
+  quantity: number;
   title: string;
   image: string;
   precoNovo: number;
@@ -39,6 +40,7 @@ const Card: React.FC<CardProps> = ({
     addToCart({
       id: product.id,
       title: product.title,
+      quantity: 1,
       image: validImageSRC,
       price: product.precoNovo,
     });
@@ -100,6 +102,7 @@ const Card: React.FC<CardProps> = ({
                 handleAddToCart({
                   id,
                   title,
+                  quantity: 1,
                   image: validImageSRC,
                   precoNovo,
                 });

@@ -14,6 +14,7 @@ interface CartState {
   addToCart: (product: Product) => void;
   removeFromCart: (productId: string) => void;
   clearCart: () => void;
+  updateQuantity: (productId: string, amount: number) => void;
 }
 
 export const useCartStore = create(
@@ -42,6 +43,31 @@ export const useCartStore = create(
           cartItems: state.cartItems.filter((item) => item.id !== productId),
         })),
       clearCart: () => set({ cartItems: [] }),
+      updateQuantity: (productId: string, amount: number) =>
+        set((state: CartState) => {
+          const index = state.cartItems.findIndex(
+            (item) => item.id === productId
+          );
+
+          if (index !== -1) {
+            let newQuantity = state.cartItems[index].quantity + amount;
+            if (newQuantity <= 0) {
+              return {
+                cartItems: state.cartItems.filter(
+                  (item) => item.id !== productId
+                ),
+              };
+            } else {
+              let newCartItems = [...state.cartItems];
+              newCartItems[index] = {
+                ...newCartItems[index],
+                quantity: newQuantity,
+              };
+              return { cartItems: newCartItems };
+            }
+          }
+          return {}; // Não altera nada se o produto não for encontrado
+        }),
     }),
     {
       name: 'cart-storage',

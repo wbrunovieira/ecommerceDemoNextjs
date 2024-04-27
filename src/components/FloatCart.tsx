@@ -2,7 +2,7 @@
 import { useCartStore } from '@/context/store';
 import Image from 'next/image';
 import React from 'react';
-import { BsTrash } from 'react-icons/bs';
+import { BsTrash, BsPlus, BsDash } from 'react-icons/bs';
 
 interface FloatCartProps {
   onClose: () => void;
@@ -18,11 +18,21 @@ interface Product {
 
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
   const cartItems = useCartStore((state: any) => state.cartItems);
+
   const removeFromCart = useCartStore((state: any) => state.removeFromCart);
+  const updateQuantity = useCartStore((state: any) => state.updateQuantity);
   const handleClickOutside = (event: React.MouseEvent) => {
     if ((event.target as HTMLElement).classList.contains('modal-background')) {
       onClose();
     }
+  };
+
+  const increaseQuantity = (id: string) => {
+    updateQuantity(id, 1);
+  };
+
+  const decreaseQuantity = (id: string) => {
+    updateQuantity(id, -1);
   };
 
   return (
@@ -67,7 +77,21 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                 height={20}
                 className='w-12 h-12 rounded'
               />
-              <p className='text-sm font-medium'>{item.quantity} pç</p>
+              <div className='flex items-center'>
+                <button
+                  onClick={() => decreaseQuantity(item.id)}
+                  className='text-sm p-1'
+                >
+                  <BsDash />
+                </button>
+                <p className='text-sm font-medium mx-2'>{item.quantity} pç</p>
+                <button
+                  onClick={() => increaseQuantity(item.id)}
+                  className='text-sm p-1'
+                >
+                  <BsPlus />
+                </button>
+              </div>
               <p className='text-sm font-medium'>{item.title}</p>
               <p className='text-sm text-gray-500'>R$ {item.price},00</p>
               <p className='text-sm font-bold'>
