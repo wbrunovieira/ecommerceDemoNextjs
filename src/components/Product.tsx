@@ -1,6 +1,7 @@
 'use client';
 import Image from 'next/image';
 import Button from './Button';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 import { useRef, useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
@@ -16,7 +17,7 @@ import 'swiper/css/virtual';
 import 'swiper/css/pagination';
 
 import SimilarProducts from './SimilarProducts';
-import { useCartStore } from '@/context/store';
+import { useCartStore, useFavoritesStore } from '@/context/store';
 interface ProductCart {
   id: string;
   title: string;
@@ -94,6 +95,9 @@ const Product: React.FC<ProductProps> = ({
   const handleAddToCart = (product: ProductCart) => {
     addToCart(product);
   };
+
+  const { favorites, toggleFavorite } = useFavoritesStore();
+  const isFavorited = favorites.includes(id);
   return (
     <section>
       <div className='flex flex-col ml-2'>
@@ -148,17 +152,26 @@ const Product: React.FC<ProductProps> = ({
                 {description}
               </p>
             </div>
-            <div className='flex gap-4 mt-4'>
-              <Image
-                src='/icons/heart-icon.svg'
-                alt='Heart Icon'
-                width={20}
-                height={20}
-              />
+            <button
+              onClick={() => toggleFavorite(id)}
+              className='flex items-center'
+              aria-label={
+                isFavorited
+                  ? 'Remover dos favoritos'
+                  : 'Adicionar aos favoritos'
+              }
+            >
+              {isFavorited ? (
+                <FaHeart size={20} color='red' />
+              ) : (
+                <FaRegHeart size={20} />
+              )}
               <span className='text-xs font-light'>
-                Adicionar aos Favoritos
+                {isFavorited
+                  ? 'Remover dos Favoritos'
+                  : 'Adicionar aos Favoritos'}
               </span>
-            </div>
+            </button>
 
             <div className='mt-4 rounded px-2 py-2 max-w-48'>
               <h3 className='text-base text-primaryDark font-semibold'>

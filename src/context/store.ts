@@ -17,6 +17,11 @@ interface CartState {
   updateQuantity: (productId: string, amount: number) => void;
 }
 
+interface FavoriteState {
+  favorites: string[];
+  toggleFavorite: (productId: string) => void;
+}
+
 export const useCartStore = create(
   persist(
     (set) => ({
@@ -66,12 +71,23 @@ export const useCartStore = create(
               return { cartItems: newCartItems };
             }
           }
-          return {}; // Não altera nada se o produto não for encontrado
+          return {};
         }),
     }),
+
     {
       name: 'cart-storage',
       getStorage: () => localStorage,
     }
   )
 );
+
+export const useFavoritesStore = create<FavoriteState>((set) => ({
+  favorites: [],
+  toggleFavorite: (productId) =>
+    set((state) => ({
+      favorites: state.favorites.includes(productId)
+        ? state.favorites.filter((id) => id !== productId)
+        : [...state.favorites, productId],
+    })),
+}));
