@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware';
 interface Product {
   id: string;
   title: string;
-  qtd: number;
+  quantity: number;
   image: string;
   price: number;
 }
@@ -21,14 +21,25 @@ export const useCartStore = create(
     (set) => ({
       cartItems: [],
       addToCart: (product: Product) =>
-        set((state: CartState) => ({
-          cartItems: [...state.cartItems, product],
-        })),
+        set((state: CartState) => {
+          const index = state.cartItems.findIndex(
+            (item) => item.id === product.id
+          );
+
+          if (index !== -1) {
+            let newCartItems = [...state.cartItems];
+            newCartItems[index] = {
+              ...newCartItems[index],
+              quantity: newCartItems[index].quantity + product.quantity,
+            };
+            return { cartItems: newCartItems };
+          }
+
+          return { cartItems: [...state.cartItems, product] };
+        }),
       removeFromCart: (productId: string) =>
         set((state: CartState) => ({
-          cartItems: state.cartItems.filter(
-            (item: Product) => item.id !== productId
-          ),
+          cartItems: state.cartItems.filter((item) => item.id !== productId),
         })),
       clearCart: () => set({ cartItems: [] }),
     }),
