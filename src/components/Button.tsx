@@ -10,7 +10,10 @@ interface ButtonProps {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary';
   size?: 'small' | 'medium' | 'large';
-  onClick?: () => void | ((product?: ProductCart) => void);
+  onClick?: (
+    event: React.MouseEvent<HTMLButtonElement>,
+    product?: ProductCart
+  ) => void;
 }
 
 const Button: React.FC<ButtonProps> = ({

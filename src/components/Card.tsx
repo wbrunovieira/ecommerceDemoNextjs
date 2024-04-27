@@ -1,9 +1,11 @@
 import Image from 'next/image';
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import Button from './Button';
 import Link from 'next/link';
+import { useCartStore } from '@/context/store';
 
 interface CardProps {
+  id: string;
   title: string;
   category: string;
   precoAntigo?: number;
@@ -14,7 +16,14 @@ interface CardProps {
   imageSRC?: string;
 }
 
+interface ProductCart {
+  id: string;
+  title: string;
+  image: string;
+  precoNovo: number;
+}
 const Card: React.FC<CardProps> = ({
+  id,
   title,
   precoAntigo,
   precoNovo,
@@ -24,6 +33,17 @@ const Card: React.FC<CardProps> = ({
   category,
   eNovidade,
 }) => {
+  const addToCart = useCartStore((state: any) => state.addToCart);
+
+  const handleAddToCart = (product: ProductCart) => {
+    addToCart({
+      id: product.id,
+      title: product.title,
+      image: validImageSRC,
+      price: product.precoNovo,
+    });
+  };
+
   const validImageSRC = imageSRC
     ? imageSRC.startsWith('http')
       ? imageSRC
@@ -72,7 +92,19 @@ const Card: React.FC<CardProps> = ({
         </div>
         <div className='pb-2'>
           <Link href='/product/ '>
-            <Button variant='secondary' size='small'>
+            <Button
+              variant='secondary'
+              size='small'
+              onClick={(e) => {
+                e.preventDefault();
+                handleAddToCart({
+                  id,
+                  title,
+                  image: validImageSRC,
+                  precoNovo,
+                });
+              }}
+            >
               Comprar
             </Button>
           </Link>

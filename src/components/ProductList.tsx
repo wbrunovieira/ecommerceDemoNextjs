@@ -42,6 +42,7 @@ const ProductList = () => {
       {produtos.map((produto) => (
         <Link key={produto.id} href={`/product/${produto.id}`} passHref>
           <Card
+            id={produto.id}
             title={produto.name}
             category={produto.description}
             precoAntigo={produto.onSale ? produto.price : undefined}

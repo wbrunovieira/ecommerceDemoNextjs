@@ -37,11 +37,11 @@ interface ProductProps {
 }
 
 const Product: React.FC<ProductProps> = ({
+  id,
   title,
   images,
   description,
   price,
-  id,
   material,
   categoria,
   fabricante,
