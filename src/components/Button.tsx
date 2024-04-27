@@ -1,16 +1,23 @@
 // components/Button.tsx
 import React from 'react';
-
+interface ProductCart {
+  id: string;
+  title: string;
+  image: string;
+  price: number;
+}
 interface ButtonProps {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary';
   size?: 'small' | 'medium' | 'large';
+  onClick?: () => void | ((product?: ProductCart) => void);
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
   size = 'medium',
+  onClick,
 }) => {
   const baseStyles = 'focus:outline-none transition ease-in-out duration-150';
   const variantStyles = {
@@ -25,7 +32,11 @@ const Button: React.FC<ButtonProps> = ({
 
   const classes = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} text-white-important`;
 
-  return <button className={classes}>{children}</button>;
+  return (
+    <button className={classes} onClick={onClick}>
+      {children}
+    </button>
+  );
 };
 
 export default Button;

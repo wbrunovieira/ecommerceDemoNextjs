@@ -12,6 +12,7 @@ interface ProductPropsParams {
 
 export default async function ProductPage({ params }: ProductPropsParams) {
   const { id } = params;
+
   const res = await fetch(`http://localhost:3333/products/${id}`);
   console.log('res', res);
   const { product } = await res.json();
@@ -22,6 +23,7 @@ export default async function ProductPage({ params }: ProductPropsParams) {
 
   const productImages =
     product.images.length > 0 ? product.images : ['/images/foto1.jpg'];
+
   return (
     <Container>
       <section className='flex mt-2 gap-8'>

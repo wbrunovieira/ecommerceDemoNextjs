@@ -1,12 +1,15 @@
+import { useCartStore } from '@/context/store';
 import Image from 'next/image';
 import { BsTrash } from 'react-icons/bs';
 
 const Cart = () => {
+  const cart = useCartStore((state: any) => state.cartItems);
+
   return (
     <div className='bg-primaryLight text-fontColor w-[600px] mt-4 p-8 rounded-lg'>
       <div className='container mx-auto py-4 '>
         <h1 className='text-3xl font-bold mb-4 text-fontColor '>
-          Seu carrinho
+          Seu carrinho {cart}
         </h1>
 
         <div className='flex flex-col gap-4 w-[450px] bg-primary rounded-md'>
@@ -31,7 +34,7 @@ const Cart = () => {
               </h2>
               <h2 className='text-base font-light mb-2 whitespace-nowrap'>
                 {' '}
-                Calcinha
+                Calcinha {cart}
               </h2>
             </div>
             <div className='flex flex-col justify-center items-center'>

@@ -1,4 +1,5 @@
 'use client';
+import { useCartStore } from '@/context/store';
 import Image from 'next/image';
 import React from 'react';
 
@@ -6,11 +7,24 @@ interface FloatCartProps {
   onClose: () => void;
 }
 
+interface Product {
+  id: string;
+  title: string;
+  image: string;
+  price: number;
+}
+
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
+  const cartItems = useCartStore((state: any) => state.cartItems);
+  const addToCart = useCartStore((state: any) => state.addToCart);
+  const removeFromCart = useCartStore((state: any) => state.removeFromCart);
   const handleClickOutside = (event: React.MouseEvent) => {
     if ((event.target as HTMLElement).classList.contains('modal-background')) {
       onClose();
     }
+  };
+  const handleAddToCart = (product: Product) => {
+    addToCart(product);
   };
   return (
     <div
@@ -30,55 +44,37 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
 
         <div className='flex justify-center items-center gap-2  border-b-2 border-light pb-4'>
           <h2 className='text-xl font-bold'>Carrinho - </h2>
-          <span className='fontbold text-xl'>3 itens</span>
+          <span className='fontbold text-xl'>{cartItems.length} itens</span>
         </div>
         <div className='flex flex-col pt-4'>
-          {/* Cart items */}
-          <div className='flex items-center mb-4'>
-            <Image
-              src='/images/liz1.webp'
-              alt='Item 1'
-              width={24}
-              height={24}
-              className='w-12 h-12 rounded mr-4'
-            />
-            <div className='flex justify-center items-center gap-2'>
-              <p className='text-xs font-medium'>Calcinha Biquini 50030</p>
-              <p className='text-xs text-gray-500'>R$ 100,00</p>
+          {cartItems.map((item: Product, index: number) => (
+            <div key={index} className='flex items-center mb-4'>
+              <Image
+                src={item.image}
+                alt={item.title}
+                width={24}
+                height={24}
+                className='w-12 h-12 rounded mr-4'
+              />
+              <div className='flex justify-center items-center gap-2'>
+                <p className='text-xs font-medium'>{item.title}</p>
+                <p className='text-xs text-gray-500'>R$ {item.price},00</p>
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className='bg-red-500 text-white p-1 rounded'
+                >
+                  Remover
+                </button>
+              </div>
             </div>
-          </div>
-
-          <div className='flex items-center mb-4'>
-            <Image
-              src='/images/liz1.webp'
-              alt='Item 1'
-              width={24}
-              height={24}
-              className='w-12 h-12 rounded mr-4'
-            />
-            <div className='flex justify-center items-center gap-2'>
-              <p className='text-xs font-medium'>Calcinha Biquini 50030</p>
-              <p className='text-xs text-gray-500'>R$ 400,00</p>
-            </div>
-          </div>
-          <div className='flex items-center mb-4'>
-            <Image
-              src='/images/liz1.webp'
-              alt='Item 1'
-              width={24}
-              height={24}
-              className='w-12 h-12 rounded mr-4'
-            />
-            <div className='flex justify-center items-center gap-2'>
-              <p className='text-xs font-medium'>Calcinha Biquini 50030</p>
-              <p className='text-xs text-gray-500'>R$ 100,00</p>
-            </div>
-          </div>
-          {/* Repeat the above structure for other cart items */}
+          ))}
         </div>
         <div className='flex flex-col justify-center align-center mt-4 border-t-2 border-light'>
           <div className='w-full flex justify-end items-center'>
-            <p className='text-xl font-medium mt-4'>Total: R$ 100,00</p>
+            {/* <p className='text-xl font-medium mt-4'>
+              Total: R$ {cartItems.reduce((acc, item) => acc + item.price, 0)}
+              ,00
+            </p> */}
           </div>
           <button className='bg-primary text-white px-4 py-2 mt-2 rounded'>
             Checkout

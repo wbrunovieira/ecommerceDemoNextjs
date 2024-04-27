@@ -12,14 +12,17 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/virtual';
-import Navigation from 'swiper';
-import Pagination from 'swiper';
-import Autoplay from 'swiper';
 
 import 'swiper/css/pagination';
 
 import SimilarProducts from './SimilarProducts';
-
+import { useCartStore } from '@/context/store';
+interface ProductCart {
+  id: string;
+  title: string;
+  image: string;
+  price: number;
+}
 interface ProductProps {
   title: string;
   images: string[];
@@ -46,6 +49,7 @@ const Product: React.FC<ProductProps> = ({
   size,
 }) => {
   const swiperElRef = useRef(null);
+
   const [mainImage, setMainImage] = useState(images[0]);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
@@ -57,6 +61,8 @@ const Product: React.FC<ProductProps> = ({
   const decrementQuantity = () => {
     setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };
+  const cartItems = useCartStore((state: any) => state.cartItems);
+  const addToCart = useCartStore((state: any) => state.addToCart);
 
   useEffect(() => {
     if (swiperElRef.current) {
@@ -83,6 +89,10 @@ const Product: React.FC<ProductProps> = ({
     { image: '/images/liz3.webp', title: 'Sutiã3', price: 140 },
     { image: '/images/liz4.webp', title: 'Sutiã4', price: 150 },
   ];
+
+  const handleAddToCart = (product: ProductCart) => {
+    addToCart(product);
+  };
   return (
     <section>
       <div className='flex flex-col ml-2'>
@@ -218,11 +228,22 @@ const Product: React.FC<ProductProps> = ({
               </div>
             </div>
             <div className='flex w-96 mt-4'>
-              <Button variant='secondary' size='large'>
+              <Button
+                variant='secondary'
+                size='large'
+                onClick={() =>
+                  handleAddToCart({
+                    id,
+                    title,
+                    image: mainImage,
+                    price,
+                  })
+                }
+              >
                 Comprar
               </Button>
             </div>
-            <div className='flex flex-col mt-4 border border-light rounded px-8 py-2 w-52 text-xs text-[#676666] '>
+            <div className='flex flex-col mt-4 border border-light rounded px-8 py-2 w-96 text-xs text-[#676666] '>
               <div className='flex gap-2 '>
                 <p className='font-semibold'>SKU: </p>
                 <p>{id}</p>
