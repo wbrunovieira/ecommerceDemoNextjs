@@ -1,7 +1,7 @@
 'use client';
 import { useCartStore } from '@/context/store';
 import Image from 'next/image';
-import { BsTrash } from 'react-icons/bs';
+import { BsTrash, BsPlus, BsDash } from 'react-icons/bs';
 interface Product {
   id: string;
   quantity: number;
@@ -11,9 +11,15 @@ interface Product {
 }
 const Cart = () => {
   const cartItems = useCartStore((state: any) => state.cartItems);
-
+  const updateQuantity = useCartStore((state: any) => state.updateQuantity);
   const removeFromCart = useCartStore((state: any) => state.removeFromCart);
+  const increaseQuantity = (id: string) => {
+    updateQuantity(id, 1);
+  };
 
+  const decreaseQuantity = (id: string) => {
+    updateQuantity(id, -1);
+  };
   return (
     <div className='bg-primaryLight text-fontColor w-[600px] mt-4 p-8 rounded-lg'>
       <div className='container mx-auto py-4 '>
@@ -37,7 +43,24 @@ const Cart = () => {
                 <h2 className='text-base font-semibold text-primaryDark '>
                   QTD{' '}
                 </h2>
-                <h2 className='text-base font-light mb-2'> {item.quantity}</h2>
+                <div className='flex justify-center items-center'>
+                  <button
+                    onClick={() => decreaseQuantity(item.id)}
+                    className='text-sm p-1'
+                  >
+                    <BsDash />
+                  </button>
+                  <h2 className='text-base font-light mb-2'>
+                    {' '}
+                    {item.quantity}
+                  </h2>
+                  <button
+                    onClick={() => increaseQuantity(item.id)}
+                    className='text-sm p-1'
+                  >
+                    <BsPlus />
+                  </button>
+                </div>
               </div>
               <div className='flex flex-col justify-center items-center'>
                 <h2 className='text-base font-semibold text-primaryDark '>
