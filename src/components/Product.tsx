@@ -20,6 +20,7 @@ import { useCartStore } from '@/context/store';
 interface ProductCart {
   id: string;
   title: string;
+  quantity: number;
   image: string;
   price: number;
 }
@@ -234,6 +235,7 @@ const Product: React.FC<ProductProps> = ({
                 onClick={() =>
                   handleAddToCart({
                     id,
+                    quantity,
                     title,
                     image: mainImage,
                     price,
