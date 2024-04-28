@@ -1,7 +1,8 @@
 'use client';
 import { useCartStore } from '@/context/store';
 import Image from 'next/image';
-import React from 'react';
+import Link from 'next/link';
+
 import { BsTrash, BsPlus, BsDash } from 'react-icons/bs';
 
 interface FloatCartProps {
@@ -18,9 +19,9 @@ interface Product {
 
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
   const cartItems = useCartStore((state: any) => state.cartItems);
-
   const removeFromCart = useCartStore((state: any) => state.removeFromCart);
   const updateQuantity = useCartStore((state: any) => state.updateQuantity);
+
   const handleClickOutside = (event: React.MouseEvent) => {
     if ((event.target as HTMLElement).classList.contains('modal-background')) {
       onClose();
@@ -118,9 +119,13 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
               ,00
             </p>
           </div>
-          <button className='bg-primary text-white px-4 py-2 mt-2 rounded'>
-            Checkout
-          </button>
+
+          <Link
+            href='/cart'
+            className='px-4 py-2 mt-2 rounded bg-secondary text-primaryLight'
+          >
+            <div className=''>Checkout</div>
+          </Link>
         </div>
       </div>
     </div>

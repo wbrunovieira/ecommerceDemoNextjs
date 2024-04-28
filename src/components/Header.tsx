@@ -1,5 +1,4 @@
-import React from 'react';
-import { BsInstagram, BsFacebook, BsTiktok, BsCart4 } from 'react-icons/bs';
+import { BsInstagram, BsFacebook, BsTiktok } from 'react-icons/bs';
 
 import Logo from '/public/images/LogoStylos.svg';
 import CartButton from './CartButton';
