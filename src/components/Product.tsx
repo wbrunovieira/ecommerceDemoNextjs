@@ -152,27 +152,28 @@ const Product: React.FC<ProductProps> = ({
                 {description}
               </p>
             </div>
-            <button
-              onClick={() => toggleFavorite(id)}
-              className='flex items-center'
-              aria-label={
-                isFavorited
-                  ? 'Remover dos favoritos'
-                  : 'Adicionar aos favoritos'
-              }
-            >
-              {isFavorited ? (
-                <FaHeart size={20} color='red' />
-              ) : (
-                <FaRegHeart size={20} />
-              )}
-              <span className='text-xs font-light'>
-                {isFavorited
-                  ? 'Remover dos Favoritos'
-                  : 'Adicionar aos Favoritos'}
-              </span>
-            </button>
-
+            <div className='flex gap-2 mt-4'>
+              <button
+                onClick={() => toggleFavorite(id)}
+                className='flex items-center gap-2 text-base text-primaryDark font-semibold'
+                aria-label={
+                  isFavorited
+                    ? ' Remover dos favoritos'
+                    : ' Adicionar aos favoritos'
+                }
+              >
+                {isFavorited ? (
+                  <FaHeart size={20} color='red' />
+                ) : (
+                  <FaRegHeart size={20} />
+                )}
+                <span className='text-xs '>
+                  {isFavorited
+                    ? 'Remover dos Favoritos'
+                    : 'Adicionar aos Favoritos'}
+                </span>
+              </button>
+            </div>
             <div className='mt-4 rounded px-2 py-2 max-w-48'>
               <h3 className='text-base text-primaryDark font-semibold'>
                 Cores
@@ -225,18 +226,19 @@ const Product: React.FC<ProductProps> = ({
                 <span className='flex justify-center items-center w-8 h-8 bg-primaryDark text-primaryLight font-bold rounded-full border border-primaryDark'>
                   {quantity}
                 </span>
+
                 <div className='flex ml-2'>
                   <button
-                    className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold border-r-2 border-primaryDark'
-                    onClick={incrementQuantity}
-                  >
-                    +
-                  </button>
-                  <button
-                    className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold'
+                    className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold border-r-2'
                     onClick={decrementQuantity}
                   >
                     -
+                  </button>
+                  <button
+                    className='w-8 h-8 flex justify-center items-center text-primaryDark font-semibold  border-primaryDark'
+                    onClick={incrementQuantity}
+                  >
+                    +
                   </button>
                 </div>
               </div>
