@@ -1,6 +1,7 @@
 'use client';
 import { useCartStore } from '@/context/store';
 import Image from 'next/image';
+import Link from 'next/link';
 import { BsTrash, BsPlus, BsDash } from 'react-icons/bs';
 interface Product {
   id: string;
@@ -89,7 +90,7 @@ const Cart = () => {
               <div className='flex flex-col justify-center items-center ml-4'>
                 <button
                   onClick={() => removeFromCart(item.id)}
-                  className='bg-secondary text-white-important py-2 text-xs px-4 rounded'
+                  className='bg-secondary text-white-important py-2 text-xs px-4 rounded transition duration-300 hover:scale-105'
                 >
                   <BsTrash />
                 </button>
@@ -109,9 +110,19 @@ const Cart = () => {
               )
               .toFixed(2)}
           </h2>
-          <button className='bg-primary text-primaryDark py-2 px-4 rounded'>
-            Checkout
-          </button>
+          <div className='flex justify-between items-center'>
+            <Link href='/'>
+              <div className='bg-secondary text-primaryLight py-2 px-4 rounded transition duration-300 hover:scale-110'>
+                Adcionar mais produtos
+              </div>
+            </Link>
+            <Link
+              href='/cart'
+              className='px-4 py-2 mt-2 rounded bg-secondary text-primaryLight transition duration-300 hover:scale-110'
+            >
+              <div className=''>Finalizar</div>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
