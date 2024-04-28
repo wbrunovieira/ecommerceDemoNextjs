@@ -1,16 +1,24 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsCart4 } from 'react-icons/bs';
 import FloatCart from './FloatCart';
 import { useCartStore } from '@/context/store';
 
 const CartButton = () => {
   const [isCartModalOpen, setIsCartModalOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
   const cartItems = useCartStore((state: any) => state.cartItems);
 
   const toggleCartModal = () => {
     setIsCartModalOpen(!isCartModalOpen);
   };
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) return null;
 
   return (
     <>

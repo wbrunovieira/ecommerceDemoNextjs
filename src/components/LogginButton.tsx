@@ -16,12 +16,12 @@ const LogginButton = () => {
 
   if (session && session.user) {
     const userName = session.user?.name;
-
+    let id = session.user?.id;
     console.log('userName', userName);
     console.log('session && session.user', session, session.user);
     return (
       <div className='flex flex-col items-center '>
-        <Link href={`/user/${session.id}`} passHref>
+        <Link href={`/user/${session.user.id}`} passHref>
           <div className=' flex text-secondary transition duration-300 hover:scale-110 text-xs font-semibold border p-2 rounded-md bg-primaryLight items-center'>
             {session.user?.image ? (
               <Image
@@ -34,12 +34,11 @@ const LogginButton = () => {
             ) : (
               <FaUserAlt className='w-6 h-6 text-gray-400' />
             )}
-            {/* Olá, {session.user.name} */}
             Olá, {userName}
           </div>
         </Link>
         <button
-          className='hover:scale-110 text-xs mt-1 mb-1 bg-primaryLight p-1 rounded-md'
+          className='hover:scale-110 text-xs mt-1 mb-2 bg-primaryLight p-1 rounded-md'
           onClick={() => signOut()}
         >
           Sair

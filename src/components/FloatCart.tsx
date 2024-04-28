@@ -54,7 +54,9 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
 
         <div className='flex justify-center items-center gap-2 border-b-2 border-light pb-4'>
           <h2 className='text-xl font-bold'>Carrinho - </h2>
-          <span className='fontbold text-xl'>{cartItems.length} itens</span>
+          <span className='fontbold text-xl gap-1'>
+            {cartItems.length} {cartItems.length == 1 ? 'item' : 'itens'}{' '}
+          </span>
         </div>
 
         <ul className='flex flex-col pt-4'>
@@ -76,6 +78,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                 alt={item.title}
                 width={20}
                 height={20}
+                quality={100}
+                unoptimized={true}
                 className='w-12 h-12 rounded'
               />
               <div className='flex items-center'>
@@ -100,7 +104,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
               </p>
               <button
                 onClick={() => removeFromCart(item.id)}
-                className='bg-red-500 text-white p-1 rounded'
+                className='bg-red-500 text-white p-1 rounded transition duration-300 hover:scale-105'
               >
                 <BsTrash size={14} />
               </button>
@@ -122,9 +126,11 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
 
           <Link
             href='/cart'
-            className='px-4 py-2 mt-2 rounded bg-secondary text-primaryLight'
+            className='px-4 py-2 mt-2 rounded bg-secondary text-primaryLight '
           >
-            <div className=''>Checkout</div>
+            <div className='transition duration-300 hover:scale-105'>
+              Checkout
+            </div>
           </Link>
         </div>
       </div>
