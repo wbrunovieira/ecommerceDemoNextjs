@@ -96,8 +96,32 @@ const Product: React.FC<ProductProps> = ({
     addToCart(product);
   };
 
-  const { favorites, toggleFavorite } = useFavoritesStore();
+  const favorites = useFavoritesStore((state: any) => state.favorites);
+  const toggleFavorite = useFavoritesStore(
+    (state: any) => state.toggleFavorite
+  );
+
+  const addToFavorite = useFavoritesStore((state: any) => state.addToFavorite);
+  const removeFromFavorite = useFavoritesStore(
+    (state: any) => state.removeFromFavorite
+  );
+
   const isFavorited = favorites.includes(id);
+
+  const handleToggleFavorite = () => {
+    if (isFavorited) {
+      removeFromFavorite(id); // Chama a função para remover dos favoritos.
+    } else {
+      addToFavorite({
+        id,
+        title,
+        quantity,
+        image: mainImage,
+        price,
+      }); // Adiciona o produto aos favoritos.
+    }
+    toggleFavorite(id); // Alterna o estado visual.
+  };
   return (
     <section>
       <div className='flex flex-col ml-2'>
@@ -154,7 +178,7 @@ const Product: React.FC<ProductProps> = ({
             </div>
             <div className='flex gap-2 mt-4'>
               <button
-                onClick={() => toggleFavorite(id)}
+                onClick={handleToggleFavorite}
                 className='flex items-center gap-2 text-base text-primaryDark font-semibold'
                 aria-label={
                   isFavorited

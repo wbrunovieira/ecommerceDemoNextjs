@@ -4,10 +4,25 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useFavoritesStore } from '@/context/store';
+import { BsTrash, BsPlus, BsDash } from 'react-icons/bs';
+
+interface Product {
+  id: string;
+  quantity: number;
+  title: string;
+  image: string;
+  price: number;
+}
 
 const UserPage: NextPage = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const favorited = useFavoritesStore((state: any) => state.favorites);
+  const cartFavorited = useFavoritesStore((state: any) => state.cartFavorited);
+  const removeFromFavorite = useFavoritesStore(
+    (state: any) => state.removeFromFavorite
+  );
 
   if (status === 'loading') {
     return <p>Carregando...</p>;
@@ -17,10 +32,25 @@ const UserPage: NextPage = () => {
     router.push('/auth/signin');
     return null;
   }
-
+  console.log('favoritos', cartFavorited);
   return (
     <div className='container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight rounded-xl shadow-lg z-20 '>
       <h1 className='text-2xl font-bold text-center mb-6'>Perfil do Usuário</h1>
+
+      <p>favoritos :{favorited}</p>
+      <div>
+        <p>favoritos no carrinho: {cartFavorited}</p>
+        <div className='flex flex-col gap-4 w-[450px] bg-primary rounded-md'>
+          {cartFavorited.map((item: any, index: number) => (
+            <div key={index}>
+              <p>ID: {item.id}</p>
+              <p>Título: {item.title}</p>
+              <p>Quantidade: {item.quantity}</p>
+              <p>Preço: {item.price}</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {session.user?.image && (
         <div className='flex justify-center mb-4'>
