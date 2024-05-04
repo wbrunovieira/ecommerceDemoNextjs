@@ -147,22 +147,24 @@ const Product: React.FC<ProductProps> = ({
                   slidesPerView={3}
                   navigation={true}
                   pagination={{ clickable: true }}
-                  spaceBetween={20}
+                  spaceBetween={30}
                   centeredSlides={true}
                   autoplay
+                  className='h-40 w-80'
                 >
-                  {images.slice(1).map((image, index) => (
+                  {images.map((image, index) => (
                     <SwiperSlide
                       key={index}
                       onClick={() => setMainImage(image)}
-                      className='mySlide'
+                      className='h-60 w-60 cursor-pointer'
+                      
                     >
                       <Image
                         src={image}
                         alt={`Product Image ${index + 2}`}
-                        width={150}
-                        height={150}
-                        className='w-10 object-cover cursor-pointer'
+                        width={200}
+                        height={200}
+                        className='cursor-pointer rounded-lg '
                       />
                     </SwiperSlide>
                   ))}

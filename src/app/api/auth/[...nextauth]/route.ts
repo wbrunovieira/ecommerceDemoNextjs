@@ -183,8 +183,13 @@ const nextAuthOptions: NextAuthOptions = {
       console.log('session original', session);
       console.log('token no session', token);
       if (token.user) {
-        session.user = token.user;
-        console.log('session.user', session.user); // Adiciona usuário à sessão se presente no token
+        // Assegura que todas as propriedades definidas na interface `Session` estão presentes
+        session.user = {
+          id: (token.user as { id?: string }).id || 'default_id',  // Garante que um ID sempre esteja presente
+          name: (token.user as { name?: string }).name || null,
+          email: (token.user as { email?: string }).email || null,
+          image: (token.user as { picture?: string }).picture || null
+        };
       }
       console.log('Tipo de profileImageUrl:', typeof token.profileImageUrl);
       console.log('Valor de profileImageUrl:', token.profileImageUrl);

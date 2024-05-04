@@ -46,22 +46,21 @@ const Card: React.FC<CardProps> = ({
     });
   };
 
-  const validImageSRC = imageSRC
-    ? imageSRC.startsWith('http')
-      ? imageSRC
-      : `/${imageSRC}`
-    : '/images/foto1.jpg';
+  const validImageSRC = imageSRC || '/images/foto1.jpg';
 
   return (
     <div className='max-w-sm rounded-md shadow-lg bg-white m-2 h-96 flex flex-col'>
-      <div className='relative overflow-hidden flex-shrink-0 rounded-md'>
+      <div className='relative overflow-hidden flex-shrink-0 rounded-md h-[200px]'>
         <Image
-          className='w-full'
+          
           src={validImageSRC}
           width={400}
           height={300}
           alt={title}
-          unoptimized
+          layout='responsive' 
+          objectFit='fill'  
+          objectPosition='center center' 
+          
         />
         {emPromocao && (
           <div className='absolute promocao1 transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase'>

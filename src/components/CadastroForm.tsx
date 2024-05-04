@@ -149,6 +149,7 @@ const CadastroForm = () => {
       console.log(result);
       return;
     }
+    console.log('conexao bem suvedida e redirecionando')
 
     router.replace('/');
   };
