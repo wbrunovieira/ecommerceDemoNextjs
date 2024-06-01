@@ -110,7 +110,7 @@ const Product: React.FC<ProductProps> = ({
 
   const handleToggleFavorite = () => {
     if (isFavorited) {
-      removeFromFavorite(id); // Chama a função para remover dos favoritos.
+      removeFromFavorite(id); 
     } else {
       addToFavorite({
         id,
@@ -118,9 +118,9 @@ const Product: React.FC<ProductProps> = ({
         quantity,
         image: mainImage,
         price,
-      }); // Adiciona o produto aos favoritos.
+      }); 
     }
-    toggleFavorite(id); // Alterna o estado visual.
+    toggleFavorite(id);
   };
   return (
     <section>
@@ -164,7 +164,7 @@ const Product: React.FC<ProductProps> = ({
                         alt={`Product Image ${index + 2}`}
                         width={200}
                         height={200}
-                        className='cursor-pointer rounded-lg '
+                        className='cursor-pointer rounded-lg hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110'
                       />
                     </SwiperSlide>
                   ))}
