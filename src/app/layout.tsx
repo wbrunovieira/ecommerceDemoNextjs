@@ -1,18 +1,18 @@
-import type { Metadata } from 'next';
+import type { Metadata } from "next";
 
-import './globals.css';
+import "./globals.css";
 
-import { Montserrat } from 'next/font/google';
+import { Montserrat } from "next/font/google";
 
-import Footer from '@/components/Footer';
-import Header from '@/components/Header';
-import NextAuthSessionProvider from '@/providers/sessionProvider';
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import NextAuthSessionProvider from "@/providers/sessionProvider";
 
-const montserrat = Montserrat({ subsets: ['latin'] });
+const montserrat = Montserrat({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Stylos Lingerie',
-  description: 'A sua loja online de roupas intimas.',
+  title: "Stylos Lingerie",
+  description: "A sua loja online de roupas intimas.",
 };
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='pt-BR'>
+    <html lang="pt-BR">
       <body className={montserrat.className}>
         <NextAuthSessionProvider>
           <Header />

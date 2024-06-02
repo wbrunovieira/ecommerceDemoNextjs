@@ -1,8 +1,15 @@
 import Container from "@/components/Container";
 import Sidebar from "@/components/SideBar";
 import Product from "@/components/Product";
-import { getProduct, getProductBySlug, getProducts } from "@/api/products";
-import { extractProductIdFromSlug } from "@/utils/extractProductIdFromSlug";
+import { getProducts, getProductBySlug } from "@/api/products";
+
+export async function generateStaticParams() {
+  const products = await getProducts();
+
+  return products.map((product) => ({
+    slug: product.slug,
+  }));
+}
 
 interface ProductProps {
   params: {
@@ -10,14 +17,7 @@ interface ProductProps {
   };
 }
 
-export async function generateStaticParams() {
-  const products = await getProducts();
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
-}
-
-export async function ProductPage({ params }: ProductProps) {
+const ProductPage = async ({ params }: ProductProps) => {
   const product = await getProductBySlug(params.slug);
 
   return (
@@ -45,6 +45,6 @@ export async function ProductPage({ params }: ProductProps) {
       </section>
     </Container>
   );
-}
+};
 
 export default ProductPage;

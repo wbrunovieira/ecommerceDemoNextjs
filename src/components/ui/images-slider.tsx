@@ -1,7 +1,7 @@
-'use client';
-import { cn } from '@/utils/cn';
-import { motion, AnimatePresence } from 'framer-motion';
-import React, { useEffect, useState, useCallback } from 'react';
+"use client";
+import { cn } from "@/utils/cn";
+import { motion, AnimatePresence } from "framer-motion";
+import React, { useEffect, useState, useCallback } from "react";
 
 export const ImagesSlider = ({
   images,
@@ -10,15 +10,15 @@ export const ImagesSlider = ({
   overlayClassName,
   className,
   autoplay = true,
-  direction = 'up',
+  direction = "up",
 }: {
   images: string[];
   children: React.ReactNode;
-  overlay?: React.ReactNode;
+  overlay?: boolean;
   overlayClassName?: string;
   className?: string;
   autoplay?: boolean;
-  direction?: 'up' | 'down';
+  direction?: "up" | "down";
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -36,11 +36,7 @@ export const ImagesSlider = ({
     );
   }, [images.length]);
 
-  useEffect(() => {
-    loadImages();
-  }, []);
-
-  const loadImages = () => {
+  const loadImages = useCallback(() => {
     setLoading(true);
     const loadPromises = images.map((image) => {
       return new Promise((resolve, reject) => {
@@ -56,18 +52,23 @@ export const ImagesSlider = ({
         setLoadedImages(loadedImages as string[]);
         setLoading(false);
       })
-      .catch((error) => console.error('Failed to load images', error));
-  };
+      .catch((error) => console.error("Failed to load images", error));
+  }, [images]);
+
+  useEffect(() => {
+    loadImages();
+  }, [loadImages]);
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowRight') {
+      if (event.key === "ArrowRight") {
         handleNext();
-      } else if (event.key === 'ArrowLeft') {
+      } else if (event.key === "ArrowLeft") {
         handlePrevious();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
 
     // autoplay
     let interval: any;
@@ -78,10 +79,10 @@ export const ImagesSlider = ({
     }
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
       clearInterval(interval);
     };
-  }, []);
+  }, [autoplay, handleNext, handlePrevious]);
 
   const slideVariants = {
     initial: {
@@ -101,14 +102,14 @@ export const ImagesSlider = ({
     },
     upExit: {
       opacity: 1,
-      y: '-150%',
+      y: "-150%",
       transition: {
         duration: 1,
       },
     },
     downExit: {
       opacity: 1,
-      y: '150%',
+      y: "150%",
       transition: {
         duration: 1,
       },
@@ -120,17 +121,17 @@ export const ImagesSlider = ({
   return (
     <div
       className={cn(
-        'overflow-hidden w-full relative flex items-center justify-center object-cover',
+        "overflow-hidden w-full relative flex items-center justify-center object-cover",
         className
       )}
       style={{
-        perspective: '1000px',
+        perspective: "1000px",
       }}
     >
       {areImagesLoaded && children}
       {areImagesLoaded && overlay && (
         <div
-          className={cn('absolute inset-0 bg-black/60 z-40', overlayClassName)}
+          className={cn("absolute inset-0 bg-black/60 z-40", overlayClassName)}
         />
       )}
 
@@ -139,11 +140,11 @@ export const ImagesSlider = ({
           <motion.img
             key={currentIndex}
             src={loadedImages[currentIndex]}
-            initial='initial'
-            animate='visible'
-            exit={direction === 'up' ? 'upExit' : 'downExit'}
+            initial="initial"
+            animate="visible"
+            exit={direction === "up" ? "upExit" : "downExit"}
             variants={slideVariants}
-            className='image h-full w-full absolute inset-0 object-cover object-center'
+            className="image h-full w-full absolute inset-0 object-cover object-center"
           />
         </AnimatePresence>
       )}
