@@ -37,6 +37,7 @@ interface ProductProps {
   fabricante: string;
   color?: string[];
   size?: string[];
+  stock: number;
 }
 
 const Product: React.FC<ProductProps> = ({
@@ -50,6 +51,7 @@ const Product: React.FC<ProductProps> = ({
   fabricante,
   color,
   size,
+  stock,
 }) => {
   const swiperElRef = useRef(null);
 
@@ -270,21 +272,25 @@ const Product: React.FC<ProductProps> = ({
               </div>
             </div>
             <div className="flex w-96 mt-4">
-              <Button
-                variant="secondary"
-                size="large"
-                onClick={() =>
-                  handleAddToCart({
-                    id,
-                    quantity,
-                    title,
-                    image: mainImage,
-                    price,
-                  })
-                }
-              >
-                Comprar
-              </Button>
+              {stock >= 0 ? (
+                <Button
+                  variant="secondary"
+                  size="large"
+                  onClick={() =>
+                    handleAddToCart({
+                      id,
+                      quantity,
+                      title,
+                      image: mainImage,
+                      price,
+                    })
+                  }
+                >
+                  Comprar
+                </Button>
+              ) : (
+                <p className="out-of-stock">Produto fora de estoque</p>
+              )}
             </div>
             <div className="flex flex-col mt-4 border border-light rounded px-8 py-2 w-96 text-xs text-[#676666] ">
               <div className="flex gap-2 ">

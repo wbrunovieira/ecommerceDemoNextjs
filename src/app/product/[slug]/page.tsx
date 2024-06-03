@@ -7,7 +7,7 @@ export async function generateStaticParams() {
   const products = await getProducts();
 
   return products.map((product) => ({
-    slug: product.slug,
+    slug: typeof product.slug === 'string' ? product.slug : (product.slug as { value: string }).value,
   }));
 }
 
@@ -41,6 +41,7 @@ const ProductPage = async ({ params }: ProductProps) => {
           size={product.productSizes ?? []}
           images={product.images ?? []}
           description={product.description ?? "No description available."}
+          stock={product.stock}
         />
       </section>
     </Container>
