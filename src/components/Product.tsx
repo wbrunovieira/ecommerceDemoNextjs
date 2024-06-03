@@ -18,6 +18,7 @@ import "swiper/css/pagination";
 
 import SimilarProducts from "./SimilarProducts";
 import { useCartStore, useFavoritesStore } from "@/context/store";
+import { formatPrice } from "@/utils/formatPrice";
 interface ProductCart {
   id: string;
   title: string;
@@ -242,7 +243,7 @@ const Product: React.FC<ProductProps> = ({
 
             <div className="my-4 px-4 py-2 border-r-4 border-secondary shadow-lg rounded-md bg-primaryLight w-auto">
               <p className="text-primaryDark font-semibold text-lg">
-                R$ {price},00
+                {formatPrice(price)}
               </p>
             </div>
 
