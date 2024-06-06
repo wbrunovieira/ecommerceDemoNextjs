@@ -7,64 +7,83 @@ export async function generateStaticParams() {
   const products = await getProducts();
 
   return products.map((product) => ({
-    slug:
-      typeof product.slug === "string"
-        ? product.slug
-        : (product.slug as { value: string }).value,
+    slug: product.slug,
   }));
 }
 
-interface ProductProps {
+
+interface ParamsProps {
   params: {
     slug: string;
   };
 }
 
-const ProductPage = async ({ params }: ProductProps) => {
-  const response = await getProductBySlug(params.slug);
+const ProductPage = async ({ params }: ParamsProps) => {
+  try {
+    const {
+      product,
+      materialName,
+      brandName,
+      colorNames,
+      sizeNames,
+      categoryName,
+    } = await getProductBySlug(params.slug);
 
-  const productId = response._id.value; // Assuming you need the product ID
-  const productDetails = response.props;
-  const productName = productDetails.name;
-  const productDescription = productDetails.description;
-  const productMaterialId = productDetails.materialId.value;
-  const productBrandId = productDetails.brandId.value;
-  const productFinalPrice = productDetails.finalPrice;
-  const productImages = productDetails.images;
-  const productSlug = productDetails.slug.value;
+    if (!product) {
+      console.error("Product not found");
+      return <div>Product not found</div>;
+    }
 
-  console.log(" result", response.product);
-  console.log(" result", response.materialName);
-  console.log(" result", response.brandName);
-  console.log("Product Name:", productName);
-  console.log("Product Description:", productDescription);
-  console.log("Product Material ID:", productMaterialId);
-  console.log("Product Brand ID:", productBrandId);
-  console.log("Product Final Price:", productFinalPrice);
-  console.log("Product Images:", productImages);
-  console.log("Product Slug:", productSlug);
-  return (
-    <Container>
-      <section className="flex mt-2 gap-8">
-        <div className="flex flex-col">
-          <Sidebar />
-        </div>
-        <Product
-          id={productId}
-          title={productName}
-          material={productName ?? "N/A"}
-          categoria={productImages}
-          fabricante={response.brandName ?? "N/A"}
-          price={productFinalPrice ?? 0}
-          color={[]}
-          size={[]}
-          images={productImages}
-          description={productDescription ?? "No description available."}
-          stock={response.props}
-        />
-      </section>
-    </Container>
-  );
+    const productId = product._id?.value;
+
+    if (!productId) {
+      console.error("Product ID not found");
+      return <div>Product ID not found</div>;
+    }
+
+    const productDetails = product.props;
+
+    const productName = productDetails?.name ?? "No name available";
+    const productDescription =
+      productDetails?.description ?? "No description available";
+    const productMaterial = materialName ?? "N/A";
+    const productBrand = brandName ?? "N/A";
+    const productFinalPrice = productDetails?.finalPrice ?? 0;
+    const productImages = productDetails?.images ?? [];
+    const productSlug = productDetails?.slug?? "No slug available";
+    const productColors = colorNames ?? [];
+    const productSizes = sizeNames ?? [];
+    const productCategories =
+      categoryName?.join(", ") ?? "No categories available";
+
+
+
+    return (
+      <Container>
+        <section className="flex mt-2 gap-8">
+          <div className="flex flex-col">
+            <Sidebar />
+          </div>
+          <Product
+            id={productId}
+            title={productName}
+            material={productMaterial ?? "N/A"}
+            categoria={productCategories}
+            fabricante={productBrand ?? "N/A"}
+            price={productFinalPrice ?? 0}
+            color={productColors}
+            size={productSizes}
+            images={productImages}
+            description={productDescription ?? "No description available."}
+            stock={productDetails.stock}
+          />
+        </section>
+      </Container>
+    );
+  } catch (error) {
+    console.error("Error fetching product:", error);
+    return <div>Error fetching product</div>;
+  }
 };
 
 export default ProductPage;

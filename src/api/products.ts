@@ -1,15 +1,14 @@
-import axios from "axios";
 
-export type Product = {
+export type ProductProps = {
   name: string;
   description: string;
-  productSizes?: string[];
-  productColors?: string[];
-  productCategories?: string[];
-  materialId?: string;
-  sizeId?: string[];
+  productSizes?: { value: string }[];
+  productColors?: { value: string }[];
+  productCategories?: { value: string }[];
+  materialId?: { value: string };
+  sizeId?: { value: string }[];
   finalPrice?: number;
-  brandId: string;
+  brandId: { value: string };
   discount?: number;
   price: number;
   stock: number;
@@ -27,17 +26,29 @@ export type Product = {
   updatedAt: Date;
 };
 
+export type Product = {
+  _id: { value: string };
+  props: ProductProps;
+};
+
 interface ProductsResponse {
-  products: Product[];
-}
-interface ProductResponse {
-  product: Product;
+  products: ProductProps[];
 }
 
-export async function getProducts(): Promise<Product[]> {
+interface ProductSlugResponse {
+  product: Product;
+  materialName: string;
+  brandName: string;
+
+  colorNames: string[];
+  sizeNames: string[];
+  categoryName: string[];
+}
+
+export async function getProducts(): Promise<ProductProps[]> {
   const response = await fetch("http://localhost:3333/products/all");
   const data: ProductsResponse = await response.json();
-  console.log("todos os produtos", data);
+  console.log("todos os produtos", data.products.length);
   if (!Array.isArray(data.products)) {
     throw new Error("Expected an array of products");
   }
@@ -49,9 +60,12 @@ export async function getProduct(id: string) {
   return (await response.json()) as Product;
 }
 
-export async function getProductBySlug(slug: string) {
-  const response = await axios.get(
-    `http://localhost:3333/products/slug/${slug}`
-  );
-  return response.data.product;
+export async function getProductBySlug(
+  slug: string
+): Promise<ProductSlugResponse> {
+  const response = await fetch(`http://localhost:3333/products/slug/${slug}`);
+  const data: ProductSlugResponse = await response.json();
+
+  console.log("API Response:", data);
+  return data;
 }
