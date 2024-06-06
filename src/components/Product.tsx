@@ -19,6 +19,7 @@ import "swiper/css/pagination";
 import SimilarProducts from "./SimilarProducts";
 import { useCartStore, useFavoritesStore } from "@/context/store";
 import { formatPrice } from "@/utils/formatPrice";
+
 interface ProductCart {
   id: string;
   title: string;
@@ -26,6 +27,13 @@ interface ProductCart {
   image: string;
   price: number;
 }
+
+interface Color {
+  name: string;
+  hex: string;
+}
+
+
 interface ProductProps {
   title: string;
   images: string[];
@@ -35,7 +43,7 @@ interface ProductProps {
   material?: string;
   categoria: string;
   fabricante: string;
-  color?: string[];
+  colors?: Color[];
   size?: string[];
   stock: number;
 }
@@ -49,7 +57,7 @@ const Product: React.FC<ProductProps> = ({
   material,
   categoria,
   fabricante,
-  color,
+  colors,
   size,
   stock,
 }) => {
@@ -207,16 +215,16 @@ const Product: React.FC<ProductProps> = ({
                 Cores
               </h3>
               <div className="flex gap-2 mt-2">
-                {color?.map((colorValue, index) => (
+              {colors?.map((color, index) => (
                   <button
                     key={index}
                     className={`w-4 h-4 rounded-full border border-transparent ${
-                      selectedColor === colorValue
+                      selectedColor === color.hex
                         ? "ring-2 ring-offset-2 shadow-lg ring-secondary"
                         : ""
                     }`}
-                    style={{ backgroundColor: colorValue }}
-                    onClick={() => setSelectedColor(colorValue)}
+                    style={{ backgroundColor: color.hex }}
+                    onClick={() => setSelectedColor(color.hex)}
                   ></button>
                 ))}
               </div>

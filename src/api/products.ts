@@ -1,4 +1,3 @@
-
 export type ProductProps = {
   name: string;
   description: string;
@@ -39,8 +38,8 @@ interface ProductSlugResponse {
   product: Product;
   materialName: string;
   brandName: string;
+  colors: { name: string; hex: string }[];
 
-  colorNames: string[];
   sizeNames: string[];
   categoryName: string[];
 }
