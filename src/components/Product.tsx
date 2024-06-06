@@ -33,7 +33,6 @@ interface Color {
   hex: string;
 }
 
-
 interface ProductProps {
   title: string;
   images: string[];
@@ -46,6 +45,15 @@ interface ProductProps {
   colors?: Color[];
   size?: string[];
   stock: number;
+  variants: {
+    id: string;
+    sizeId?: string;
+    colorId?: string;
+    stock: number;
+    price: number;
+    images: string[];
+    sku: string;
+  }[];
 }
 
 const Product: React.FC<ProductProps> = ({
@@ -60,6 +68,7 @@ const Product: React.FC<ProductProps> = ({
   colors,
   size,
   stock,
+  variants,
 }) => {
   const swiperElRef = useRef(null);
 
@@ -103,7 +112,28 @@ const Product: React.FC<ProductProps> = ({
     { image: "/images/liz4.webp", title: "Sutiã4", price: 150 },
   ];
 
+  const getColorStock = (colorId: string) => {
+    const variant = variants.find((variant) => variant.colorId === colorId);
+    return variant ? variant.stock : 0;
+  };
+
   const handleAddToCart = (product: ProductCart) => {
+    const selectedVariant = variants.find(
+      (variant) =>
+        variant.sizeId === selectedSize && variant.colorId === selectedColor
+    );
+    if (selectedVariant) {
+      addToCart({
+        id: selectedVariant.id,
+        quantity,
+        title,
+        image: mainImage,
+        price: selectedVariant.price,
+      });
+    } else {
+      alert("Please select a valid size and color combination.");
+    }
+
     addToCart(product);
   };
 
@@ -215,7 +245,7 @@ const Product: React.FC<ProductProps> = ({
                 Cores
               </h3>
               <div className="flex gap-2 mt-2">
-              {colors?.map((color, index) => (
+                {colors?.map((color, index) => (
                   <button
                     key={index}
                     className={`w-4 h-4 rounded-full border border-transparent ${
@@ -231,7 +261,6 @@ const Product: React.FC<ProductProps> = ({
             </div>
 
             <div className="mt-2 flex-initial rounded px-2 py-2 max-w-64">
-              
               <h3 className="text-base font-semibold text-primaryDark">
                 Tamanhos
               </h3>

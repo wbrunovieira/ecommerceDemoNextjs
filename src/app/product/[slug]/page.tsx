@@ -11,7 +11,6 @@ export async function generateStaticParams() {
   }));
 }
 
-
 interface ParamsProps {
   params: {
     slug: string;
@@ -27,6 +26,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
       colors,
       sizeNames,
       categoryName,
+      variants,
     } = await getProductBySlug(params.slug);
 
     if (!product) {
@@ -50,13 +50,12 @@ const ProductPage = async ({ params }: ParamsProps) => {
     const productBrand = brandName ?? "N/A";
     const productFinalPrice = productDetails?.finalPrice ?? 0;
     const productImages = productDetails?.images ?? [];
-    const productSlug = productDetails?.slug?? "No slug available";
+    const productSlug = productDetails?.slug ?? "No slug available";
     const productColors = colors ?? [];
     const productSizes = sizeNames ?? [];
     const productCategories =
       categoryName?.join(", ") ?? "No categories available";
-
-
+    console.log("variants", variants);
 
     return (
       <Container>
@@ -76,6 +75,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
             images={productImages}
             description={productDescription ?? "No description available."}
             stock={productDetails.stock}
+            variants={variants}
           />
         </section>
       </Container>
