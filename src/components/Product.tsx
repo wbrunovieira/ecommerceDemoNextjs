@@ -76,6 +76,52 @@ const Product: React.FC<ProductProps> = ({
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
+    null
+  );
+  const [availableStock, setAvailableStock] = useState<number>(0);
+
+  const checkStockAndSetVariant = (
+    sizeId: string | null,
+    colorId: string | null
+  ) => {
+    console.log("Checking stock for size:", sizeId, "and color:", colorId);
+    console.log("Available variants:", variants);
+
+    if (sizeId && colorId) {
+      const selectedVariant = variants.find(
+        (variant) => variant.sizeId === sizeId && variant.colorId === colorId
+      );
+
+      console.log("Selected Variant:", selectedVariant);
+
+      if (selectedVariant) {
+        setAvailableStock(selectedVariant.stock);
+        setSelectedVariantId(selectedVariant.id);
+        console.log("selectedVariant dentro do if", selectedVariant);
+        console.log("selectedVariant stock", selectedVariant.stock);
+      } else {
+        setAvailableStock(0);
+        setSelectedVariantId(null);
+      }
+    } else {
+      setAvailableStock(0);
+      setSelectedVariantId(null);
+    }
+  };
+
+  const handleSizeChange = (sizeId: string) => {
+    console.log("Selected size ID:", sizeId);
+    setSelectedSize(sizeId);
+    checkStockAndSetVariant(sizeId, selectedColor);
+  };
+
+  const handleColorChange = (colorId: string) => {
+    console.log("Selected color ID:", colorId);
+    setSelectedColor(colorId);
+    checkStockAndSetVariant(selectedSize, colorId);
+  };
+
   const incrementQuantity = () => {
     setQuantity((prevQuantity) => prevQuantity + 1);
   };
@@ -117,24 +163,25 @@ const Product: React.FC<ProductProps> = ({
     return variant ? variant.stock : 0;
   };
 
-  const handleAddToCart = (product: ProductCart) => {
-    const selectedVariant = variants.find(
-      (variant) =>
-        variant.sizeId === selectedSize && variant.colorId === selectedColor
-    );
-    if (selectedVariant) {
-      addToCart({
-        id: selectedVariant.id,
-        quantity,
-        title,
-        image: mainImage,
-        price: selectedVariant.price,
-      });
+  const handleAddToCart = () => {
+    if (selectedVariantId) {
+      const selectedVariant = variants.find(
+        (variant) => variant.id === selectedVariantId
+      );
+      if (selectedVariant) {
+        addToCart({
+          id: selectedVariant.id,
+          quantity,
+          title,
+          image: mainImage,
+          price: selectedVariant.price,
+        });
+      } else {
+        alert("Please select a valid size and color combination.");
+      }
     } else {
       alert("Please select a valid size and color combination.");
     }
-
-    addToCart(product);
   };
 
   const favorites = useFavoritesStore((state: any) => state.favorites);
@@ -254,7 +301,7 @@ const Product: React.FC<ProductProps> = ({
                         : ""
                     }`}
                     style={{ backgroundColor: color.hex }}
-                    onClick={() => setSelectedColor(color.hex)}
+                    onClick={() => handleColorChange(color.hex)}
                   ></button>
                 ))}
               </div>
@@ -273,7 +320,7 @@ const Product: React.FC<ProductProps> = ({
                         ? "bg-primary text-white"
                         : "border-light"
                     }`}
-                    onClick={() => setSelectedSize(sizeValue)}
+                    onClick={() => handleSizeChange(sizeValue)}
                   >
                     {sizeValue}
                   </div>
@@ -310,19 +357,11 @@ const Product: React.FC<ProductProps> = ({
               </div>
             </div>
             <div className="flex w-96 mt-4">
-              {stock >= 0 ? (
+              {availableStock > 0 ? (
                 <Button
                   variant="secondary"
                   size="large"
-                  onClick={() =>
-                    handleAddToCart({
-                      id,
-                      quantity,
-                      title,
-                      image: mainImage,
-                      price,
-                    })
-                  }
+                  onClick={handleAddToCart}
                 >
                   Comprar
                 </Button>
