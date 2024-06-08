@@ -85,6 +85,7 @@ const Product: React.FC<ProductProps> = ({
     null
   );
   const [availableStock, setAvailableStock] = useState<number>(0);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const checkStockAndSetVariant = (
     sizeId: string | null,
@@ -103,15 +104,18 @@ const Product: React.FC<ProductProps> = ({
       if (selectedVariant) {
         setAvailableStock(selectedVariant.stock);
         setSelectedVariantId(selectedVariant.id);
+
         console.log("selectedVariant dentro do if", selectedVariant);
         console.log("selectedVariant stock", selectedVariant.stock);
       } else {
         setAvailableStock(0);
         setSelectedVariantId(null);
+        setQuantity(1);
       }
     } else {
       setAvailableStock(0);
       setSelectedVariantId(null);
+      setQuantity(1);
     }
   };
 
@@ -128,7 +132,17 @@ const Product: React.FC<ProductProps> = ({
   };
 
   const incrementQuantity = () => {
-    setQuantity((prevQuantity) => prevQuantity + 1);
+    setQuantity((prevQuantity) => {
+      if (prevQuantity < availableStock) {
+        setErrorMessage(null);
+        return prevQuantity + 1;
+      } else {
+        setErrorMessage(
+          "Você atingiu a quantidade máxima disponível para este produto."
+        );
+        return prevQuantity;
+      }
+    });
   };
 
   const decrementQuantity = () => {
