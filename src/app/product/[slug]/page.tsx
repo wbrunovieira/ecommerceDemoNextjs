@@ -1,7 +1,12 @@
 import Container from "@/components/Container";
 import Sidebar from "@/components/SideBar";
 import Product from "@/components/Product";
-import { getProducts, getProductBySlug } from "@/api/products";
+import {
+  getProducts,
+  getProductBySlug,
+  ProductType,
+  ProductResponse,
+} from "@/api/products";
 
 export async function generateStaticParams() {
   const products = await getProducts();
@@ -16,6 +21,88 @@ interface ParamsProps {
     slug: string;
   };
 }
+interface ProductDetails {
+  name?: string;
+  description?: string;
+  finalPrice?: number;
+  images?: string[];
+  slug?: string;
+  stock?: number;
+}
+interface Color {
+  id: string;
+  name: string;
+  hex: string;
+}
+
+interface Size {
+  id: string;
+  name: string;
+}
+interface ProductVariant {
+  id: string;
+  sizeId?: string;
+  colorId?: string;
+  stock: number;
+  price: number;
+  images: string[];
+  sku: string;
+}
+interface ProductProps extends ProductInter {
+  similarProducts: ProductInter[];
+}
+
+interface ProductInter {
+  _id: {
+    value: string;
+  };
+  props: ProductDetails;
+  categoria: string;
+  colors?: Color[];
+  sizes?: Size[];
+  variants: ProductVariant[];
+}
+
+interface ProductSimilar extends ProductInter {}
+
+interface ProductProps extends ProductInter {
+  similarProducts: ProductSimilar[];
+}
+
+const getSimilarProducts = (
+  currentProduct: ProductInter,
+  products: ProductInter[]
+): ProductInter[] => {
+  const { categoria, colors, sizes } = currentProduct;
+
+  const sameCategoryProducts = products.filter(
+    (product) =>
+      product.categoria === categoria &&
+      product._id.value !== currentProduct._id.value
+  );
+
+  const prioritizedProducts = sameCategoryProducts.sort((a, b) => {
+    const aScore =
+      (colors &&
+      a.colors?.some((color) => colors.some((c) => c.id === color.id))
+        ? 1
+        : 0) +
+      (sizes && a.sizes?.some((size) => sizes.some((s) => s.id === size.id))
+        ? 1
+        : 0);
+    const bScore =
+      (colors &&
+      b.colors?.some((color) => colors.some((c) => c.id === color.id))
+        ? 1
+        : 0) +
+      (sizes && b.sizes?.some((size) => sizes.some((s) => s.id === size.id))
+        ? 1
+        : 0);
+    return bScore - aScore;
+  });
+
+  return prioritizedProducts.slice(0, 4);
+};
 
 const ProductPage = async ({ params }: ParamsProps) => {
   try {
@@ -27,7 +114,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
       sizes,
       categoryName,
       variants,
-    } = await getProductBySlug(params.slug);
+    } = (await getProductBySlug(params.slug)) as any;
 
     if (!product) {
       console.error("Product not found");
@@ -55,7 +142,11 @@ const ProductPage = async ({ params }: ParamsProps) => {
     const productSizes = sizes ?? [];
     const productCategories =
       categoryName?.join(", ") ?? "No categories available";
-    console.log("variants", variants);
+    const allProducts = await getProducts();
+    const similarProducts = getSimilarProducts(
+      product,
+      allProducts as ProductSimilar[]
+    );
 
     return (
       <Container>
@@ -76,6 +167,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
             description={productDescription ?? "No description available."}
             stock={productDetails.stock}
             variants={variants}
+            similarProducts={similarProducts}
           />
         </section>
       </Container>

@@ -38,6 +38,29 @@ interface Size {
   name: string;
 }
 
+interface ProductVariant {
+  id: string;
+  sizeId?: string;
+  colorId?: string;
+  stock: number;
+  price: number;
+  images: string[];
+  sku: string;
+}
+interface ProductDetails {
+  name?: string;
+  description?: string;
+  finalPrice?: number;
+  images?: string[];
+  slug?: string;
+  stock?: number;
+}
+interface Product {
+  image: string;
+  title: string;
+  price: number;
+}
+
 interface ProductProps {
   title: string;
   images: string[];
@@ -50,15 +73,8 @@ interface ProductProps {
   colors?: Color[];
   sizes?: Size[];
   stock: number;
-  variants: {
-    id: string;
-    sizeId?: string;
-    colorId?: string;
-    stock: number;
-    price: number;
-    images: string[];
-    sku: string;
-  }[];
+  similarProducts: Product[];
+  variants: ProductVariant[];
 }
 
 const Product: React.FC<ProductProps> = ({
@@ -74,6 +90,7 @@ const Product: React.FC<ProductProps> = ({
   sizes,
   stock,
   variants,
+  similarProducts,
 }) => {
   const swiperElRef = useRef(null);
 
@@ -170,13 +187,6 @@ const Product: React.FC<ProductProps> = ({
     }
   }, []);
 
-  const similarProducts = [
-    { image: "/images/liz1.webp", title: "Sutiã", price: 120 },
-    { image: "/images/liz2.webp", title: "Sutiã2", price: 130 },
-    { image: "/images/liz3.webp", title: "Sutiã3", price: 140 },
-    { image: "/images/liz4.webp", title: "Sutiã4", price: 150 },
-  ];
-
   const getColorStock = (colorId: string) => {
     const variant = variants.find((variant) => variant.colorId === colorId);
     return variant ? variant.stock : 0;
@@ -184,19 +194,23 @@ const Product: React.FC<ProductProps> = ({
 
   const handleAddToCart = () => {
     if (selectedVariantId) {
-      const selectedVariant = variants.find(
-        (variant) => variant.id === selectedVariantId
-      );
-      if (selectedVariant) {
-        addToCart({
-          id: selectedVariant.id,
-          quantity,
-          title,
-          image: mainImage,
-          price: selectedVariant.price,
-        });
+      if (quantity <= availableStock) {
+        const selectedVariant = variants.find(
+          (variant) => variant.id === selectedVariantId
+        );
+        if (selectedVariant) {
+          addToCart({
+            id: selectedVariant.id,
+            quantity,
+            title,
+            image: mainImage,
+            price: selectedVariant.price,
+          });
+        } else {
+          alert("Please select a valid size and color combination.");
+        }
       } else {
-        alert("Please select a valid size and color combination.");
+        alert("The quantity exceeds the available stock.");
       }
     } else {
       alert("Please select a valid size and color combination.");
@@ -374,6 +388,10 @@ const Product: React.FC<ProductProps> = ({
                   </button>
                 </div>
               </div>
+
+              {errorMessage && (
+                <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+              )}
             </div>
             <div className="flex w-96 mt-4">
               {availableStock > 0 ? (

@@ -25,7 +25,7 @@ export type ProductProps = {
   updatedAt: Date;
 };
 
-export type Product = {
+export type ProductType = {
   _id: { value: string };
   props: ProductProps;
 };
@@ -35,7 +35,7 @@ interface ProductsResponse {
 }
 
 interface ProductSlugResponse {
-  product: Product;
+  product: ProductType;
   materialName: string;
   brandName: string;
   colors: { id: string; name: string; hex: string }[];
@@ -65,7 +65,7 @@ export async function getProducts(): Promise<ProductProps[]> {
 
 export async function getProduct(id: string) {
   const response = await fetch(`http://localhost:3333/products/${id}`);
-  return (await response.json()) as Product;
+  return (await response.json()) as ProductType;
 }
 
 export async function getProductBySlug(
