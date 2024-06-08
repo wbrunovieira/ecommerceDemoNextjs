@@ -29,8 +29,13 @@ interface ProductCart {
 }
 
 interface Color {
+  id: string;
   name: string;
   hex: string;
+}
+interface Size {
+  id: string;
+  name: string;
 }
 
 interface ProductProps {
@@ -43,7 +48,7 @@ interface ProductProps {
   categoria: string;
   fabricante: string;
   colors?: Color[];
-  size?: string[];
+  sizes?: Size[];
   stock: number;
   variants: {
     id: string;
@@ -66,7 +71,7 @@ const Product: React.FC<ProductProps> = ({
   categoria,
   fabricante,
   colors,
-  size,
+  sizes,
   stock,
   variants,
 }) => {
@@ -296,12 +301,12 @@ const Product: React.FC<ProductProps> = ({
                   <button
                     key={index}
                     className={`w-4 h-4 rounded-full border border-transparent ${
-                      selectedColor === color.hex
+                      selectedColor === color.id
                         ? "ring-2 ring-offset-2 shadow-lg ring-secondary"
                         : ""
                     }`}
                     style={{ backgroundColor: color.hex }}
-                    onClick={() => handleColorChange(color.hex)}
+                    onClick={() => handleColorChange(color.id)}
                   ></button>
                 ))}
               </div>
@@ -312,17 +317,17 @@ const Product: React.FC<ProductProps> = ({
                 Tamanhos
               </h3>
               <div className="flex gap-2 justify-start p-2 w-60 cursor-pointer">
-                {size?.map((sizeValue, index) => (
+                {sizes?.map((size, index) => (
                   <div
                     key={index}
                     className={`border rounded p-2 ${
-                      selectedSize === sizeValue
+                      selectedSize === size.id
                         ? "bg-primary text-white"
                         : "border-light"
                     }`}
-                    onClick={() => handleSizeChange(sizeValue)}
+                    onClick={() => handleSizeChange(size.id)}
                   >
-                    {sizeValue}
+                    {size.name}
                   </div>
                 ))}
               </div>

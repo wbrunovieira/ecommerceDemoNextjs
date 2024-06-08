@@ -24,7 +24,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
       materialName,
       brandName,
       colors,
-      sizeNames,
+      sizes,
       categoryName,
       variants,
     } = await getProductBySlug(params.slug);
@@ -52,7 +52,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
     const productImages = productDetails?.images ?? [];
     const productSlug = productDetails?.slug ?? "No slug available";
     const productColors = colors ?? [];
-    const productSizes = sizeNames ?? [];
+    const productSizes = sizes ?? [];
     const productCategories =
       categoryName?.join(", ") ?? "No categories available";
     console.log("variants", variants);
@@ -71,7 +71,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
             fabricante={productBrand ?? "N/A"}
             price={productFinalPrice ?? 0}
             colors={productColors}
-            size={productSizes}
+            sizes={productSizes}
             images={productImages}
             description={productDescription ?? "No description available."}
             stock={productDetails.stock}

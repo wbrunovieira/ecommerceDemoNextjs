@@ -38,9 +38,9 @@ interface ProductSlugResponse {
   product: Product;
   materialName: string;
   brandName: string;
-  colors: { name: string; hex: string }[];
+  colors: { id: string; name: string; hex: string }[];
+  sizes: { id: string; name: string }[];
 
-  sizeNames: string[];
   categoryName: string[];
   variants: {
     id: string;
