@@ -37,6 +37,10 @@ interface Size {
   id: string;
   name: string;
 }
+interface Category {
+  id: string;
+  name: string;
+}
 
 interface ProductVariant {
   id: string;
@@ -68,13 +72,19 @@ interface ProductProps {
   price: number;
   id: string;
   material?: string;
-  categoria: string;
+  categories: Category[];
   fabricante: string;
   colors?: Color[];
   sizes?: Size[];
   stock: number;
-  similarProducts: Product[];
+  similarProducts: SimilarProduct[];
   variants: ProductVariant[];
+}
+interface SimilarProduct {
+  id: string;
+  image: string;
+  title: string;
+  price: number;
 }
 
 const Product: React.FC<ProductProps> = ({
@@ -84,7 +94,7 @@ const Product: React.FC<ProductProps> = ({
   description,
   price,
   material,
-  categoria,
+  categories,
   fabricante,
   colors,
   sizes,
@@ -103,6 +113,8 @@ const Product: React.FC<ProductProps> = ({
   );
   const [availableStock, setAvailableStock] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  console.log("similarProducts", similarProducts);
 
   const checkStockAndSetVariant = (
     sizeId: string | null,
@@ -418,7 +430,10 @@ const Product: React.FC<ProductProps> = ({
 
               <div className="flex gap-2">
                 <p className="font-semibold">Categoria: </p>
-                <p>{categoria}</p>
+                {Array.isArray(categories) &&
+                  categories.map((category, index) => (
+                    <p key={index}>{category.name}</p>
+                  ))}
               </div>
               <div className="flex gap-2">
                 <p className="font-semibold">Fabricante: </p>
@@ -445,6 +460,7 @@ const Product: React.FC<ProductProps> = ({
           >
             {similarProducts.map((product, index) => (
               <SwiperSlide key={index}>
+                console.log('similarProducts', similarProducts)
                 <SimilarProducts
                   image={product.image}
                   title={product.title}

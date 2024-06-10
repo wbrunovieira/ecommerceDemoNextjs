@@ -4,8 +4,8 @@ import Product from "@/components/Product";
 import {
   getProducts,
   getProductBySlug,
-  ProductType,
-  ProductResponse,
+  ProductProps,
+  productCategories,
 } from "@/api/products";
 
 export async function generateStaticParams() {
@@ -28,6 +28,7 @@ interface ProductDetails {
   images?: string[];
   slug?: string;
   stock?: number;
+  productCategories: string;
 }
 interface Color {
   id: string;
@@ -36,6 +37,10 @@ interface Color {
 }
 
 interface Size {
+  id: string;
+  name: string;
+}
+interface Category {
   id: string;
   name: string;
 }
@@ -48,60 +53,54 @@ interface ProductVariant {
   images: string[];
   sku: string;
 }
-interface ProductProps extends ProductInter {
-  similarProducts: ProductInter[];
-}
 
 interface ProductInter {
   _id: {
     value: string;
   };
   props: ProductDetails;
-  categoria: string;
+  categories: Category[];
   colors?: Color[];
   sizes?: Size[];
   variants: ProductVariant[];
 }
 
-interface ProductSimilar extends ProductInter {}
-
-interface ProductProps extends ProductInter {
-  similarProducts: ProductSimilar[];
-}
-
 const getSimilarProducts = (
-  currentProduct: ProductInter,
-  products: ProductInter[]
-): ProductInter[] => {
-  const { categoria, colors, sizes } = currentProduct;
+  currentProductCategories: Category[],
+  products: ProductProps[]
+) => {
+  console.log("currentProductCategories", currentProductCategories);
 
-  const sameCategoryProducts = products.filter(
-    (product) =>
-      product.categoria === categoria &&
-      product._id.value !== currentProduct._id.value
+ 
+  const currentProductCategoryIds = currentProductCategories.map(
+    (cat: Category) => cat.id
   );
 
-  const prioritizedProducts = sameCategoryProducts.sort((a, b) => {
-    const aScore =
-      (colors &&
-      a.colors?.some((color) => colors.some((c) => c.id === color.id))
-        ? 1
-        : 0) +
-      (sizes && a.sizes?.some((size) => sizes.some((s) => s.id === size.id))
-        ? 1
-        : 0);
-    const bScore =
-      (colors &&
-      b.colors?.some((color) => colors.some((c) => c.id === color.id))
-        ? 1
-        : 0) +
-      (sizes && b.sizes?.some((size) => sizes.some((s) => s.id === size.id))
-        ? 1
-        : 0);
-    return bScore - aScore;
-  });
+  console.log("currentProductCategoryIds", currentProductCategoryIds);
 
-  return prioritizedProducts.slice(0, 4);
+  const sameCategoryProducts = products.filter((product) => {
+
+    if (!product.productCategories) return false;
+
+    const productCategoryIds = product.productCategories.map(
+      (cat) => cat.categoryId
+    );
+    console.log("productCategoryIds", productCategoryIds);
+    console.log("productCategoryIds for product", product.id, productCategoryIds);
+
+
+    return currentProductCategoryIds.some((id) =>
+      productCategoryIds.includes(id)
+    );
+  });
+  console.log("same category", sameCategoryProducts);
+
+  return sameCategoryProducts.slice(0, 4).map((product) => ({
+    id: product.id,
+    title: product.name,
+    image: product.images?.[0] || "",
+    price: product.price,
+  }));
 };
 
 const ProductPage = async ({ params }: ParamsProps) => {
@@ -112,7 +111,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
       brandName,
       colors,
       sizes,
-      categoryName,
+      categories,
       variants,
     } = (await getProductBySlug(params.slug)) as any;
 
@@ -140,13 +139,18 @@ const ProductPage = async ({ params }: ParamsProps) => {
     const productSlug = productDetails?.slug ?? "No slug available";
     const productColors = colors ?? [];
     const productSizes = sizes ?? [];
-    const productCategories =
-      categoryName?.join(", ") ?? "No categories available";
+    const productCategories = categories ?? [];
+
+    console.log("productCategories", productCategories);
     const allProducts = await getProducts();
     const similarProducts = getSimilarProducts(
-      product,
-      allProducts as ProductSimilar[]
+      productCategories,
+      allProducts as ProductProps[]
     );
+
+    console.log("similarProducts antes do return", similarProducts);
+
+    console.log("product antes do return", product);
 
     return (
       <Container>
@@ -158,7 +162,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
             id={productId}
             title={productName}
             material={productMaterial ?? "N/A"}
-            categoria={productCategories}
+            categories={productCategories}
             fabricante={productBrand ?? "N/A"}
             price={productFinalPrice ?? 0}
             colors={productColors}

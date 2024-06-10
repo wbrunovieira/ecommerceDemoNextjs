@@ -1,9 +1,15 @@
+export type productCategories = {
+  productId: string;
+  categoryId: string;
+};
+
 export type ProductProps = {
+  id: string;
   name: string;
   description: string;
   productSizes?: { value: string }[];
   productColors?: { value: string }[];
-  productCategories?: { value: string }[];
+  productCategories?: productCategories[];
   materialId?: { value: string };
   sizeId?: { value: string }[];
   finalPrice?: number;
@@ -23,6 +29,7 @@ export type ProductProps = {
   images?: string[];
   createdAt: Date;
   updatedAt: Date;
+  similarProducts?: ProductProps[];
 };
 
 export type ProductType = {
@@ -30,7 +37,7 @@ export type ProductType = {
   props: ProductProps;
 };
 
-interface ProductsResponse {
+export interface ProductsResponse {
   products: ProductProps[];
 }
 
@@ -40,8 +47,7 @@ interface ProductSlugResponse {
   brandName: string;
   colors: { id: string; name: string; hex: string }[];
   sizes: { id: string; name: string }[];
-
-  categoryName: string[];
+  categories: { id: string; name: string }[];
   variants: {
     id: string;
     sizeId?: string;
@@ -56,7 +62,7 @@ interface ProductSlugResponse {
 export async function getProducts(): Promise<ProductProps[]> {
   const response = await fetch("http://localhost:3333/products/all");
   const data: ProductsResponse = await response.json();
-  console.log("todos os produtos", data.products.length);
+
   if (!Array.isArray(data.products)) {
     throw new Error("Expected an array of products");
   }
@@ -74,6 +80,5 @@ export async function getProductBySlug(
   const response = await fetch(`http://localhost:3333/products/slug/${slug}`);
   const data: ProductSlugResponse = await response.json();
 
-  console.log("API Response:", data);
   return data;
 }

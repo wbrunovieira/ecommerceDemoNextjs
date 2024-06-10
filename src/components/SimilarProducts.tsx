@@ -12,6 +12,7 @@ const SimilarProducts: React.FC<SimilarProductsProps> = ({
   image,
   price,
 }) => {
+  
   return (
     <div className='flex flex-col h-auto w-auto'>
       <div className='flex border border-light rounded p-4 shadow'>
