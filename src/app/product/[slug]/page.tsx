@@ -73,8 +73,7 @@ const productCategoryIds = await getCategoriesId();
 const getSimilarProducts = async (
   currentProductCategories: Category[],
   products: ProductProps[]
-): Promise<{ id: string; title: string; image: string; price: number }[]> => {
-  
+): Promise<{ id: string; title: string; image: string; price: number , slug: string}[]> => {
   console.log("currentProductCategories", currentProductCategories);
 
   const currentProductCategoryIds = currentProductCategories.map(
@@ -105,6 +104,7 @@ const getSimilarProducts = async (
         name: product.props.name,
         price: product.props.price,
         images: product.props.images,
+        slug: product.props.slug.value,
       })
     );
 
@@ -115,6 +115,7 @@ const getSimilarProducts = async (
       title: product.name,
       image: product.images?.[0] || "",
       price: product.price,
+      slug: product.slug || "",
     }));
   } catch (error) {
     console.error(`Error fetching products for category: ${error}`);

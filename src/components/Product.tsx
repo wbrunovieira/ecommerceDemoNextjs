@@ -19,6 +19,7 @@ import "swiper/css/pagination";
 import SimilarProducts from "./SimilarProducts";
 import { useCartStore, useFavoritesStore } from "@/context/store";
 import { formatPrice } from "@/utils/formatPrice";
+import Link from "next/link";
 
 interface ProductCart {
   id: string;
@@ -85,6 +86,7 @@ interface SimilarProduct {
   image: string;
   title: string;
   price: number;
+  slug: string;
 }
 
 const Product: React.FC<ProductProps> = ({
@@ -460,11 +462,14 @@ const Product: React.FC<ProductProps> = ({
           >
             {similarProducts.map((product, index) => (
               <SwiperSlide key={index}>
-                <SimilarProducts
-                  image={product.image}
-                  title={product.title}
-                  price={product.price}
-                />
+                <Link href={`/product/${product.slug}`}>
+                  <SimilarProducts
+                    image={product.image}
+                    title={product.title}
+                    price={product.price}
+                    slug={product.slug}
+                  />
+                </Link>
               </SwiperSlide>
             ))}
           </Swiper>
