@@ -6,6 +6,9 @@ import {
   getProductBySlug,
   ProductProps,
   productCategories,
+  getCategoriesId,
+  getProductsByCategoriesId,
+  ProductsByCategorieResponse,
 } from "@/api/products";
 
 export async function generateStaticParams() {
@@ -65,42 +68,58 @@ interface ProductInter {
   variants: ProductVariant[];
 }
 
-const getSimilarProducts = (
+const productCategoryIds = await getCategoriesId();
+
+const getSimilarProducts = async (
   currentProductCategories: Category[],
   products: ProductProps[]
-) => {
+): Promise<{ id: string; title: string; image: string; price: number }[]> => {
+  
   console.log("currentProductCategories", currentProductCategories);
 
- 
   const currentProductCategoryIds = currentProductCategories.map(
     (cat: Category) => cat.id
   );
 
   console.log("currentProductCategoryIds", currentProductCategoryIds);
 
-  const sameCategoryProducts = products.filter((product) => {
+  if (currentProductCategoryIds.length === 0) {
+    console.error("No category IDs found");
+    return [];
+  }
 
-    if (!product.productCategories) return false;
+  try {
+    const categoryProductsResponse: ProductsByCategorieResponse =
+      await getProductsByCategoriesId(currentProductCategoryIds[0]);
 
-    const productCategoryIds = product.productCategories.map(
-      (cat) => cat.categoryId
+    console.log("categoryProductsResponse", categoryProductsResponse);
+
+    if (!categoryProductsResponse || !categoryProductsResponse.products) {
+      console.error("No products found for the category");
+      return [];
+    }
+
+    const allCategoryProducts = categoryProductsResponse.products.map(
+      (product) => ({
+        id: product._id.value,
+        name: product.props.name,
+        price: product.props.price,
+        images: product.props.images,
+      })
     );
-    console.log("productCategoryIds", productCategoryIds);
-    console.log("productCategoryIds for product", product.id, productCategoryIds);
 
+    console.log("allCategoryProducts", allCategoryProducts);
 
-    return currentProductCategoryIds.some((id) =>
-      productCategoryIds.includes(id)
-    );
-  });
-  console.log("same category", sameCategoryProducts);
-
-  return sameCategoryProducts.slice(0, 4).map((product) => ({
-    id: product.id,
-    title: product.name,
-    image: product.images?.[0] || "",
-    price: product.price,
-  }));
+    return allCategoryProducts.slice(0, 4).map((product) => ({
+      id: product.id,
+      title: product.name,
+      image: product.images?.[0] || "",
+      price: product.price,
+    }));
+  } catch (error) {
+    console.error(`Error fetching products for category: ${error}`);
+    return [];
+  }
 };
 
 const ProductPage = async ({ params }: ParamsProps) => {
@@ -143,7 +162,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
 
     console.log("productCategories", productCategories);
     const allProducts = await getProducts();
-    const similarProducts = getSimilarProducts(
+    const similarProducts = await getSimilarProducts(
       productCategories,
       allProducts as ProductProps[]
     );

@@ -460,7 +460,6 @@ const Product: React.FC<ProductProps> = ({
           >
             {similarProducts.map((product, index) => (
               <SwiperSlide key={index}>
-                console.log('similarProducts', similarProducts)
                 <SimilarProducts
                   image={product.image}
                   title={product.title}
