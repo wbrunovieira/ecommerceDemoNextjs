@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Card from "@/components/Card";
 import Link from "next/link";
+import Container from "@/components/Container";
+import Sidebar from "@/components/SideBar";
+import { NextPage } from "next";
 
 interface Product {
   id: string;
@@ -17,13 +20,21 @@ interface Product {
   images: string[];
   finalPrice: number;
 }
+interface SidebarData {
+    categories: { slug: string; name: string }[];
 
-const SearchResults = () => {
+  }
+  interface SearchResultsProps {
+    categories: SidebarData;
+  }
+
+  const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
+
     if (query) {
       const fetchProducts = async () => {
         try {
@@ -61,28 +72,35 @@ const SearchResults = () => {
   }, [query]);
 
   return (
-    <div className="container mx-auto">
-      <h1 className="text-2xl font-bold mb-4">
-        Resultados da pesquisa para "{query}"
-      </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {products.map((product) => (
-          <Link key={product.id} href={`/product/${product.slug}`} passHref>
-            <Card
-              id={product.id}
-              title={product.name}
-              category={product.description}
-              precoAntigo={product.onSale ? product.price : undefined}
-              precoNovo={product.FinalPrice || product.price}
-              emPromocao={product.onSale}
-              desconto={product.discount}
-              imageSRC={product.images[0]}
-              eNovidade={product.isNew}
-            />
-          </Link>
-        ))}
-      </div>
-    </div>
+    <Container>
+      <section className="flex mt-2 gap-8">
+        <div className="flex flex-col">
+        {/* <Sidebar categories={categories} /> */}
+        </div>
+        <div className="container mx-auto">
+          <h1 className="text-2xl font-bold mb-4">
+            Resultados da pesquisa para "{query}"
+          </h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {products.map((product) => (
+              <Link key={product.id} href={`/product/${product.slug}`} passHref>
+                <Card
+                  id={product.id}
+                  title={product.name}
+                  category={product.description}
+                  precoAntigo={product.onSale ? product.price : undefined}
+                  precoNovo={product.FinalPrice || product.price}
+                  emPromocao={product.onSale}
+                  desconto={product.discount}
+                  imageSRC={product.images[0]}
+                  eNovidade={product.isNew}
+                />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+    </Container>
   );
 };
 

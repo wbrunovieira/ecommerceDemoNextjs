@@ -16,6 +16,7 @@ const SearchBox = () => {
 
     if (trimmedQuery) {
       router.push(`/search?query=${encodeURIComponent(trimmedQuery)}`);
+      setQuery("");
     }
   };
 
