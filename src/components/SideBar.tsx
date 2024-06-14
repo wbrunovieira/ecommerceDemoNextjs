@@ -10,6 +10,7 @@ interface Category {
   id: string;
   name: string;
   slug: string;
+  imageUrl: string;
 }
 
 interface SidebarProps {
@@ -17,24 +18,39 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [categories, setCategories] = useState<Category[]>(
+    initialCategories || []
+  );
+
+  const capitalizeFirstLetter = (string: string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/category/all?page=1&pageSize=10`
+          "http://localhost:3333/category/all?page=1&pageSize=10"
         );
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
         const data = await res.json();
-        
+        console.log("data categories", data.categories);
+
         const fetchedCategories = data.categories.map((category: any) => ({
-          id: category.id,
-          name: category.name,
-          slug: category.slug || "/default-image.png",
+          id: category._id.value,
+          name: category.props.name,
+          slug: category.props.slug || "localhost",
+          imageUrl: category.props.imageUrl || "/default-image.png",
         }));
+        console.log("fetchedCategories", fetchedCategories);
         setCategories(fetchedCategories);
       } catch (error) {
         console.error("Error fetching categories:", error);
+        setCategories([]);
       }
     };
 
@@ -72,7 +88,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     <nav className="flex flex-col gap-2 mr-4">
       <div className="flex flex-col w-48 border border-light rounded p-4 mt-2">
         <h2 className="text-primaryDark text-base tracking-wider mb-2">
-          Categorias
+          Categorias da api
         </h2>
 
         {categories.map((category) => (
@@ -85,16 +101,21 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
               className="flex items-center py-2 space-x-2"
             >
               <Image
-                src={category.slug}
+                src={category.imageUrl}
                 width={20}
                 height={20}
                 alt={category.name}
                 className="mr-2"
               />
-              <div className="text-xs">{category.name}</div>
+              <div className="text-xs">
+                {capitalizeFirstLetter(category.name)}
+              </div>
             </Link>
           </div>
         ))}
+        <h2 className="text-primaryDark text-base tracking-wider mb-2">
+          Categorias
+        </h2>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
         {sidebarItems.map((item, index) => (
           <div
