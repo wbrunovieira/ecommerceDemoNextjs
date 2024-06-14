@@ -58,7 +58,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-                href={"/"}
+                href={`/search?category=lingeries`}
                 className="text-xs font-regular uppercase pl-2 self-center"
               >
                 Lingeries{" "}
@@ -81,7 +81,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-                href={"/"}
+                 href={`/search?category=pijamas`}
                 className="text-xs font-regular uppercase pl-2 self-center"
               >
                 Pijamas{" "}
@@ -104,7 +104,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-                href={"/"}
+                href={`/search?category=boy`}
                 className="text-xs font-regular uppercase pl-2 self-center"
               >
                 Para o seu Boy{" "}
@@ -127,7 +127,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-                href={"/"}
+               href={`/search?category=acessorios`}
                 className="text-xs font-regular uppercase pl-2 self-center"
               >
                 Acessórios{" "}
@@ -161,6 +161,7 @@ Home.getInitialProps = async () => {
     id: category.id,
     name: category.name,
     slug: category.slug || "/default-image.png",
+    imageUrl: category.imageUrl || "/default-image.png",
   }));
 
   return { initialCategories };

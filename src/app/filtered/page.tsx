@@ -18,34 +18,28 @@ interface Product {
   price: number;
   slug: string;
   FinalPrice: number;
+  categories: ProductCategory[];
   onSale: boolean;
   isNew: boolean;
   discount: number;
   images: string[];
   finalPrice: number;
-  categories: ProductCategory[];
 }
-interface SidebarData {
-    categories: { slug: string; name: string }[];
 
-  }
-  interface SearchResultsProps {
-    categories: SidebarData;
-  }
-
-  const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
+const FilteredResults: NextPage = () => {
   const searchParams = useSearchParams();
-  const query = searchParams.get("query");
+  console.log("searchParams", searchParams);
+  const category = searchParams.get("category");
+  console.log("category", category);
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-
-    if (query) {
+    if (category) {
       const fetchProducts = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3333/products/search?name=${encodeURIComponent(
-              query
+            `http://localhost:3333/products/category/${encodeURIComponent(
+              category
             )}`
           );
           if (!response.ok) {
@@ -54,7 +48,7 @@ interface SidebarData {
           const data = await response.json();
           console.log("response data", data);
 
-          const mappedProducts = data.products.map((product: any) => ({
+          const mappedProducts = data.map((product: any) => ({
             id: product._id.value,
             name: product.props.name,
             description: product.props.description,
@@ -65,8 +59,10 @@ interface SidebarData {
             isNew: product.props.isNew,
             discount: product.props.discount,
             images: product.props.images,
-            categories: product.productCategories
+            categories: product.productCategories,
           }));
+          console.log("mappedProducts", mappedProducts);
+
           setProducts(mappedProducts);
         } catch (error) {
           console.error("Error fetching search results:", error);
@@ -75,17 +71,18 @@ interface SidebarData {
 
       fetchProducts();
     }
-  }, [query]);
+  }, [category]);
 
   return (
     <Container>
       <section className="flex mt-2 gap-8">
         <div className="flex flex-col">
-      
+          <Sidebar initialCategories={[]} />
         </div>
+        <div className="flex flex-col"></div>
         <div className="container mx-auto">
           <h1 className="text-2xl font-bold mb-4">
-            Resultados da pesquisa para "{query}"
+            Produtos filtrados por "{category}"
           </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {products.map((product) => (
@@ -95,11 +92,13 @@ interface SidebarData {
                   title={product.name}
                   categories={product.categories}
                   precoAntigo={product.onSale ? product.price : undefined}
-                  precoNovo={product.FinalPrice || product.price}
+                  precoNovo={product.finalPrice || product.price}
                   emPromocao={product.onSale}
                   desconto={product.discount}
                   imageSRC={product.images[0]}
                   eNovidade={product.isNew}
+                  
+
                 />
               </Link>
             ))}
@@ -110,4 +109,4 @@ interface SidebarData {
   );
 };
 
-export default SearchResults;
+export default FilteredResults;

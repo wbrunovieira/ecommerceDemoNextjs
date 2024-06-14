@@ -5,6 +5,8 @@ import Link from "next/link";
 
 import PriceFilter from "./PriceFilter";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 interface Category {
   id: string;
@@ -21,9 +23,22 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const [categories, setCategories] = useState<Category[]>(
     initialCategories || []
   );
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  };
+
+  const handleCategoryClick = async (categoryId: string) => {
+    setSelectedCategory(categoryId);
+    const url =
+      pathname === "/"
+        ? `/filtered?category=${categoryId}`
+        : `/search?category=${categoryId}`;
+    router.push(url);
   };
 
   useEffect(() => {
@@ -94,7 +109,10 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         {categories.map((category) => (
           <div
             key={category.id}
-            className="flex items-center py-1 border-b border-light"
+            className={`flex items-center py-1 border-b border-light cursor-pointer ${
+              selectedCategory === category.id ? "bg-gray-200" : ""
+            }`}
+            onClick={() => handleCategoryClick(category.id)}
           >
             <Link
               href={`/products/category/${category.id}`}
