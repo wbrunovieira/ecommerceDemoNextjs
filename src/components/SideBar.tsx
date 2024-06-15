@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import PriceFilter from "./PriceFilter";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
 
 interface Category {
@@ -23,7 +23,8 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const [categories, setCategories] = useState<Category[]>(
     initialCategories || []
   );
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  const selectedCategory = searchParams.get("category");
 
   const router = useRouter();
   const pathname = usePathname();
@@ -33,7 +34,6 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   };
 
   const handleCategoryClick = async (categoryId: string) => {
-    setSelectedCategory(categoryId);
     const url =
       pathname === "/"
         ? `/filtered?category=${categoryId}`
@@ -105,12 +105,15 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         <h2 className="text-primaryDark text-base tracking-wider mb-2">
           Categorias da api
         </h2>
+        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
 
         {categories.map((category) => (
           <div
             key={category.id}
             className={`flex items-center py-1 border-b border-light cursor-pointer ${
-              selectedCategory === category.id ? "bg-gray-200" : ""
+              selectedCategory === category.id
+                ? "bg-primary text-primaryLight border rounded p-4"
+                : ""
             }`}
             onClick={() => handleCategoryClick(category.id)}
           >
@@ -131,29 +134,8 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
             </Link>
           </div>
         ))}
-        <h2 className="text-primaryDark text-base tracking-wider mb-2">
-          Categorias
-        </h2>
+
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-        {sidebarItems.map((item, index) => (
-          <div
-            key={index}
-            className={`flex items-center py-1 ${
-              index < sidebarItems.length - 1 ? "border-b border-light" : ""
-            }`}
-          >
-            <Link href={item.name} className="flex items-center py-2 space-x-2">
-              <Image
-                src={item.src}
-                width={20}
-                height={20}
-                alt={item.name}
-                className="mr-2"
-              ></Image>
-              <div className="text-xs">{item.name}</div>
-            </Link>
-          </div>
-        ))}
       </div>
 
       <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">

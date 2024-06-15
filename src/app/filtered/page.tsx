@@ -29,6 +29,7 @@ interface Product {
   finalPrice: number;
 }
 
+
 const FilteredResults: NextPage = () => {
   const searchParams = useSearchParams();
   console.log("searchParams", searchParams);
@@ -80,6 +81,7 @@ const FilteredResults: NextPage = () => {
       fetchProducts();
     }
   }, [category]);
+ 
 
   return (
     <Container>
