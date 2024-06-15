@@ -74,6 +74,7 @@ const FilteredResults: NextPage = () => {
   }, [category]);
 
   return (
+    
     <Container>
       <section className="flex mt-2 gap-8">
         <div className="flex flex-col">

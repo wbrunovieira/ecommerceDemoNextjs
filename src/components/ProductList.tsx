@@ -5,10 +5,17 @@ import Card from "./Card";
 import Link from "next/link";
 import { getProducts } from "@/api/products";
 
+interface ProductCategory {
+  category: {
+    name: string;
+  };
+}
+
 interface Produto {
   id: string;
   name: string;
   description: string;
+  productCategories: ProductCategory[];
   price: number;
   slug: string;
   FinalPrice: number;
@@ -25,12 +32,11 @@ const ProductList = () => {
   useEffect(() => {
     const fetchProdutos = async () => {
       try {
-        
         const response = await fetch(
           "http://localhost:3333/products/featured-products"
         );
         const data = await response.json();
-      
+
         setProdutos(data.products);
       } catch (error) {
         console.error("Erro ao buscar produtos:", error);
@@ -47,7 +53,7 @@ const ProductList = () => {
           <Card
             id={produto.id}
             title={produto.name}
-            category={produto.description}
+            categories={produto.productCategories}
             precoAntigo={produto.onSale ? produto.price : undefined}
             precoNovo={produto.FinalPrice || produto.price}
             emPromocao={produto.onSale}

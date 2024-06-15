@@ -26,20 +26,18 @@ interface Product {
   categories: ProductCategory[];
 }
 interface SidebarData {
-    categories: { slug: string; name: string }[];
+  categories: { slug: string; name: string }[];
+}
+interface SearchResultsProps {
+  categories: SidebarData;
+}
 
-  }
-  interface SearchResultsProps {
-    categories: SidebarData;
-  }
-
-  const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
+const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
   const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-
     if (query) {
       const fetchProducts = async () => {
         try {
@@ -65,7 +63,7 @@ interface SidebarData {
             isNew: product.props.isNew,
             discount: product.props.discount,
             images: product.props.images,
-            categories: product.productCategories
+            categories: product.productCategories,
           }));
           setProducts(mappedProducts);
         } catch (error) {
@@ -81,7 +79,7 @@ interface SidebarData {
     <Container>
       <section className="flex mt-2 gap-8">
         <div className="flex flex-col">
-      
+          <Sidebar initialCategories={[]} />
         </div>
         <div className="container mx-auto">
           <h1 className="text-2xl font-bold mb-4">

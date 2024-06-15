@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useCartStore } from "@/context/store";
 
 interface ProductCategory {
-  value: string;
+  category: {
+    name: string;
+  };
 }
 
 interface CardProps {
@@ -51,7 +53,9 @@ const Card: React.FC<CardProps> = ({
   };
 
   const validImageSRC = imageSRC || "/images/foto1.jpg";
-  const formattedCategories = categories.map((cat) => cat.value).join(", ");
+  const formattedCategories = categories
+    .map((cat) => cat.category.name)
+    .join(", ");
   console.log("formattedCategories", formattedCategories);
 
   return (
@@ -85,7 +89,7 @@ const Card: React.FC<CardProps> = ({
       <div className="flex-1 px-6 py-4 flex flex-col justify-between">
         <div>
           <h3 className="font-regular text-xs text-primary">
-            {formattedCategories[0]}
+            {formattedCategories}
           </h3>
           <h2 className="semibold text-xl mb-2 text-fontColor">{title}</h2>
           <p className="text-gray-700 text-sm font-bold text-fontColor">
