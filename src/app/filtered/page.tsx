@@ -8,7 +8,10 @@ import Sidebar from "@/components/SideBar";
 import { NextPage } from "next";
 
 interface ProductCategory {
-  value: string;
+  id: {
+    value: string;
+  };
+  name: string;
 }
 
 interface Product {
@@ -18,7 +21,7 @@ interface Product {
   price: number;
   slug: string;
   FinalPrice: number;
-  categories: ProductCategory[];
+  productCategories: ProductCategory[];
   onSale: boolean;
   isNew: boolean;
   discount: number;
@@ -59,7 +62,12 @@ const FilteredResults: NextPage = () => {
             isNew: product.props.isNew,
             discount: product.props.discount,
             images: product.props.images,
-            categories: product.productCategories,
+            productCategories: product.props.productCategories.map(
+              (category: any) => ({
+                id: category.id.value,
+                name: category.name,
+              })
+            ),
           }));
           console.log("mappedProducts", mappedProducts);
 
@@ -74,7 +82,6 @@ const FilteredResults: NextPage = () => {
   }, [category]);
 
   return (
-    
     <Container>
       <section className="flex mt-2 gap-8">
         <div className="flex flex-col">
@@ -91,15 +98,15 @@ const FilteredResults: NextPage = () => {
                 <Card
                   id={product.id}
                   title={product.name}
-                  categories={product.categories}
+                  categories={product.productCategories.map((category) => ({
+                    category: { name: category.name },
+                  }))}
                   precoAntigo={product.onSale ? product.price : undefined}
                   precoNovo={product.finalPrice || product.price}
                   emPromocao={product.onSale}
                   desconto={product.discount}
                   imageSRC={product.images[0]}
                   eNovidade={product.isNew}
-                  
-
                 />
               </Link>
             ))}
