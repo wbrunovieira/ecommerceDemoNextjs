@@ -27,6 +27,8 @@ interface Product {
   images: string[];
   finalPrice: number;
   productCategories: ProductCategory[];
+  brandName: string;
+  brandLogo: string;
 }
 
 interface SidebarData {
@@ -73,6 +75,8 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
                 name: category.name,
               })
             ),
+            brandName: product.props.brandName,
+            brandLogo: product.props.brandUrl,
           }));
           console.log("mappedProducts", mappedProducts);
           setProducts(mappedProducts);
@@ -110,6 +114,8 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
                   desconto={product.discount}
                   imageSRC={product.images[0]}
                   eNovidade={product.isNew}
+                  brandName={product.brandName}
+                  brandLogo={product.brandLogo}
                 />
               </Link>
             ))}
