@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import Card from "./Card";
 import Link from "next/link";
 
-
 interface ProductCategory {
   category: {
     name: string;
@@ -24,6 +23,10 @@ interface Produto {
   discount: number;
   images: string[];
   finalPrice: number;
+  brand: {
+    name: string;
+    imageUrl: string;
+  };
 }
 
 const ProductList = () => {
@@ -60,6 +63,8 @@ const ProductList = () => {
             desconto={produto.discount}
             imageSRC={produto.images[0]}
             eNovidade={produto.isNew}
+            brandName={produto.brand.name}
+            brandLogo={produto.brand.imageUrl}
           />
         </Link>
       ))}

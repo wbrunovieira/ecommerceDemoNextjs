@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { SyntheticEvent } from "react";
+
 import Button from "./Button";
 import Link from "next/link";
 import { useCartStore } from "@/context/store";
@@ -20,6 +20,8 @@ interface CardProps {
   eNovidade?: boolean;
   desconto?: number;
   imageSRC?: string;
+  brandName?: string;
+  brandLogo?: string;
 }
 
 interface ProductCart {
@@ -39,6 +41,9 @@ const Card: React.FC<CardProps> = ({
   imageSRC,
   categories = [],
   eNovidade,
+  brandName,
+
+  brandLogo,
 }) => {
   const addToCart = useCartStore((state: any) => state.addToCart);
 
@@ -121,6 +126,18 @@ const Card: React.FC<CardProps> = ({
             </Button>
           </Link>
         </div>
+        {brandName && brandLogo && (
+          <div className="flex items-center mt-4">
+            <Image
+              src={brandLogo}
+              width={20}
+              height={20}
+              alt={brandName}
+              className="mr-2"
+            />
+            <span className="text-xs text-gray-600">{brandName}</span>
+          </div>
+        )}
       </div>
     </div>
   );

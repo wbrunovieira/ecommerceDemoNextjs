@@ -27,6 +27,7 @@ interface Product {
   discount: number;
   images: string[];
   finalPrice: number;
+  brandId: string;
 }
 
 
@@ -34,6 +35,7 @@ const FilteredResults: NextPage = () => {
   const searchParams = useSearchParams();
   console.log("searchParams", searchParams);
   const category = searchParams.get("category");
+  const brand = searchParams.get("brand");
   console.log("category", category);
   const [products, setProducts] = useState<Product[]>([]);
 
