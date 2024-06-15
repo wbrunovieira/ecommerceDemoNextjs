@@ -15,15 +15,24 @@ interface Category {
   imageUrl: string;
 }
 
+interface Brand {
+  id: string;
+  name: string;
+  imageUrl: string;
+}
+
 interface SidebarProps {
   initialCategories: Category[];
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
+  const [products, setProducts] = useState<any[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [categories, setCategories] = useState<Category[]>(
     initialCategories || []
   );
   const searchParams = useSearchParams();
+  const selectedBrand = searchParams.get("brand");
   const selectedCategory = searchParams.get("category");
 
   const router = useRouter();
@@ -38,6 +47,12 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       pathname === "/"
         ? `/filtered?category=${categoryId}`
         : `/search?category=${categoryId}`;
+    router.push(url);
+  };
+
+  const handleBrandClick = (brand: string) => {
+    const url =
+      pathname === "/" ? `/filtered?brand=${brand}` : `/search?brand=${brand}`;
     router.push(url);
   };
 
@@ -69,8 +84,60 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       }
     };
 
+    const fetchBrands = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:3333/brands/all?page=1&pageSize=10"
+        );
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        const fetchedBrands = data.brands.map((brand: any) => ({
+          id: brand._id.value,
+          name: brand.props.name,
+          imageUrl: brand.props.imageUrl || "/default-brand-image.png",
+        }));
+        setBrands(fetchedBrands);
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+        setBrands([]);
+      }
+    };
+
     fetchCategories();
+    fetchBrands();
   }, []);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        let url = "http://localhost:3333/";
+
+        if (selectedCategory) {
+          url = `http://localhost:3333/filtered?category=${selectedCategory}`;
+        } else if (selectedBrand) {
+          url = `http://localhost:3333/filtered?brand=${selectedBrand}`;
+        }
+
+        const res = await fetch(url);
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        setProducts(data.products);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      }
+    };
+
+    fetchProducts();
+  }, [selectedCategory, selectedBrand]);
 
   const sidebarItems = [
     { src: "/icons/lingerie-mini.svg", name: "Lingerie" },
@@ -138,6 +205,37 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
       </div>
 
+      <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
+        <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
+          Marcas da api
+        </h2>
+        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+        {brands.map((brand) => (
+          <div
+            key={brand.id}
+            className={`flex items-center py-1 border-b border-light cursor-pointer ${
+              selectedBrand === brand.id
+                ? "bg-primary text-primaryLight border rounded p-4"
+                : ""
+            }`}
+            onClick={() => handleBrandClick(brand.id)}
+          >
+            <Link
+              href={`/products/brand/${brand.id}`}
+              className="flex items-center py-2 space-x-2"
+            >
+              <Image
+                src={brand.imageUrl}
+                width={20}
+                height={20}
+                alt={brand.name}
+                className="mr-2"
+              />
+              <div className="text-xs">{brand.name}</div>
+            </Link>
+          </div>
+        ))}
+      </div>
       <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Marcas
