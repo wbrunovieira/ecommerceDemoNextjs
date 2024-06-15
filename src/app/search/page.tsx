@@ -8,7 +8,10 @@ import Sidebar from "@/components/SideBar";
 import { NextPage } from "next";
 
 interface ProductCategory {
-  value: string;
+  id: {
+    value: string;
+  };
+  name: string;
 }
 
 interface Product {
@@ -23,8 +26,9 @@ interface Product {
   discount: number;
   images: string[];
   finalPrice: number;
-  categories: ProductCategory[];
+  productCategories: ProductCategory[];
 }
+
 interface SidebarData {
   categories: { slug: string; name: string }[];
 }
@@ -63,8 +67,14 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
             isNew: product.props.isNew,
             discount: product.props.discount,
             images: product.props.images,
-            categories: product.productCategories,
+            productCategories: product.props.productCategories.map(
+              (category: any) => ({
+                id: category.id.value,
+                name: category.name,
+              })
+            ),
           }));
+          console.log("mappedProducts", mappedProducts);
           setProducts(mappedProducts);
         } catch (error) {
           console.error("Error fetching search results:", error);
@@ -91,7 +101,9 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
                 <Card
                   id={product.id}
                   title={product.name}
-                  categories={product.categories}
+                  categories={product.productCategories.map((category) => ({
+                    category: { name: category.name },
+                  }))}
                   precoAntigo={product.onSale ? product.price : undefined}
                   precoNovo={product.FinalPrice || product.price}
                   emPromocao={product.onSale}

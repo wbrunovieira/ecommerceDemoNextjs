@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import Card from "./Card";
 import Link from "next/link";
-import { getProducts } from "@/api/products";
+
 
 interface ProductCategory {
   category: {
