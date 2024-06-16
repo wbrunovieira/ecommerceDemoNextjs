@@ -26,6 +26,10 @@ interface Color {
   name: string;
   hex: string;
 }
+interface Size {
+  id: string;
+  name: string;
+}
 
 interface SidebarProps {
   initialCategories: Category[];
@@ -35,6 +39,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const [products, setProducts] = useState<any[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [colors, setColors] = useState<Color[]>([]);
+  const [sizes, setSizes] = useState<Size[]>([]);
   const [categories, setCategories] = useState<Category[]>(
     initialCategories || []
   );
@@ -47,12 +52,14 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const selectedCategory = useSelectionStore((state) => state.selectedCategory);
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
   const selectedColor = useSelectionStore((state) => state.selectedColor);
+  const selectedSize = useSelectionStore((state) => state.selectedSize);
 
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
   );
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
   const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
+  const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -84,6 +91,14 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       setSelectedColor(colorId === selectedColor ? null : colorId);
     }
   };
+  const handleSizeClick = (sizeId: string) => {
+    const isHome = pathname === "/";
+    if (isHome) {
+      router.push(`/filtered?size=${sizeId}`);
+    } else {
+      setSelectedSize(sizeId === selectedSize ? null : sizeId);
+    }
+  };
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -113,6 +128,36 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         setCategories([]);
       }
     };
+    const fetchSizes = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:3333/size/all?page=1&pageSize=10"
+        );
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log("data sizes", data);
+        const sizeOrder = ["pp", "p", "m", "g", "xg"];
+
+        const fetchedSize = data.size.map((size: any) => ({
+          id: size._id.value,
+          name: size.props.name,
+        }));
+        fetchedSize.sort((a: Size, b: Size) => {
+          return sizeOrder.indexOf(a.name) - sizeOrder.indexOf(b.name);
+        });
+
+        console.log("fetchedSize", fetchedSize);
+
+        setSizes(fetchedSize);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        setSizes([]);
+      }
+    };
 
     const fetchColors = async () => {
       try {
@@ -136,7 +181,8 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         setColors(fetchedColors);
       } catch (error) {
         console.error("Error fetching categories:", error);
-        setCategories([]);
+        setColors([]);
+        [];
       }
     };
 
@@ -166,6 +212,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     fetchCategories();
     fetchBrands();
     fetchColors();
+    fetchSizes();
   }, []);
 
   useEffect(() => {
@@ -175,18 +222,6 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       // setSelectedColor(null);
     }
   }, [pathname, setSelectedCategory, setSelectedBrand]);
-
-  const color = [
-    "#000000",
-    "#FFFFFF",
-    "#FF0000",
-    "#FFE4C4",
-    "#FFC0CB",
-    "#000080",
-    "#808080",
-  ];
-
-  const sizes = ["P", "M", "G", "GG"];
 
   return (
     <nav className="flex flex-col gap-2 mr-4">
@@ -247,7 +282,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
                 alt={brand.name}
                 className="mr-2"
               />
-              <div className="text-xs">{brand.name}</div>
+              <div className="text-xs">{capitalizeFirstLetter(brand.name)}</div>
             </div>
           </div>
         ))}
@@ -262,7 +297,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           {colors.map((color) => (
             <div
               key={color.id}
-              className={`w-6 h-6 rounded-full${
+              className={`w-6 h-6 rounded-full cursor-pointer${
                 selectedColor === color.id ? " border rounded p-4 w-8 h-8 " : ""
               }`}
               style={{
@@ -281,13 +316,17 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           Tamanhos
         </h2>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-        <div className="flex gap-2 justify-start p-2 w-16">
-          {sizes.map((sizeValue, index) => (
+        <div className="flex gap-1 justify-start p-1 w-16">
+          {sizes.map((size, index) => (
             <div
-              key={index}
-              className="border border-light rounded p-2 text-xs"
+              key={size.id}
+              className={`border border-light rounded p-1 text-xs cursor-pointer ${
+                selectedSize === size.id ? " border rounded p-4 w-8 h-8 " : ""
+              }`}
+              onClick={() => handleSizeClick(size.id)}
+              // className="border border-light rounded p-2 text-xs cursor-pointer"
             >
-              {sizeValue}
+              {capitalizeFirstLetter(size.name)}
             </div>
           ))}
         </div>

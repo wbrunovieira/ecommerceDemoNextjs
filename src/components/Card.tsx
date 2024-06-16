@@ -61,7 +61,8 @@ const Card: React.FC<CardProps> = ({
   const formattedCategories = categories
     .map((cat) => cat.category.name)
     .join(", ");
-  console.log("formattedCategories", formattedCategories);
+
+    
 
   return (
     <div className="max-w-sm rounded-md shadow-lg bg-white m-2 h-96 flex flex-col">

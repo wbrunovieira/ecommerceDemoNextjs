@@ -30,10 +30,12 @@ interface SelectionState {
   selectedCategory: string | null;
   selectedBrand: string | null;
   selectedColor: string | null;
+  selectedSize: string | null;
 
   setSelectedCategory: (categoryId: string | null) => void;
   setSelectedBrand: (brandId: string | null) => void;
   setSelectedColor: (colorId: string | null) => void;
+  setSelectedSize: (sizeId: string | null) => void;
 }
 
 export const useCartStore = create(
@@ -146,17 +148,21 @@ export const useSelectionStore = create<SelectionState>()(
       selectedCategory: null,
       selectedBrand: null,
       selectedColor: null,
+      selectedSize: null,
 
       setSelectedCategory: (categoryId: string | null) =>
         set({ selectedCategory: categoryId }),
-      
-      setSelectedColor: (colorId: string | null) =>
-        set({ selectedColor: colorId }),
-      
+
       setSelectedBrand: (brandId: string | null) =>
         set({ selectedBrand: brandId }),
 
+      setSelectedColor: (colorId: string | null) =>
+        set({ selectedColor: colorId }),
+
+      setSelectedSize: (sizeId: string | null) =>
+        set({ selectedSize: sizeId }),
     }),
+
     {
       name: "selection-storage",
       getStorage: () => localStorage,

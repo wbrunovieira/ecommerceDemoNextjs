@@ -24,6 +24,14 @@ interface ProductColor {
     name: string;
   };
 }
+interface ProductSize {
+  size: {
+    id: {
+      value: string;
+    };
+    name: string;
+  };
+}
 
 interface Product {
   id: string;
@@ -34,6 +42,7 @@ interface Product {
   FinalPrice: number;
   productCategories: ProductCategory[];
   productColors: ProductColor[];
+  productSizes: ProductSize[];
   onSale: boolean;
   isNew: boolean;
   discount: number;
@@ -50,6 +59,7 @@ const FilteredResults: NextPage = () => {
   const category = searchParams.get("category");
   const brand = searchParams.get("brand");
   const color = searchParams.get("color");
+  const size = searchParams.get("size");
 
   const [products, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -58,12 +68,14 @@ const FilteredResults: NextPage = () => {
   const selectedCategory = useSelectionStore((state) => state.selectedCategory);
   const selectedColor = useSelectionStore((state) => state.selectedColor);
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
+  const selectedSize = useSelectionStore((state) => state.selectedSize);
 
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
   );
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
   const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
+  const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
 
   const fetchProducts = async (url: string) => {
     try {
@@ -122,14 +134,18 @@ const FilteredResults: NextPage = () => {
       );
       setSelectedBrand(brand);
     } else if (color) {
-
       fetchProducts(
         `http://localhost:3333/products/color/${encodeURIComponent(color)}`
       );
-      
+
       setSelectedColor(color);
+    } else if (size) {
+      fetchProducts(
+        `http://localhost:3333/products/size/${encodeURIComponent(size)}`
+      );
+      setSelectedSize(size);
     }
-  }, [category, brand, color]);
+  }, [category, brand, color, size]);
 
   useEffect(() => {
     if (!initialLoad) {
@@ -159,6 +175,15 @@ const FilteredResults: NextPage = () => {
             })
           );
         }
+
+        if (selectedSize) {
+          filteredProducts = filteredProducts.filter((product) =>
+            product.productSizes.some((size) => {
+              console.log("size.id", size.size.id.value);
+              return size.size.id.value === selectedSize;
+            })
+          );
+        }
         console.log("Filtered Products:", filteredProducts);
         setProducts(filteredProducts);
       };
@@ -169,6 +194,7 @@ const FilteredResults: NextPage = () => {
     selectedCategory,
     selectedBrand,
     selectedColor,
+    selectedSize,
     allProducts,
     initialLoad,
   ]);
@@ -176,6 +202,7 @@ const FilteredResults: NextPage = () => {
   console.log("selectedCategory", selectedCategory);
   console.log("selectedBrand", selectedBrand);
   console.log("selectedColor", selectedColor);
+  console.log("selectedSize", selectedSize);
   console.log("allProducts", allProducts);
   console.log("initialLoad", initialLoad);
   console.log("products", products);
