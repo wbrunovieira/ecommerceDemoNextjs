@@ -7,6 +7,8 @@ import Sidebar from "@/components/SideBar";
 import ProductList from "@/components/ProductList";
 
 import { ImagesSlider } from "@/components/ui/images-slider";
+import { useEffect } from "react";
+import { useSelectionStore } from "@/context/store";
 
 interface Category {
   id: string;
@@ -81,7 +83,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-                 href={`/search?category=pijamas`}
+                href={`/search?category=pijamas`}
                 className="text-xs font-regular uppercase pl-2 self-center"
               >
                 Pijamas{" "}
@@ -127,7 +129,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-               href={`/search?category=acessorios`}
+                href={`/search?category=acessorios`}
                 className="text-xs font-regular uppercase pl-2 self-center"
               >
                 Acessórios{" "}
@@ -143,7 +145,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
         </div>
 
         <section className="flex mt-2">
-          <Sidebar initialCategories={initialCategories} />
+          <Sidebar initialCategories={[]} />
           <ProductList />
         </section>
       </Container>

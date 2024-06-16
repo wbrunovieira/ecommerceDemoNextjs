@@ -7,6 +7,7 @@ import PriceFilter from "./PriceFilter";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
+import { useSelectionStore } from "@/context/store";
 
 interface Category {
   id: string;
@@ -32,28 +33,37 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     initialCategories || []
   );
   const searchParams = useSearchParams();
-  const selectedBrand = searchParams.get("brand");
-  const selectedCategory = searchParams.get("category");
 
   const router = useRouter();
   const pathname = usePathname();
+
+  const selectedCategory = useSelectionStore((state) => state.selectedCategory);
+  const selectedBrand = useSelectionStore((state) => state.selectedBrand);
+  const setSelectedCategory = useSelectionStore(
+    (state) => state.setSelectedCategory
+  );
+  const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
-  const handleCategoryClick = async (categoryId: string) => {
-    const url =
-      pathname === "/"
-        ? `/filtered?category=${categoryId}`
-        : `/search?category=${categoryId}`;
-    router.push(url);
+  const handleCategoryClick = (categoryId: string) => {
+    const isHome = pathname === "/";
+    if (isHome) {
+      router.push(`/filtered?category=${categoryId}`);
+    } else {
+      setSelectedCategory(categoryId === selectedCategory ? null : categoryId);
+    }
   };
 
-  const handleBrandClick = (brand: string) => {
-    const url =
-      pathname === "/" ? `/filtered?brand=${brand}` : `/search?brand=${brand}`;
-    router.push(url);
+  const handleBrandClick = (brandId: string) => {
+    const isHome = pathname === "/";
+    if (isHome) {
+      router.push(`/filtered?brand=${brandId}`);
+    } else {
+      setSelectedBrand(brandId === selectedBrand ? null : brandId);
+    }
   };
 
   useEffect(() => {
@@ -112,47 +122,11 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   }, []);
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        let url = "http://localhost:3333/";
-
-        if (selectedCategory) {
-          url = `http://localhost:3333/filtered?category=${selectedCategory}`;
-        } else if (selectedBrand) {
-          url = `http://localhost:3333/filtered?brand=${selectedBrand}`;
-        }
-
-        const res = await fetch(url);
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
-        setProducts(data.products);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-        setProducts([]);
-      }
-    };
-
-    fetchProducts();
-  }, [selectedCategory, selectedBrand]);
-
-  const sidebarItems = [
-    { src: "/icons/lingerie-mini.svg", name: "Lingerie" },
-    { src: "/icons/pijamas-mini.svg", name: "Pijamas" },
-    { src: "/icons/moda-mini.svg", name: "Moda Fitness" },
-    { src: "/icons/glasses-mini.svg", name: "Óculos" },
-    { src: "/icons/bag-mini.svg", name: "Bolsas" },
-    { src: "/icons/perfume-mini.svg", name: "Perfumes" },
-    { src: "/icons/boy.svg", name: "Homens" },
-  ];
-
-  const sidebarFabricantes = [
-    { src: "/icons/logo-liz.svg", title: "Liz" },
-    { src: "/icons/logo-nayne.jpeg", title: "Nayane" },
-  ];
+    if (pathname === "/") {
+      setSelectedCategory(null);
+      setSelectedBrand(null);
+    }
+  }, [pathname, setSelectedCategory, setSelectedBrand]);
 
   const color = [
     "#000000",
@@ -184,10 +158,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
             }`}
             onClick={() => handleCategoryClick(category.id)}
           >
-            <Link
-              href={`/products/category/${category.id}`}
-              className="flex items-center py-2 space-x-2"
-            >
+            <div className="flex items-center py-2 space-x-2">
               <Image
                 src={category.imageUrl}
                 width={20}
@@ -198,7 +169,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
               <div className="text-xs">
                 {capitalizeFirstLetter(category.name)}
               </div>
-            </Link>
+            </div>
           </div>
         ))}
 
@@ -220,10 +191,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
             }`}
             onClick={() => handleBrandClick(brand.id)}
           >
-            <Link
-              href={`/products/brand/${brand.id}`}
-              className="flex items-center py-2 space-x-2"
-            >
+            <div className="flex items-center py-2 space-x-2">
               <Image
                 src={brand.imageUrl}
                 width={20}
@@ -232,35 +200,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
                 className="mr-2"
               />
               <div className="text-xs">{brand.name}</div>
-            </Link>
-          </div>
-        ))}
-      </div>
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
-        <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
-          Marcas
-        </h2>
-        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-        {sidebarFabricantes.map((item, index) => (
-          <div
-            key={index}
-            className={`flex items-center py-1 ${
-              index < sidebarItems.length - 1 ? "border-b border-light" : ""
-            }`}
-          >
-            <Link
-              href={item.title}
-              className="flex items-center py-2 space-x-2"
-            >
-              <Image
-                src={item.src}
-                width={20}
-                height={20}
-                alt=""
-                className="mr-2"
-              ></Image>
-              <div className="text-xs">{item.title}</div>
-            </Link>
+            </div>
           </div>
         ))}
       </div>

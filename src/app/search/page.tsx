@@ -6,6 +6,7 @@ import Link from "next/link";
 import Container from "@/components/Container";
 import Sidebar from "@/components/SideBar";
 import { NextPage } from "next";
+import { useSelectionStore } from "@/context/store";
 
 interface ProductCategory {
   id: {
@@ -42,6 +43,11 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
   const [products, setProducts] = useState<Product[]>([]);
+
+  const setSelectedCategory = useSelectionStore(
+    (state) => state.setSelectedCategory
+  );
+  const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
 
   useEffect(() => {
     if (query) {
@@ -93,7 +99,7 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
     <Container>
       <section className="flex mt-2 gap-8">
         <div className="flex flex-col">
-          <Sidebar initialCategories={[]} />
+          {/* <Sidebar initialCategories={[]} /> */}
         </div>
         <div className="container mx-auto">
           <h1 className="text-2xl font-bold mb-4">

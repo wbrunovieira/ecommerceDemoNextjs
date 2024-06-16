@@ -1,6 +1,5 @@
-import create from 'zustand';
-
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist, PersistOptions, createJSONStorage } from "zustand/middleware";
 
 interface Product {
   id: string;
@@ -81,7 +80,7 @@ export const useCartStore = create(
     }),
 
     {
-      name: 'cart-storage',
+      name: "cart-storage",
       getStorage: () => localStorage,
     }
   )
@@ -125,11 +124,55 @@ export const useFavoritesStore = create(
       clearFavorite: () => set({ cartItems: [] }),
     }),
     {
-      name: 'favorite-storage', // Este é o nome sob o qual seus dados serão armazenados no local storage.
+      name: "favorite-storage", // Este é o nome sob o qual seus dados serão armazenados no local storage.
       getStorage: () => localStorage, // Aqui é definido o mecanismo de armazenamento (neste caso, localStorage).
     }
   )
 );
+
+
+interface SelectionState {
+  selectedCategory: string | null;
+  selectedBrand: string | null;
+  setSelectedCategory: (categoryId: string | null) => void;
+  setSelectedBrand: (brandId: string | null) => void;
+}
+
+export const useSelectionStore = create<SelectionState>()(
+  persist(
+    (set) => ({
+      selectedCategory: null,
+      selectedBrand: null,
+      setSelectedCategory: (categoryId: string | null) =>
+        set({ selectedCategory: categoryId }),
+      setSelectedBrand: (brandId: string | null) =>
+        set({ selectedBrand: brandId }),
+    }),
+    {
+      name: "selection-storage",
+      getStorage: () => localStorage,
+    } as PersistOptions<SelectionState>
+  )
+);
+
+// export const useSelectionStore = create<SelectionState>(
+//   selectedCategory: null
+// );
+
+// persist(
+//   (set) => ({
+//     selectedCategory: null,
+//     selectedBrand: null,
+//     setSelectedCategory: (categoryId: string | null) =>
+//       set({ selectedCategory: categoryId }),
+//     setSelectedBrand: (brandId: string | null) =>
+//       set({ selectedBrand: brandId }),
+//   }),
+//   {
+//     name: "selection-storage",
+//     getStorage: () => localStorage,
+//   } as PersistOptions<SelectionState>
+// )
 
 // export const useFavoritesStore = create<FavoriteState>((set) => ({
 //   favorites: [],

@@ -18,6 +18,7 @@ interface Product {
 }
 
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
+  
   const cartItems = useCartStore((state: any) => state.cartItems);
   const removeFromCart = useCartStore((state: any) => state.removeFromCart);
   const updateQuantity = useCartStore((state: any) => state.updateQuantity);
