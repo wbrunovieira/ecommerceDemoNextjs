@@ -149,12 +149,13 @@ export const useSelectionStore = create<SelectionState>()(
 
       setSelectedCategory: (categoryId: string | null) =>
         set({ selectedCategory: categoryId }),
-
+      
+      setSelectedColor: (colorId: string | null) =>
+        set({ selectedColor: colorId }),
+      
       setSelectedBrand: (brandId: string | null) =>
         set({ selectedBrand: brandId }),
 
-      setSelectedColor: (colorId: string | null) =>
-        set({ selectedColor: colorId }),
     }),
     {
       name: "selection-storage",

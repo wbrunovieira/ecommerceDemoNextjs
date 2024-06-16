@@ -38,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const [categories, setCategories] = useState<Category[]>(
     initialCategories || []
   );
-  
+
   const searchParams = useSearchParams();
 
   const router = useRouter();
@@ -75,7 +75,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       setSelectedBrand(brandId === selectedBrand ? null : brandId);
     }
   };
-  
+
   const handleColorClick = (colorId: string) => {
     const isHome = pathname === "/";
     if (isHome) {
@@ -262,60 +262,15 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           {colors.map((color) => (
             <div
               key={color.id}
-              className={`flex items-center py-1 border-b border-light cursor-pointer ${
-                selectedColor === color.id
-                  ? "bg-primary text-primaryLight border rounded p-4"
-                  : ""
+              className={`w-6 h-6 rounded-full${
+                selectedColor === color.id ? " border rounded p-4 w-8 h-8 " : ""
               }`}
               style={{
                 backgroundColor: color.hex,
                 border: "1px solid #ddd",
               }}
               onClick={() => handleColorClick(color.id)}
-            >
-              <div className="flex items-center py-2 space-x-2">
-                <div className="text-xs">
-                  {capitalizeFirstLetter(color.name)}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
-        <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
-          Cores
-        </h2>
-        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-        <div className="flex gap-2 flex-wrap">
-          {color.map((colorValue, index) => (
-            <div
-              key={index}
-              className="w-6 h-6 rounded-full"
-              style={{
-                backgroundColor: colorValue,
-                border: "1px solid #ddd",
-              }}
-            ></div>
-          ))}
-        </div>
-      </div>
-
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
-        <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
-          Cores
-        </h2>
-        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-        <div className="flex gap-2 flex-wrap">
-          {color.map((colorValue, index) => (
-            <div
-              key={index}
-              className="w-6 h-6 rounded-full"
-              style={{
-                backgroundColor: colorValue,
-                border: "1px solid #ddd",
-              }}
+              title={color.name}
             ></div>
           ))}
         </div>

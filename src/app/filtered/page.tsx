@@ -122,9 +122,11 @@ const FilteredResults: NextPage = () => {
       );
       setSelectedBrand(brand);
     } else if (color) {
+
       fetchProducts(
         `http://localhost:3333/products/color/${encodeURIComponent(color)}`
       );
+      
       setSelectedColor(color);
     }
   }, [category, brand, color]);
