@@ -16,6 +16,14 @@ interface ProductCategory {
     name: string;
   };
 }
+interface ProductColor {
+  color: {
+    id: {
+      value: string;
+    };
+    name: string;
+  };
+}
 
 interface Product {
   id: string;
@@ -25,6 +33,7 @@ interface Product {
   slug: string;
   FinalPrice: number;
   productCategories: ProductCategory[];
+  productColors: ProductColor[];
   onSale: boolean;
   isNew: boolean;
   discount: number;
@@ -40,17 +49,21 @@ const FilteredResults: NextPage = () => {
 
   const category = searchParams.get("category");
   const brand = searchParams.get("brand");
+  const color = searchParams.get("color");
 
   const [products, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [initialLoad, setInitialLoad] = useState(true);
 
   const selectedCategory = useSelectionStore((state) => state.selectedCategory);
+  const selectedColor = useSelectionStore((state) => state.selectedColor);
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
+
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
   );
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
+  const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
 
   const fetchProducts = async (url: string) => {
     try {
@@ -77,6 +90,9 @@ const FilteredResults: NextPage = () => {
             category: { id: category.id, name: category.name },
           })
         ),
+        productColors: product.props.productColors.map((color: any) => ({
+          color: { id: color.id, name: color.name },
+        })),
         brandId: product.props.brandId.value,
         brandName: product.props.brandName,
         brandUrl: product.props.brandUrl,
@@ -105,8 +121,13 @@ const FilteredResults: NextPage = () => {
         `http://localhost:3333/products/brand/${encodeURIComponent(brand)}`
       );
       setSelectedBrand(brand);
+    } else if (color) {
+      fetchProducts(
+        `http://localhost:3333/products/color/${encodeURIComponent(color)}`
+      );
+      setSelectedColor(color);
     }
-  }, [category, brand]);
+  }, [category, brand, color]);
 
   useEffect(() => {
     if (!initialLoad) {
@@ -127,16 +148,32 @@ const FilteredResults: NextPage = () => {
             (product) => product.brandId === selectedBrand
           );
         }
+
+        if (selectedColor) {
+          filteredProducts = filteredProducts.filter((product) =>
+            product.productColors.some((cat) => {
+              console.log("color.id", cat.color.id.value);
+              return cat.color.id.value === selectedColor;
+            })
+          );
+        }
         console.log("Filtered Products:", filteredProducts);
         setProducts(filteredProducts);
       };
 
       filterProducts();
     }
-  }, [selectedCategory, selectedBrand, allProducts, initialLoad]);
+  }, [
+    selectedCategory,
+    selectedBrand,
+    selectedColor,
+    allProducts,
+    initialLoad,
+  ]);
 
   console.log("selectedCategory", selectedCategory);
   console.log("selectedBrand", selectedBrand);
+  console.log("selectedColor", selectedColor);
   console.log("allProducts", allProducts);
   console.log("initialLoad", initialLoad);
   console.log("products", products);

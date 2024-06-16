@@ -21,6 +21,11 @@ interface Brand {
   name: string;
   imageUrl: string;
 }
+interface Color {
+  id: string;
+  name: string;
+  hex: string;
+}
 
 interface SidebarProps {
   initialCategories: Category[];
@@ -29,9 +34,11 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const [products, setProducts] = useState<any[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [colors, setColors] = useState<Color[]>([]);
   const [categories, setCategories] = useState<Category[]>(
     initialCategories || []
   );
+  
   const searchParams = useSearchParams();
 
   const router = useRouter();
@@ -39,10 +46,13 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
 
   const selectedCategory = useSelectionStore((state) => state.selectedCategory);
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
+  const selectedColor = useSelectionStore((state) => state.selectedColor);
+
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
   );
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
+  const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -63,6 +73,15 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       router.push(`/filtered?brand=${brandId}`);
     } else {
       setSelectedBrand(brandId === selectedBrand ? null : brandId);
+    }
+  };
+  
+  const handleColorClick = (colorId: string) => {
+    const isHome = pathname === "/";
+    if (isHome) {
+      router.push(`/filtered?color=${colorId}`);
+    } else {
+      setSelectedColor(colorId === selectedColor ? null : colorId);
     }
   };
 
@@ -86,8 +105,35 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           slug: category.props.slug || "localhost",
           imageUrl: category.props.imageUrl || "/default-image.png",
         }));
+
         console.log("fetchedCategories", fetchedCategories);
         setCategories(fetchedCategories);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+        setCategories([]);
+      }
+    };
+
+    const fetchColors = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:3333/colors/all?page=1&pageSize=10"
+        );
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        console.log("data colors", data);
+
+        const fetchedColors = data.colors.map((color: any) => ({
+          id: color._id.value,
+          name: color.props.name,
+          hex: color.props.hex || "#00000",
+        }));
+        console.log("fetchedColors", fetchedColors);
+        setColors(fetchedColors);
       } catch (error) {
         console.error("Error fetching categories:", error);
         setCategories([]);
@@ -119,12 +165,14 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
 
     fetchCategories();
     fetchBrands();
+    fetchColors();
   }, []);
 
   useEffect(() => {
     if (pathname === "/") {
       setSelectedCategory(null);
       setSelectedBrand(null);
+      // setSelectedColor(null);
     }
   }, [pathname, setSelectedCategory, setSelectedBrand]);
 
@@ -203,6 +251,55 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
+        <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
+          Cores da api
+        </h2>
+        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+        <div className="flex gap-2 flex-wrap">
+          {colors.map((color) => (
+            <div
+              key={color.id}
+              className={`flex items-center py-1 border-b border-light cursor-pointer ${
+                selectedColor === color.id
+                  ? "bg-primary text-primaryLight border rounded p-4"
+                  : ""
+              }`}
+              style={{
+                backgroundColor: color.hex,
+                border: "1px solid #ddd",
+              }}
+              onClick={() => handleColorClick(color.id)}
+            >
+              <div className="flex items-center py-2 space-x-2">
+                <div className="text-xs">
+                  {capitalizeFirstLetter(color.name)}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
+        <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
+          Cores
+        </h2>
+        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+        <div className="flex gap-2 flex-wrap">
+          {color.map((colorValue, index) => (
+            <div
+              key={index}
+              className="w-6 h-6 rounded-full"
+              style={{
+                backgroundColor: colorValue,
+                border: "1px solid #ddd",
+              }}
+            ></div>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
