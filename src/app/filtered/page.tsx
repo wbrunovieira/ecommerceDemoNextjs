@@ -25,12 +25,10 @@ interface ProductColor {
   };
 }
 interface ProductSize {
-  size: {
-    id: {
-      value: string;
-    };
-    name: string;
+  id: {
+    value: string;
   };
+  name: string;
 }
 
 interface Product {
@@ -105,6 +103,10 @@ const FilteredResults: NextPage = () => {
         productColors: product.props.productColors.map((color: any) => ({
           color: { id: color.id, name: color.name },
         })),
+        productSizes: product.props.productSizes.map((size: any) => ({
+          id: size.id,
+          name: size.name,
+        })),
         brandId: product.props.brandId.value,
         brandName: product.props.brandName,
         brandUrl: product.props.brandUrl,
@@ -178,10 +180,7 @@ const FilteredResults: NextPage = () => {
 
         if (selectedSize) {
           filteredProducts = filteredProducts.filter((product) =>
-            product.productSizes.some((size) => {
-              console.log("size.id", size.size.id.value);
-              return size.size.id.value === selectedSize;
-            })
+            product.productSizes.some((siz) => siz.id.value === selectedSize)
           );
         }
         console.log("Filtered Products:", filteredProducts);
