@@ -31,11 +31,13 @@ export interface SelectionState {
   selectedBrand: string | null;
   selectedColor: string | null;
   selectedSize: string | null;
+  selectedMaterial: string | null;
   selectedMinPrice: number | null;
   selectedMaxPrice: number | null;
 
   setSelectedCategory: (categoryId: string | null) => void;
   setSelectedBrand: (brandId: string | null) => void;
+  setSelectedMaterial: (materialId: string | null) => void;
   setSelectedColor: (colorId: string | null) => void;
   setSelectedSize: (sizeId: string | null) => void;
   setSelectedMinPrice: (selectedMinPrice: number | null) => void;
@@ -150,6 +152,7 @@ export const useSelectionStore = create<SelectionState>()(
     (set) => ({
       selectedCategory: null,
       selectedBrand: null,
+      selectedMaterial:null,
       selectedColor: null,
       selectedSize: null,
       selectedMinPrice: null,
@@ -160,6 +163,9 @@ export const useSelectionStore = create<SelectionState>()(
 
       setSelectedBrand: (brandId: string | null) =>
         set({ selectedBrand: brandId }),
+
+      setSelectedMaterial: (materialId: string | null) =>
+        set({ selectedMaterial: materialId }),
 
       setSelectedColor: (colorId: string | null) =>
         set({ selectedColor: colorId }),

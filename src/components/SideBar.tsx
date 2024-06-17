@@ -30,6 +30,10 @@ interface Size {
   id: string;
   name: string;
 }
+interface Material {
+  id: string;
+  name: string;
+}
 
 interface SidebarProps {
   initialCategories: Category[];
@@ -38,6 +42,8 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const [products, setProducts] = useState<any[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [materials, setMaterials] = useState<Material[]>([]);
+
   const [colors, setColors] = useState<Color[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [categories, setCategories] = useState<Category[]>(
@@ -51,6 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
 
   const selectedCategory = useSelectionStore((state) => state.selectedCategory);
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
+  const selectedMaterial = useSelectionStore((state) => state.selectedMaterial);
   const selectedColor = useSelectionStore((state) => state.selectedColor);
   const selectedSize = useSelectionStore((state) => state.selectedSize);
   const selectedMinPrice = useSelectionStore((state) => state.selectedMinPrice);
@@ -60,6 +67,9 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     (state) => state.setSelectedCategory
   );
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
+  const setSelectedMaterial = useSelectionStore(
+    (state) => state.setSelectedMaterial
+  );
   const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
   const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
   const setSelectedMinPrice = useSelectionStore(
@@ -81,6 +91,15 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       router.push(`/filtered?category=${categoryId}`);
     } else {
       setSelectedCategory(categoryId === selectedCategory ? null : categoryId);
+    }
+  };
+
+  const handleMaterialClick = (materialId: string) => {
+    isHome = pathname === "/";
+    if (isHome) {
+      router.push(`/filtered?material=${materialId}`);
+    } else {
+      setSelectedMaterial(materialId === selectedCategory ? null : materialId);
     }
   };
 
@@ -218,11 +237,33 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         setBrands([]);
       }
     };
+    const fetchMaterials = async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:3333/materials/all?page=1&pageSize=10"
+        );
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        const fetchedMaterials = data.materials.map((material: any) => ({
+          id: material._id.value,
+          name: material.props.name,
+        }));
+        setMaterials(fetchedMaterials);
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+        setBrands([]);
+      }
+    };
 
     fetchCategories();
     fetchBrands();
     fetchColors();
     fetchSizes();
+    fetchMaterials();
   }, []);
 
   useEffect(() => {
@@ -232,9 +273,18 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       setSelectedSize(null);
       setSelectedMinPrice(null);
       setSelectedMaxPrice(null);
+      setSelectedMaterial(null);
       // setSelectedColor(null);
     }
-  }, [pathname, setSelectedCategory, setSelectedBrand,setSelectedSize,setSelectedMinPrice,setSelectedMaxPrice]);
+  }, [
+    pathname,
+    setSelectedCategory,
+    setSelectedBrand,
+    setSelectedSize,
+    setSelectedMinPrice,
+    setSelectedMaxPrice,
+    setSelectedMaterial,
+  ]);
 
   return (
     <nav className="flex flex-col gap-2 mr-4  rounded">
@@ -341,6 +391,27 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
               onClick={() => handleSizeClick(size.id)}
             >
               {capitalizeFirstLetter(size.name)}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
+        <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
+          Materiais
+        </h2>
+        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+        <div className="flex flex-col gap-1 justify-start p-1 w-16">
+          {materials.map((material, index) => (
+            <div
+              key={index}
+              className={`border border-light rounded p-1 text-xs cursor-pointer ${
+                selectedMaterial === material.id
+                  ? "bg-primaryDark text-primaryLight font-bold tracking-wider border"
+                  : ""
+              }`}
+              onClick={() => handleMaterialClick(material.id)}
+            >
+              {capitalizeFirstLetter(material.name)}
             </div>
           ))}
         </div>
