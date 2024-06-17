@@ -26,18 +26,21 @@ interface FavoriteState {
   toggleFavorite: (productId: string) => void;
 }
 
-interface SelectionState {
+export interface SelectionState {
   selectedCategory: string | null;
   selectedBrand: string | null;
   selectedColor: string | null;
   selectedSize: string | null;
+  selectedMinPrice: number | null;
+  selectedMaxPrice: number | null;
 
   setSelectedCategory: (categoryId: string | null) => void;
   setSelectedBrand: (brandId: string | null) => void;
   setSelectedColor: (colorId: string | null) => void;
   setSelectedSize: (sizeId: string | null) => void;
+  setSelectedMinPrice: (selectedMinPrice: number | null) => void;
+  setSelectedMaxPrice: (selectedMaxPrice: number | null) => void;
 }
-
 export const useCartStore = create(
   persist(
     (set) => ({
@@ -149,6 +152,8 @@ export const useSelectionStore = create<SelectionState>()(
       selectedBrand: null,
       selectedColor: null,
       selectedSize: null,
+      selectedMinPrice: null,
+      selectedMaxPrice: null,
 
       setSelectedCategory: (categoryId: string | null) =>
         set({ selectedCategory: categoryId }),
@@ -159,8 +164,16 @@ export const useSelectionStore = create<SelectionState>()(
       setSelectedColor: (colorId: string | null) =>
         set({ selectedColor: colorId }),
 
-      setSelectedSize: (sizeId: string | null) =>
-        set({ selectedSize: sizeId }),
+      setSelectedSize: (sizeId: string | null) => set({ selectedSize: sizeId }),
+
+      setSelectedMinPrice: (selectedMinPrice: number | null) =>
+        set((state) => ({
+          selectedMinPrice: selectedMinPrice,
+        })),
+      setSelectedMaxPrice: (selectedMaxPrice: number | null) =>
+        set((state) => ({
+          selectedMaxPrice: selectedMaxPrice,
+        })),
     }),
 
     {

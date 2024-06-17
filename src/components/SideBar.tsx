@@ -53,6 +53,8 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
   const selectedColor = useSelectionStore((state) => state.selectedColor);
   const selectedSize = useSelectionStore((state) => state.selectedSize);
+  const selectedMinPrice = useSelectionStore((state) => state.selectedMinPrice);
+  const selectedMaxPrice = useSelectionStore((state) => state.selectedMaxPrice);
 
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
@@ -60,13 +62,21 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
   const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
   const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
+  const setSelectedMinPrice = useSelectionStore(
+    (state) => state.setSelectedMinPrice
+  );
+  const setSelectedMaxPrice = useSelectionStore(
+    (state) => state.setSelectedMaxPrice
+  );
+
+  let isHome = pathname === "/";
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
   const handleCategoryClick = (categoryId: string) => {
-    const isHome = pathname === "/";
+    isHome = pathname === "/";
     if (isHome) {
       router.push(`/filtered?category=${categoryId}`);
     } else {
@@ -219,9 +229,12 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     if (pathname === "/") {
       setSelectedCategory(null);
       setSelectedBrand(null);
+      setSelectedSize(null);
+      setSelectedMinPrice(null);
+      setSelectedMaxPrice(null);
       // setSelectedColor(null);
     }
-  }, [pathname, setSelectedCategory, setSelectedBrand]);
+  }, [pathname, setSelectedCategory, setSelectedBrand,setSelectedSize,setSelectedMinPrice,setSelectedMaxPrice]);
 
   return (
     <nav className="flex flex-col gap-2 mr-4  rounded">
@@ -333,7 +346,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         </div>
       </div>
 
-      <PriceFilter />
+      <PriceFilter isHome={isHome} />
     </nav>
   );
 };

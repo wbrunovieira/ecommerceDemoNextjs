@@ -49,7 +49,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
         </div>
         <div className="max-w-7xl mx-auto  mt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            <div className="flex rounded-md border border-light hover:border-slate-400 p-2">
+            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight">
               <div className="flex">
                 <Image
                   src="/icons/lingeries.svg"
@@ -61,7 +61,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
 
               <Link
                 href={`/search?category=lingeries`}
-                className="text-xs font-regular uppercase pl-2 self-center"
+                className="text-xs font-regular uppercase pl-2 self-center "
               >
                 Lingeries{" "}
                 <span className="text-[11px] text-fontColor font-light">
@@ -72,8 +72,8 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
                 </p>
               </Link>
             </div>{" "}
-            <div className="flex rounded-md border border-light hover:border-slate-400 p-2">
-              <div className="flex">
+            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight">
+              <div className="flex ">
                 <Image
                   src="/icons/pijamas.svg"
                   alt="icone de lingerie"
@@ -84,7 +84,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
 
               <Link
                 href={`/search?category=pijamas`}
-                className="text-xs font-regular uppercase pl-2 self-center"
+                className="text-xs font-regular uppercase pl-2 self-center "
               >
                 Pijamas{" "}
                 <span className="text-[11px] text-fontColor font-light">
@@ -95,7 +95,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
                 </p>
               </Link>
             </div>{" "}
-            <div className="flex rounded-md border border-light hover:border-slate-400 p-2">
+            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight">
               <div className="flex">
                 <Image
                   src="/icons/boy.svg"
@@ -118,7 +118,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
                 </p>
               </Link>
             </div>
-            <div className="flex rounded-md border border-light hover:border-slate-400 p-2">
+            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight">
               <div className="flex">
                 <Image
                   src="/icons/acessorios.svg"

@@ -58,6 +58,8 @@ const FilteredResults: NextPage = () => {
   const brand = searchParams.get("brand");
   const color = searchParams.get("color");
   const size = searchParams.get("size");
+  const minPrice = searchParams.get("minPrice");
+  const maxPrice = searchParams.get("maxPrice");
 
   const [products, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -67,6 +69,8 @@ const FilteredResults: NextPage = () => {
   const selectedColor = useSelectionStore((state) => state.selectedColor);
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
   const selectedSize = useSelectionStore((state) => state.selectedSize);
+  const selectedMinPrice = useSelectionStore((state) => state.selectedMinPrice);
+  const selectedMaxPrice = useSelectionStore((state) => state.selectedMaxPrice);
 
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
@@ -74,6 +78,12 @@ const FilteredResults: NextPage = () => {
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
   const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
   const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
+  const setSelectedMinPrice = useSelectionStore(
+    (state) => state.setSelectedMinPrice
+  );
+  const setSelectedMaxPrice = useSelectionStore(
+    (state) => state.setSelectedMaxPrice
+  );
 
   const fetchProducts = async (url: string) => {
     try {
@@ -146,8 +156,16 @@ const FilteredResults: NextPage = () => {
         `http://localhost:3333/products/size/${encodeURIComponent(size)}`
       );
       setSelectedSize(size);
+    } else if (minPrice && maxPrice) {
+      fetchProducts(
+        `http://localhost:3333/products/price-range?minPrice=${encodeURIComponent(
+          minPrice
+        )}&maxPrice=${encodeURIComponent(maxPrice)}`
+      );
+      setSelectedMinPrice(Number(minPrice));
+      setSelectedMaxPrice(Number(maxPrice));
     }
-  }, [category, brand, color, size]);
+  }, [category, brand, color, size, minPrice, maxPrice]);
 
   useEffect(() => {
     if (!initialLoad) {
@@ -183,6 +201,14 @@ const FilteredResults: NextPage = () => {
             product.productSizes.some((siz) => siz.id.value === selectedSize)
           );
         }
+
+        if (selectedMinPrice !== null && selectedMaxPrice !== null) {
+          filteredProducts = filteredProducts.filter(
+            (product) =>
+              product.finalPrice >= selectedMinPrice &&
+              product.finalPrice <= selectedMaxPrice
+          );
+        }
         console.log("Filtered Products:", filteredProducts);
         setProducts(filteredProducts);
       };
@@ -196,6 +222,8 @@ const FilteredResults: NextPage = () => {
     selectedSize,
     allProducts,
     initialLoad,
+    selectedMinPrice,
+    selectedMaxPrice,
   ]);
 
   console.log("selectedCategory", selectedCategory);
