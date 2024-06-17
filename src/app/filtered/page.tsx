@@ -46,6 +46,7 @@ interface Product {
   discount: number;
   images: string[];
   finalPrice: number;
+  materialId: string;
   brandId: string;
   brandName: string;
   brandUrl: string;
@@ -56,6 +57,7 @@ const FilteredResults: NextPage = () => {
 
   const category = searchParams.get("category");
   const brand = searchParams.get("brand");
+  const material = searchParams.get("material");
   const color = searchParams.get("color");
   const size = searchParams.get("size");
   const minPrice = searchParams.get("minPrice");
@@ -71,11 +73,15 @@ const FilteredResults: NextPage = () => {
   const selectedSize = useSelectionStore((state) => state.selectedSize);
   const selectedMinPrice = useSelectionStore((state) => state.selectedMinPrice);
   const selectedMaxPrice = useSelectionStore((state) => state.selectedMaxPrice);
+  const selectedMaterial = useSelectionStore((state) => state.selectedMaterial);
 
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
   );
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
+  const setSelectedMaterial = useSelectionStore(
+    (state) => state.setSelectedMaterial
+  );
   const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
   const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
   const setSelectedMinPrice = useSelectionStore(
@@ -118,6 +124,7 @@ const FilteredResults: NextPage = () => {
           name: size.name,
         })),
         brandId: product.props.brandId.value,
+        materialId: product.props.materialId.value,
         brandName: product.props.brandName,
         brandUrl: product.props.brandUrl,
       }));
@@ -164,13 +171,21 @@ const FilteredResults: NextPage = () => {
       );
       setSelectedMinPrice(Number(minPrice));
       setSelectedMaxPrice(Number(maxPrice));
+    } else if (material) {
+      fetchProducts(
+        `http://localhost:3333/products/material/${encodeURIComponent(
+          material
+        )}`
+      );
+      setSelectedMaterial(material);
     }
-  }, [category, brand, color, size, minPrice, maxPrice]);
+  }, [category, brand, color, size, minPrice, maxPrice, material]);
 
   useEffect(() => {
     if (!initialLoad) {
       const filterProducts = () => {
         let filteredProducts = allProducts;
+        console.log("filteredProducts", filteredProducts);
 
         if (selectedCategory) {
           filteredProducts = filteredProducts.filter((product) =>
@@ -184,6 +199,11 @@ const FilteredResults: NextPage = () => {
         if (selectedBrand) {
           filteredProducts = filteredProducts.filter(
             (product) => product.brandId === selectedBrand
+          );
+        }
+        if (selectedMaterial) {
+          filteredProducts = filteredProducts.filter(
+            (product) => product.materialId === selectedMaterial
           );
         }
 
@@ -220,6 +240,7 @@ const FilteredResults: NextPage = () => {
     selectedBrand,
     selectedColor,
     selectedSize,
+    selectedMaterial,
     allProducts,
     initialLoad,
     selectedMinPrice,
@@ -229,6 +250,7 @@ const FilteredResults: NextPage = () => {
   console.log("selectedCategory", selectedCategory);
   console.log("selectedBrand", selectedBrand);
   console.log("selectedColor", selectedColor);
+  console.log("selectedMaterial", selectedMaterial);
   console.log("selectedSize", selectedSize);
   console.log("allProducts", allProducts);
   console.log("initialLoad", initialLoad);
@@ -242,7 +264,7 @@ const FilteredResults: NextPage = () => {
         <div className="flex flex-col"></div>
         <div className="container mx-auto">
           <h1 className="text-2xl font-bold mb-4">
-            Produtos filtrados por "{category || brand}"
+            Produtos filtrados por "{category || brand || material}"
           </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {products.map((product) => (
