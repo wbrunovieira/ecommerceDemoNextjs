@@ -321,10 +321,11 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
             <div
               key={size.id}
               className={`border border-light rounded p-1 text-xs cursor-pointer ${
-                selectedSize === size.id ? " border rounded p-4 w-8 h-8 " : ""
+                selectedSize === size.id
+                  ? "bg-primary text-primaryLight border"
+                  : ""
               }`}
               onClick={() => handleSizeClick(size.id)}
-              // className="border border-light rounded p-2 text-xs cursor-pointer"
             >
               {capitalizeFirstLetter(size.name)}
             </div>
