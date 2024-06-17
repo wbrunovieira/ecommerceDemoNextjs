@@ -224,10 +224,10 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   }, [pathname, setSelectedCategory, setSelectedBrand]);
 
   return (
-    <nav className="flex flex-col gap-2 mr-4">
-      <div className="flex flex-col w-48 border border-light rounded p-4 mt-2">
+    <nav className="flex flex-col gap-2 mr-4  rounded">
+      <div className="flex flex-col w-48 border border-light bg-primaryLight rounded p-4 mt-2">
         <h2 className="text-primaryDark text-base tracking-wider mb-2">
-          Categorias da api
+          Categorias
         </h2>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
 
@@ -236,7 +236,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
             key={category.id}
             className={`flex items-center py-1 border-b border-light cursor-pointer ${
               selectedCategory === category.id
-                ? "bg-primary text-primaryLight border rounded p-4"
+                ? "bg-primaryDark text-primaryLight font-bold tracking-wider antialiased border rounded p-4"
                 : ""
             }`}
             onClick={() => handleCategoryClick(category.id)}
@@ -259,9 +259,9 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
       </div>
 
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
+      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
-          Marcas da api
+          Marcas
         </h2>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
         {brands.map((brand) => (
@@ -269,7 +269,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
             key={brand.id}
             className={`flex items-center py-1 border-b border-light cursor-pointer ${
               selectedBrand === brand.id
-                ? "bg-primary text-primaryLight border rounded p-4"
+                ? "bg-primaryDark text-primaryLight border font-bold tracking-wider rounded p-4"
                 : ""
             }`}
             onClick={() => handleBrandClick(brand.id)}
@@ -288,9 +288,9 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         ))}
       </div>
 
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
+      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
-          Cores da api
+          Cores
         </h2>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
         <div className="flex gap-2 flex-wrap">
@@ -311,7 +311,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         </div>
       </div>
 
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded">
+      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Tamanhos
         </h2>
@@ -322,7 +322,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
               key={size.id}
               className={`border border-light rounded p-1 text-xs cursor-pointer ${
                 selectedSize === size.id
-                  ? "bg-primary text-primaryLight border"
+                  ? "bg-primaryDark text-primaryLight font-bold tracking-wider border"
                   : ""
               }`}
               onClick={() => handleSizeClick(size.id)}
