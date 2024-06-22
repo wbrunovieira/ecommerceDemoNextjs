@@ -73,7 +73,9 @@ const productCategoryIds = await getCategoriesId();
 const getSimilarProducts = async (
   currentProductCategories: Category[],
   products: ProductProps[]
-): Promise<{ id: string; title: string; image: string; price: number , slug: string}[]> => {
+): Promise<
+  { id: string; title: string; image: string; price: number; slug: string }[]
+> => {
   console.log("currentProductCategories", currentProductCategories);
 
   const currentProductCategoryIds = currentProductCategories.map(
@@ -176,7 +178,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
       <Container>
         <section className="flex mt-2 gap-8">
           <div className="flex flex-col">
-            <Sidebar />
+            <Sidebar initialCategories={[]} />
           </div>
           <Product
             id={productId}

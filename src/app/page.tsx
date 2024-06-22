@@ -7,8 +7,7 @@ import Sidebar from "@/components/SideBar";
 import ProductList from "@/components/ProductList";
 
 import { ImagesSlider } from "@/components/ui/images-slider";
-import { useEffect } from "react";
-import { useSelectionStore } from "@/context/store";
+
 
 interface Category {
   id: string;

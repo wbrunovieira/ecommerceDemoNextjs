@@ -115,8 +115,11 @@ const Product: React.FC<ProductProps> = ({
   );
   const [availableStock, setAvailableStock] = useState<number>(0);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isBuyButtonDisabled, setIsBuyButtonDisabled] = useState(true);
+  const [isStockChecked, setIsStockChecked] = useState<boolean>(false);
 
   console.log("similarProducts", similarProducts);
+  const hasVariants = variants.length > 0;
 
   const checkStockAndSetVariant = (
     sizeId: string | null,
@@ -139,17 +142,24 @@ const Product: React.FC<ProductProps> = ({
         console.log("selectedVariant dentro do if", selectedVariant);
         console.log("selectedVariant stock", selectedVariant.stock);
       } else {
+        console.log(
+          "Nenhuma variante encontrada para o tamanho e cor selecionados."
+        );
         setAvailableStock(0);
         setSelectedVariantId(null);
         setQuantity(1);
       }
-    } else {
-      setAvailableStock(0);
+    }
+
+    if (!sizeId && !colorId) {
+      console.log("stock sem variant", stock);
+      setAvailableStock(stock);
       setSelectedVariantId(null);
       setQuantity(1);
     }
+    setIsStockChecked(true);
   };
-
+  console.log("stock sem fora do chestock", stock);
   const handleSizeChange = (sizeId: string) => {
     console.log("Selected size ID:", sizeId);
     setSelectedSize(sizeId);
@@ -179,8 +189,67 @@ const Product: React.FC<ProductProps> = ({
   const decrementQuantity = () => {
     setQuantity((prevQuantity) => (prevQuantity > 1 ? prevQuantity - 1 : 1));
   };
+
+  const handleAddToCart = () => {
+    if (hasVariants) {
+      if (selectedVariantId) {
+        if (quantity <= availableStock) {
+          const selectedVariant = variants.find(
+            (variant) => variant.id === selectedVariantId
+          );
+          if (selectedVariant) {
+            addToCart({
+              id: selectedVariant.id,
+              quantity,
+              title,
+              image: mainImage,
+              price: selectedVariant.price,
+            });
+          } else {
+            alert("Please select a valid size and color combination.");
+          }
+        } else {
+          alert("The quantity exceeds the available stock.");
+        }
+      } else {
+        alert("Please select a valid size and color combination.");
+      }
+    } else {
+      if (quantity <= stock) {
+        addToCart({
+          id,
+          quantity,
+          title,
+          image: mainImage,
+          price,
+        });
+      } else {
+        alert("The quantity exceeds the available stock.");
+      }
+    }
+  };
   const cartItems = useCartStore((state: any) => state.cartItems);
   const addToCart = useCartStore((state: any) => state.addToCart);
+
+  useEffect(() => {
+    if (!hasVariants) {
+      setAvailableStock(stock);
+      setIsBuyButtonDisabled(false);
+      setIsStockChecked(true);
+    } else if (!selectedSize || !selectedColor) {
+      setIsBuyButtonDisabled(true);
+    } else {
+      setIsBuyButtonDisabled(false);
+    }
+  }, [selectedSize, selectedColor, hasVariants]);
+
+  useEffect(() => {
+    if (!selectedSize || !selectedColor) {
+      setIsBuyButtonDisabled(true);
+    } else {
+      setIsBuyButtonDisabled(false);
+    }
+  }, [selectedSize, selectedColor]);
 
   useEffect(() => {
     if (swiperElRef.current) {
@@ -204,31 +273,6 @@ const Product: React.FC<ProductProps> = ({
   const getColorStock = (colorId: string) => {
     const variant = variants.find((variant) => variant.colorId === colorId);
     return variant ? variant.stock : 0;
-  };
-
-  const handleAddToCart = () => {
-    if (selectedVariantId) {
-      if (quantity <= availableStock) {
-        const selectedVariant = variants.find(
-          (variant) => variant.id === selectedVariantId
-        );
-        if (selectedVariant) {
-          addToCart({
-            id: selectedVariant.id,
-            quantity,
-            title,
-            image: mainImage,
-            price: selectedVariant.price,
-          });
-        } else {
-          alert("Please select a valid size and color combination.");
-        }
-      } else {
-        alert("The quantity exceeds the available stock.");
-      }
-    } else {
-      alert("Please select a valid size and color combination.");
-    }
   };
 
   const favorites = useFavoritesStore((state: any) => state.favorites);
@@ -334,46 +378,51 @@ const Product: React.FC<ProductProps> = ({
                 </span>
               </button>
             </div>
-            <div className="mt-4 rounded px-2 py-2 max-w-48">
-              <h3 className="text-base text-primaryDark font-semibold">
-                Cores
-              </h3>
-              <div className="flex gap-2 mt-2">
-                {colors?.map((color, index) => (
-                  <button
-                    key={index}
-                    className={`w-4 h-4 rounded-full border border-transparent ${
-                      selectedColor === color.id
-                        ? "ring-2 ring-offset-2 shadow-lg ring-secondary"
-                        : ""
-                    }`}
-                    style={{ backgroundColor: color.hex }}
-                    onClick={() => handleColorChange(color.id)}
-                  ></button>
-                ))}
-              </div>
-            </div>
 
-            <div className="mt-2 flex-initial rounded px-2 py-2 max-w-64">
-              <h3 className="text-base font-semibold text-primaryDark">
-                Tamanhos
-              </h3>
-              <div className="flex gap-2 justify-start p-2 w-60 cursor-pointer">
-                {sizes?.map((size, index) => (
-                  <div
-                    key={index}
-                    className={`border rounded p-2 ${
-                      selectedSize === size.id
-                        ? "bg-primary text-white"
-                        : "border-light"
-                    }`}
-                    onClick={() => handleSizeChange(size.id)}
-                  >
-                    {size.name}
+            {hasVariants && (
+              <>
+                <div className="mt-4 rounded px-2 py-2 max-w-48">
+                  <h3 className="text-base text-primaryDark font-semibold">
+                    Cores
+                  </h3>
+                  <div className="flex gap-2 mt-2">
+                    {colors?.map((color, index) => (
+                      <button
+                        key={index}
+                        className={`w-4 h-4 rounded-full border border-transparent ${
+                          selectedColor === color.id
+                            ? "ring-2 ring-offset-2 shadow-lg ring-secondary"
+                            : ""
+                        }`}
+                        style={{ backgroundColor: color.hex }}
+                        onClick={() => handleColorChange(color.id)}
+                      ></button>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
+                </div>
+
+                <div className="mt-2 flex-initial rounded px-2 py-2 max-w-64">
+                  <h3 className="text-base font-semibold text-primaryDark">
+                    Tamanhos
+                  </h3>
+                  <div className="flex gap-2 justify-start p-2 w-60 cursor-pointer">
+                    {sizes?.map((size, index) => (
+                      <div
+                        key={index}
+                        className={`border rounded p-2 ${
+                          selectedSize === size.id
+                            ? "bg-primary text-white"
+                            : "border-light"
+                        }`}
+                        onClick={() => handleSizeChange(size.id)}
+                      >
+                        {size.name}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="my-4 px-4 py-2 border-r-4 border-secondary shadow-lg rounded-md bg-primaryLight w-auto">
               <p className="text-primaryDark font-semibold text-lg">
@@ -408,16 +457,21 @@ const Product: React.FC<ProductProps> = ({
               )}
             </div>
             <div className="flex w-96 mt-4">
-              {availableStock > 0 ? (
-                <Button
-                  variant="secondary"
-                  size="large"
-                  onClick={handleAddToCart}
-                >
-                  Comprar
-                </Button>
+              {!hasVariants || isStockChecked ? (
+                availableStock > 0 ? (
+                  <Button
+                    variant="secondary"
+                    size="large"
+                    onClick={handleAddToCart}
+                    disabled={isBuyButtonDisabled}
+                  >
+                    Comprar
+                  </Button>
+                ) : (
+                  <p className="out-of-stock">Produto fora de estoque</p>
+                )
               ) : (
-                <p className="out-of-stock">Produto fora de estoque</p>
+                <p className="text-gray-500">Selecione cor e tamanho</p>
               )}
             </div>
             <div className="flex flex-col mt-4 border border-light rounded px-8 py-2 w-96 text-xs text-[#676666] ">
