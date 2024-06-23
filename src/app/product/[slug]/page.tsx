@@ -29,6 +29,10 @@ interface ProductDetails {
   description?: string;
   finalPrice?: number;
   images?: string[];
+  height?: number;
+  width?: number;
+  length?: number;
+  weight?: number;
   slug?: string;
   stock?: number;
   productCategories: string;
@@ -135,6 +139,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
       sizes,
       categories,
       variants,
+   
     } = (await getProductBySlug(params.slug)) as any;
 
     if (!product) {
@@ -150,6 +155,9 @@ const ProductPage = async ({ params }: ParamsProps) => {
     }
 
     const productDetails = product.props;
+   
+
+
 
     const productName = productDetails?.name ?? "No name available";
     const productDescription =
@@ -162,6 +170,10 @@ const ProductPage = async ({ params }: ParamsProps) => {
     const productColors = colors ?? [];
     const productSizes = sizes ?? [];
     const productCategories = categories ?? [];
+    const height = productDetails.height ?? undefined;
+    const width = productDetails.width ?? undefined;
+    const length = productDetails.length ?? undefined;
+    const weight = productDetails.weight ?? undefined;
 
     console.log("productCategories", productCategories);
     const allProducts = await getProducts();
@@ -182,6 +194,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
           </div>
           <Product
             id={productId}
+           
             title={productName}
             material={productMaterial ?? "N/A"}
             categories={productCategories}
@@ -194,6 +207,10 @@ const ProductPage = async ({ params }: ParamsProps) => {
             stock={productDetails.stock}
             variants={variants}
             similarProducts={similarProducts}
+            width={width}
+            height={height}
+            length={length}
+            weight={weight}
           />
         </section>
       </Container>

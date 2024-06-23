@@ -45,6 +45,8 @@ interface ProductSlugResponse {
   product: ProductType;
   materialName: string;
   brandName: string;
+ 
+
   colors: { id: string; name: string; hex: string }[];
   sizes: { id: string; name: string }[];
   categories: { id: string; name: string }[];
@@ -146,10 +148,14 @@ export async function getProductsByCategoriesId(
       productSizes: product.props?.productSizes ?? [],
       productColors: product.props?.productColors ?? [],
       productCategories: product.props?.productCategories ?? [],
-      materialId: product.props?.materialId ? { value: product.props.materialId.value } : null,
+      materialId: product.props?.materialId
+        ? { value: product.props.materialId.value }
+        : null,
       sizeId: product.props?.sizeId ?? [],
       finalPrice: product.props?.finalPrice ?? 0,
-      brandId: product.props?.brandId ? { value: product.props.brandId.value } : null,
+      brandId: product.props?.brandId
+        ? { value: product.props.brandId.value }
+        : null,
       discount: product.props?.discount ?? 0,
       price: product.props?.price ?? 0,
       stock: product.props?.stock ?? 0,

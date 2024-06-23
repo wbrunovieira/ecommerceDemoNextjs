@@ -7,6 +7,10 @@ interface Product {
   image: string;
   price: number;
   quantity: number;
+  height: number;
+  width: number;
+  length: number;
+  weight: number;
 }
 
 interface CartState {

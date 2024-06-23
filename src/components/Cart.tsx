@@ -10,6 +10,10 @@ interface Product {
   title: string;
   image: string;
   price: number;
+  height: number;
+  width: number;
+  length: number;
+  weight: number;
 }
 const Cart = () => {
   const cartItems = useCartStore((state: any) => state.cartItems);
@@ -23,6 +27,7 @@ const Cart = () => {
   }, []);
 
   console.log("cartItems", cartItems);
+  
   const increaseQuantity = (id: string) => {
     updateQuantity(id, 1);
   };

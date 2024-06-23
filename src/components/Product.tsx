@@ -72,6 +72,10 @@ interface ProductProps {
   description: string;
   price: number;
   id: string;
+  height?: number;
+  width?: number;
+  length?: number;
+  weight?: number;
   material?: string;
   categories: Category[];
   fabricante: string;
@@ -103,6 +107,10 @@ const Product: React.FC<ProductProps> = ({
   stock,
   variants,
   similarProducts,
+  height,
+  width,
+  length,
+  weight,
 }) => {
   const swiperElRef = useRef(null);
 
@@ -213,6 +221,10 @@ const Product: React.FC<ProductProps> = ({
               title,
               image: mainImage,
               price: selectedVariant.price,
+              height,
+              width,
+              length,
+              weight,
             });
           } else {
             alert("Please select a valid size and color combination.");
@@ -235,6 +247,10 @@ const Product: React.FC<ProductProps> = ({
           title,
           image: mainImage,
           price,
+          height,
+          width,
+          length,
+          weight,
         });
       } else {
         alert("The quantity exceeds the available stock.");
@@ -243,6 +259,10 @@ const Product: React.FC<ProductProps> = ({
   };
   const cartItems = useCartStore((state: any) => state.cartItems);
   const addToCart = useCartStore((state: any) => state.addToCart);
+
+  useEffect(() => {
+    console.log("cartItems", cartItems);
+  }, [cartItems]);
 
   useEffect(() => {
     if (!hasVariants) {
