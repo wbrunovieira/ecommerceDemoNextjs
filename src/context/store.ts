@@ -1,12 +1,12 @@
-import { create } from "zustand";
+import create, { StateCreator } from "zustand";
 import { persist, PersistOptions, createJSONStorage } from "zustand/middleware";
 
 interface Product {
   id: string;
   title: string;
-  quantity: number;
   image: string;
   price: number;
+  quantity: number;
 }
 
 interface CartState {
@@ -16,6 +16,7 @@ interface CartState {
   clearCart: () => void;
   updateQuantity: (productId: string, amount: number) => void;
 }
+
 interface FavoriteState {
   cartFavorited: Product[];
   favorites: string[];
@@ -43,8 +44,14 @@ export interface SelectionState {
   setSelectedMinPrice: (selectedMinPrice: number | null) => void;
   setSelectedMaxPrice: (selectedMaxPrice: number | null) => void;
 }
-export const useCartStore = create(
-  persist(
+
+type MyPersist = (
+  config: StateCreator<CartState>,
+  options: PersistOptions<CartState>
+) => StateCreator<CartState>;
+
+export const useCartStore = create<CartState>(
+  (persist as MyPersist)(
     (set) => ({
       cartItems: [],
       addToCart: (product: Product) =>
@@ -95,13 +102,13 @@ export const useCartStore = create(
           return {};
         }),
     }),
-
     {
       name: "cart-storage",
       getStorage: () => localStorage,
     }
   )
 );
+
 export const useFavoritesStore = create(
   persist(
     (set) => ({
@@ -152,7 +159,7 @@ export const useSelectionStore = create<SelectionState>()(
     (set) => ({
       selectedCategory: null,
       selectedBrand: null,
-      selectedMaterial:null,
+      selectedMaterial: null,
       selectedColor: null,
       selectedSize: null,
       selectedMinPrice: null,

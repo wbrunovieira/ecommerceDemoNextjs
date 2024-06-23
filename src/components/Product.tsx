@@ -159,7 +159,9 @@ const Product: React.FC<ProductProps> = ({
     }
     setIsStockChecked(true);
   };
+
   console.log("stock sem fora do chestock", stock);
+
   const handleSizeChange = (sizeId: string) => {
     console.log("Selected size ID:", sizeId);
     setSelectedSize(sizeId);
@@ -191,8 +193,15 @@ const Product: React.FC<ProductProps> = ({
   };
 
   const handleAddToCart = () => {
+    console.log("Entrou em handleAddToCart");
+    console.log("hasVariants:", hasVariants);
+    console.log("selectedVariantId:", selectedVariantId);
+    console.log("availableStock:", availableStock);
+    console.log("quantity:", quantity);
     if (hasVariants) {
+      console.log("Produto tem variantes.");
       if (selectedVariantId) {
+        console.log("Uma variante foi selecionada.");
         if (quantity <= availableStock) {
           const selectedVariant = variants.find(
             (variant) => variant.id === selectedVariantId
@@ -215,7 +224,11 @@ const Product: React.FC<ProductProps> = ({
         alert("Please select a valid size and color combination.");
       }
     } else {
-      if (quantity <= stock) {
+      console.log("Produto não tem variantes.");
+      console.log("entrou no else sem variant stock1", availableStock);
+      if (quantity <= availableStock) {
+        console.log("entrou no else sem variant stock2", availableStock);
+        console.log("Quantidade está dentro do estoque disponível.");
         addToCart({
           id,
           quantity,
@@ -235,21 +248,16 @@ const Product: React.FC<ProductProps> = ({
     if (!hasVariants) {
       setAvailableStock(stock);
       setIsBuyButtonDisabled(false);
-      setIsStockChecked(true);
-    } else if (!selectedSize || !selectedColor) {
+    }
+  }, [hasVariants, stock]);
+
+  useEffect(() => {
+    if (hasVariants && (!selectedSize || !selectedColor)) {
       setIsBuyButtonDisabled(true);
     } else {
       setIsBuyButtonDisabled(false);
     }
   }, [selectedSize, selectedColor, hasVariants]);
-
-  useEffect(() => {
-    if (!selectedSize || !selectedColor) {
-      setIsBuyButtonDisabled(true);
-    } else {
-      setIsBuyButtonDisabled(false);
-    }
-  }, [selectedSize, selectedColor]);
 
   useEffect(() => {
     if (swiperElRef.current) {
