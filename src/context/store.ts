@@ -15,6 +15,7 @@ interface CartState {
   removeFromCart: (productId: string) => void;
   clearCart: () => void;
   updateQuantity: (productId: string, amount: number) => void;
+  initializeCart: (products: Product[]) => void;
 }
 
 interface FavoriteState {
@@ -101,6 +102,7 @@ export const useCartStore = create<CartState>(
           }
           return {};
         }),
+      initializeCart: (products: Product[]) => set({ cartItems: products }),
     }),
     {
       name: "cart-storage",

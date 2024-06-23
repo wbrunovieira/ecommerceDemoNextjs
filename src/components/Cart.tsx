@@ -13,12 +13,13 @@ interface Product {
 }
 const Cart = () => {
   const cartItems = useCartStore((state: any) => state.cartItems);
-  const addToCart = useCartStore((state: any) => state.addToCart);
+
+  const initializeCart = useCartStore((state: any) => state.initializeCart);
   const removeFromCart = useCartStore((state: any) => state.removeFromCart);
   const updateQuantity = useCartStore((state: any) => state.updateQuantity);
 
   useEffect(() => {
-    addToCart(cartItems);
+    initializeCart(cartItems);
   }, []);
 
   console.log("cartItems", cartItems);
