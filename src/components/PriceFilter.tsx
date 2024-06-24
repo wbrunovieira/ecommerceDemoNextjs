@@ -103,7 +103,7 @@ const PriceFilter = ({ isHome }: { isHome: boolean }) => {
       {isHome && (
         <button
           onClick={handleFilterSubmit}
-          className="bg-primary text-white py-2 px-4 mt-4 rounded hover:bg-primaryDark"
+          className="bg-primary text-white py-2 px-4 mt-4 rounded hover:bg-primaryDark hover:text-primaryLight transition duration-300 ease-in-out"
         >
           Filtrar
         </button>

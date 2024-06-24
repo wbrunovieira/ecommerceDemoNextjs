@@ -52,7 +52,12 @@ const ProductList = () => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
       {produtos.map((produto) => (
-        <Link key={produto.id} href={`/product/${produto.slug}`} passHref>
+        <Link
+          className="rounded "
+          key={produto.id}
+          href={`/product/${produto.slug}`}
+          passHref
+        >
           <Card
             id={produto.id}
             title={produto.name}

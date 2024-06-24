@@ -146,12 +146,14 @@ export const useFavoritesStore = create(
             : [...state.favorites, productId],
         })),
       removeFromFavorite: (productId: string) =>
-        set((state: FavoriteState) => ({
-          cartItems: state.cartFavorited.filter(
+        set((state: FavoriteState) => {
+          const updatedCartFavorited = state.cartFavorited.filter(
             (item) => item.id !== productId
-          ),
-        })),
-      clearFavorite: () => set({ cartItems: [] }),
+          );
+          return { cartFavorited: updatedCartFavorited };
+        }),
+
+      clearFavorite: () => set({ cartFavorited: [] }),
     }),
     {
       name: "favorite-storage",

@@ -40,7 +40,7 @@ body {
   font-size: 12px;
   max-width: 42px;
 
-  top: -15px;
+  top: -30px;
   left: 15;
   z-index: 1;
 }
@@ -110,7 +110,7 @@ body {
 .custom-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-areas: 'left search right';
+  grid-template-areas: "left search right";
   grid-auto-rows: minmax(100px, auto);
 }
 
@@ -135,8 +135,8 @@ body {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     grid-template-areas:
-      'left right'
-      'search search';
+      "left right"
+      "search search";
   }
   body {
     margin: 0;

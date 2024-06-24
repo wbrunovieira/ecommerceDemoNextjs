@@ -297,9 +297,9 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         {categories.map((category) => (
           <div
             key={category.id}
-            className={`flex items-center py-1 border-b border-light cursor-pointer ${
+            className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out  ${
               selectedCategory === category.id
-                ? "bg-primaryDark text-primaryLight font-bold tracking-wider antialiased border rounded p-4"
+                ? "bg-primaryDark text-primaryLight font-bold tracking-wider antialiased border rounded p-4 "
                 : ""
             }`}
             onClick={() => handleCategoryClick(category.id)}
@@ -326,11 +326,11 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Marcas
         </h2>
-        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 " />
         {brands.map((brand) => (
           <div
             key={brand.id}
-            className={`flex items-center py-1 border-b border-light cursor-pointer ${
+            className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out ${
               selectedBrand === brand.id
                 ? "bg-primaryDark text-primaryLight border font-bold tracking-wider rounded p-4"
                 : ""
@@ -360,7 +360,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           {colors.map((color) => (
             <div
               key={color.id}
-              className={`w-6 h-6 rounded-full cursor-pointer${
+              className={`w-6 h-6 rounded-full cursor-pointer p-2 transform hover:scale-110 hover:shadow-lg transition duration-300 ease-in-out ${
                 selectedColor === color.id ? " border rounded p-4 w-8 h-8 " : ""
               }`}
               style={{
@@ -383,7 +383,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           {sizes.map((size, index) => (
             <div
               key={size.id}
-              className={`border border-light rounded p-1 text-xs cursor-pointer ${
+              className={`border border-light rounded p-1 text-xs cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out ${
                 selectedSize === size.id
                   ? "bg-primaryDark text-primaryLight font-bold tracking-wider border"
                   : ""
@@ -400,11 +400,11 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           Materiais
         </h2>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-        <div className="flex flex-col gap-1 justify-start p-1 w-16">
+        <div className="flex flex-col gap-1 justify-start p-1 w-32">
           {materials.map((material, index) => (
             <div
               key={index}
-              className={`border border-light rounded p-1 text-xs cursor-pointer ${
+              className={`border border-light rounded text-xs cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out ${
                 selectedMaterial === material.id
                   ? "bg-primaryDark text-primaryLight font-bold tracking-wider border"
                   : ""

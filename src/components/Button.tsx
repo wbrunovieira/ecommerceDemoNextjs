@@ -34,7 +34,7 @@ const Button: React.FC<ButtonProps> = ({
     large: "text-lg px-5 py-3",
   };
 
-  const classes = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} text-white-important`;
+  const classes = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} text-white-important whitespace-nowrap`;
 
   return (
     <button className={classes} onClick={onClick} disabled={disabled}>
