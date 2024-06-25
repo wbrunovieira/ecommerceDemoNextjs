@@ -1,4 +1,3 @@
-// src/auth/nextAuthOptions.ts
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
@@ -19,11 +18,13 @@ export const nextAuthOptions: NextAuthOptions = {
       },
       async authorize(credentials, req) {
         console.log("Autorizando com credenciais:", credentials);
+
         if (!credentials) {
           console.log("Credenciais não fornecidas");
           return null;
         }
 
+        // Verifica se o usuário já existe
         const responseCheck = await fetch(
           "http://localhost:3333/accounts/check",
           {
@@ -32,36 +33,47 @@ export const nextAuthOptions: NextAuthOptions = {
             body: JSON.stringify({ email: credentials.email }),
           }
         );
-        console.log("responseCheck", responseCheck);
 
         const exists = await responseCheck.text();
-        console.log("exists", exists);
-        if (exists.trim() === "true") {
-          console.log("Usuário já existe, falha ao criar novo usuário");
-          return null;
-        }
+        const userExists = exists.trim().toLowerCase() === "true";
 
-        const response = await fetch("http://localhost:3333/accounts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: credentials.name,
-            email: credentials.email,
-            password: credentials.password,
-          }),
-        });
-        console.log("response", response);
+        // Se o usuário não existir, cria um novo usuário
+        if (!userExists && credentials.name) {
+          const responseCreate = await fetch("http://localhost:3333/accounts", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name: credentials.name,
+              email: credentials.email,
+              password: credentials.password,
+            }),
+          });
 
-        const user = await response.json();
-        console.log("user", user);
+          if (!responseCreate.ok) {
+            console.log("Falha ao criar usuário");
+            return null;
+          }
 
-        if (user && response.ok) {
+          const user = await responseCreate.json();
           console.log("Usuário criado com sucesso:", user);
           return user;
         }
 
-        console.log("Falha ao criar usuário");
-        return null;
+        // Se o usuário já existir, autentica o usuário
+        const response = await fetch("http://localhost:3333/sessions", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(credentials),
+        });
+
+        if (!response.ok) {
+          console.log("Falha ao autenticar");
+          return null;
+        }
+
+        const user = await response.json();
+        console.log("Usuário autenticado:", user);
+        return user;
       },
     }),
     GoogleProvider({
@@ -132,6 +144,10 @@ export const nextAuthOptions: NextAuthOptions = {
         }
         console.log("chegou aqui no false do fim 1");
       }
+
+      if (account?.provider === "credentials") {
+        return !!user;
+      }
       console.log("chegou aqui no false do fim");
       return true;
     },
@@ -170,6 +186,12 @@ export const nextAuthOptions: NextAuthOptions = {
         );
         token.sub = profile.sub;
         token.picture = profile.picture;
+      }
+      if (user) {
+        token = {
+          ...token,
+          ...user,
+        };
       }
 
       console.log("token no jwt", token);

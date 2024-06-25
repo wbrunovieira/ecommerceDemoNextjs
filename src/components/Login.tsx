@@ -25,6 +25,8 @@ const Login = () => {
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
+    console.log("Email:", email);
+    console.log("Password:", password);
     const result = await signIn("credentials", {
       email,
       password,
@@ -32,10 +34,11 @@ const Login = () => {
     });
 
     if (result?.error) {
-      console.log(result);
+      setErrorMessage({ email: "", password: "Credenciais inválidas" });
+      console.log("Login Error:", result.error);
       return;
     }
-
+    console.log("Login Successful:", result);
     router.replace("/");
   };
 
@@ -44,6 +47,7 @@ const Login = () => {
     e.stopPropagation();
     setShowPassword(!showPassword);
   };
+
   function getMessageForField(field: keyof ErrorMessages): string {
     switch (field) {
       case "email":
@@ -115,15 +119,15 @@ const Login = () => {
               type="email"
               name="email"
               required
-              autoComplete='email'
+              autoComplete="email"
               placeholder="Email"
-              onBlur={() => handleBlur('email', email)}
+              onBlur={() => handleBlur("email", email)}
               value={email}
               className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 "
               onChange={(e) => setEmail(e.target.value)}
             />
-              {errorMessage.email && (
-              <p className='text-redAtention text-xs italic'>
+            {errorMessage.email && (
+              <p className="text-redAtention text-xs italic">
                 {errorMessage.email}
               </p>
             )}
