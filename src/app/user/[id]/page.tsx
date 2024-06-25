@@ -41,6 +41,7 @@ const UserPage: NextPage = () => {
   const { data: session, status } = useSession();
 
   const [addresses, setAddresses] = useState<Address[]>([]);
+  const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
 
   const favorited = useFavoritesStore((state: any) => state.favorites);
   const cartFavorited = useFavoritesStore((state: any) => state.cartFavorited);
@@ -48,6 +49,45 @@ const UserPage: NextPage = () => {
     (state: any) => state.removeFromFavorite
   );
   const addToCart = useCartStore((state: any) => state.addToCart);
+
+  const handleEditAddress = (addressId: string) => {
+    setEditingAddressId(addressId);
+  };
+
+  const handleSaveAddress = async (address: Address) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3333/users/${session?.user?.id}/addresses/${address._id.value}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.accessToken}`,
+          },
+          body: JSON.stringify({
+            userId: address.props.userId,
+            street: address.props.street,
+            number: address.props.number,
+            complement: address.props.complement,
+            city: address.props.city,
+            state: address.props.state,
+            country: address.props.country,
+            zipCode: address.props.zipCode,
+          }),
+        }
+      );
+      console.log("response no handle save adress", response);
+
+      if (response.ok) {
+        fetchAddresses();
+        setEditingAddressId(null);
+      } else {
+        console.error("Failed to update address");
+      }
+    } catch (error) {
+      console.error("Error updating address", error);
+    }
+  };
 
   const fetchAddresses = async () => {
     console.log("entrou no fetchAddresses ");
@@ -189,49 +229,6 @@ const UserPage: NextPage = () => {
             <div className="space-y-4">
               <div>
                 <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  Nome Completo
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  defaultValue={session.user?.name || ""}
-                  className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-primaryDark "
-                >
-                  E-mail
-                </label>
-                <input
-                  id="email"
-                  type="email"
-                  defaultValue={session.user?.email || ""}
-                  className="mt-1 block text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary bg-gray-100 cursor-not-allowed"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="address"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  Endereço
-                </label>
-                <input
-                  id="address"
-                  autoComplete="adress"
-                  type="text"
-                  placeholder="Endereço completo"
-                  className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark"
-                />
-              </div>
-              <div>
-                <label
                   htmlFor="phone"
                   className="block text-sm font-medium text-primaryDark"
                 >
@@ -260,6 +257,7 @@ const UserPage: NextPage = () => {
       </div>
       <div className="mt-10">
         <h2 className="text-xl font-bold text-primaryDark">Endereços:</h2>
+
         {addresses.length > 0 ? (
           <ul className="mt-4 space-y-4">
             {addresses.map((address, index) => (
@@ -267,27 +265,255 @@ const UserPage: NextPage = () => {
                 key={index}
                 className="border border-secondary p-4 rounded-md"
               >
-                <p>
-                  <strong>Rua:</strong> {address.props.street},{" "}
-                  {address.props.number}
-                </p>
-                {address.props.complement && (
-                  <p>
-                    <strong>Complemento:</strong> {address.props.complement}
-                  </p>
+                {editingAddressId === address._id.value ? (
+                  <form
+                    onSubmit={() => handleSaveAddress(address)}
+                    className="space-y-4"
+                  >
+                    <div>
+                      <label
+                        htmlFor="edit-street"
+                        className="block text-sm font-medium text-primaryDark"
+                      >
+                        Rua
+                      </label>
+                      <input
+                        id="edit-street"
+                        type="text"
+                        value={address.props.street}
+                        onChange={(e) =>
+                          setAddresses((prevAddresses) =>
+                            prevAddresses.map((a) =>
+                              a._id.value === address._id.value
+                                ? {
+                                    ...a,
+                                    props: {
+                                      ...a.props,
+                                      street: e.target.value,
+                                    },
+                                  }
+                                : a
+                            )
+                          )
+                        }
+                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="edit-number"
+                        className="block text-sm font-medium text-primaryDark"
+                      >
+                        Número
+                      </label>
+                      <input
+                        id="edit-number"
+                        type="number"
+                        value={address.props.number}
+                        onChange={(e) =>
+                          setAddresses((prevAddresses) =>
+                            prevAddresses.map((a) =>
+                              a._id.value === address._id.value
+                                ? {
+                                    ...a,
+                                    props: {
+                                      ...a.props,
+                                      number: parseInt(e.target.value),
+                                    },
+                                  }
+                                : a
+                            )
+                          )
+                        }
+                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="edit-complement"
+                        className="block text-sm font-medium text-primaryDark"
+                      >
+                        Complemento
+                      </label>
+                      <input
+                        id="edit-complement"
+                        type="text"
+                        value={address.props.complement || ""}
+                        onChange={(e) =>
+                          setAddresses((prevAddresses) =>
+                            prevAddresses.map((a) =>
+                              a._id.value === address._id.value
+                                ? {
+                                    ...a,
+                                    props: {
+                                      ...a.props,
+                                      complement: e.target.value,
+                                    },
+                                  }
+                                : a
+                            )
+                          )
+                        }
+                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="edit-city"
+                        className="block text-sm font-medium text-primaryDark"
+                      >
+                        Cidade
+                      </label>
+                      <input
+                        id="edit-city"
+                        type="text"
+                        value={address.props.city}
+                        onChange={(e) =>
+                          setAddresses((prevAddresses) =>
+                            prevAddresses.map((a) =>
+                              a._id.value === address._id.value
+                                ? {
+                                    ...a,
+                                    props: {
+                                      ...a.props,
+                                      city: e.target.value,
+                                    },
+                                  }
+                                : a
+                            )
+                          )
+                        }
+                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="edit-state"
+                        className="block text-sm font-medium text-primaryDark"
+                      >
+                        Estado
+                      </label>
+                      <input
+                        id="edit-state"
+                        type="text"
+                        value={address.props.state}
+                        onChange={(e) =>
+                          setAddresses((prevAddresses) =>
+                            prevAddresses.map((a) =>
+                              a._id.value === address._id.value
+                                ? {
+                                    ...a,
+                                    props: {
+                                      ...a.props,
+                                      state: e.target.value,
+                                    },
+                                  }
+                                : a
+                            )
+                          )
+                        }
+                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="edit-country"
+                        className="block text-sm font-medium text-primaryDark"
+                      >
+                        País
+                      </label>
+                      <input
+                        id="edit-country"
+                        type="text"
+                        value={address.props.country}
+                        onChange={(e) =>
+                          setAddresses((prevAddresses) =>
+                            prevAddresses.map((a) =>
+                              a._id.value === address._id.value
+                                ? {
+                                    ...a,
+                                    props: {
+                                      ...a.props,
+                                      country: e.target.value,
+                                    },
+                                  }
+                                : a
+                            )
+                          )
+                        }
+                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="edit-zipCode"
+                        className="block text-sm font-medium text-primaryDark"
+                      >
+                        CEP
+                      </label>
+                      <input
+                        id="edit-zipCode"
+                        type="text"
+                        value={address.props.zipCode}
+                        onChange={(e) =>
+                          setAddresses((prevAddresses) =>
+                            prevAddresses.map((a) =>
+                              a._id.value === address._id.value
+                                ? {
+                                    ...a,
+                                    props: {
+                                      ...a.props,
+                                      zipCode: e.target.value,
+                                    },
+                                  }
+                                : a
+                            )
+                          )
+                        }
+                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                      />
+                    </div>
+                    <div className="mt-8 flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => handleSaveAddress(address)}
+                        className="bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+                      >
+                        Salvar Endereço
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <>
+                    <p>
+                      <strong>Rua:</strong> {address.props.street},{" "}
+                      {address.props.number}
+                    </p>
+                    {address.props.complement && (
+                      <p>
+                        <strong>Complemento:</strong> {address.props.complement}
+                      </p>
+                    )}
+                    <p>
+                      <strong>Cidade:</strong> {address.props.city}
+                    </p>
+                    <p>
+                      <strong>Estado:</strong> {address.props.state}
+                    </p>
+                    <p>
+                      <strong>País:</strong> {address.props.country}
+                    </p>
+                    <p>
+                      <strong>CEP:</strong> {address.props.zipCode}
+                    </p>
+                    <button
+                      onClick={() => handleEditAddress(address._id.value)}
+                      className="mt-2 bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-1 px-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+                    >
+                      Editar
+                    </button>
+                  </>
                 )}
-                <p>
-                  <strong>Cidade:</strong> {address.props.city}
-                </p>
-                <p>
-                  <strong>Estado:</strong> {address.props.state}
-                </p>
-                <p>
-                  <strong>País:</strong> {address.props.country}
-                </p>
-                <p>
-                  <strong>CEP:</strong> {address.props.zipCode}
-                </p>
               </li>
             ))}
           </ul>
@@ -295,6 +521,7 @@ const UserPage: NextPage = () => {
           <p>Nenhum endereço encontrado.</p>
         )}
       </div>
+
       <div className="mt-10 flex justify-between">
         <Link
           href="/"
