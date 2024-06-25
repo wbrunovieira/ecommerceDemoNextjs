@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useCartStore, useFavoritesStore } from "@/context/store";
 import { BsTrash } from "react-icons/bs";
 import Button from "@/components/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Product {
   id: string;
@@ -50,18 +50,24 @@ const UserPage: NextPage = () => {
   const addToCart = useCartStore((state: any) => state.addToCart);
 
   const fetchAddresses = async () => {
-    try {
-      const response = await fetch("/users/by-user-id", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Authorization: `Bearer ${session?.accessToken}`,
-        },
-        body: JSON.stringify({
-          userId: session?.user?.id,
-        }),
-      });
+    console.log("entrou no fetchAddresses ");
+    console.log("session?.user?.id ", session?.user?.id);
 
+    try {
+      console.log("entrou no try fetchAddresses ");
+      const response = await fetch(
+        `http://localhost:3333/users/by-user-id?userId=${session?.user?.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.accessToken}`,
+          },
+        }
+      );
+
+      console.log("entrou no try fetchAddresses  response", response);
+      console.log("entrou  session?.accessToken", session?.accessToken);
       if (response.ok) {
         const data = await response.json();
         setAddresses(data.addresses);
@@ -72,6 +78,13 @@ const UserPage: NextPage = () => {
       console.error("Error fetching addresses", error);
     }
   };
+  console.log("addresses", addresses);
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetchAddresses();
+    }
+  }, [session?.user?.id]);
 
   if (status === "loading") {
     return <p>Carregando...</p>;
@@ -81,7 +94,10 @@ const UserPage: NextPage = () => {
     router.push("/auth/signin");
     return null;
   }
+
   console.log("favoritos", cartFavorited);
+  console.log("session", session);
+  console.log("status", session);
 
   return (
     <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight rounded-xl shadow-lg z-20 ">

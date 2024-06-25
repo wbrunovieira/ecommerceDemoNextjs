@@ -24,7 +24,6 @@ export const nextAuthOptions: NextAuthOptions = {
           return null;
         }
 
-        // Verifica se o usuário já existe
         const responseCheck = await fetch(
           "http://localhost:3333/accounts/check",
           {
@@ -37,7 +36,6 @@ export const nextAuthOptions: NextAuthOptions = {
         const exists = await responseCheck.text();
         const userExists = exists.trim().toLowerCase() === "true";
 
-        // Se o usuário não existir, cria um novo usuário
         if (!userExists && credentials.name) {
           const responseCreate = await fetch("http://localhost:3333/accounts", {
             method: "POST",
@@ -56,10 +54,18 @@ export const nextAuthOptions: NextAuthOptions = {
 
           const user = await responseCreate.json();
           console.log("Usuário criado com sucesso:", user);
-          return user;
+          console.log("Usuário autenticado:user.id", user.id);
+          return {
+            user: {
+              id: user.user.id,
+              name: user.user.name,
+              email: user.user.email,
+            },
+            accessToken: user.access_token,
+            id: user.user.id,
+          };
         }
 
-        // Se o usuário já existir, autentica o usuário
         const response = await fetch("http://localhost:3333/sessions", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -73,7 +79,20 @@ export const nextAuthOptions: NextAuthOptions = {
 
         const user = await response.json();
         console.log("Usuário autenticado:", user);
-        return user;
+        console.log("Usuário autenticado:user.id", user.user.id);
+        console.log(
+          "Usuário autenticado user.access_token:",
+          user.access_token
+        );
+        return {
+          user: {
+            id: user.user.id,
+            name: user.user.name,
+            email: user.user.email,
+          },
+          accessToken: user.access_token,
+          id: user.user.id,
+        };
       },
     }),
     GoogleProvider({
@@ -164,20 +183,23 @@ export const nextAuthOptions: NextAuthOptions = {
     }) {
       if (account && user) {
         console.log("account no jwt account e user", account);
+        console.log("account no jwt account e user", user);
         token.accessToken = user.accessToken;
         token.user = user;
+        console.log("account no jwt token.accessToken", token.accessToken);
+        console.log("account no jwt token.user", token.user);
       }
 
       if (account && user) {
+        console.log("account no jwt account e user 2", account);
+        console.log("account no jwt account e user 2", user);
         token.user = {
           id: user.id,
           name: user.name,
           email: user.email,
-          image: user.image,
+          image: user.image || "",
         };
-      } else if (account && !user && account.access_token) {
-        console.log("account no user", account);
-        token.accessToken = account.access_token;
+        console.log("account no jwt account e user 2", token);
       }
       if (account && profile && account.provider === "google") {
         console.log(
@@ -187,11 +209,18 @@ export const nextAuthOptions: NextAuthOptions = {
         token.sub = profile.sub;
         token.picture = profile.picture;
       }
+
       if (user) {
         token = {
           ...token,
-          ...user,
+          id: user.user.id || "default_id",
+          name: user.user.name || "",
+          email: user.user.email || "",
+          role: user.user.role || "",
+          accessToken: user.accessToken || "",
+          image: user.user.profileImageUrl || "",
         };
+        console.log("token no jwt user", token);
       }
 
       console.log("token no jwt", token);
@@ -201,15 +230,17 @@ export const nextAuthOptions: NextAuthOptions = {
     async session({ session, token }) {
       console.log("session original", session);
       console.log("token no session", token);
-      if (token.user) {
-        session.user = {
-          id: (token.user as { id?: string }).id || "default_id",
-          name: (token.user as { name?: string }).name || null,
-          email: (token.user as { email?: string }).email || null,
-          image: (token.user as { picture?: string }).picture || null,
-        };
-      }
 
+      session.user = {
+        id: (token.id as string) || "default_id",
+        name: token.name || null,
+        email: token.email || null,
+        image: (token.image as string) || null,
+        role: token.role as string,
+      };
+      session.accessToken = token.accessToken as string;
+
+      console.log("session.accessToken", session.accessToken);
       return session;
     },
   },
