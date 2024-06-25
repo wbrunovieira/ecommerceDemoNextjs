@@ -27,6 +27,7 @@ const CadastroForm = () => {
     password: '',
     repeatPassword: '',
   });
+  
   const router = useRouter();
 
   const googleBtnRef = useRef<HTMLButtonElement>(null);

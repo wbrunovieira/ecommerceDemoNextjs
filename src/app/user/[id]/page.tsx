@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useCartStore, useFavoritesStore } from "@/context/store";
 import { BsTrash } from "react-icons/bs";
 import Button from "@/components/Button";
+import { useState } from "react";
 
 interface Product {
   id: string;
@@ -16,10 +17,30 @@ interface Product {
   price: number;
 }
 
+interface Address {
+  _id: {
+    value: string;
+  };
+  props: {
+    userId: string;
+    street: string;
+    number: number;
+    complement?: string;
+    city: string;
+    state: string;
+    country: string;
+    zipCode: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
 const UserPage: NextPage = () => {
   const router = useRouter();
 
   const { data: session, status } = useSession();
+
+  const [addresses, setAddresses] = useState<Address[]>([]);
 
   const favorited = useFavoritesStore((state: any) => state.favorites);
   const cartFavorited = useFavoritesStore((state: any) => state.cartFavorited);
@@ -27,6 +48,30 @@ const UserPage: NextPage = () => {
     (state: any) => state.removeFromFavorite
   );
   const addToCart = useCartStore((state: any) => state.addToCart);
+
+  const fetchAddresses = async () => {
+    try {
+      const response = await fetch("/users/by-user-id", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${session?.accessToken}`,
+        },
+        body: JSON.stringify({
+          userId: session?.user?.id,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAddresses(data.addresses);
+      } else {
+        console.error("Failed to fetch addresses");
+      }
+    } catch (error) {
+      console.error("Error fetching addresses", error);
+    }
+  };
 
   if (status === "loading") {
     return <p>Carregando...</p>;
@@ -196,6 +241,43 @@ const UserPage: NextPage = () => {
             </div>
           </form>
         </div>
+      </div>
+      <div className="mt-10">
+        <h2 className="text-xl font-bold text-primaryDark">Endereços:</h2>
+        {addresses.length > 0 ? (
+          <ul className="mt-4 space-y-4">
+            {addresses.map((address, index) => (
+              <li
+                key={index}
+                className="border border-secondary p-4 rounded-md"
+              >
+                <p>
+                  <strong>Rua:</strong> {address.props.street},{" "}
+                  {address.props.number}
+                </p>
+                {address.props.complement && (
+                  <p>
+                    <strong>Complemento:</strong> {address.props.complement}
+                  </p>
+                )}
+                <p>
+                  <strong>Cidade:</strong> {address.props.city}
+                </p>
+                <p>
+                  <strong>Estado:</strong> {address.props.state}
+                </p>
+                <p>
+                  <strong>País:</strong> {address.props.country}
+                </p>
+                <p>
+                  <strong>CEP:</strong> {address.props.zipCode}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>Nenhum endereço encontrado.</p>
+        )}
       </div>
       <div className="mt-10 flex justify-between">
         <Link
