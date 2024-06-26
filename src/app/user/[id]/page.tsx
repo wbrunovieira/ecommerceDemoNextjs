@@ -9,6 +9,16 @@ import { BsTrash } from "react-icons/bs";
 import Button from "@/components/Button";
 import { useEffect, useState } from "react";
 
+export interface User {
+  name: string;
+  email: string;
+
+  phone?: string;
+
+  birthDate?: string;
+  gender?: string;
+  profileImageUrl?: string;
+}
 interface Product {
   id: string;
   quantity: number;
@@ -39,6 +49,14 @@ const UserPage: NextPage = () => {
   const router = useRouter();
 
   const { data: session, status } = useSession();
+  const [isEditingUser, setIsEditingUser] = useState(false);
+  const [userDetails, setUserDetails] = useState<Partial<User>>({
+    name:  "",
+    email:  "",
+    phone: "",
+    gender: "",
+    birthDate: "",
+  });
 
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
@@ -59,7 +77,7 @@ const UserPage: NextPage = () => {
   const handleSaveAddress = async (address: Address) => {
     try {
       const response = await fetch(
-        `http://localhost:3333/users/${session?.user?.id}/addresses/${address._id.value}`,
+        `http://localhost:3333/adress/${session?.user?.id}/addresses/${address._id.value}`,
         {
           method: "PUT",
           headers: {
@@ -98,7 +116,7 @@ const UserPage: NextPage = () => {
     try {
       console.log("entrou no try fetchAddresses ");
       const response = await fetch(
-        `http://localhost:3333/users/by-user-id?userId=${session?.user?.id}`,
+        `http://localhost:3333/adress/by-user-id?userId=${session?.user?.id}`,
         {
           method: "GET",
           headers: {
@@ -110,9 +128,18 @@ const UserPage: NextPage = () => {
 
       console.log("entrou no try fetchAddresses  response", response);
       console.log("entrou  session?.accessToken", session?.accessToken);
+
       if (response.ok) {
         const data = await response.json();
         setAddresses(data.addresses);
+        setUserDetails({
+          name: data.user.name,
+          email: data.user.email,
+          phone: data.user.phone || "",
+          gender: data.user.gender || "",
+          birthDate: data.user.birthDate || "",
+          profileImageUrl: data.user.profileImageUrl || "",
+        });
       } else {
         console.error("Failed to fetch addresses");
       }
@@ -124,7 +151,7 @@ const UserPage: NextPage = () => {
   const handleDeleteAddress = async (addressId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:3333/users/addresses/${addressId}`,
+        `http://localhost:3333/adress/addresses/${addressId}`,
         {
           method: "DELETE",
           headers: {
@@ -144,10 +171,38 @@ const UserPage: NextPage = () => {
     }
   };
 
+  const handleEditUser = () => {
+    setIsEditingUser(true);
+  };
+
+  const handleSaveUser = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3333/accounts/edit/${session?.user?.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.accessToken}`,
+          },
+          body: JSON.stringify(userDetails),
+        }
+      );
+
+      if (response.ok) {
+        setIsEditingUser(false);
+      } else {
+        console.error("Failed to update user");
+      }
+    } catch (error) {
+      console.error("Error updating user", error);
+    }
+  };
+
   const handleCreateAddress = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3333/users/${session?.user?.id}/addresses`,
+        `http://localhost:3333/adress/${session?.user?.id}/addresses`,
         {
           method: "POST",
           headers: {
@@ -285,6 +340,134 @@ const UserPage: NextPage = () => {
               Email: <strong>{session.user?.email}</strong>
             </p>
           </div>
+
+          {isEditingUser ? (
+            <form className="text-lg text-primaryDark w-[450px] bg-primary p-2 rounded-md">
+              <div className="space-y-4">
+                <div>
+                  <label
+                    htmlFor="name"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Nome
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={userDetails.name}
+                    onChange={(e) =>
+                      setUserDetails({ ...userDetails, name: e.target.value })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Email
+                  </label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={userDetails.email}
+                    onChange={(e) =>
+                      setUserDetails({ ...userDetails, email: e.target.value })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="phone"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Telefone
+                  </label>
+                  <input
+                    id="phone"
+                    type="text"
+                    value={userDetails.phone}
+                    onChange={(e) =>
+                      setUserDetails({ ...userDetails, phone: e.target.value })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="gender"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Sexo
+                  </label>
+                  <input
+                    id="gender"
+                    type="text"
+                    value={userDetails.gender}
+                    onChange={(e) =>
+                      setUserDetails({ ...userDetails, gender: e.target.value })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="birthDate"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Data de nascimento
+                  </label>
+                  <input
+                    id="birthDate"
+                    type="text"
+                    value={userDetails.birthDate}
+                    onChange={(e) =>
+                      setUserDetails({
+                        ...userDetails,
+                        birthDate: e.target.value,
+                      })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
+
+              </div>
+
+              <div className="mt-8 flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleSaveUser}
+                  className="bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+                >
+                  Salvar Alterações
+                </button>
+              </div>
+            </form>
+          ) : (
+            <div className="text-lg text-primaryDark w-[450px] bg-primary p-2 rounded-md">
+              <p>
+                Nome: <strong>{session.user?.name}</strong>
+              </p>
+              <p>
+                Email: <strong>{session.user?.email}</strong>
+              </p>
+              <p>
+                Telefone: <strong>{userDetails.phone}</strong>
+              </p>
+              <button
+                onClick={handleEditUser}
+                className="mt-4 bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+              >
+                Editar
+              </button>
+            </div>
+          )}
 
           <form className="mt-6 max-w-[600px] border-2 border-secondary p-4 rounded-md">
             <div className="space-y-4">
