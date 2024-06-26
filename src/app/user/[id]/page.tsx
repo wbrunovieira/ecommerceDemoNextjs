@@ -118,6 +118,30 @@ const UserPage: NextPage = () => {
       console.error("Error fetching addresses", error);
     }
   };
+
+  const handleDeleteAddress = async (addressId: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3333/users/addresses/${addressId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        fetchAddresses();
+      } else {
+        console.error("Failed to delete address");
+      }
+    } catch (error) {
+      console.error("Error deleting address", error);
+    }
+  };
+
   console.log("addresses", addresses);
 
   useEffect(() => {
@@ -506,12 +530,21 @@ const UserPage: NextPage = () => {
                     <p>
                       <strong>CEP:</strong> {address.props.zipCode}
                     </p>
-                    <button
-                      onClick={() => handleEditAddress(address._id.value)}
-                      className="mt-2 bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-1 px-2 rounded shadow-lg hover:shadow-xl transition duration-200"
-                    >
-                      Editar
-                    </button>
+
+                    <div className="flex justify-between items-center">
+                      <button
+                        onClick={() => handleEditAddress(address._id.value)}
+                        className="mt-2 bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-1 px-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleDeleteAddress(address._id.value)}
+                        className="text-primaryDark cursor-pointer hover:text-primary"
+                      >
+                        <BsTrash size={24} />
+                      </button>
+                    </div>
                   </>
                 )}
               </li>
