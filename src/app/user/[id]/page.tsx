@@ -42,6 +42,8 @@ const UserPage: NextPage = () => {
 
   const [addresses, setAddresses] = useState<Address[]>([]);
   const [editingAddressId, setEditingAddressId] = useState<string | null>(null);
+  const [isCreatingNewAddress, setIsCreatingNewAddress] = useState(false);
+  const [newAddress, setNewAddress] = useState<Partial<Address["props"]>>({});
 
   const favorited = useFavoritesStore((state: any) => state.favorites);
   const cartFavorited = useFavoritesStore((state: any) => state.cartFavorited);
@@ -139,6 +141,41 @@ const UserPage: NextPage = () => {
       }
     } catch (error) {
       console.error("Error deleting address", error);
+    }
+  };
+
+  const handleCreateAddress = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3333/users/${session?.user?.id}/addresses`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.accessToken}`,
+          },
+          body: JSON.stringify({
+            userId: session?.user?.id,
+            street: newAddress.street,
+            number: newAddress.number,
+            complement: newAddress.complement,
+            city: newAddress.city,
+            state: newAddress.state,
+            country: newAddress.country,
+            zipCode: newAddress.zipCode,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        fetchAddresses();
+        setIsCreatingNewAddress(false);
+        setNewAddress({});
+      } else {
+        console.error("Failed to create address");
+      }
+    } catch (error) {
+      console.error("Error creating address", error);
     }
   };
 
@@ -281,6 +318,156 @@ const UserPage: NextPage = () => {
       </div>
       <div className="mt-10">
         <h2 className="text-xl font-bold text-primaryDark">Endereços:</h2>
+
+        <div>
+          {isCreatingNewAddress ? (
+            <form
+              className="mt-6 space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCreateAddress();
+              }}
+            >
+              <div>
+                <label
+                  htmlFor="new-street"
+                  className="block text-sm font-medium text-primaryDark"
+                >
+                  Rua
+                </label>
+                <input
+                  id="new-street"
+                  type="text"
+                  value={newAddress.street || ""}
+                  onChange={(e) =>
+                    setNewAddress({ ...newAddress, street: e.target.value })
+                  }
+                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="new-number"
+                  className="block text-sm font-medium text-primaryDark"
+                >
+                  Número
+                </label>
+                <input
+                  id="new-number"
+                  type="number"
+                  value={newAddress.number || ""}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      number: parseInt(e.target.value),
+                    })
+                  }
+                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="new-complement"
+                  className="block text-sm font-medium text-primaryDark"
+                >
+                  Complemento
+                </label>
+                <input
+                  id="new-complement"
+                  type="text"
+                  value={newAddress.complement || ""}
+                  onChange={(e) =>
+                    setNewAddress({ ...newAddress, complement: e.target.value })
+                  }
+                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="new-city"
+                  className="block text-sm font-medium text-primaryDark"
+                >
+                  Cidade
+                </label>
+                <input
+                  id="new-city"
+                  type="text"
+                  value={newAddress.city || ""}
+                  onChange={(e) =>
+                    setNewAddress({ ...newAddress, city: e.target.value })
+                  }
+                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="new-state"
+                  className="block text-sm font-medium text-primaryDark"
+                >
+                  Estado
+                </label>
+                <input
+                  id="new-state"
+                  type="text"
+                  value={newAddress.state || ""}
+                  onChange={(e) =>
+                    setNewAddress({ ...newAddress, state: e.target.value })
+                  }
+                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="new-country"
+                  className="block text-sm font-medium text-primaryDark"
+                >
+                  País
+                </label>
+                <input
+                  id="new-country"
+                  type="text"
+                  value={newAddress.country || ""}
+                  onChange={(e) =>
+                    setNewAddress({ ...newAddress, country: e.target.value })
+                  }
+                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="new-zipCode"
+                  className="block text-sm font-medium text-primaryDark"
+                >
+                  CEP
+                </label>
+                <input
+                  id="new-zipCode"
+                  type="text"
+                  value={newAddress.zipCode || ""}
+                  onChange={(e) =>
+                    setNewAddress({ ...newAddress, zipCode: e.target.value })
+                  }
+                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                />
+              </div>
+              <div className="mt-8 flex justify-end">
+                <button
+                  type="submit"
+                  className="bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+                >
+                  Salvar Endereço
+                </button>
+              </div>
+            </form>
+          ) : (
+            <button
+              onClick={() => setIsCreatingNewAddress(true)}
+              className="mt-6 bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+            >
+              Adicionar Novo Endereço
+            </button>
+          )}
+        </div>
 
         {addresses.length > 0 ? (
           <ul className="mt-4 space-y-4">
