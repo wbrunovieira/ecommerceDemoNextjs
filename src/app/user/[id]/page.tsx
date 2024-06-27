@@ -291,6 +291,20 @@ const UserPage: NextPage = () => {
 
   return (
     <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight rounded-xl shadow-lg z-20 ">
+      <div className="mt-10 flex justify-between">
+        <Link
+          href="/"
+          className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105"
+        >
+          Voltar para Home
+        </Link>
+        <Link
+          href="/cart"
+          className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105"
+        >
+          Ver Carrinho
+        </Link>
+      </div>
       <h1 className="text-2xl font-bold text-center mb-6">Perfil do Usuário</h1>
       <div className="flex gap-4 bg-primaryLight max-w-4xl ">
         <div className="bg-primaryLight pt-2  rounded">
@@ -368,7 +382,7 @@ const UserPage: NextPage = () => {
               />
             </div> */}
             <p>
-              Nome: <strong>{session.user?.name}</strong>
+              Nome: <strong>{userDetails.name}</strong>
             </p>
             <p>
               Email: <strong>{session.user?.email}</strong>
@@ -485,7 +499,7 @@ const UserPage: NextPage = () => {
           ) : (
             <div className="mt-6 max-w-[600px] border-2 border-secondary p-4 rounded-md">
               <p>
-                Nome: <strong>{session.user?.name}</strong>
+                Nome: <strong>{userDetails.name}</strong>
               </p>
               <p>
                 Email: <strong>{session.user?.email}</strong>

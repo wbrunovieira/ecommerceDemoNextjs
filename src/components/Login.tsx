@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 
 interface ErrorMessages {
   email: string;
@@ -17,11 +17,16 @@ const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const [errorMessage, setErrorMessage] = useState<ErrorMessages>({
     email: "",
     password: "",
   });
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -95,6 +100,10 @@ const Login = () => {
       };
     });
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 flex items-center justify-center">
