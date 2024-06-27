@@ -8,6 +8,7 @@ import { useCartStore, useFavoritesStore } from "@/context/store";
 import { BsTrash } from "react-icons/bs";
 import Button from "@/components/Button";
 import { useEffect, useState } from "react";
+import { format, parseISO, parse } from "date-fns";
 
 export interface User {
   name: string;
@@ -51,8 +52,8 @@ const UserPage: NextPage = () => {
   const { data: session, status } = useSession();
   const [isEditingUser, setIsEditingUser] = useState(false);
   const [userDetails, setUserDetails] = useState<Partial<User>>({
-    name:  "",
-    email:  "",
+    name: "",
+    email: "",
     phone: "",
     gender: "",
     birthDate: "",
@@ -75,7 +76,22 @@ const UserPage: NextPage = () => {
   };
 
   const handleSaveAddress = async (address: Address) => {
+    const removeEmptyFields = (obj: any) => {
+      return Object.fromEntries(
+        Object.entries(obj).filter(([_, v]) => v != null && v !== "")
+      );
+    };
+
+    const cleanedUserDetails = removeEmptyFields({
+      ...userDetails,
+      birthDate: userDetails.birthDate
+        ? parse(userDetails.birthDate, "dd/MM/yyyy", new Date()).toISOString()
+        : null,
+    });
+
     try {
+      console.log("Dados do usuário a serem enviados:", cleanedUserDetails);
+
       const response = await fetch(
         `http://localhost:3333/adress/${session?.user?.id}/addresses/${address._id.value}`,
         {
@@ -84,16 +100,7 @@ const UserPage: NextPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session?.accessToken}`,
           },
-          body: JSON.stringify({
-            userId: address.props.userId,
-            street: address.props.street,
-            number: address.props.number,
-            complement: address.props.complement,
-            city: address.props.city,
-            state: address.props.state,
-            country: address.props.country,
-            zipCode: address.props.zipCode,
-          }),
+          body: JSON.stringify(cleanedUserDetails),
         }
       );
       console.log("response no handle save adress", response);
@@ -128,16 +135,21 @@ const UserPage: NextPage = () => {
 
       console.log("entrou no try fetchAddresses  response", response);
       console.log("entrou  session?.accessToken", session?.accessToken);
+      console.log("response aqui o", response);
 
       if (response.ok) {
         const data = await response.json();
+
+        console.log("data aqui mesmo", data);
         setAddresses(data.addresses);
         setUserDetails({
           name: data.user.name,
           email: data.user.email,
           phone: data.user.phone || "",
           gender: data.user.gender || "",
-          birthDate: data.user.birthDate || "",
+          birthDate: data.user.birthDate
+            ? format(parseISO(data.user.birthDate), "dd/MM/yyyy")
+            : "",
           profileImageUrl: data.user.profileImageUrl || "",
         });
       } else {
@@ -176,7 +188,21 @@ const UserPage: NextPage = () => {
   };
 
   const handleSaveUser = async () => {
+    const removeEmptyFields = (obj: any) => {
+      return Object.fromEntries(
+        Object.entries(obj).filter(([_, v]) => v != null && v !== "")
+      );
+    };
+
+    const cleanedUserDetails = removeEmptyFields({
+      ...userDetails,
+      birthDate: userDetails.birthDate
+        ? parse(userDetails.birthDate, "dd/MM/yyyy", new Date()).toISOString()
+        : null,
+    });
     try {
+      console.log("Dados do usuário a serem enviados:", cleanedUserDetails);
+
       const response = await fetch(
         `http://localhost:3333/accounts/edit/${session?.user?.id}`,
         {
@@ -185,14 +211,22 @@ const UserPage: NextPage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${session?.accessToken}`,
           },
-          body: JSON.stringify(userDetails),
+          body: JSON.stringify(cleanedUserDetails),
         }
       );
+
+      console.log("response de salvar os dados do user", response);
 
       if (response.ok) {
         setIsEditingUser(false);
       } else {
-        console.error("Failed to update user");
+        if (response.status === 409) {
+          console.error(
+            "Conflict error: The user data may be conflicting with existing data."
+          );
+        } else {
+          console.error("Failed to update user:", response.statusText);
+        }
       }
     } catch (error) {
       console.error("Error updating user", error);
@@ -436,7 +470,6 @@ const UserPage: NextPage = () => {
                     className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
                   />
                 </div>
-
               </div>
 
               <div className="mt-8 flex justify-end">
@@ -450,7 +483,7 @@ const UserPage: NextPage = () => {
               </div>
             </form>
           ) : (
-            <div className="text-lg text-primaryDark w-[450px] bg-primary p-2 rounded-md">
+            <div className="mt-6 max-w-[600px] border-2 border-secondary p-4 rounded-md">
               <p>
                 Nome: <strong>{session.user?.name}</strong>
               </p>
@@ -460,6 +493,12 @@ const UserPage: NextPage = () => {
               <p>
                 Telefone: <strong>{userDetails.phone}</strong>
               </p>
+              <p>
+                Sexo: <strong>{userDetails.gender}</strong>
+              </p>
+              <p>
+                Data de Nascimento: <strong>{userDetails.birthDate}</strong>
+              </p>
               <button
                 onClick={handleEditUser}
                 className="mt-4 bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
@@ -468,35 +507,6 @@ const UserPage: NextPage = () => {
               </button>
             </div>
           )}
-
-          <form className="mt-6 max-w-[600px] border-2 border-secondary p-4 rounded-md">
-            <div className="space-y-4">
-              <div>
-                <label
-                  htmlFor="phone"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  Telefone
-                </label>
-                <input
-                  id="phone"
-                  autoComplete="phone"
-                  type="tel"
-                  placeholder="(99) 99999-9999"
-                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                />
-              </div>
-            </div>
-
-            <div className="mt-8 flex justify-end">
-              <button
-                type="submit"
-                className="bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
-              >
-                Salvar Alterações
-              </button>
-            </div>
-          </form>
         </div>
       </div>
       <div className="mt-10">
