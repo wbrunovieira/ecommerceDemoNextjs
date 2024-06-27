@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { SyntheticEvent, useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface ErrorMessages {
   email: string;
@@ -14,6 +15,7 @@ interface ErrorMessages {
 }
 
 const Login = () => {
+  const { data: session } = useSession();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
@@ -26,25 +28,41 @@ const Login = () => {
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    if (session) {
+      router.push("/");
+    }
+  }, [session, router]);
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
+    console.log("entrou no submit");
     const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
 
+    console.log("result", result);
     if (result?.error) {
       setErrorMessage({ email: "", password: "Credenciais inválidas" });
       console.log("Login Error:", result.error);
       return;
     }
     console.log("Login Successful:", result);
-    router.replace("/");
+    router.push("/");
+  };
+  const handleGoogleSignIn = async () => {
+    console.log("handleGoogleSignIn called");
+    const result = await signIn("google", { callbackUrl: "/" });
+
+    if (result?.error) {
+      console.log("Google Sign-In Error:", result.error);
+      return;
+    }
+    console.log("Google Sign-In Successful:", result);
+    router.push("/");
   };
 
   const togglePasswordVisibility = (e: SyntheticEvent) => {
@@ -180,14 +198,16 @@ const Login = () => {
             >
               Acessar
             </button>
+
             <button
               type="button"
-              onClick={() => signIn("google")}
+              onClick={handleGoogleSignIn}
               className="bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
             >
               <FcGoogle className="mr-2" size={24} />
               Login com Google
             </button>
+
             <Link href="/cadastro">
               <button
                 type="button"

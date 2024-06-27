@@ -55,6 +55,14 @@ export const nextAuthOptions: NextAuthOptions = {
           const user = await responseCreate.json();
           console.log("Usuário criado com sucesso:", user);
           console.log("Usuário autenticado:user.id", user.id);
+          // return {
+          //   id: user.user.id,
+          //   name: user.user.name,
+          //   email: user.user.email,
+          //   image: user.user.profileImageUrl || "",
+          //   role: user.user.role,
+          //   accessToken: user.access_token,
+          // };
           return {
             user: {
               id: user.user.id,
@@ -84,6 +92,14 @@ export const nextAuthOptions: NextAuthOptions = {
           "Usuário autenticado user.access_token:",
           user.access_token
         );
+        // return {
+        //   id: user.user.id,
+        //   name: user.user.name,
+        //   email: user.user.email,
+        //   image: user.user.profileImageUrl || "",
+        //   role: user.user.role,
+        //   accessToken: user.access_token,
+        // };
         return {
           user: {
             id: user.user.id,
@@ -124,6 +140,7 @@ export const nextAuthOptions: NextAuthOptions = {
         const endpointCheck = "http://localhost:3333/accounts/check";
         const endpointCreate = "http://localhost:3333/accounts/google";
         console.log("profile", profile);
+
         const payload = {
           name: profile?.name,
           email: profile?.email,
@@ -151,6 +168,7 @@ export const nextAuthOptions: NextAuthOptions = {
           return true;
         } else if (responseCheck.ok && !userExists) {
           console.log("Usuário não existe");
+
           const responseCreate = await fetch(endpointCreate, {
             method: "POST",
             headers: {
@@ -158,8 +176,16 @@ export const nextAuthOptions: NextAuthOptions = {
             },
             body: JSON.stringify(payload),
           });
+
           console.log("responseCreate", responseCreate);
-          return responseCreate.ok;
+
+          if (!responseCreate.ok) {
+            console.error("Failed to create user");
+            return false;
+          }
+          const createdUser = await responseCreate.json();
+          console.log("Usuário criado com sucesso:", createdUser);
+          return true;
         }
         console.log("chegou aqui no false do fim 1");
       }
@@ -181,64 +207,99 @@ export const nextAuthOptions: NextAuthOptions = {
       account: any;
       profile?: ExtendedProfile;
     }) {
-      if (account && user) {
-        console.log("account no jwt account e user", account);
-        console.log("account no jwt account e user", user);
-        token.accessToken = user.accessToken;
-        token.user = user;
-        console.log("account no jwt token.accessToken", token.accessToken);
-        console.log("account no jwt token.user", token.user);
-      }
+      console.log("JWT Callback - Token inicial:", token);
+      console.log("JWT Callback - User:", user);
+      console.log("JWT Callback - Account:", account);
+      console.log("JWT Callback - Profile:", profile);
 
-      if (account && user) {
-        console.log("account no jwt account e user 2", account);
-        console.log("account no jwt account e user 2", user);
-        token.user = {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          image: user.image || "",
-        };
-        console.log("account no jwt account e user 2", token);
-      }
-      if (account && profile && account.provider === "google") {
-        console.log(
-          "account no jwt account, profile e account.provider google",
-          account
-        );
-        token.sub = profile.sub;
-        token.picture = profile.picture;
+      if (account) {
+        token.accessToken = account.access_token;
+
+        if (account.provider === "google" && profile) {
+          token.id = profile.sub;
+          token.picture = profile.picture;
+          token.email = profile.email;
+          token.name = profile.name;
+        }
       }
 
       if (user) {
-        token = {
-          ...token,
-          id: user.user.id || "default_id",
-          name: user.user.name || "",
-          email: user.user.email || "",
-          role: user.user.role || "",
-          accessToken: user.accessToken || "",
-          image: user.user.profileImageUrl || "",
-        };
-        console.log("token no jwt user", token);
+        token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+        token.picture = user.image;
+        token.accessToken = user.accessToken;
       }
 
-      console.log("token no jwt", token);
+      console.log("JWT Callback - Token final:", token);
       return token;
     },
+    // if (account && user) {
+    //   console.log("account no jwt account e user", account);
+    //   console.log("account no jwt account e user", user);
+    //   token.accessToken = user.accessToken;
+    //   token.user = user;
+    //   console.log("account no jwt token.accessToken", token.accessToken);
+    //   console.log("account no jwt token.user", token.user);
+    // }
+
+    // if (account && user) {
+    //   console.log("account no jwt account e user 2", account);
+    //   console.log("account no jwt account e user 2", user);
+    //   token.user = {
+    //     id: user.id,
+    //     name: user.name,
+    //     email: user.email,
+    //     image: user.image || "",
+    //   };
+    //   console.log("account no jwt account e user 2", token);
+    // }
+    // if (account && profile && account.provider === "google") {
+    //   console.log(
+    //     "account no jwt account, profile e account.provider google",
+    //     account
+    //   );
+    //   token.sub = profile.sub;
+    //   token.picture = profile.picture;
+    // }
+
+    // if (user) {
+    //   token = {
+    //     ...token,
+    //     id: user.user.id || "default_id",
+    //     name: user.user.name || "",
+    //     email: user.user.email || "",
+    //     role: user.user.role || "",
+    //     accessToken: user.accessToken || "",
+    //     image: user.user.profileImageUrl || "",
+    //   };
+    //   console.log("token no jwt user", token);
+    // }
 
     async session({ session, token }) {
       console.log("session original", session);
       console.log("token no session", token);
 
-      session.user = {
-        id: (token.id as string) || "default_id",
-        name: token.name || null,
-        email: token.email || null,
-        image: (token.image as string) || null,
-        role: token.role as string,
-      };
-      session.accessToken = token.accessToken as string;
+      if (typeof token.id === "string") {
+        session.user.id = token.id;
+      } else if (typeof token.sub === "string") {
+        session.user.id = token.sub;
+      } else {
+        session.user.id = "default_id";
+      }
+
+      session.user.name = token.name || null;
+      session.user.email = token.email || null;
+      session.user.image = token.picture || null;
+
+      // Ensure token.accessToken is a string
+      if (typeof token.accessToken === "string") {
+        session.accessToken = token.accessToken;
+      } else {
+        session.accessToken = "";
+      }
+
+      console.log("Session Modified:", session);
 
       console.log("session.accessToken", session.accessToken);
       return session;
