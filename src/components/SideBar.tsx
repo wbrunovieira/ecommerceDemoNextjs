@@ -7,7 +7,7 @@ import PriceFilter from "./PriceFilter";
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { useSelectionStore } from "@/context/store";
+import { useColorStore, useSelectionStore } from "@/context/store";
 
 interface Category {
   id: string;
@@ -58,7 +58,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const selectedCategory = useSelectionStore((state) => state.selectedCategory);
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
   const selectedMaterial = useSelectionStore((state) => state.selectedMaterial);
-  const selectedColor = useSelectionStore((state) => state.selectedColor);
+  const selectedColor = useColorStore((state) => state.selectedColor);
   const selectedSize = useSelectionStore((state) => state.selectedSize);
   const selectedMinPrice = useSelectionStore((state) => state.selectedMinPrice);
   const selectedMaxPrice = useSelectionStore((state) => state.selectedMaxPrice);
@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const setSelectedMaterial = useSelectionStore(
     (state) => state.setSelectedMaterial
   );
-  const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
+  const setSelectedColor = useColorStore((state) => state.setSelectedColor);
   const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
   const setSelectedMinPrice = useSelectionStore(
     (state) => state.setSelectedMinPrice
@@ -274,7 +274,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       setSelectedMinPrice(null);
       setSelectedMaxPrice(null);
       setSelectedMaterial(null);
-      // setSelectedColor(null);
+      setSelectedColor(null);
     }
   }, [
     pathname,

@@ -6,7 +6,7 @@ import Link from "next/link";
 import Container from "@/components/Container";
 import Sidebar from "@/components/SideBar";
 import { NextPage } from "next";
-import { useSelectionStore } from "@/context/store";
+import { useColorStore, useSelectionStore } from "@/context/store";
 
 interface ProductCategory {
   category: {
@@ -68,7 +68,7 @@ const FilteredResults: NextPage = () => {
   const [initialLoad, setInitialLoad] = useState(true);
 
   const selectedCategory = useSelectionStore((state) => state.selectedCategory);
-  const selectedColor = useSelectionStore((state) => state.selectedColor);
+  const selectedColor = useColorStore((state) => state.selectedColor);
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
   const selectedSize = useSelectionStore((state) => state.selectedSize);
   const selectedMinPrice = useSelectionStore((state) => state.selectedMinPrice);
@@ -82,8 +82,8 @@ const FilteredResults: NextPage = () => {
   const setSelectedMaterial = useSelectionStore(
     (state) => state.setSelectedMaterial
   );
-  const setSelectedColor = useSelectionStore((state) => state.setSelectedColor);
   const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
+  const setSelectedColor = useColorStore((state) => state.setSelectedColor);
   const setSelectedMinPrice = useSelectionStore(
     (state) => state.setSelectedMinPrice
   );
@@ -152,12 +152,6 @@ const FilteredResults: NextPage = () => {
         `http://localhost:3333/products/brand/${encodeURIComponent(brand)}`
       );
       setSelectedBrand(brand);
-    } else if (color) {
-      fetchProducts(
-        `http://localhost:3333/products/color/${encodeURIComponent(color)}`
-      );
-
-      setSelectedColor(color);
     } else if (size) {
       fetchProducts(
         `http://localhost:3333/products/size/${encodeURIComponent(size)}`
@@ -179,7 +173,16 @@ const FilteredResults: NextPage = () => {
       );
       setSelectedMaterial(material);
     }
-  }, [category, brand, color, size, minPrice, maxPrice, material]);
+  }, [category, brand, size, minPrice, maxPrice, material]);
+
+  useEffect(() => {
+    if (color) {
+      fetchProducts(
+        `http://localhost:3333/products/color/${encodeURIComponent(color)}`
+      );
+      setSelectedColor(color);
+    }
+  }, [color]);
 
   useEffect(() => {
     if (!initialLoad) {

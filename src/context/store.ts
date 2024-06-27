@@ -1,4 +1,4 @@
-import create, { StateCreator } from "zustand";
+import { StateCreator,create } from "zustand";
 import { persist, PersistOptions, createJSONStorage } from "zustand/middleware";
 
 interface Product {
@@ -35,19 +35,23 @@ interface FavoriteState {
 export interface SelectionState {
   selectedCategory: string | null;
   selectedBrand: string | null;
-  selectedColor: string | null;
   selectedSize: string | null;
   selectedMaterial: string | null;
   selectedMinPrice: number | null;
   selectedMaxPrice: number | null;
-
+  
   setSelectedCategory: (categoryId: string | null) => void;
   setSelectedBrand: (brandId: string | null) => void;
   setSelectedMaterial: (materialId: string | null) => void;
-  setSelectedColor: (colorId: string | null) => void;
   setSelectedSize: (sizeId: string | null) => void;
   setSelectedMinPrice: (selectedMinPrice: number | null) => void;
   setSelectedMaxPrice: (selectedMaxPrice: number | null) => void;
+}
+
+export interface ColorState {
+  selectedColor: string | null;
+  setSelectedColor: (colorId: string | null) => void;
+
 }
 
 type MyPersist = (
@@ -162,13 +166,25 @@ export const useFavoritesStore = create(
   )
 );
 
+export const useColorStore = create<ColorState>()(
+  persist(
+    (set) => ({
+      selectedColor: null,
+      setSelectedColor: (colorId: string | null) => set({ selectedColor: colorId }),
+    }),
+    {
+      name: 'color-storage', 
+      getStorage: () => localStorage, 
+    }
+  )
+);
+
 export const useSelectionStore = create<SelectionState>()(
   persist(
     (set) => ({
       selectedCategory: null,
       selectedBrand: null,
       selectedMaterial: null,
-      selectedColor: null,
       selectedSize: null,
       selectedMinPrice: null,
       selectedMaxPrice: null,
@@ -178,12 +194,11 @@ export const useSelectionStore = create<SelectionState>()(
 
       setSelectedBrand: (brandId: string | null) =>
         set({ selectedBrand: brandId }),
+      
 
       setSelectedMaterial: (materialId: string | null) =>
         set({ selectedMaterial: materialId }),
 
-      setSelectedColor: (colorId: string | null) =>
-        set({ selectedColor: colorId }),
 
       setSelectedSize: (sizeId: string | null) => set({ selectedSize: sizeId }),
 
