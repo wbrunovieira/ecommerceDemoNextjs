@@ -8,7 +8,6 @@ import ProductList from "@/components/ProductList";
 
 import { ImagesSlider } from "@/components/ui/images-slider";
 
-
 interface Category {
   id: string;
   name: string;
@@ -59,7 +58,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-                href={`/search?category=lingeries`}
+                href={`/filtered?category=0e531727-94ac-4620-b64f-188063b4e572`}
                 className="text-xs font-regular uppercase pl-2 self-center "
               >
                 Lingeries{" "}
@@ -82,7 +81,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-                href={`/search?category=pijamas`}
+                href={`/filtered?category=8cb20bbc-b693-42b9-8cfe-8c7da3036772`}
                 className="text-xs font-regular uppercase pl-2 self-center "
               >
                 Pijamas{" "}
@@ -105,7 +104,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-                href={`/search?category=boy`}
+                href={`filtered?category=8937d517-7071-4d09-94b9-9306853a7a5f`}
                 className="text-xs font-regular uppercase pl-2 self-center"
               >
                 Para o seu Boy{" "}
@@ -128,7 +127,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
-                href={`/search?category=acessorios`}
+                href={`/filtered?category=cff1bf1b-93c5-44d5-9cf4-c6a2bd40b555`}
                 className="text-xs font-regular uppercase pl-2 self-center"
               >
                 Acessórios{" "}

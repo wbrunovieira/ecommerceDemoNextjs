@@ -138,6 +138,32 @@ const FilteredResults: NextPage = () => {
     }
   };
 
+  const getFilterName = () => {
+    if (category) {
+      const selectedCategoryObj = allProducts.flatMap((product) =>
+        product.productCategories.filter(
+          (cat) => cat.category.id.value === category
+        )
+      )[0];
+      return selectedCategoryObj ? selectedCategoryObj.category.name : category;
+    } else if (brand) {
+      const selectedBrandObj = allProducts.find(
+        (product) => product.brandId === brand
+      );
+      return selectedBrandObj ? selectedBrandObj.brandName : brand;
+    } else if (material) {
+      const selectedMaterialObj = allProducts.find(
+        (product) => product.materialId === material
+      );
+      return selectedMaterialObj ? selectedMaterialObj.materialId : material; // Adjust if material name is needed
+    } else if (color) {
+      const selectedColorObj = allProducts.flatMap((product) =>
+        product.productColors.filter((col) => col.color.id.value === color)
+      )[0];
+      return selectedColorObj ? selectedColorObj.color.name : color;
+    }
+    return "";
+  };
   useEffect(() => {
     if (category) {
       fetchProducts(
@@ -267,26 +293,38 @@ const FilteredResults: NextPage = () => {
         <div className="flex flex-col"></div>
         <div className="container mx-auto">
           <h1 className="text-2xl font-bold mb-4">
-            Produtos filtrados por "{category || brand || material}"
+            Produtos filtrados por "{getFilterName()}"
           </h1>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {products.map((product) => (
-              <Link key={product.id} href={`/product/${product.slug}`} passHref>
-                <Card
-                  id={product.id}
-                  title={product.name}
-                  categories={product.productCategories}
-                  precoAntigo={product.onSale ? product.price : undefined}
-                  precoNovo={product.finalPrice || product.price}
-                  emPromocao={product.onSale}
-                  desconto={product.discount}
-                  imageSRC={product.images[0]}
-                  eNovidade={product.isNew}
-                  brandName={product.brandName}
-                  brandLogo={product.brandUrl}
-                />
-              </Link>
-            ))}
+          <div>
+            {products.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {products.map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.slug}`}
+                    passHref
+                  >
+                    <Card
+                      id={product.id}
+                      title={product.name}
+                      categories={product.productCategories}
+                      precoAntigo={product.onSale ? product.price : undefined}
+                      precoNovo={product.finalPrice || product.price}
+                      emPromocao={product.onSale}
+                      desconto={product.discount}
+                      imageSRC={product.images[0]}
+                      eNovidade={product.isNew}
+                      brandName={product.brandName}
+                      brandLogo={product.brandUrl}
+                    />
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="text-lg text-center mt-4">
+                Não há produtos disponíveis com os filtros selecionados.
+              </p>
+            )}
           </div>
         </div>
       </section>
