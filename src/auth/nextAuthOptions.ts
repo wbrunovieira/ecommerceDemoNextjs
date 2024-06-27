@@ -92,14 +92,7 @@ export const nextAuthOptions: NextAuthOptions = {
           "Usuário autenticado user.access_token:",
           user.access_token
         );
-        // return {
-        //   id: user.user.id,
-        //   name: user.user.name,
-        //   email: user.user.email,
-        //   image: user.user.profileImageUrl || "",
-        //   role: user.user.role,
-        //   accessToken: user.access_token,
-        // };
+
         return {
           user: {
             id: user.user.id,
@@ -183,8 +176,13 @@ export const nextAuthOptions: NextAuthOptions = {
             console.error("Failed to create user");
             return false;
           }
+
           const createdUser = await responseCreate.json();
           console.log("Usuário criado com sucesso:", createdUser);
+
+          // Update token with newly created user ID
+          user.id = createdUser.user._id.value;
+          
           return true;
         }
         console.log("chegou aqui no false do fim 1");
@@ -228,7 +226,7 @@ export const nextAuthOptions: NextAuthOptions = {
         token.name = user.name;
         token.email = user.email;
         token.picture = user.image;
-        token.accessToken = user.accessToken;
+        token.accessToken = account?.provider === "google" ? account.access_token : user.accessToken;
       }
 
       console.log("JWT Callback - Token final:", token);
@@ -291,13 +289,8 @@ export const nextAuthOptions: NextAuthOptions = {
       session.user.name = token.name || null;
       session.user.email = token.email || null;
       session.user.image = token.picture || null;
-
-      // Ensure token.accessToken is a string
-      if (typeof token.accessToken === "string") {
-        session.accessToken = token.accessToken;
-      } else {
-        session.accessToken = "";
-      }
+      session.accessToken =
+        typeof token.accessToken === "string" ? token.accessToken : "";
 
       console.log("Session Modified:", session);
 

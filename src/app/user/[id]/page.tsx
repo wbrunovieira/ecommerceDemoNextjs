@@ -235,26 +235,45 @@ const UserPage: NextPage = () => {
 
   const handleCreateAddress = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3333/adress/${session?.user?.id}/addresses`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.accessToken}`,
-          },
-          body: JSON.stringify({
-            userId: session?.user?.id,
-            street: newAddress.street,
-            number: newAddress.number,
-            complement: newAddress.complement,
-            city: newAddress.city,
-            state: newAddress.state,
-            country: newAddress.country,
-            zipCode: newAddress.zipCode,
-          }),
-        }
+      const url = `http://localhost:3333/adress/${session?.user?.id}/addresses`;
+      const body = JSON.stringify({
+        userId: session?.user?.id,
+        street: newAddress.street,
+        number: newAddress.number,
+        complement: newAddress.complement,
+        city: newAddress.city,
+        state: newAddress.state,
+        country: newAddress.country,
+        zipCode: newAddress.zipCode,
+      });
+      console.log("url", url);
+      console.log("body", body);
+      console.log("AccessToken:", session?.accessToken);
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.accessToken}`,
+        },
+        body: JSON.stringify({
+          userId: session?.user?.id,
+          street: newAddress.street,
+          number: newAddress.number,
+          complement: newAddress.complement,
+          city: newAddress.city,
+          state: newAddress.state,
+          country: newAddress.country,
+          zipCode: newAddress.zipCode,
+        }),
+      });
+
+      console.log("response handleCreateAddress response", response);
+      console.log(
+        "response handleCreateAddress session?.accessToken",
+        session?.accessToken
       );
+      console.log("response handleCreateAddress", response);
+      console.log("response handleCreateAddress", response);
 
       if (response.ok) {
         fetchAddresses();
