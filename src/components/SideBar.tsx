@@ -4,10 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 
 import PriceFilter from "./PriceFilter";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useColorStore, useSelectionStore } from "@/context/store";
+
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 interface Category {
   id: string;
@@ -52,6 +55,8 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
 
   const searchParams = useSearchParams();
 
+  gsap.registerPlugin(useGSAP);
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -79,14 +84,14 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     (state) => state.setSelectedMaxPrice
   );
 
-  let isHome = pathname === "/";
+  let isHome = pathname === "/" || pathname.includes("/product/");
 
   const capitalizeFirstLetter = (string: string) => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   };
 
   const handleCategoryClick = (categoryId: string) => {
-    isHome = pathname === "/";
+    isHome = pathname === "/" || pathname.includes("/product/");
     if (isHome) {
       router.push(`/filtered?category=${categoryId}`);
     } else {
@@ -95,7 +100,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   };
 
   const handleMaterialClick = (materialId: string) => {
-    isHome = pathname === "/";
+    isHome = pathname === "/" || pathname.includes("/product/");
     if (isHome) {
       router.push(`/filtered?material=${materialId}`);
     } else {
@@ -104,7 +109,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   };
 
   const handleBrandClick = (brandId: string) => {
-    const isHome = pathname === "/";
+    isHome = pathname === "/" || pathname.includes("/product/");
     if (isHome) {
       router.push(`/filtered?brand=${brandId}`);
     } else {
@@ -113,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   };
 
   const handleColorClick = (colorId: string) => {
-    const isHome = pathname === "/";
+    isHome = pathname === "/" || pathname.includes("/product/");
     if (isHome) {
       router.push(`/filtered?color=${colorId}`);
     } else {
@@ -121,7 +126,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     }
   };
   const handleSizeClick = (sizeId: string) => {
-    const isHome = pathname === "/";
+    isHome = pathname === "/" || pathname.includes("/product/");
     if (isHome) {
       router.push(`/filtered?size=${sizeId}`);
     } else {
@@ -267,7 +272,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   }, []);
 
   useEffect(() => {
-    if (pathname === "/") {
+    if (pathname === "/" || pathname.includes("/product/")) {
       setSelectedCategory(null);
       setSelectedBrand(null);
       setSelectedSize(null);
@@ -286,9 +291,29 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     setSelectedMaterial,
   ]);
 
+  const containerRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      if (containerRef?.current) {
+        const sections =
+          containerRef?.current.querySelectorAll(".sidebar-section");
+        gsap.fromTo(
+          sections,
+          { x: -200, opacity: 0 },
+          { x: 0, opacity: 1, stagger: 0.5, duration: 2, ease: "power3.out" }
+        );
+      }
+    },
+    { scope: containerRef }
+  );
+
   return (
-    <nav className="flex flex-col gap-2 mr-4  rounded">
-      <div className="flex flex-col w-48 border border-light bg-primaryLight rounded p-4 mt-2 z-10">
+    <nav
+      className="flex flex-col gap-2 mr-4 rounded"
+      ref={containerRef as React.RefObject<HTMLDivElement>}
+    >
+      <div className=" sidebar-section flex flex-col w-48 border border-light bg-primaryLight rounded p-4 mt-2 z-10">
         <h2 className="text-primaryDark text-base tracking-wider mb-2">
           Categorias
         </h2>
@@ -322,7 +347,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
       </div>
 
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded z-10">
+      <div className=" sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded z-10">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Marcas
         </h2>
@@ -351,7 +376,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         ))}
       </div>
 
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
+      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Cores
         </h2>
@@ -374,7 +399,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         </div>
       </div>
 
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
+      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Tamanhos
         </h2>
@@ -395,7 +420,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           ))}
         </div>
       </div>
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
+      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Materiais
         </h2>

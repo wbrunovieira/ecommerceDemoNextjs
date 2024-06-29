@@ -10,6 +10,7 @@ const AnimatedFlower = () => {
   const container = useRef<HTMLElement>(null);
 
   useGSAP(() => {
+    
     if (container.current) {
       gsap.fromTo(
         container.current,

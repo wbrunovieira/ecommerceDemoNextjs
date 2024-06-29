@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Card from "@/components/Card";
 import Link from "next/link";
@@ -7,6 +7,9 @@ import Container from "@/components/Container";
 import Sidebar from "@/components/SideBar";
 import { NextPage } from "next";
 import { useColorStore, useSelectionStore } from "@/context/store";
+
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 interface ProductCategory {
   category: {
@@ -92,6 +95,8 @@ const FilteredResults: NextPage = () => {
     (state) => state.setSelectedMaxPrice
   );
 
+  gsap.registerPlugin(useGSAP);
+
   const fetchProducts = async (url: string) => {
     try {
       const response = await fetch(url);
@@ -157,7 +162,7 @@ const FilteredResults: NextPage = () => {
       const selectedMaterialObj = products.find(
         (product) => product.materialId === material
       );
-      return selectedMaterialObj ? selectedMaterialObj.materialId : material; 
+      return selectedMaterialObj ? selectedMaterialObj.materialId : material;
     } else if (color) {
       const selectedColorObj = products.flatMap((product) =>
         product.productColors.filter((col) => col.color.id.value === color)
@@ -277,14 +282,33 @@ const FilteredResults: NextPage = () => {
     selectedMaxPrice,
   ]);
 
+  const containerRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      if (containerRef?.current) {
+        const sections = containerRef?.current.querySelectorAll(".card");
+        gsap.fromTo(
+          sections,
+          { x: 500, opacity: 0 },
+          { x: 0, opacity: 1, stagger: 0.5, duration: 2, ease: "power3.out" }
+        );
+      }
+    },
+    { scope: containerRef }
+  );
+
   return (
     <Container>
-      <section className="flex mt-2 gap-8">
+      <section
+        className="flex mt-2 gap-8"
+        ref={containerRef as React.RefObject<HTMLDivElement>}
+      >
         <div className="flex flex-col">
           <Sidebar initialCategories={[]} />
         </div>
-        <div className="flex flex-col"></div>
-        <div className="container mx-auto">
+        <div className="flex flex-col "></div>
+        <div className="container mx-auto card">
           <h1 className="text-2xl font-bold mb-4">
             {filterName && (
               <h1 className="text-2xl font-bold mb-4">
@@ -298,6 +322,7 @@ const FilteredResults: NextPage = () => {
                 {products.map((product) => (
                   <Link
                     key={product.id}
+                    className="card"
                     href={`/product/${product.slug}`}
                     passHref
                   >

@@ -1,12 +1,14 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Card from "@/components/Card";
 import Link from "next/link";
 import Container from "@/components/Container";
-import Sidebar from "@/components/SideBar";
+
 import { NextPage } from "next";
 import { useSelectionStore } from "@/context/store";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 interface ProductCategory {
   id: {
@@ -43,6 +45,8 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
   const searchParams = useSearchParams();
   const query = searchParams.get("query");
   const [products, setProducts] = useState<Product[]>([]);
+
+  gsap.registerPlugin(useGSAP);
 
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
@@ -95,13 +99,30 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
     }
   }, [query]);
 
+  const containerRef = useRef<HTMLElement>(null);
+
+  useGSAP(
+    () => {
+      if (containerRef?.current) {
+        const sections = containerRef?.current.querySelectorAll(".card");
+        gsap.fromTo(
+          sections,
+          { x: 500, opacity: 0 },
+          { x: 0, opacity: 1, stagger: 0.5, duration: 2, ease: "power3.out" }
+        );
+      }
+    },
+    { scope: containerRef }
+  );
+
   return (
     <Container>
-      <section className="flex mt-2 gap-8">
-        <div className="flex flex-col">
-          {/* <Sidebar initialCategories={[]} /> */}
-        </div>
-        <div className="container mx-auto">
+      <section
+        className="flex mt-2 gap-8"
+        ref={containerRef as React.RefObject<HTMLDivElement>}
+      >
+        <div className="flex flex-col card"></div>
+        <div className="container mx-auto card">
           <h1 className="text-2xl font-bold mb-4">
             Resultados da pesquisa para "{query}"
           </h1>

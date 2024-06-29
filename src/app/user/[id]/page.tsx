@@ -320,6 +320,8 @@ const UserPage: NextPage = () => {
     }
   };
 
+  
+
   useEffect(() => {
     if (session?.user?.id) {
       fetchUserDetails();
@@ -583,138 +585,158 @@ const UserPage: NextPage = () => {
         <div>
           {isCreatingNewAddress ? (
             <form
-              className="mt-6 space-y-4"
+              className="mt-6 space-y-4 border border-primary p-4 bg-primaryLight "
               onSubmit={(e) => {
                 e.preventDefault();
                 handleCreateAddress();
               }}
             >
-              <div>
-                <label
-                  htmlFor="new-street"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  Rua
-                </label>
-                <input
-                  id="new-street"
-                  type="text"
-                  value={newAddress.street || ""}
-                  onChange={(e) =>
-                    setNewAddress({ ...newAddress, street: e.target.value })
-                  }
-                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                />
+              <h2 className="text-primaryLight bg-secondary p-2  space-y-4w-48 rounded whitespace-nowrap">
+                Novo Endereço
+              </h2>
+              <div className="grid grid-cols-4 text-primaryDark gap-2">
+                <div className="col-span-3">
+                  <label
+                    htmlFor="new-street"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Rua
+                  </label>
+                  <input
+                    id="new-street"
+                    type="text"
+                    value={newAddress.street || ""}
+                    onChange={(e) =>
+                      setNewAddress({ ...newAddress, street: e.target.value })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="new-number"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Número
+                  </label>
+                  <input
+                    id="new-number"
+                    type="number"
+                    value={newAddress.number || ""}
+                    onChange={(e) =>
+                      setNewAddress({
+                        ...newAddress,
+                        number: parseInt(e.target.value),
+                      })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
               </div>
-              <div>
-                <label
-                  htmlFor="new-number"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  Número
-                </label>
-                <input
-                  id="new-number"
-                  type="number"
-                  value={newAddress.number || ""}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      number: parseInt(e.target.value),
-                    })
-                  }
-                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                />
+
+              <div className="grid grid-cols-3  text-primaryDark gap-2">
+                <div className="col-span-2">
+                  <label
+                    htmlFor="new-complement"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Complemento
+                  </label>
+                  <input
+                    id="new-complement"
+                    type="text"
+                    value={newAddress.complement || ""}
+                    onChange={(e) =>
+                      setNewAddress({
+                        ...newAddress,
+                        complement: e.target.value,
+                      })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="new-zipCode"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    CEP
+                  </label>
+                  <input
+                    id="new-zipCode"
+                    type="text"
+                    value={newAddress.zipCode || ""}
+                    onChange={(e) =>
+                      setNewAddress({ ...newAddress, zipCode: e.target.value })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
               </div>
-              <div>
-                <label
-                  htmlFor="new-complement"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  Complemento
-                </label>
-                <input
-                  id="new-complement"
-                  type="text"
-                  value={newAddress.complement || ""}
-                  onChange={(e) =>
-                    setNewAddress({ ...newAddress, complement: e.target.value })
-                  }
-                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                />
+
+              <div className="grid grid-cols-3 text-primaryDark gap-2">
+                <div>
+                  <label
+                    htmlFor="new-city"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Cidade
+                  </label>
+                  <input
+                    id="new-city"
+                    type="text"
+                    value={newAddress.city || ""}
+                    onChange={(e) =>
+                      setNewAddress({ ...newAddress, city: e.target.value })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="new-state"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    Estado
+                  </label>
+                  <input
+                    id="new-state"
+                    type="text"
+                    value={newAddress.state || ""}
+                    onChange={(e) =>
+                      setNewAddress({ ...newAddress, state: e.target.value })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="new-country"
+                    className="block text-sm font-medium text-primaryDark"
+                  >
+                    País
+                  </label>
+                  <input
+                    id="new-country"
+                    type="text"
+                    value={newAddress.country || ""}
+                    onChange={(e) =>
+                      setNewAddress({ ...newAddress, country: e.target.value })
+                    }
+                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                  />
+                </div>
               </div>
-              <div>
-                <label
-                  htmlFor="new-city"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  Cidade
-                </label>
-                <input
-                  id="new-city"
-                  type="text"
-                  value={newAddress.city || ""}
-                  onChange={(e) =>
-                    setNewAddress({ ...newAddress, city: e.target.value })
-                  }
-                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="new-state"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  Estado
-                </label>
-                <input
-                  id="new-state"
-                  type="text"
-                  value={newAddress.state || ""}
-                  onChange={(e) =>
-                    setNewAddress({ ...newAddress, state: e.target.value })
-                  }
-                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="new-country"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  País
-                </label>
-                <input
-                  id="new-country"
-                  type="text"
-                  value={newAddress.country || ""}
-                  onChange={(e) =>
-                    setNewAddress({ ...newAddress, country: e.target.value })
-                  }
-                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="new-zipCode"
-                  className="block text-sm font-medium text-primaryDark"
-                >
-                  CEP
-                </label>
-                <input
-                  id="new-zipCode"
-                  type="text"
-                  value={newAddress.zipCode || ""}
-                  onChange={(e) =>
-                    setNewAddress({ ...newAddress, zipCode: e.target.value })
-                  }
-                  className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                />
-              </div>
+
               <div className="mt-8 flex justify-end">
                 <button
                   type="submit"
-                  className="bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+                  className="bg-secondary text-primaryLight font-bold py-2 px-4 rounded shadow-lg 
+                  transition duration-300 hover:scale-105"
                 >
                   Salvar Endereço
                 </button>
@@ -742,7 +764,7 @@ const UserPage: NextPage = () => {
                     onSubmit={() => handleSaveAddress(address)}
                     className="space-y-4"
                   >
-                    <div>
+                    <div className="grid grid-cols-2 text-primaryDark  ">
                       <label
                         htmlFor="edit-street"
                         className="block text-sm font-medium text-primaryDark"
@@ -771,224 +793,212 @@ const UserPage: NextPage = () => {
                         className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
                       />
                     </div>
-                    <div>
-                      <label
-                        htmlFor="edit-number"
-                        className="block text-sm font-medium text-primaryDark"
-                      >
-                        Número
-                      </label>
-                      <input
-                        id="edit-number"
-                        type="number"
-                        value={address.props.number}
-                        onChange={(e) =>
-                          setAddresses((prevAddresses) =>
-                            prevAddresses.map((a) =>
-                              a._id.value === address._id.value
-                                ? {
-                                    ...a,
-                                    props: {
-                                      ...a.props,
-                                      number: parseInt(e.target.value),
-                                    },
-                                  }
-                                : a
+
+                    <div className="flex justify-between gap-2 ">
+                      <div>
+                        <label
+                          htmlFor="edit-number"
+                          className="block text-sm font-medium text-primaryDark"
+                        >
+                          Número
+                        </label>
+                        <input
+                          id="edit-number"
+                          type="number"
+                          value={address.props.number}
+                          onChange={(e) =>
+                            setAddresses((prevAddresses) =>
+                              prevAddresses.map((a) =>
+                                a._id.value === address._id.value
+                                  ? {
+                                      ...a,
+                                      props: {
+                                        ...a.props,
+                                        number: parseInt(e.target.value),
+                                      },
+                                    }
+                                  : a
+                              )
                             )
-                          )
-                        }
-                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="edit-complement"
-                        className="block text-sm font-medium text-primaryDark"
-                      >
-                        Complemento
-                      </label>
-                      <input
-                        id="edit-complement"
-                        type="text"
-                        value={address.props.complement || ""}
-                        onChange={(e) =>
-                          setAddresses((prevAddresses) =>
-                            prevAddresses.map((a) =>
-                              a._id.value === address._id.value
-                                ? {
-                                    ...a,
-                                    props: {
-                                      ...a.props,
-                                      complement: e.target.value,
-                                    },
-                                  }
-                                : a
+                          }
+                          className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="edit-complement"
+                          className="block text-sm font-medium text-primaryDark"
+                        >
+                          Complemento
+                        </label>
+                        <input
+                          id="edit-complement"
+                          type="text"
+                          value={address.props.complement || ""}
+                          onChange={(e) =>
+                            setAddresses((prevAddresses) =>
+                              prevAddresses.map((a) =>
+                                a._id.value === address._id.value
+                                  ? {
+                                      ...a,
+                                      props: {
+                                        ...a.props,
+                                        complement: e.target.value,
+                                      },
+                                    }
+                                  : a
+                              )
                             )
-                          )
-                        }
-                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="edit-city"
-                        className="block text-sm font-medium text-primaryDark"
-                      >
-                        Cidade
-                      </label>
-                      <input
-                        id="edit-city"
-                        type="text"
-                        value={address.props.city}
-                        onChange={(e) =>
-                          setAddresses((prevAddresses) =>
-                            prevAddresses.map((a) =>
-                              a._id.value === address._id.value
-                                ? {
-                                    ...a,
-                                    props: {
-                                      ...a.props,
-                                      city: e.target.value,
-                                    },
-                                  }
-                                : a
+                          }
+                          className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="edit-city"
+                          className="block text-sm font-medium text-primaryDark"
+                        >
+                          Cidade
+                        </label>
+                        <input
+                          id="edit-city"
+                          type="text"
+                          value={address.props.city}
+                          onChange={(e) =>
+                            setAddresses((prevAddresses) =>
+                              prevAddresses.map((a) =>
+                                a._id.value === address._id.value
+                                  ? {
+                                      ...a,
+                                      props: {
+                                        ...a.props,
+                                        city: e.target.value,
+                                      },
+                                    }
+                                  : a
+                              )
                             )
-                          )
-                        }
-                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                      />
+                          }
+                          className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label
-                        htmlFor="edit-state"
-                        className="block text-sm font-medium text-primaryDark"
-                      >
-                        Estado
-                      </label>
-                      <input
-                        id="edit-state"
-                        type="text"
-                        value={address.props.state}
-                        onChange={(e) =>
-                          setAddresses((prevAddresses) =>
-                            prevAddresses.map((a) =>
-                              a._id.value === address._id.value
-                                ? {
-                                    ...a,
-                                    props: {
-                                      ...a.props,
-                                      state: e.target.value,
-                                    },
-                                  }
-                                : a
+
+                    <div className="flex justify-between gap-2 ">
+                      <div>
+                        <label
+                          htmlFor="edit-state"
+                          className="block text-sm font-medium text-primaryDark"
+                        >
+                          Estado
+                        </label>
+                        <input
+                          id="edit-state"
+                          type="text"
+                          value={address.props.state}
+                          onChange={(e) =>
+                            setAddresses((prevAddresses) =>
+                              prevAddresses.map((a) =>
+                                a._id.value === address._id.value
+                                  ? {
+                                      ...a,
+                                      props: {
+                                        ...a.props,
+                                        state: e.target.value,
+                                      },
+                                    }
+                                  : a
+                              )
                             )
-                          )
-                        }
-                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="edit-country"
-                        className="block text-sm font-medium text-primaryDark"
-                      >
-                        País
-                      </label>
-                      <input
-                        id="edit-country"
-                        type="text"
-                        value={address.props.country}
-                        onChange={(e) =>
-                          setAddresses((prevAddresses) =>
-                            prevAddresses.map((a) =>
-                              a._id.value === address._id.value
-                                ? {
-                                    ...a,
-                                    props: {
-                                      ...a.props,
-                                      country: e.target.value,
-                                    },
-                                  }
-                                : a
+                          }
+                          className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                        />
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="edit-zipCode"
+                          className="block text-sm font-medium text-primaryDark"
+                        >
+                          CEP
+                        </label>
+                        <input
+                          id="edit-zipCode"
+                          type="text"
+                          value={address.props.zipCode}
+                          onChange={(e) =>
+                            setAddresses((prevAddresses) =>
+                              prevAddresses.map((a) =>
+                                a._id.value === address._id.value
+                                  ? {
+                                      ...a,
+                                      props: {
+                                        ...a.props,
+                                        zipCode: e.target.value,
+                                      },
+                                    }
+                                  : a
+                              )
                             )
-                          )
-                        }
-                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        htmlFor="edit-zipCode"
-                        className="block text-sm font-medium text-primaryDark"
-                      >
-                        CEP
-                      </label>
-                      <input
-                        id="edit-zipCode"
-                        type="text"
-                        value={address.props.zipCode}
-                        onChange={(e) =>
-                          setAddresses((prevAddresses) =>
-                            prevAddresses.map((a) =>
-                              a._id.value === address._id.value
-                                ? {
-                                    ...a,
-                                    props: {
-                                      ...a.props,
-                                      zipCode: e.target.value,
-                                    },
-                                  }
-                                : a
-                            )
-                          )
-                        }
-                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                      />
-                    </div>
-                    <div className="mt-8 flex justify-end">
-                      <button
-                        type="button"
-                        onClick={() => handleSaveAddress(address)}
-                        className="bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
-                      >
-                        Salvar Endereço
-                      </button>
+                          }
+                          className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                        />
+                      </div>
+
+                      <div className="mt-8 flex justify-start mb-6">
+                        <button
+                          type="button"
+                          onClick={() => handleSaveAddress(address)}
+                          className="bg-secondary text-primaryLight 
+                       font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-300 hover:scale-105"
+                        >
+                          Salvar Endereço
+                        </button>
+                      </div>
                     </div>
                   </form>
                 ) : (
                   <>
-                    <p>
-                      <strong>Rua:</strong> {address.props.street},{" "}
-                      {address.props.number}
-                    </p>
-                    {address.props.complement && (
+                    <div className=" grid grid-cols-2 text-primaryDark ">
                       <p>
-                        <strong>Complemento:</strong> {address.props.complement}
+                        <strong>Rua:</strong> {address.props.street},{" "}
+                        {address.props.number}
                       </p>
-                    )}
-                    <p>
-                      <strong>Cidade:</strong> {address.props.city}
-                    </p>
-                    <p>
-                      <strong>Estado:</strong> {address.props.state}
-                    </p>
-                    <p>
-                      <strong>País:</strong> {address.props.country}
-                    </p>
-                    <p>
-                      <strong>CEP:</strong> {address.props.zipCode}
-                    </p>
+                      <p className="mr-4">
+                        <strong>Complemento:</strong> {address.props.complement}
+                        {"   "}
+                      </p>
+                    </div>
+
+                    <div className=" grid grid-cols-4 text-primaryDark ">
+                      <p>
+                        <strong>Cidade:</strong> {address.props.city}
+                      </p>
+                      <p>
+                        <strong>Estado:</strong> {address.props.state}
+                      </p>
+                      <p>
+                        <strong>País:</strong> {address.props.country}
+                      </p>
+                      <p>
+                        <strong>CEP:</strong> {address.props.zipCode}
+                      </p>
+                    </div>
 
                     <div className="flex justify-between items-center">
                       <button
                         onClick={() => handleEditAddress(address._id.value)}
-                        className="mt-2 bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-1 px-2 rounded shadow-lg hover:shadow-xl transition duration-200"
+                        className="mt-2  bg-secondary text-primaryLight
+                         
+                         font-bold py-1 px-2 rounded shadow-lg transition duration-300 hover:scale-105"
                       >
                         Editar
                       </button>
                       <button
                         onClick={() => handleDeleteAddress(address._id.value)}
-                        className="text-primaryDark cursor-pointer hover:text-primary"
+                        className="text-primaryDark cursor-pointer transition duration-300 hover:text-primary hover:scale-105"
                       >
                         <BsTrash size={24} />
                       </button>
