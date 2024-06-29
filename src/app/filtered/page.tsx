@@ -167,25 +167,23 @@ const FilteredResults: NextPage = () => {
   useEffect(() => {
     if (category) {
       fetchProducts(
-        `http://localhost:3333/products/category/${encodeURIComponent(
-          category
-        )}`
+        `http://localhost:3333products/category/${encodeURIComponent(category)}`
       );
 
       setSelectedCategory(category);
     } else if (brand) {
       fetchProducts(
-        `http://localhost:3333/products/brand/${encodeURIComponent(brand)}`
+        `http://localhost:3333products/brand/${encodeURIComponent(brand)}`
       );
       setSelectedBrand(brand);
     } else if (size) {
       fetchProducts(
-        `http://localhost:3333/products/size/${encodeURIComponent(size)}`
+        `http://localhost:3333products/size/${encodeURIComponent(size)}`
       );
       setSelectedSize(size);
     } else if (minPrice && maxPrice) {
       fetchProducts(
-        `http://localhost:3333/products/price-range?minPrice=${encodeURIComponent(
+        `http://localhost:3333products/price-range?minPrice=${encodeURIComponent(
           minPrice
         )}&maxPrice=${encodeURIComponent(maxPrice)}`
       );
@@ -193,9 +191,7 @@ const FilteredResults: NextPage = () => {
       setSelectedMaxPrice(Number(maxPrice));
     } else if (material) {
       fetchProducts(
-        `http://localhost:3333/products/material/${encodeURIComponent(
-          material
-        )}`
+        `http://localhost:3333products/material/${encodeURIComponent(material)}`
       );
       setSelectedMaterial(material);
     }
@@ -204,7 +200,7 @@ const FilteredResults: NextPage = () => {
   useEffect(() => {
     if (color) {
       fetchProducts(
-        `http://localhost:3333/products/color/${encodeURIComponent(color)}`
+        `http://localhost:3333products/color/${encodeURIComponent(color)}`
       );
       setSelectedColor(color);
     }

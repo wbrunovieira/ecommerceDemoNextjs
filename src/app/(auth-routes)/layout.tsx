@@ -1,4 +1,4 @@
-// src/app/(auth-routes)/layout.tsx
+
 import { getServerSession } from "next-auth";
 import { ReactNode } from "react";
 import { nextAuthOptions } from "@/auth/nextAuthOptions";

@@ -10,6 +10,8 @@ import Button from "@/components/Button";
 import { useEffect, useState } from "react";
 import { format, parseISO, parse } from "date-fns";
 
+import DefaultIcon from "/public/images/default-icon.svg";
+
 export interface User {
   name: string;
   email: string;
@@ -246,9 +248,7 @@ const UserPage: NextPage = () => {
         country: newAddress.country,
         zipCode: newAddress.zipCode,
       });
-      console.log("url", url);
-      console.log("body", body);
-      console.log("AccessToken:", session?.accessToken);
+
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -287,10 +287,42 @@ const UserPage: NextPage = () => {
     }
   };
 
-  console.log("addresses", addresses);
+  const fetchUserDetails = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3333/accounts${session?.user?.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.accessToken}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        setUserDetails({
+          name: data.name,
+          email: data.email,
+          phone: data.phone || "",
+          gender: data.gender || "",
+          birthDate: data.birthDate
+            ? format(parseISO(data.birthDate), "dd/MM/yyyy")
+            : "",
+          profileImageUrl: data.profileImageUrl || "",
+        });
+      } else {
+        console.error("Failed to fetch user details");
+      }
+    } catch (error) {
+      console.error("Error fetching user details", error);
+    }
+  };
 
   useEffect(() => {
     if (session?.user?.id) {
+      fetchUserDetails();
       fetchAddresses();
     }
   }, [session?.user?.id]);
@@ -303,10 +335,6 @@ const UserPage: NextPage = () => {
     router.push("/auth/signin");
     return null;
   }
-
-  console.log("favoritos", cartFavorited);
-  console.log("session", session);
-  console.log("status", session);
 
   return (
     <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight rounded-xl shadow-lg z-20 ">
@@ -325,6 +353,20 @@ const UserPage: NextPage = () => {
         </Link>
       </div>
       <h1 className="text-2xl font-bold text-center mb-6">Perfil do Usuário</h1>
+
+      <div className="flex justify-center items-center ">
+        {session.user?.image ? (
+          <Image
+            src={session.user.image}
+            alt="Imagem do usuário"
+            width={100}
+            height={100}
+            className="rounded-full"
+          />
+        ) : (
+          <DefaultIcon width={100} height={100} className="rounded-full" />
+        )}
+      </div>
       <div className="flex gap-4 bg-primaryLight max-w-4xl ">
         <div className="bg-primaryLight pt-2  rounded">
           <p className="text-primaryDark ml-2">Favoritos :</p>
@@ -378,18 +420,6 @@ const UserPage: NextPage = () => {
         </div>
 
         <div>
-          {session.user?.image && (
-            <div className="flex justify-center mb-4">
-              <Image
-                src={session.user.image}
-                alt="Imagem do usuário"
-                width={100}
-                height={100}
-                className="rounded-full"
-              />
-            </div>
-          )}
-
           <div className="text-lg text-primaryDark w-[450px] bg-primary p-2 rounded-md ">
             {/* <div className="flex justify-center mb-4">
               <Image
@@ -404,7 +434,7 @@ const UserPage: NextPage = () => {
               Nome: <strong>{userDetails.name}</strong>
             </p>
             <p>
-              Email: <strong>{session.user?.email}</strong>
+              Email: <strong>{userDetails.email}</strong>
             </p>
           </div>
 

@@ -33,6 +33,8 @@ export const nextAuthOptions: NextAuthOptions = {
           }
         );
 
+        console.log("responseCheck", responseCheck);
+
         const exists = await responseCheck.text();
         const userExists = exists.trim().toLowerCase() === "true";
 
@@ -54,15 +56,15 @@ export const nextAuthOptions: NextAuthOptions = {
 
           const user = await responseCreate.json();
           console.log("Usuário criado com sucesso:", user);
-          console.log("Usuário autenticado:user.id", user.id);
+          console.log("Usuário autenticado:user.id", user);
+
           // return {
-          //   id: user.user.id,
+          //   id: user.user._id.value,
           //   name: user.user.name,
           //   email: user.user.email,
-          //   image: user.user.profileImageUrl || "",
-          //   role: user.user.role,
           //   accessToken: user.access_token,
           // };
+
           return {
             user: {
               id: user.user.id,
@@ -86,7 +88,7 @@ export const nextAuthOptions: NextAuthOptions = {
         }
 
         const user = await response.json();
-        console.log("Usuário autenticado:", user);
+
         console.log("Usuário autenticado:user.id", user.user.id);
         console.log(
           "Usuário autenticado user.access_token:",
@@ -180,9 +182,8 @@ export const nextAuthOptions: NextAuthOptions = {
           const createdUser = await responseCreate.json();
           console.log("Usuário criado com sucesso:", createdUser);
 
-          // Update token with newly created user ID
           user.id = createdUser.user._id.value;
-          
+
           return true;
         }
         console.log("chegou aqui no false do fim 1");
@@ -226,53 +227,15 @@ export const nextAuthOptions: NextAuthOptions = {
         token.name = user.name;
         token.email = user.email;
         token.picture = user.image;
-        token.accessToken = account?.provider === "google" ? account.access_token : user.accessToken;
+        token.accessToken =
+          account?.provider === "google"
+            ? account.access_token
+            : user.accessToken;
       }
 
       console.log("JWT Callback - Token final:", token);
       return token;
     },
-    // if (account && user) {
-    //   console.log("account no jwt account e user", account);
-    //   console.log("account no jwt account e user", user);
-    //   token.accessToken = user.accessToken;
-    //   token.user = user;
-    //   console.log("account no jwt token.accessToken", token.accessToken);
-    //   console.log("account no jwt token.user", token.user);
-    // }
-
-    // if (account && user) {
-    //   console.log("account no jwt account e user 2", account);
-    //   console.log("account no jwt account e user 2", user);
-    //   token.user = {
-    //     id: user.id,
-    //     name: user.name,
-    //     email: user.email,
-    //     image: user.image || "",
-    //   };
-    //   console.log("account no jwt account e user 2", token);
-    // }
-    // if (account && profile && account.provider === "google") {
-    //   console.log(
-    //     "account no jwt account, profile e account.provider google",
-    //     account
-    //   );
-    //   token.sub = profile.sub;
-    //   token.picture = profile.picture;
-    // }
-
-    // if (user) {
-    //   token = {
-    //     ...token,
-    //     id: user.user.id || "default_id",
-    //     name: user.user.name || "",
-    //     email: user.user.email || "",
-    //     role: user.user.role || "",
-    //     accessToken: user.accessToken || "",
-    //     image: user.user.profileImageUrl || "",
-    //   };
-    //   console.log("token no jwt user", token);
-    // }
 
     async session({ session, token }) {
       console.log("session original", session);
@@ -289,6 +252,7 @@ export const nextAuthOptions: NextAuthOptions = {
       session.user.name = token.name || null;
       session.user.email = token.email || null;
       session.user.image = token.picture || null;
+      
       session.accessToken =
         typeof token.accessToken === "string" ? token.accessToken : "";
 

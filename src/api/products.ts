@@ -45,7 +45,6 @@ interface ProductSlugResponse {
   product: ProductType;
   materialName: string;
   brandName: string;
- 
 
   colors: { id: string; name: string; hex: string }[];
   sizes: { id: string; name: string }[];
@@ -181,7 +180,9 @@ export async function getProductsByCategoriesId(
 }
 
 export async function getProducts(): Promise<ProductProps[]> {
-  const response = await fetch("http://localhost:3333/products/all");
+  const response = await fetch(
+    "http://localhost:3333/products/all"
+  );
   const data: ProductsResponse = await response.json();
 
   if (!Array.isArray(data.products)) {
@@ -191,14 +192,18 @@ export async function getProducts(): Promise<ProductProps[]> {
 }
 
 export async function getProduct(id: string) {
-  const response = await fetch(`http://localhost:3333/products/${id}`);
+  const response = await fetch(
+    `http://localhost:3333/products/${id}`
+  );
   return (await response.json()) as ProductType;
 }
 
 export async function getProductBySlug(
   slug: string
 ): Promise<ProductSlugResponse> {
-  const response = await fetch(`http://localhost:3333/products/slug/${slug}`);
+  const response = await fetch(
+    `http://localhost:3333/products/slug/${slug}`
+  );
   const data: ProductSlugResponse = await response.json();
 
   return data;

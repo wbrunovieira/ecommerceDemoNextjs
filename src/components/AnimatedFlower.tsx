@@ -41,14 +41,14 @@
 import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import Flower from '/public/images/flower.svg'; // Supondo que Flower seja um componente React
+import Flower from '/public/images/flower.svg'; 
 
 const AnimatedFlower = () => {
   const container = useRef<HTMLElement>(null);
 
   useEffect(() => {
     if (container.current) {
-      // Assegure-se de que os seletores correspondam aos elementos no SVG
+     
       gsap.to(container.current.querySelectorAll('#petalas'), {
         duration: 1,
         x: 100,
@@ -62,7 +62,7 @@ const AnimatedFlower = () => {
 
   return (
     <div ref={container as React.RefObject<HTMLDivElement>}>
-      <Flower />
+      <Flower  />
     </div>
   );
 };

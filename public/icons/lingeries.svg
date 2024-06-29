@@ -1,7 +1,7 @@
 <svg width="52" height="52" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="div.category-img-box">
-<rect x="1.16663" y="0.835022" width="50.3333" height="50.3333" rx="4.5" fill="#EDEDED"/>
-<rect x="1.16663" y="0.835022" width="50.3333" height="50.3333" rx="4.5" stroke="#CCCCCC"/>
+<rect x="1.16663" y="0.835022" width="50.3333/" height="50.3333/" rx="4.5" fill="#EDEDED"/>
+<rect x="1.16663" y="0.835022" width="50.3333/" height="50.3333/" rx="4.5" stroke="#CCCCCC"/>
 <g id="dress.svg" clip-path="url(#clip0_1_156)">
 <g id="dress.svg fill" clip-path="url(#clip1_1_156)">
 <g id="dress.svg_2" clip-path="url(#clip2_1_156)">
@@ -21,13 +21,13 @@
 </g>
 <defs>
 <clipPath id="clip0_1_156">
-<rect width="30" height="30" fill="white" transform="translate(11.3333 11.0017)"/>
+<rect width="30" height="30" fill="white" transform="translate(11.3333/ 11.0017)"/>
 </clipPath>
 <clipPath id="clip1_1_156">
-<rect width="30" height="30" fill="white" transform="translate(11.3333 11.0017)"/>
+<rect width="30" height="30" fill="white" transform="translate(11.3333/ 11.0017)"/>
 </clipPath>
 <clipPath id="clip2_1_156">
-<rect width="30" height="30" fill="white" transform="translate(11.3333 11.0017)"/>
+<rect width="30" height="30" fill="white" transform="translate(11.3333/ 11.0017)"/>
 </clipPath>
 </defs>
 </svg>
