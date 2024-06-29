@@ -66,6 +66,7 @@ const FilteredResults: NextPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [initialLoad, setInitialLoad] = useState(true);
+  const [filterName, setFilterName] = useState("");
 
   const selectedCategory = useSelectionStore((state) => state.selectedCategory);
   const selectedColor = useColorStore((state) => state.selectedColor);
@@ -133,57 +134,61 @@ const FilteredResults: NextPage = () => {
       setAllProducts(mappedProducts);
       setProducts(mappedProducts);
       setInitialLoad(false);
+      setFilterName(getFilterName(mappedProducts));
     } catch (error) {
       console.error("Error fetching search results:", error);
     }
   };
 
-  const getFilterName = () => {
+  const getFilterName = (products: Product[]) => {
     if (category) {
-      const selectedCategoryObj = allProducts.flatMap((product) =>
+      const selectedCategoryObj = products.flatMap((product) =>
         product.productCategories.filter(
           (cat) => cat.category.id.value === category
         )
       )[0];
       return selectedCategoryObj ? selectedCategoryObj.category.name : category;
     } else if (brand) {
-      const selectedBrandObj = allProducts.find(
+      const selectedBrandObj = products.find(
         (product) => product.brandId === brand
       );
       return selectedBrandObj ? selectedBrandObj.brandName : brand;
     } else if (material) {
-      const selectedMaterialObj = allProducts.find(
+      const selectedMaterialObj = products.find(
         (product) => product.materialId === material
       );
-      return selectedMaterialObj ? selectedMaterialObj.materialId : material; // Adjust if material name is needed
+      return selectedMaterialObj ? selectedMaterialObj.materialId : material; 
     } else if (color) {
-      const selectedColorObj = allProducts.flatMap((product) =>
+      const selectedColorObj = products.flatMap((product) =>
         product.productColors.filter((col) => col.color.id.value === color)
       )[0];
       return selectedColorObj ? selectedColorObj.color.name : color;
     }
     return "";
   };
+
   useEffect(() => {
     if (category) {
       fetchProducts(
-        `http://localhost:3333products/category/${encodeURIComponent(category)}`
+        `http://localhost:3333/products/category/${encodeURIComponent(
+          category
+        )}`
       );
 
       setSelectedCategory(category);
     } else if (brand) {
       fetchProducts(
-        `http://localhost:3333products/brand/${encodeURIComponent(brand)}`
+        `http://localhost:3333/products/brand/${encodeURIComponent(brand)}`
       );
       setSelectedBrand(brand);
     } else if (size) {
       fetchProducts(
-        `http://localhost:3333products/size/${encodeURIComponent(size)}`
+        `http://localhost:3333/products/size/${encodeURIComponent(size)}`
       );
       setSelectedSize(size);
     } else if (minPrice && maxPrice) {
       fetchProducts(
-        `http://localhost:3333products/price-range?minPrice=${encodeURIComponent(
+        `http://localhost:3333/products/price-range?minPrice=${encodeURIComponent(
           minPrice
         )}&maxPrice=${encodeURIComponent(maxPrice)}`
       );
@@ -272,14 +277,6 @@ const FilteredResults: NextPage = () => {
     selectedMaxPrice,
   ]);
 
-  console.log("selectedCategory", selectedCategory);
-  console.log("selectedBrand", selectedBrand);
-  console.log("selectedColor", selectedColor);
-  console.log("selectedMaterial", selectedMaterial);
-  console.log("selectedSize", selectedSize);
-  console.log("allProducts", allProducts);
-  console.log("initialLoad", initialLoad);
-  console.log("products", products);
   return (
     <Container>
       <section className="flex mt-2 gap-8">
@@ -289,7 +286,11 @@ const FilteredResults: NextPage = () => {
         <div className="flex flex-col"></div>
         <div className="container mx-auto">
           <h1 className="text-2xl font-bold mb-4">
-            Produtos filtrados por "{getFilterName()}"
+            {filterName && (
+              <h1 className="text-2xl font-bold mb-4">
+                Produtos filtrados por "{filterName}"
+              </h1>
+            )}
           </h1>
           <div>
             {products.length > 0 ? (
