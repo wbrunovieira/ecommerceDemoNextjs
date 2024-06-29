@@ -341,6 +341,7 @@ const UserPage: NextPage = () => {
       <h1 className="text-2xl text-primaryDark font-bold text-center mb-4 z-10">
         Perfil do Usuário
       </h1>
+      <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
 
       <div className="flex justify-between items-center z-10 max-w-4xl">
         <Link
@@ -364,7 +365,9 @@ const UserPage: NextPage = () => {
 
         <Link
           href="/cart"
-          className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105"
+          className="text-primaryLight hover:underline
+           bg-secondary p-2 rounded
+            transition duration-300 hover:scale-105"
         >
           Ver Carrinho
         </Link>
@@ -538,7 +541,8 @@ const UserPage: NextPage = () => {
                 <button
                   type="button"
                   onClick={handleSaveUser}
-                  className="bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+                  className="bg-secondary text-primaryLight transition p-2 rounded hover:underline
+                  duration-300 hover:scale-105"
                 >
                   Salvar Alterações
                 </button>

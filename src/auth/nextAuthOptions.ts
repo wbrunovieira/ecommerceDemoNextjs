@@ -155,13 +155,22 @@ export const nextAuthOptions: NextAuthOptions = {
         console.log("responseCheck", responseCheck);
 
         const responseText = await responseCheck.text();
-        const userExists = responseText.trim().toLowerCase() === "true";
-        console.log("userExists", userExists);
+        const response = JSON.parse(responseText);
+        const { found, user: existingUser } = response;
+        console.log("responseText", responseText);
 
-        if (responseCheck.ok && userExists) {
+        console.log("response", response);
+        console.log("found", found);
+        console.log("existingUser", existingUser);
+
+        if (responseCheck.ok && found) {
           console.log("Usuário já existe");
+          user.id = existingUser.id;
+          console.log("user.id", existingUser.id);
+          user.email = existingUser.email;
+          user.name = existingUser.name;
           return true;
-        } else if (responseCheck.ok && !userExists) {
+        } else if (responseCheck.ok && !found) {
           console.log("Usuário não existe");
 
           const responseCreate = await fetch(endpointCreate, {
@@ -215,7 +224,7 @@ export const nextAuthOptions: NextAuthOptions = {
         token.accessToken = account.access_token;
 
         if (account.provider === "google" && profile) {
-          token.id = profile.sub;
+          token.id = user.id;
           token.picture = profile.picture;
           token.email = profile.email;
           token.name = profile.name;
@@ -252,7 +261,7 @@ export const nextAuthOptions: NextAuthOptions = {
       session.user.name = token.name || null;
       session.user.email = token.email || null;
       session.user.image = token.picture || null;
-      
+
       session.accessToken =
         typeof token.accessToken === "string" ? token.accessToken : "";
 
