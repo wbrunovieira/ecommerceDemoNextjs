@@ -20,6 +20,7 @@ const Login = () => {
   const [password, setPassword] = useState<string>("");
   const [showPassword, setShowPassword] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isButtonInDisabled, setIsButtonInDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState<ErrorMessages>({
     email: "",
     password: "",
@@ -34,6 +35,7 @@ const Login = () => {
   }, [session, router]);
 
   const handleSubmit = async (e: SyntheticEvent) => {
+    setIsButtonInDisabled(true);
     e.preventDefault();
     console.log("Email:", email);
     console.log("Password:", password);
@@ -50,10 +52,13 @@ const Login = () => {
       console.log("Login Error:", result.error);
       return;
     }
+
     console.log("Login Successful:", result);
     router.push("/");
   };
+
   const handleGoogleSignIn = async () => {
+    setIsButtonInDisabled(true);
     console.log("handleGoogleSignIn called");
     const result = await signIn("google", { callbackUrl: "/" });
 
@@ -62,6 +67,7 @@ const Login = () => {
       return;
     }
     console.log("Google Sign-In Successful:", result);
+
     router.push("/");
   };
 
@@ -192,19 +198,35 @@ const Login = () => {
                 </p>
               )}
             </div>
+
             <button
               type="submit"
+              disabled={isButtonInDisabled}
               className="bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
             >
+              {isButtonInDisabled ? (
+                <svg
+                  className="animate-spin h-5 w-5 mr-3 border-t-2 border-b-2 border-white rounded-3xl"
+                  viewBox="0 0 24 24"
+                ></svg>
+              ) : null}
               Acessar
             </button>
 
             <button
               type="button"
               onClick={handleGoogleSignIn}
+              disabled={isButtonInDisabled}
               className="bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
             >
-              <FcGoogle className="mr-2" size={24} />
+              {isButtonInDisabled ? (
+                <svg
+                  className="animate-spin h-5 w-5 mr-3 border-t-2 border-b-2 border-white rounded-3xl"
+                  viewBox="0 0 24 24"
+                ></svg>
+              ) : (
+                <FcGoogle className="mr-2" size={24} />
+              )}
               Login com Google
             </button>
 

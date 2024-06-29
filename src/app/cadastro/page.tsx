@@ -1,3 +1,4 @@
+"use client";
 import CadastroForm from "@/components/CadastroForm";
 
 const CadstroPage = () => {

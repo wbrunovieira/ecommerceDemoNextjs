@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, SyntheticEvent, useRef } from "react";
+import React, { useState, SyntheticEvent, useRef, useEffect } from "react";
 
 import Image from "next/image";
 import { FcGoogle } from "react-icons/fc";
@@ -32,10 +32,6 @@ const CadastroForm = () => {
   const router = useRouter();
   const { data: session, update } = useSession();
 
-  const googleBtnRef = useRef<HTMLButtonElement>(null);
-  const googleIconWrapperRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLSpanElement>(null);
-
   const togglePasswordVisibility = (e: SyntheticEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -43,21 +39,7 @@ const CadastroForm = () => {
   };
   const handleGoogleSignInClick = async () => {
     setIsGoogleSignInDisabled(true);
-    const tl = gsap.timeline();
-    tl.to(textRef.current, { opacity: 0, duration: 0.4 })
-      .to(
-        googleBtnRef.current,
-        { scale: 0.95, backgroundColor: "#ccc", duration: 0.4 },
-        "<"
-      )
-      .fromTo(
-        googleIconWrapperRef.current,
-        { rotation: 0, x: 0, transformOrigin: "center center" },
-        { rotation: 360, x: 100, duration: 1, ease: "none" },
-        "<"
-      );
 
-    await new Promise((resolve) => setTimeout(resolve, 2000));
     await signIn("google");
 
     setIsGoogleSignInDisabled(false);
@@ -153,7 +135,7 @@ const CadastroForm = () => {
       return;
     }
     console.log("conexao bem sucedida e redirecionando");
-    
+
     await update();
     router.replace("/");
   };
@@ -302,16 +284,13 @@ const CadastroForm = () => {
             <button
               type="button"
               disabled={isGoogleSignInDisabled}
-              ref={googleBtnRef}
               className="bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
               onClick={handleGoogleSignInClick}
             >
-              <div ref={googleIconWrapperRef}>
+              <div>
                 <FcGoogle className="mr-2" size={24} />
               </div>
-              <span ref={textRef} className="mr-2">
-                Login com Google
-              </span>
+              <span className="mr-2">Login com Google</span>
             </button>
           </form>
         </div>

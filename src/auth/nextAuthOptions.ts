@@ -56,14 +56,8 @@ export const nextAuthOptions: NextAuthOptions = {
 
           const user = await responseCreate.json();
           console.log("Usuário criado com sucesso:", user);
-          console.log("Usuário autenticado:user.id", user);
 
-          // return {
-          //   id: user.user._id.value,
-          //   name: user.user.name,
-          //   email: user.user.email,
-          //   accessToken: user.access_token,
-          // };
+          console.log("Usuário autenticado:user.user.name", user.user.name);
 
           return {
             user: {
@@ -73,6 +67,7 @@ export const nextAuthOptions: NextAuthOptions = {
             },
             accessToken: user.access_token,
             id: user.user.id,
+            name: user.user.name,
           };
         }
 
@@ -103,6 +98,8 @@ export const nextAuthOptions: NextAuthOptions = {
           },
           accessToken: user.access_token,
           id: user.user.id,
+          name: user.user.name,
+          email: user.user.email,
         };
       },
     }),
