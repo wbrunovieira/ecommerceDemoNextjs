@@ -319,10 +319,10 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           </div>
         ))}
 
-        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
       </div>
 
-      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
+      <div className="flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded z-10">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Marcas
         </h2>

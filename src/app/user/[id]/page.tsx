@@ -337,14 +337,31 @@ const UserPage: NextPage = () => {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight rounded-xl shadow-lg z-20 ">
-      <div className="mt-10 flex justify-between">
+    <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight rounded-xl shadow-lg z-10">
+      <h1 className="text-2xl text-primaryDark font-bold text-center mb-4 z-10">
+        Perfil do Usuário
+      </h1>
+
+      <div className="flex justify-between items-center z-10 max-w-4xl">
         <Link
           href="/"
-          className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105"
+          className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105 z-10"
         >
           Voltar para Home
         </Link>
+
+        {session.user?.image ? (
+          <Image
+            src={session.user.image}
+            alt="Imagem do usuário"
+            width={100}
+            height={100}
+            className="rounded-full mb-4"
+          />
+        ) : (
+          <DefaultIcon width={100} height={100} className="rounded-full" />
+        )}
+
         <Link
           href="/cart"
           className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105"
@@ -352,26 +369,13 @@ const UserPage: NextPage = () => {
           Ver Carrinho
         </Link>
       </div>
-      <h1 className="text-2xl font-bold text-center mb-6">Perfil do Usuário</h1>
 
-      <div className="flex justify-center items-center ">
-        {session.user?.image ? (
-          <Image
-            src={session.user.image}
-            alt="Imagem do usuário"
-            width={100}
-            height={100}
-            className="rounded-full"
-          />
-        ) : (
-          <DefaultIcon width={100} height={100} className="rounded-full" />
-        )}
-      </div>
-      <div className="flex gap-4 bg-primaryLight max-w-4xl ">
-        <div className="bg-primaryLight pt-2  rounded">
-          <p className="text-primaryDark ml-2">Favoritos :</p>
+      <div className="flex gap-4 bg-primaryLight max-w-4xl z-10 ">
+        <div className="bg-primaryLight pt-2 z-10 rounded p-4">
+          <p className="text-primaryDark pt-2">Favoritos :</p>
+          <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
           <div>
-            <div className="flex flex-col w-72 gap-4  bg-primaryLight rounded-md p-2">
+            <div className="flex flex-col w-72 gap-4  bg-primaryLight rounded-md p-2 z-10">
               {cartFavorited.map((item: Product, index: number) => (
                 <div
                   key={index}
@@ -391,26 +395,37 @@ const UserPage: NextPage = () => {
                       {item.title}
                     </p>
 
-                    <div className="flex gap-2 ml-2">
-                      <Button
-                        variant="secondary"
-                        size="small"
-                        onClick={() => {
-                          addToCart({
-                            id: item.id,
-                            image: item.image,
-                            quantity: item.quantity,
-                            price: item.price,
-                            title: item.title,
-                          });
-                          removeFromFavorite(item.id);
-                        }}
+                    <div className="flex gap-2 ml-2 content-center">
+                      <div
+                        className="text-primaryLight  
+          bg-secondary rounded transition duration-300
+           hover:scale-105 content-center"
                       >
-                        Adcionar ao carrinho
-                      </Button>
-                      <button onClick={() => removeFromFavorite(item.id)}>
-                        <BsTrash className="text-primaryDark cursor-pointer" />
-                      </button>
+                        <Button
+                          variant="secondary"
+                          size="small"
+                          onClick={() => {
+                            addToCart({
+                              id: item.id,
+                              image: item.image,
+                              quantity: item.quantity,
+                              price: item.price,
+                              title: item.title,
+                            });
+                            removeFromFavorite(item.id);
+                          }}
+                        >
+                          Adcionar ao carrinho
+                        </Button>
+                      </div>
+                      <div
+                        className="text-primaryDark cursor-pointer hover:scale-105 transition duration-300 items-center content-center
+                          "
+                      >
+                        <button onClick={() => removeFromFavorite(item.id)}>
+                          <BsTrash />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -419,27 +434,11 @@ const UserPage: NextPage = () => {
           </div>
         </div>
 
-        <div>
-          <div className="text-lg text-primaryDark w-[450px] bg-primary p-2 rounded-md ">
-            {/* <div className="flex justify-center mb-4">
-              <Image
-                src={session.user.image} 
-                alt="Imagem do usuário"
-                width={100}
-                height={100}
-                className="rounded-full"
-              />
-            </div> */}
-            <p>
-              Nome: <strong>{userDetails.name}</strong>
-            </p>
-            <p>
-              Email: <strong>{userDetails.email}</strong>
-            </p>
-          </div>
-
+        <div className="flex-1 pt-2 ">
+          <p className="text-primaryDark pt-2">Dados :</p>
+          <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
           {isEditingUser ? (
-            <form className="text-lg text-primaryDark w-[450px] bg-primary p-2 rounded-md">
+            <form className="text-lg text-primaryDark w-[450px] bg-primary p-2 rounded-md flex-1">
               <div className="space-y-4">
                 <div>
                   <label
@@ -546,7 +545,7 @@ const UserPage: NextPage = () => {
               </div>
             </form>
           ) : (
-            <div className="mt-6 max-w-[600px] border-2 border-secondary p-4 rounded-md">
+            <div className="mt-2 max-w-[800px] text-primaryDark border border-secondary p-4 rounded-md flex-1">
               <p>
                 Nome: <strong>{userDetails.name}</strong>
               </p>
@@ -564,7 +563,9 @@ const UserPage: NextPage = () => {
               </p>
               <button
                 onClick={handleEditUser}
-                className="mt-4 bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+                className="mt-4 bg-secondary text-primaryLight
+                 hover:underline hover:scale-105 font-bold py-2 px-4 rounded shadow-lg
+                 hover:shadow-xl transition duration-300"
               >
                 Editar
               </button>
@@ -718,7 +719,7 @@ const UserPage: NextPage = () => {
           ) : (
             <button
               onClick={() => setIsCreatingNewAddress(true)}
-              className="mt-6 bg-primaryDark text-primary hover:bg-primary hover:text-primaryDark font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+              className="mt-6 bg-secondary text-primaryLight transition duration-300 hover:scale-105 font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
             >
               Adicionar Novo Endereço
             </button>
@@ -994,7 +995,7 @@ const UserPage: NextPage = () => {
             ))}
           </ul>
         ) : (
-          <p>Nenhum endereço encontrado.</p>
+          <p className="mt-6">Nenhum endereço encontrado.</p>
         )}
       </div>
 
@@ -1007,7 +1008,9 @@ const UserPage: NextPage = () => {
         </Link>
         <Link
           href="/cart"
-          className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105"
+          className="text-primaryLight hover:underline 
+          bg-secondary p-2 rounded transition duration-300
+           hover:scale-105"
         >
           Ver Carrinho
         </Link>

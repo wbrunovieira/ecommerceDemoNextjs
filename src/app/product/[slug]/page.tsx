@@ -139,7 +139,6 @@ const ProductPage = async ({ params }: ParamsProps) => {
       sizes,
       categories,
       variants,
-   
     } = (await getProductBySlug(params.slug)) as any;
 
     if (!product) {
@@ -155,9 +154,6 @@ const ProductPage = async ({ params }: ParamsProps) => {
     }
 
     const productDetails = product.props;
-   
-
-
 
     const productName = productDetails?.name ?? "No name available";
     const productDescription =
@@ -188,30 +184,32 @@ const ProductPage = async ({ params }: ParamsProps) => {
 
     return (
       <Container>
-        <section className="flex mt-2 gap-8">
+        <section className="flex mt-2 gap-8 z-10">
           <div className="flex flex-col">
             <Sidebar initialCategories={[]} />
           </div>
-          <Product
-            id={productId}
-           
-            title={productName}
-            material={productMaterial ?? "N/A"}
-            categories={productCategories}
-            fabricante={productBrand ?? "N/A"}
-            price={productFinalPrice ?? 0}
-            colors={productColors}
-            sizes={productSizes}
-            images={productImages}
-            description={productDescription ?? "No description available."}
-            stock={productDetails.stock}
-            variants={variants}
-            similarProducts={similarProducts}
-            width={width}
-            height={height}
-            length={length}
-            weight={weight}
-          />
+
+          <div className="z-10">
+            <Product
+              id={productId}
+              title={productName}
+              material={productMaterial ?? "N/A"}
+              categories={productCategories}
+              fabricante={productBrand ?? "N/A"}
+              price={productFinalPrice ?? 0}
+              colors={productColors}
+              sizes={productSizes}
+              images={productImages}
+              description={productDescription ?? "No description available."}
+              stock={productDetails.stock}
+              variants={variants}
+              similarProducts={similarProducts}
+              width={width}
+              height={height}
+              length={length}
+              weight={weight}
+            />
+          </div>
         </section>
       </Container>
     );
