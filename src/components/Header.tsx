@@ -60,7 +60,7 @@ const Header = () => {
               passHref
               className="cursor-pointer hover:scale-125 transition duration-300 ease-in-out"
             >
-              <Home />
+              <Home width="25" height="25" />
             </Link>
           </div>
         </div>
@@ -72,7 +72,10 @@ const Header = () => {
           <LogginButton />
           <CartButton />
         </div>
-        <AnimatedFlower />
+        <div >
+          <AnimatedFlower />
+
+        </div>
       </div>
     </header>
   );

@@ -54,7 +54,7 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
       const fetchProducts = async () => {
         try {
           const response = await fetch(
-            `http://localhost:3333products/search?name=${encodeURIComponent(
+            `http://localhost:3333/products/search?name=${encodeURIComponent(
               query
             )}`
           );

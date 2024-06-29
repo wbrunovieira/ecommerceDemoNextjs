@@ -288,7 +288,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
 
   return (
     <nav className="flex flex-col gap-2 mr-4  rounded">
-      <div className="flex flex-col w-48 border border-light bg-primaryLight rounded p-4 mt-2">
+      <div className="flex flex-col w-48 border border-light bg-primaryLight rounded p-4 mt-2 z-10">
         <h2 className="text-primaryDark text-base tracking-wider mb-2">
           Categorias
         </h2>
