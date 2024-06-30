@@ -1,4 +1,4 @@
-import { StateCreator,create } from "zustand";
+import { StateCreator, create } from "zustand";
 import { persist, PersistOptions, createJSONStorage } from "zustand/middleware";
 
 interface Product {
@@ -25,12 +25,13 @@ interface CartState {
 
 interface FavoriteState {
   cartFavorited: Product[];
+  userId?: string | null;
   favorites: string[];
-  addToFavorite: (product: Product) => void;
-  removeFromFavorite: (productId: string) => void;
-  clearFavorite: () => void;
+  addToFavorite: (product: Product, userId?: string | null) => void;
+  removeFromFavorite: (productId: string, userId?: string | null) => void;
+  clearFavorite: (userId?: string | null) => void;
 
-  toggleFavorite: (productId: string) => void;
+  toggleFavorite: (productId: string, userId?: string | null) => void;
 }
 
 export interface SelectionState {
@@ -40,7 +41,7 @@ export interface SelectionState {
   selectedMaterial: string | null;
   selectedMinPrice: number | null;
   selectedMaxPrice: number | null;
-  
+
   setSelectedCategory: (categoryId: string | null) => void;
   setSelectedBrand: (brandId: string | null) => void;
   setSelectedMaterial: (materialId: string | null) => void;
@@ -52,22 +53,25 @@ export interface SelectionState {
 export interface ColorState {
   selectedColor: string | null;
   setSelectedColor: (colorId: string | null) => void;
-
 }
 
-type MyPersist = (
+type MyPersistCart = (
   config: StateCreator<CartState>,
   options: PersistOptions<CartState>
 ) => StateCreator<CartState>;
 
+type MyPersistFavorite = (
+  config: StateCreator<FavoriteState>,
+  options: PersistOptions<FavoriteState>
+) => StateCreator<FavoriteState>;
+
 export const useCartStore = create<CartState>(
-  (persist as MyPersist)(
+  (persist as MyPersistCart)(
     (set) => ({
       cartItems: [],
       userId: null,
       addToCart: (product: Product, userId?: string) =>
         set((state: CartState) => {
-
           if (userId && state.userId && state.userId !== userId) return state;
 
           const index = state.cartItems.findIndex(
@@ -94,45 +98,44 @@ export const useCartStore = create<CartState>(
           };
         }),
 
-        clearCart: (userId?: string) =>
-          set((state: CartState) => {
-            if (userId && state.userId && state.userId !== userId) return state;
-            return { cartItems: [] };
-          }),
-  
+      clearCart: (userId?: string) =>
+        set((state: CartState) => {
+          if (userId && state.userId && state.userId !== userId) return state;
+          return { cartItems: [] };
+        }),
 
-          updateQuantity: (productId: string, amount: number, userId?: string) =>
-            set((state: CartState) => {
-              if (userId && state.userId && state.userId !== userId) return state;
-              const index = state.cartItems.findIndex(
-                (item) => item.id === productId
-              );
-    
-              if (index !== -1) {
-                let newQuantity = state.cartItems[index].quantity + amount;
-                if (newQuantity <= 0) {
-                  return {
-                    cartItems: state.cartItems.filter(
-                      (item) => item.id !== productId
-                    ),
-                  };
-                } else {
-                  let newCartItems = [...state.cartItems];
-                  newCartItems[index] = {
-                    ...newCartItems[index],
-                    quantity: newQuantity,
-                  };
-                  return { cartItems: newCartItems };
-                }
-              }
-              return state;
-            }),
-            initializeCart: (products: Product[], userId?: string) =>
-              set((state: CartState) => {
-                if (userId && state.userId && state.userId !== userId) return state;
-                return { cartItems: products };
-              }),
-          }),
+      updateQuantity: (productId: string, amount: number, userId?: string) =>
+        set((state: CartState) => {
+          if (userId && state.userId && state.userId !== userId) return state;
+          const index = state.cartItems.findIndex(
+            (item) => item.id === productId
+          );
+
+          if (index !== -1) {
+            let newQuantity = state.cartItems[index].quantity + amount;
+            if (newQuantity <= 0) {
+              return {
+                cartItems: state.cartItems.filter(
+                  (item) => item.id !== productId
+                ),
+              };
+            } else {
+              let newCartItems = [...state.cartItems];
+              newCartItems[index] = {
+                ...newCartItems[index],
+                quantity: newQuantity,
+              };
+              return { cartItems: newCartItems };
+            }
+          }
+          return state;
+        }),
+      initializeCart: (products: Product[], userId?: string) =>
+        set((state: CartState) => {
+          if (userId && state.userId && state.userId !== userId) return state;
+          return { cartItems: products };
+        }),
+    }),
     {
       name: "cart-storage",
       getStorage: () => localStorage,
@@ -140,14 +143,17 @@ export const useCartStore = create<CartState>(
   )
 );
 
-export const useFavoritesStore = create(
-  persist(
+export const useFavoritesStore = create<FavoriteState>(
+  (persist as MyPersistFavorite)(
     (set) => ({
       cartFavorited: [],
       favorites: [],
+      userId: null,
 
-      addToFavorite: (product: Product) =>
+      addToFavorite: (product: Product, userId?: string | null) =>
         set((state: FavoriteState) => {
+          if (userId && state.userId && state.userId !== userId) return state;
+
           const index = state.cartFavorited.findIndex(
             (item) => item.id === product.id
           );
@@ -164,21 +170,32 @@ export const useFavoritesStore = create(
           return { cartFavorited: [...state.cartFavorited, product] };
         }),
 
-      toggleFavorite: (productId: string) =>
-        set((state: any) => ({
-          favorites: state.favorites.includes(productId)
-            ? state.favorites.filter((id: string) => id !== productId)
-            : [...state.favorites, productId],
-        })),
-      removeFromFavorite: (productId: string) =>
+      toggleFavorite: (productId: string, userId?: string | null) =>
         set((state: FavoriteState) => {
+          if (userId && state.userId && state.userId !== userId) return state;
+
+          return {
+            favorites: state.favorites.includes(productId)
+              ? state.favorites.filter((id: string) => id !== productId)
+              : [...state.favorites, productId],
+          };
+        }),
+
+   removeFromFavorite: (productId: string, userId?: string | null) =>
+        set((state: FavoriteState) => {
+          if (userId && state.userId && state.userId !== userId) return state;
+
           const updatedCartFavorited = state.cartFavorited.filter(
             (item) => item.id !== productId
           );
           return { cartFavorited: updatedCartFavorited };
         }),
 
-      clearFavorite: () => set({ cartFavorited: [] }),
+        clearFavorite: (userId?: string | null) =>
+          set((state: FavoriteState) => {
+            if (userId && state.userId && state.userId !== userId) return state;
+            return { cartFavorited: [] };
+          }),
     }),
     {
       name: "favorite-storage",
@@ -191,11 +208,12 @@ export const useColorStore = create<ColorState>()(
   persist(
     (set) => ({
       selectedColor: null,
-      setSelectedColor: (colorId: string | null) => set({ selectedColor: colorId }),
+      setSelectedColor: (colorId: string | null) =>
+        set({ selectedColor: colorId }),
     }),
     {
-      name: 'color-storage', 
-      getStorage: () => localStorage, 
+      name: "color-storage",
+      getStorage: () => localStorage,
     }
   )
 );
@@ -215,11 +233,9 @@ export const useSelectionStore = create<SelectionState>()(
 
       setSelectedBrand: (brandId: string | null) =>
         set({ selectedBrand: brandId }),
-      
 
       setSelectedMaterial: (materialId: string | null) =>
         set({ selectedMaterial: materialId }),
-
 
       setSelectedSize: (sizeId: string | null) => set({ selectedSize: sizeId }),
 

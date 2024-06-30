@@ -321,6 +321,7 @@ const Product: React.FC<ProductProps> = ({
   const isFavorited = favorites.includes(id);
 
   const handleToggleFavorite = () => {
+    const userId = session?.user?.id || null;
     if (isFavorited) {
       removeFromFavorite(id);
     } else {
@@ -330,9 +331,9 @@ const Product: React.FC<ProductProps> = ({
         quantity,
         image: mainImage,
         price,
-      });
+      }, userId);
     }
-    toggleFavorite(id);
+    toggleFavorite(id, userId);
   };
   return (
     <section>
