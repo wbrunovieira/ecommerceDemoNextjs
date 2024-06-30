@@ -22,7 +22,7 @@ const LogginButton = () => {
     return (
       <div className="flex flex-col items-center ">
         <Link href={`/user/${session.user.id}`} passHref>
-          <div className=" flex text-secondary transition duration-300 hover:scale-110 text-xs font-semibold border p-2 rounded-md bg-primaryLight items-center">
+          <div className=" flex text-secondary dark:text-darkFontColor transition duration-300 hover:scale-110 text-xs font-semibold border p-2 rounded-md bg-primaryLight dark:bg-dark-secondary-gradient items-center">
             {session.user?.image ? (
               <Image
                 src={session.user.image}

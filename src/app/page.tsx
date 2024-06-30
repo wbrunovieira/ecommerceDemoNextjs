@@ -47,7 +47,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
         </div>
         <div className="max-w-7xl mx-auto  mt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
-            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight z-10 transition duration-300 ease-in-out">
+            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
               <div className="flex">
                 <Image
                   src="/icons/lingeries.svg"
@@ -70,7 +70,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
                 </p>
               </Link>
             </div>{" "}
-            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight transition duration-300 ease-in-out">
+            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
               <div className="flex ">
                 <Image
                   src="/icons/pijamas.svg"
@@ -93,7 +93,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
                 </p>
               </Link>
             </div>{" "}
-            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight transition duration-300 ease-in-out">
+            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
               <div className="flex">
                 <Image
                   src="/icons/boy.svg"
@@ -116,7 +116,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
                 </p>
               </Link>
             </div>
-            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight transition duration-300 ease-in-out">
+            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
               <div className="flex">
                 <Image
                   src="/icons/acessorios.svg"

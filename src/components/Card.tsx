@@ -50,13 +50,16 @@ const Card: React.FC<CardProps> = ({
 
   const handleAddToCart = (product: ProductCart) => {
     const userId = session?.user?.id || null;
-    addToCart({
-      id: product.id,
-      title: product.title,
-      quantity: 1,
-      image: validImageSRC,
-      price: product.precoNovo,
-    }, userId);
+    addToCart(
+      {
+        id: product.id,
+        title: product.title,
+        quantity: 1,
+        image: validImageSRC,
+        price: product.precoNovo,
+      },
+      userId
+    );
   };
 
   const validImageSRC = imageSRC || "/images/foto1.jpg";
@@ -65,7 +68,7 @@ const Card: React.FC<CardProps> = ({
     .join(", ");
 
   return (
-    <div className="max-w-sm rounded-md shadow-lg bg-primaryLight m-2 h-96 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-400 ease-in-out">
+    <div className="max-w-sm rounded-md shadow-lg bg-primaryLight dark:bg-dark-secondary-gradient m-2 h-96 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-400 ease-in-out">
       <div className="relative overflow-hidden flex-shrink-0 rounded-md h-[200px]">
         <Image
           src={validImageSRC}
@@ -97,14 +100,18 @@ const Card: React.FC<CardProps> = ({
           <h3 className="font-regular text-xs text-primary">
             {formattedCategories}
           </h3>
-          <h2 className="semibold text-xl mb-2 text-fontColor">{title}</h2>
-          <p className="text-gray-700 text-sm font-bold text-fontColor">
+          <h2 className="semibold text-xl mb-2 text-fontColor dark:text-darkFontColor">
+            {title}
+          </h2>
+          <p className="text-gray-700 text-sm font-bold text-fontColor dark:text-darkFontColor">
             {precoAntigo && (
               <span className="line-through mr-2 font-extralight">
                 R${precoAntigo.toFixed(2)}
               </span>
             )}
-            <span className="text-red-500">R${precoNovo}</span>
+            <span className="text-red-500 dark:text-darkFontColor">
+              R${precoNovo}
+            </span>
           </p>
         </div>
         <div className="pb-2">
@@ -136,7 +143,9 @@ const Card: React.FC<CardProps> = ({
               alt={brandName}
               className="mr-2"
             />
-            <span className="text-xs text-gray-600">{brandName}</span>
+            <span className="text-xs text-gray-600 dark:text-darkFontColor">
+              {brandName}
+            </span>
           </div>
         )}
       </div>

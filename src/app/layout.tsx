@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import NextAuthSessionProvider from "@/providers/sessionProvider";
 import ClearCartOnLogout from "@/utils/ClearCartOnLogout";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -24,12 +25,19 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={montserrat.className}>
-        <NextAuthSessionProvider>
-          <Header />
-          {children}
-          <ClearCartOnLogout />
-          <Footer />
-        </NextAuthSessionProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <NextAuthSessionProvider>
+            <Header />
+            {children}
+            <ClearCartOnLogout />
+            <Footer />
+          </NextAuthSessionProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

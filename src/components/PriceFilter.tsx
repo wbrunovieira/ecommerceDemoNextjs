@@ -54,7 +54,7 @@ const PriceFilter = ({ isHome }: { isHome: boolean }) => {
   console.log("selectedMaxPrice", selectedMaxPrice);
 
   return (
-    <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded bg-primaryLight">
+    <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded bg-primaryLight dark:bg-dark-secondary-gradient">
       <h2 className="text-primaryDark text-base tracking-wider rounded mb-2">
         Preço
       </h2>

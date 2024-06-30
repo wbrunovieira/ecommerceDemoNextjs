@@ -131,7 +131,7 @@ const Login = () => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center">
-      <div className="bg-primaryLight p-96 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-96 md:p-48 sm:w-full">
+      <div className="bg-primaryLight dark:bg-dark-secondary-gradient p-96 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-96 md:p-48 sm:w-full">
         <div className="absolute inset-0 z-0">
           <Image
             src="/images/petalas.svg"
@@ -142,7 +142,7 @@ const Login = () => {
           />
         </div>
 
-        <div className="relative z-10 bg-primary p-16 border-2 border-y-primaryDark rounded-lg shadow-lg">
+        <div className="relative z-10 bg-primary dark:bg-dark-secondary-gradient p-16 border-2 border-y-primaryDark rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-secondary mb-4 ">Login</h2>
           <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
             <label htmlFor="email" className="text-white-important text-xs">

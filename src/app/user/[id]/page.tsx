@@ -339,7 +339,7 @@ const UserPage: NextPage = () => {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight rounded-xl shadow-lg z-10">
+    <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
       <h1 className="text-2xl text-primaryDark font-bold text-center mb-4 z-10">
         Perfil do Usuário
       </h1>
@@ -375,8 +375,8 @@ const UserPage: NextPage = () => {
         </Link>
       </div>
 
-      <div className="flex gap-4 bg-primaryLight max-w-4xl z-10 ">
-        <div className="bg-primaryLight pt-2 z-10 rounded p-4">
+      <div className="flex gap-4 bg-primaryLight dark:bg-dark-secondary-gradient max-w-4xl z-10 ">
+        <div className="bg-primaryLight dark:bg-dark-secondary-gradient pt-2 z-10 rounded p-4">
           <p className="text-primaryDark pt-2">Favoritos :</p>
           <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
           <div>

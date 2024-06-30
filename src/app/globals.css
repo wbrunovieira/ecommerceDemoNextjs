@@ -11,6 +11,13 @@
   --fontColor: #333333;
   --red: #ff0000;
 }
+.dark {
+  --background-rgb: 26, 26, 26;
+  --color-primary: #a63955;
+  --color-secondary: #7c3d3d;
+  --primaryDark: #290000;
+  --fontColor: #e4e4e4;
+}
 
 body {
   background: rgb(var(--background-rgb));

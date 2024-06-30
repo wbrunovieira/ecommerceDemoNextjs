@@ -313,7 +313,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       className="flex flex-col gap-2 mr-4 rounded"
       ref={containerRef as React.RefObject<HTMLDivElement>}
     >
-      <div className=" sidebar-section flex flex-col w-48 border border-light bg-primaryLight rounded p-4 mt-2 z-10">
+      <div className=" sidebar-section flex flex-col w-48 border border-light bg-primaryLight dark:bg-dark-secondary-gradient rounded p-4 mt-2 z-10">
         <h2 className="text-primaryDark text-base tracking-wider mb-2">
           Categorias
         </h2>
@@ -347,7 +347,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
       </div>
 
-      <div className=" sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded z-10">
+      <div className=" sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded z-10">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Marcas
         </h2>
@@ -376,7 +376,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         ))}
       </div>
 
-      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
+      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Cores
         </h2>
@@ -399,7 +399,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         </div>
       </div>
 
-      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
+      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Tamanhos
         </h2>
@@ -420,7 +420,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           ))}
         </div>
       </div>
-      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight rounded">
+      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
         <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
           Materiais
         </h2>
