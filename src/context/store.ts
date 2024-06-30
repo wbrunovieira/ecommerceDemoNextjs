@@ -15,11 +15,12 @@ interface Product {
 
 interface CartState {
   cartItems: Product[];
-  addToCart: (product: Product) => void;
-  removeFromCart: (productId: string) => void;
-  clearCart: () => void;
-  updateQuantity: (productId: string, amount: number) => void;
-  initializeCart: (products: Product[]) => void;
+  userId?: string | null;
+  addToCart: (product: Product, userId?: string) => void;
+  removeFromCart: (productId: string, userId?: string) => void;
+  clearCart: (uuserId?: string) => void;
+  updateQuantity: (productId: string, amount: number, userId?: string) => void;
+  initializeCart: (products: Product[], userId?: string) => void;
 }
 
 interface FavoriteState {
@@ -63,8 +64,12 @@ export const useCartStore = create<CartState>(
   (persist as MyPersist)(
     (set) => ({
       cartItems: [],
-      addToCart: (product: Product) =>
+      userId: null,
+      addToCart: (product: Product, userId?: string) =>
         set((state: CartState) => {
+
+          if (userId && state.userId && state.userId !== userId) return state;
+
           const index = state.cartItems.findIndex(
             (item) => item.id === product.id
           );
@@ -80,38 +85,54 @@ export const useCartStore = create<CartState>(
 
           return { cartItems: [...state.cartItems, product] };
         }),
-      removeFromCart: (productId: string) =>
-        set((state: CartState) => ({
-          cartItems: state.cartItems.filter((item) => item.id !== productId),
-        })),
-      clearCart: () => set({ cartItems: [] }),
-      updateQuantity: (productId: string, amount: number) =>
-        set((state: CartState) => {
-          const index = state.cartItems.findIndex(
-            (item) => item.id === productId
-          );
 
-          if (index !== -1) {
-            let newQuantity = state.cartItems[index].quantity + amount;
-            if (newQuantity <= 0) {
-              return {
-                cartItems: state.cartItems.filter(
-                  (item) => item.id !== productId
-                ),
-              };
-            } else {
-              let newCartItems = [...state.cartItems];
-              newCartItems[index] = {
-                ...newCartItems[index],
-                quantity: newQuantity,
-              };
-              return { cartItems: newCartItems };
-            }
-          }
-          return {};
+      removeFromCart: (productId: string, userId?: string) =>
+        set((state: CartState) => {
+          if (userId && state.userId && state.userId !== userId) return state;
+          return {
+            cartItems: state.cartItems.filter((item) => item.id !== productId),
+          };
         }),
-      initializeCart: (products: Product[]) => set({ cartItems: products }),
-    }),
+
+        clearCart: (userId?: string) =>
+          set((state: CartState) => {
+            if (userId && state.userId && state.userId !== userId) return state;
+            return { cartItems: [] };
+          }),
+  
+
+          updateQuantity: (productId: string, amount: number, userId?: string) =>
+            set((state: CartState) => {
+              if (userId && state.userId && state.userId !== userId) return state;
+              const index = state.cartItems.findIndex(
+                (item) => item.id === productId
+              );
+    
+              if (index !== -1) {
+                let newQuantity = state.cartItems[index].quantity + amount;
+                if (newQuantity <= 0) {
+                  return {
+                    cartItems: state.cartItems.filter(
+                      (item) => item.id !== productId
+                    ),
+                  };
+                } else {
+                  let newCartItems = [...state.cartItems];
+                  newCartItems[index] = {
+                    ...newCartItems[index],
+                    quantity: newQuantity,
+                  };
+                  return { cartItems: newCartItems };
+                }
+              }
+              return state;
+            }),
+            initializeCart: (products: Product[], userId?: string) =>
+              set((state: CartState) => {
+                if (userId && state.userId && state.userId !== userId) return state;
+                return { cartItems: products };
+              }),
+          }),
     {
       name: "cart-storage",
       getStorage: () => localStorage,

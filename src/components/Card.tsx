@@ -1,5 +1,5 @@
 import Image from "next/image";
-
+import { useSession } from "next-auth/react";
 import Button from "./Button";
 import Link from "next/link";
 import { useCartStore } from "@/context/store";
@@ -46,15 +46,17 @@ const Card: React.FC<CardProps> = ({
   brandLogo,
 }) => {
   const addToCart = useCartStore((state: any) => state.addToCart);
+  const { data: session } = useSession();
 
   const handleAddToCart = (product: ProductCart) => {
+    const userId = session?.user?.id || null;
     addToCart({
       id: product.id,
       title: product.title,
       quantity: 1,
       image: validImageSRC,
       price: product.precoNovo,
-    });
+    }, userId);
   };
 
   const validImageSRC = imageSRC || "/images/foto1.jpg";

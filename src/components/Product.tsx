@@ -21,6 +21,8 @@ import { useCartStore, useFavoritesStore } from "@/context/store";
 import { formatPrice } from "@/utils/formatPrice";
 import Link from "next/link";
 
+import { useSession } from "next-auth/react"; 
+
 interface ProductCart {
   id: string;
   title: string;
@@ -126,6 +128,8 @@ const Product: React.FC<ProductProps> = ({
   const [isBuyButtonDisabled, setIsBuyButtonDisabled] = useState(true);
   const [isStockChecked, setIsStockChecked] = useState<boolean>(false);
 
+  const { data: session } = useSession();
+
   console.log("similarProducts", similarProducts);
   const hasVariants = variants.length > 0;
 
@@ -206,6 +210,7 @@ const Product: React.FC<ProductProps> = ({
     console.log("selectedVariantId:", selectedVariantId);
     console.log("availableStock:", availableStock);
     console.log("quantity:", quantity);
+    const userId = session?.user?.id || null;
     if (hasVariants) {
       console.log("Produto tem variantes.");
       if (selectedVariantId) {
@@ -225,7 +230,7 @@ const Product: React.FC<ProductProps> = ({
               width,
               length,
               weight,
-            });
+            }, userId);
           } else {
             alert("Please select a valid size and color combination.");
           }
