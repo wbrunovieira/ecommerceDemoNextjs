@@ -7,6 +7,7 @@ import Sidebar from "@/components/SideBar";
 import ProductList from "@/components/ProductList";
 
 import { ImagesSlider } from "@/components/ui/images-slider";
+import { Spotlight } from "@/components/ui/Spotlight";
 
 interface Category {
   id: string;
@@ -23,6 +24,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
   return (
     <>
       <Container>
+        <Spotlight fill="#D3686C" />
         <div>
           <ImagesSlider
             className="h-[20rem]"
@@ -71,14 +73,14 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </Link>
             </div>{" "}
             <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
-              <div className="flex ">
+              {/* <div className="flex ">
                 <Image
                   src="/icons/pijamas.svg"
                   alt="icone de lingerie"
                   width={50}
                   height={50}
                 />
-              </div>
+              </div> */}
 
               <Link
                 href={`/filtered?category=8cb20bbc-b693-42b9-8cfe-8c7da3036772`}

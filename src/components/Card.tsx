@@ -115,24 +115,22 @@ const Card: React.FC<CardProps> = ({
           </p>
         </div>
         <div className="pb-2">
-          <Link href="/product/ ">
-            <Button
-              variant="secondary"
-              size="small"
-              onClick={(e) => {
-                e.preventDefault();
-                handleAddToCart({
-                  id,
-                  title,
-                  quantity: 1,
-                  image: validImageSRC,
-                  precoNovo,
-                });
-              }}
-            >
-              Comprar
-            </Button>
-          </Link>
+          <Button
+            variant="secondary"
+            size="small"
+            onClick={(e) => {
+              e.preventDefault();
+              handleAddToCart({
+                id,
+                title,
+                quantity: 1,
+                image: validImageSRC,
+                precoNovo,
+              });
+            }}
+          >
+            Comprar
+          </Button>
         </div>
         {brandName && brandLogo && (
           <div className="flex items-center mt-4">
