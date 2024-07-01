@@ -18,6 +18,11 @@
   --primaryDark: #290000;
   --fontColor: #e4e4e4;
 }
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
 
 body {
   background: rgb(var(--background-rgb));
@@ -121,15 +126,14 @@ body {
   grid-auto-rows: minmax(100px, auto);
 }
 
-/* Componentes identificados por classes para simulação */
 .left {
   grid-area: left;
 }
 
 .searchBox {
   grid-area: search;
-  display: block; /* ou flex, dependendo de como o SearchBox é estruturado */
-  width: 100%; /* Ajuste conforme necessário */
+  display: block;
+  width: 100%;
   height: auto;
 }
 

@@ -31,8 +31,8 @@ const config = {
         darkFontColor: "#e4e4e4",
       },
       backgroundImage: {
-        "header-bg": "url('/images/banner5.svg')",
-        "header-bg-dark": "url('/images/banner5dark.svg')",
+        "header-bg": "url('/images/banner6.svg')",
+        "header-bg-dark": "url('/images/banner6dark.svg')",
         "dark-secondary-gradient": "linear-gradient(45deg, #7c3d3d, #4b2c2c)",
       },
       keyframes: {

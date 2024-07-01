@@ -14,7 +14,7 @@ import ToggleMode from "./ToggleMode";
 
 const Header = () => {
   return (
-    <header className="bg-header-bg dark:bg-header-bg-dark bg-cover h-36 sm:h-48 md:h-48 lg:h-36 flex justify-between items-center flex-col w-screen pt-4 px-8 mx-auto py-4 custom-header">
+    <header className="bg-header-bg dark:bg-header-bg-dark bg-cover sm:h-48 md:h-48 lg:h-36 flex justify-between items-center flex-col w-screen pt-4 px-8 mx-auto custom-header">
       <div className="flex justify-between items-center w-full mb-4 mt-4">
         <div className="social-icons flex gap-3">
           <a
