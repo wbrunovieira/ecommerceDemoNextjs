@@ -55,6 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     initialCategories || []
   );
 
+  const [showMoreCategories, setShowMoreCategories] = useState(false);
   const searchParams = useSearchParams();
 
   gsap.registerPlugin(useGSAP);
@@ -140,7 +141,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     const fetchCategories = async () => {
       try {
         const res = await fetch(
-          "http://localhost:3333/category/all?page=1&pageSize=10"
+          "http://localhost:3333/category/all?page=1&pageSize=50"
         );
 
         if (!res.ok) {
@@ -149,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
 
         const data = await res.json();
         console.log("data categories", data.categories);
-        
+
         const fetchedCategories = data.categories.map((category: any) => {
           const imageUrl = category.props.imageUrl?.replace('http://localhost:3000/public', '/icons') || "/icons/default-image.png";
           return {
@@ -317,37 +318,43 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       className="flex flex-col gap-2 mr-4 rounded"
       ref={containerRef as React.RefObject<HTMLDivElement>}
     >
-      <div className=" sidebar-section flex flex-col w-48 border border-light bg-primaryLight dark:bg-dark-secondary-gradient rounded p-4 mt-2 z-10">
+     <div className="sidebar-section flex flex-col w-48 border border-light bg-primaryLight dark:bg-dark-secondary-gradient rounded p-4 mt-2 z-10">
         <h2 className="text-primaryDark text-base tracking-wider mb-2">
           Categorias
         </h2>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-
-        {categories.map((category) => (
-          <div
-            key={category.id}
-            className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out  ${
-              selectedCategory === category.id
-                ? "bg-primaryDark text-primaryLight font-bold tracking-wider antialiased border rounded p-4 "
-                : ""
-            }`}
-            onClick={() => handleCategoryClick(category.id)}
-          >
-            <div className="flex items-center py-2 space-x-2">
-              <Image
-                src={category.imageUrl}
-                width={20}
-                height={20}
-                alt={category.name}
-                className="mr-2"
-              />
-              <div className="text-xs">
-                {capitalizeFirstLetter(category.name)}
+        <div className={`overflow-hidden ${showMoreCategories ? '' : 'h-48'} transition-height duration-300 ease-in-out`}>
+          {categories.map((category, index) => (
+            <div
+              key={category.id}
+              className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out  ${
+                selectedCategory === category.id
+                  ? "bg-primaryDark text-primaryLight font-bold tracking-wider antialiased border rounded p-4 "
+                  : ""
+              }`}
+              onClick={() => handleCategoryClick(category.id)}
+            >
+              <div className="flex items-center py-2 space-x-2">
+                <Image
+                  src={category.imageUrl}
+                  width={20}
+                  height={20}
+                  alt={category.name}
+                  className="mr-2"
+                />
+                <div className="text-xs">
+                  {capitalizeFirstLetter(category.name)}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-
+          ))}
+        </div>
+        <button
+          className="mt-2 text-primaryDark hover:text-primary transition duration-300 ease-in-out"
+          onClick={() => setShowMoreCategories(!showMoreCategories)}
+        >
+          {showMoreCategories ? "Ver menos" : "Ver mais"}
+        </button>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
       </div>
 
