@@ -43,6 +43,8 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
+  const baseImageUrl = '/'
+
   const [products, setProducts] = useState<any[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [materials, setMaterials] = useState<Material[]>([]);
@@ -147,14 +149,16 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
 
         const data = await res.json();
         console.log("data categories", data.categories);
-
-        const fetchedCategories = data.categories.map((category: any) => ({
-          id: category._id.value,
-          name: category.props.name,
-          slug: category.props.slug || "localhost",
-          imageUrl: category.props.imageUrl || "/default-image.png",
-        }));
-
+        
+        const fetchedCategories = data.categories.map((category: any) => {
+          const imageUrl = category.props.imageUrl?.replace('http://localhost:3000/public', '/icons') || "/icons/default-image.png";
+          return {
+            id: category._id.value,
+            name: category.props.name,
+            slug: category.props.slug || "localhost",
+            imageUrl,
+          };
+        });
         console.log("fetchedCategories", fetchedCategories);
         setCategories(fetchedCategories);
       } catch (error) {
