@@ -33,21 +33,18 @@ interface Size {
   id: string;
   name: string;
 }
-interface Material {
-  id: string;
-  name: string;
-}
+
 
 interface SidebarProps {
   initialCategories: Category[];
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
-  const baseImageUrl = '/'
+  
 
   const [products, setProducts] = useState<any[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
-  const [materials, setMaterials] = useState<Material[]>([]);
+ 
 
   const [colors, setColors] = useState<Color[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
@@ -65,7 +62,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
 
   const selectedCategory = useSelectionStore((state) => state.selectedCategory);
   const selectedBrand = useSelectionStore((state) => state.selectedBrand);
-  const selectedMaterial = useSelectionStore((state) => state.selectedMaterial);
+  
   const selectedColor = useColorStore((state) => state.selectedColor);
   const selectedSize = useSelectionStore((state) => state.selectedSize);
   const selectedMinPrice = useSelectionStore((state) => state.selectedMinPrice);
@@ -75,9 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     (state) => state.setSelectedCategory
   );
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
-  const setSelectedMaterial = useSelectionStore(
-    (state) => state.setSelectedMaterial
-  );
+  
   const setSelectedColor = useColorStore((state) => state.setSelectedColor);
   const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
   const setSelectedMinPrice = useSelectionStore(
@@ -102,14 +97,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     }
   };
 
-  const handleMaterialClick = (materialId: string) => {
-    isHome = pathname === "/" || pathname.includes("/product/");
-    if (isHome) {
-      router.push(`/filtered?material=${materialId}`);
-    } else {
-      setSelectedMaterial(materialId === selectedCategory ? null : materialId);
-    }
-  };
+
 
   const handleBrandClick = (brandId: string) => {
     isHome = pathname === "/" || pathname.includes("/product/");
@@ -247,33 +235,13 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
         setBrands([]);
       }
     };
-    const fetchMaterials = async () => {
-      try {
-        const res = await fetch(
-          "http://localhost:3333/materials/all?page=1&pageSize=10"
-        );
-
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
-        const data = await res.json();
-        const fetchedMaterials = data.materials.map((material: any) => ({
-          id: material._id.value,
-          name: material.props.name,
-        }));
-        setMaterials(fetchedMaterials);
-      } catch (error) {
-        console.error("Error fetching brands:", error);
-        setBrands([]);
-      }
-    };
+  
 
     fetchCategories();
     fetchBrands();
     fetchColors();
     fetchSizes();
-    fetchMaterials();
+    
   }, []);
 
   useEffect(() => {
@@ -283,7 +251,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
       setSelectedSize(null);
       setSelectedMinPrice(null);
       setSelectedMaxPrice(null);
-      setSelectedMaterial(null);
+      
       setSelectedColor(null);
     }
   }, [
@@ -293,7 +261,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
     setSelectedSize,
     setSelectedMinPrice,
     setSelectedMaxPrice,
-    setSelectedMaterial,
+    
   ]);
 
   const containerRef = useRef<HTMLElement>(null);
@@ -431,27 +399,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           ))}
         </div>
       </div>
-      <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
-        <h2 className="text-primaryDark text-base tracking-wider rounded mb-2 ">
-          Materiais
-        </h2>
-        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-        <div className="flex flex-col gap-1 justify-start p-1 w-32">
-          {materials.map((material, index) => (
-            <div
-              key={index}
-              className={`border border-light rounded text-xs cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out ${
-                selectedMaterial === material.id
-                  ? "bg-primaryDark text-primaryLight font-bold tracking-wider border"
-                  : ""
-              }`}
-              onClick={() => handleMaterialClick(material.id)}
-            >
-              {capitalizeFirstLetter(material.name)}
-            </div>
-          ))}
-        </div>
-      </div>
+
 
       <PriceFilter isHome={isHome} />
     </nav>

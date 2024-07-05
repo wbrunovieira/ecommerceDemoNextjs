@@ -38,13 +38,13 @@ export interface SelectionState {
   selectedCategory: string | null;
   selectedBrand: string | null;
   selectedSize: string | null;
-  selectedMaterial: string | null;
+ 
   selectedMinPrice: number | null;
   selectedMaxPrice: number | null;
 
   setSelectedCategory: (categoryId: string | null) => void;
   setSelectedBrand: (brandId: string | null) => void;
-  setSelectedMaterial: (materialId: string | null) => void;
+  
   setSelectedSize: (sizeId: string | null) => void;
   setSelectedMinPrice: (selectedMinPrice: number | null) => void;
   setSelectedMaxPrice: (selectedMaxPrice: number | null) => void;
@@ -223,7 +223,7 @@ export const useSelectionStore = create<SelectionState>()(
     (set) => ({
       selectedCategory: null,
       selectedBrand: null,
-      selectedMaterial: null,
+      
       selectedSize: null,
       selectedMinPrice: null,
       selectedMaxPrice: null,
@@ -234,8 +234,7 @@ export const useSelectionStore = create<SelectionState>()(
       setSelectedBrand: (brandId: string | null) =>
         set({ selectedBrand: brandId }),
 
-      setSelectedMaterial: (materialId: string | null) =>
-        set({ selectedMaterial: materialId }),
+     
 
       setSelectedSize: (sizeId: string | null) => set({ selectedSize: sizeId }),
 
@@ -256,12 +255,4 @@ export const useSelectionStore = create<SelectionState>()(
   )
 );
 
-// export const useFavoritesStore = create<FavoriteState>((set) => ({
-//   favorites: [],
-//   toggleFavorite: (productId) =>
-//     set((state) => ({
-//       favorites: state.favorites.includes(productId)
-//         ? state.favorites.filter((id) => id !== productId)
-//         : [...state.favorites, productId],
-//     })),
-// }));
+
