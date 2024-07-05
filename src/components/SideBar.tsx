@@ -39,7 +39,7 @@ interface SidebarProps {
   initialCategories: Category[];
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
+const Sidebar: React.FC<SidebarProps> = () => {
   
 
   const [products, setProducts] = useState<any[]>([]);
@@ -49,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   const [colors, setColors] = useState<Color[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [categories, setCategories] = useState<Category[]>(
-    initialCategories || []
+     []
   );
 
   const [showMoreCategories, setShowMoreCategories] = useState(false);
@@ -65,8 +65,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
   
   const selectedColor = useColorStore((state) => state.selectedColor);
   const selectedSize = useSelectionStore((state) => state.selectedSize);
-  const selectedMinPrice = useSelectionStore((state) => state.selectedMinPrice);
-  const selectedMaxPrice = useSelectionStore((state) => state.selectedMaxPrice);
+ 
 
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
@@ -383,7 +382,7 @@ const Sidebar: React.FC<SidebarProps> = ({ initialCategories }) => {
           Tamanhos
         </h2>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-        <div className="flex gap-1 justify-start p-1 w-16">
+        <div className="flex flex-col gap-1 justify-start p-1 w-16">
           {sizes.map((size, index) => (
             <div
               key={size.id}

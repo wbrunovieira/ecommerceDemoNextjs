@@ -49,6 +49,7 @@ const Card: React.FC<CardProps> = ({
   const { data: session } = useSession();
 
   const handleAddToCart = (product: ProductCart) => {
+    
     const userId = session?.user?.id || null;
     addToCart(
       {

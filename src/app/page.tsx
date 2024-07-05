@@ -20,7 +20,7 @@ interface HomeProps {
   initialCategories: Category[];
 }
 
-const Home: NextPage<HomeProps> = ({ initialCategories }) => {
+const Home: NextPage<HomeProps> = () => {
   return (
     <>
       <Container>
@@ -139,9 +139,17 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
           </div>
         </div>
 
-        <section className="flex mt-2">
+        <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+
+          <div className="md:col-span-1">
+
           <Sidebar initialCategories={[]} />
+          </div>
+
+          <div className="md:col-span-3">
+
           <ProductList />
+          </div>
         </section>
       </Container>
     </>
