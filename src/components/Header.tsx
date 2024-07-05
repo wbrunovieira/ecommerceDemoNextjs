@@ -22,21 +22,21 @@ const Header = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <BsInstagram className="text-secondary transition duration-300 hover:scale-125" />
+            <BsInstagram className="rounded dark:bg-dark-secondary-gradient transition duration-300 hover:scale-125" />
           </a>
           <a
             href="https://facebook.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <BsFacebook className="text-secondary transition duration-300 hover:scale-125" />
+            <BsFacebook className="rounded  dark:bg-dark-secondary-gradient transition duration-300 hover:scale-125" />
           </a>
           <a
             href="https://tiktok.com"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <BsTiktok className="text-secondary transition duration-300 hover:scale-125" />
+            <BsTiktok className="rounded dark:bg-dark-secondary-gradient transition duration-300 hover:scale-125" />
           </a>
         </div>
 

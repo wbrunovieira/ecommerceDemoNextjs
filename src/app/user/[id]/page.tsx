@@ -53,6 +53,8 @@ const UserPage: NextPage = () => {
 
   const { data: session, status } = useSession();
   const [isEditingUser, setIsEditingUser] = useState(false);
+  const [originalUserDetails, setOriginalUserDetails] = useState<Partial<User>>({});
+
   const [userDetails, setUserDetails] = useState<Partial<User>>({
     name: "",
     email: "",
@@ -187,7 +189,14 @@ const UserPage: NextPage = () => {
 
   const handleEditUser = () => {
     setIsEditingUser(true);
+    setOriginalUserDetails(userDetails);
   };
+
+  const handleCancelEditUser = () => {
+    setUserDetails(originalUserDetails);
+    setIsEditingUser(false);
+  };
+  
 
   const handleSaveUser = async () => {
     const removeEmptyFields = (obj: any) => {
@@ -340,7 +349,7 @@ const UserPage: NextPage = () => {
 
   return (
     <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
-      <h1 className="text-2xl text-primaryDark font-bold text-center mb-4 z-10">
+      <h1 className="text-2xl text-primaryDark dark:text-primary dark:bg-dark-secondary-gradient font-bold text-center mb-4 z-10">
         Perfil do Usuário
       </h1>
       <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
@@ -377,7 +386,7 @@ const UserPage: NextPage = () => {
 
       <div className="flex gap-4 bg-primaryLight dark:bg-dark-secondary-gradient max-w-4xl z-10 ">
         <div className="bg-primaryLight dark:bg-dark-secondary-gradient pt-2 z-10 rounded p-4">
-          <p className="text-primaryDark pt-2">Favoritos :</p>
+          <p className="text-primaryDark dark:text-primary pt-2">Favoritos :</p>
           <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
           <div>
             <div className="flex flex-col w-72 gap-4  bg-primaryLight rounded-md p-2 z-10">
@@ -440,7 +449,7 @@ const UserPage: NextPage = () => {
         </div>
 
         <div className="flex-1 pt-2 ">
-          <p className="text-primaryDark pt-2">Dados :</p>
+          <p className="text-primaryDark dark:text-primary pt-2">Dados :</p>
           <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
           {isEditingUser ? (
             <form className="text-lg text-primaryDark w-[450px] bg-primary p-2 rounded-md flex-1">
@@ -448,7 +457,7 @@ const UserPage: NextPage = () => {
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-primaryDark"
+                    className="block text-sm font-medium bg-gradient-to-r from-primary to-primary-light text-primaryDark "
                   >
                     Nome
                   </label>
@@ -459,7 +468,7 @@ const UserPage: NextPage = () => {
                     onChange={(e) =>
                       setUserDetails({ ...userDetails, name: e.target.value })
                     }
-                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                    className="mt-1 bg-primaryLight dark:bg-primary w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
                   />
                 </div>
 
@@ -477,7 +486,7 @@ const UserPage: NextPage = () => {
                     onChange={(e) =>
                       setUserDetails({ ...userDetails, email: e.target.value })
                     }
-                    className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                    className="mt-1  bg-primaryLight dark:bg-primary text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
                   />
                 </div>
 
@@ -539,7 +548,16 @@ const UserPage: NextPage = () => {
                 </div>
               </div>
 
-              <div className="mt-8 flex justify-end">
+              <div className="mt-8 flex justify-between ">
+
+              <button
+              type="button"
+              onClick={handleCancelEditUser}
+              className="bg-secondary text-primaryLight transition p-2 rounded hover:underline
+              duration-300 hover:scale-105"
+            >
+              Cancelar
+            </button>
                 <button
                   type="button"
                   onClick={handleSaveUser}
@@ -551,7 +569,7 @@ const UserPage: NextPage = () => {
               </div>
             </form>
           ) : (
-            <div className="mt-2 max-w-[800px] text-primaryDark border border-secondary p-4 rounded-md flex-1">
+            <div className="mt-2 max-w-[800px] text-primaryDark dark:text-primary border border-secondary p-4 rounded-md flex-1">
               <p>
                 Nome: <strong>{userDetails.name}</strong>
               </p>
@@ -580,7 +598,7 @@ const UserPage: NextPage = () => {
         </div>
       </div>
       <div className="mt-10">
-        <h2 className="text-xl font-bold text-primaryDark">Endereços:</h2>
+        <h2 className="text-xl font-bold text-primaryDark dark:text-primary">Endereços:</h2>
 
         <div>
           {isCreatingNewAddress ? (

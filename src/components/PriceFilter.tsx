@@ -55,7 +55,7 @@ const PriceFilter = ({ isHome }: { isHome: boolean }) => {
 
   return (
     <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded bg-primaryLight dark:bg-dark-secondary-gradient">
-      <h2 className="text-primaryDark text-base tracking-wider rounded mb-2">
+      <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2">
         Preço
       </h2>
       <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
@@ -63,7 +63,7 @@ const PriceFilter = ({ isHome }: { isHome: boolean }) => {
         <div className="mb-4">
           <label
             htmlFor="min"
-            className="block text-xs font-medium text-gray-700"
+            className="block text-xs font-medium bg-primaryLight dark:bg-dark-secondary-gradient"
           >
             Mínimo
           </label>
@@ -82,7 +82,7 @@ const PriceFilter = ({ isHome }: { isHome: boolean }) => {
         <div>
           <label
             htmlFor="max"
-            className="block text-xs font-medium text-gray-700"
+            className="block text-xs font-medium bg-primaryLight dark:bg-dark-secondary-gradient"
           >
             Máximo
           </label>
