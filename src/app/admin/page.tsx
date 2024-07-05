@@ -37,24 +37,92 @@ const AdminPage: React.FC = () => {
 
   return (
     <div className="flex min-h-screen z-20">
-      <div className="w-64 bg-primaryLight dark:bg-dark-secondary-gradient text-white flex flex-col z-20">
+      <div className="w-64 bg-primaryLight dark:bg-primaryDark text-primaryDark dark:text-primaryLight  flex flex-col z-20">
         <div className="flex items-center justify-center h-16 border-b border-gray-700 z-20">
-          <span className="text-xl font-semibold z-20">Admin</span>
+          <span className="text-xl text-primaryDark dark:text-primaryLight font-semibold z-20">Admin</span>
         </div>
-        <nav className="flex-1 px-2 py-4 space-y-1 z-20">
-          <div className="bg-primaryLight dark:bg-dark-secondary-gradient">
+        <nav className="flex-1 px-2 py-4 space-y-4 z-20">
+          <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
             <Sheet>
               <SheetTrigger>Produto</SheetTrigger>
               <SheetContent
                 side="right"
-                size="extraLarge"
-                className=" bg-white dark:bg-gray-800"
+                // size="extraLarge"
+                
               >
                 <SheetHeader>
-                  <SheetTitle>Are you absolutely sure?</SheetTitle>
+                  <SheetTitle>Produto</SheetTitle>
                   <SheetDescription>
-                    This action cannot be undone. This will permanently delete
-                    your account and remove your data from our servers.
+                    Descricao do produto
+                  </SheetDescription>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+          </div>
+
+          <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
+            <Sheet>
+              <SheetTrigger>Categoria</SheetTrigger>
+              <SheetContent
+                side="right"
+                size="extraLarge"
+               
+              >
+                <SheetHeader>
+                  <SheetTitle>Categoria</SheetTitle>
+                  <SheetDescription>
+                    Categoria Descricao
+                  </SheetDescription>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+          </div>
+          <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
+            <Sheet>
+              <SheetTrigger>Cor</SheetTrigger>
+              <SheetContent
+                side="right"
+                size="extraLarge"
+               
+              >
+                <SheetHeader>
+                  <SheetTitle>Cor</SheetTitle>
+                  <SheetDescription>
+                    Cor Descricao
+                  </SheetDescription>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+          </div>
+          <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
+            <Sheet>
+              <SheetTrigger>Tamanho</SheetTrigger>
+              <SheetContent
+                side="right"
+                size="extraLarge"
+               
+              >
+                <SheetHeader>
+                  <SheetTitle>Tamanho</SheetTitle>
+                  <SheetDescription>
+                  Tamanho Descricao
+                  </SheetDescription>
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
+          </div>
+          <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
+            <Sheet>
+              <SheetTrigger>Fabricante</SheetTrigger>
+              <SheetContent
+                side="right"
+                size="extraLarge"
+               
+              >
+                <SheetHeader>
+                  <SheetTitle>Fabricante</SheetTitle>
+                  <SheetDescription>
+                  Fabricante Descricao
                   </SheetDescription>
                 </SheetHeader>
               </SheetContent>
@@ -63,11 +131,11 @@ const AdminPage: React.FC = () => {
         </nav>
       </div>
 
-      <main className="flex-1 p-8 bg-primaryLight dark:bg-dark-secondary-gradient z-20  ">
-        <h1 className="text-2xl font-semibold text-gray-900">
+      <main className="flex-1 p-8 bg-primaryLight dark:bg-primaryDark z-20  ">
+        <h1 className="text-2xl text-primaryDark dark:text-primaryLight font-semibold text-gray-900">
           Admin Dashboard
         </h1>
-        <p className="mt-4 text-gray-600">
+        <p className="mt-4 text-primaryDark dark:text-primaryLight">
           Bem vindo a area de Adm do Site Stylos
         </p>
       </main>

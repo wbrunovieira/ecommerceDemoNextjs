@@ -103,18 +103,18 @@ const Card: React.FC<CardProps> = ({
           <h2 className="semibold text-xl mb-2 text-fontColor dark:text-darkFontColor">
             {title}
           </h2>
-          <p className="text-gray-700 text-sm font-bold text-fontColor dark:text-darkFontColor">
+          <p className="text-gray-700 text-sm font-bold text-fontColor dark:text-dark ">
             {precoAntigo && (
               <span className="line-through mr-2 font-extralight">
                 R${precoAntigo.toFixed(2)}
               </span>
             )}
-            <span className="text-red-500 dark:text-darkFontColor">
-              R${precoNovo}
+            <span className="text-primaryDark dark:text-dark FontColor">
+              R${precoNovo.toFixed(2)}
             </span>
           </p>
         </div>
-        <div className="pb-2">
+        <div className="pb-2 mt-2">
           <Button
             variant="secondary"
             size="small"
@@ -129,7 +129,7 @@ const Card: React.FC<CardProps> = ({
               });
             }}
           >
-            Comprar
+            Saber mais
           </Button>
         </div>
         {brandName && brandLogo && (

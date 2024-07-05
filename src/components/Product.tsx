@@ -339,7 +339,7 @@ const Product: React.FC<ProductProps> = ({
     <section>
       <div className="flex flex-col ml-2">
         <div className="w-full border-b-2 border-primary ">
-          <h2 className="text-2xl font-bold mb-2 w-full text-primaryDark border-x-primary">
+          <h2 className="text-2xl font-bold mb-2 w-full text-primaryDark dark:text-primaryLight border-x-primary">
             {title}
           </h2>
         </div>
@@ -393,7 +393,7 @@ const Product: React.FC<ProductProps> = ({
             <div className="flex gap-2 mt-4">
               <button
                 onClick={handleToggleFavorite}
-                className="flex items-center gap-2 text-base text-primaryDark font-semibold"
+                className="flex items-center gap-2 text-base text-primaryDark dark:text-primaryLight font-semibold"
                 aria-label={
                   isFavorited
                     ? " Remover dos favoritos"
@@ -416,7 +416,7 @@ const Product: React.FC<ProductProps> = ({
             {hasVariants && (
               <>
                 <div className="mt-4 rounded px-2 py-2 max-w-48">
-                  <h3 className="text-base text-primaryDark font-semibold">
+                  <h3 className="text-base text-primaryDark dark:text-primaryLight  font-semibold">
                     Cores
                   </h3>
                   <div className="flex gap-2 mt-2">
@@ -436,7 +436,7 @@ const Product: React.FC<ProductProps> = ({
                 </div>
 
                 <div className="mt-2 flex-initial rounded px-2 py-2 max-w-64">
-                  <h3 className="text-base font-semibold text-primaryDark">
+                  <h3 className="text-base font-semibold text-primaryDark dark:text-primaryLight ">
                     Tamanhos
                   </h3>
                   <div className="flex gap-2 justify-start p-2 w-60 cursor-pointer">
@@ -472,13 +472,13 @@ const Product: React.FC<ProductProps> = ({
 
                 <div className="flex ml-2">
                   <button
-                    className="w-8 h-8 flex justify-center items-center text-primaryDark font-semibold border-r-2"
+                    className="w-8 h-8 flex justify-center items-center text-primaryDark dark:text-primaryLight font-semibold border-r-2"
                     onClick={decrementQuantity}
                   >
                     -
                   </button>
                   <button
-                    className="w-8 h-8 flex justify-center items-center text-primaryDark font-semibold  border-primaryDark"
+                    className="w-8 h-8 flex justify-center items-center text-primaryDark dark:text-primaryLight  font-semibold  border-primaryDark"
                     onClick={incrementQuantity}
                   >
                     +
@@ -535,7 +535,7 @@ const Product: React.FC<ProductProps> = ({
       </div>
       <div className="flex flex-col gap-2 w-auto border-t-2 border-primary mt-4">
         <div className="w-full flex mt-4 ">
-          <h2 className="text-lg text-primaryDark shadow-lg font-semibold border-r-4 border-secondary rounded p-4 whitespace-nowrap">
+          <h2 className="text-lg text-primaryDark dark:text-primaryLight shadow-lg font-semibold border-r-4 border-secondary rounded p-4 whitespace-nowrap">
             Produtos Parecidos
           </h2>
         </div>

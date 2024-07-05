@@ -7,7 +7,7 @@ import Sidebar from "@/components/SideBar";
 import ProductList from "@/components/ProductList";
 
 import { ImagesSlider } from "@/components/ui/images-slider";
-import { Spotlight } from "@/components/ui/Spotlight";
+
 
 interface Category {
   id: string;
@@ -24,7 +24,7 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
   return (
     <>
       <Container>
-        <Spotlight fill="#D3686C" />
+        
         <div>
           <ImagesSlider
             className="h-[20rem]"
@@ -63,42 +63,17 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
                 href={`/filtered?category=0e531727-94ac-4620-b64f-188063b4e572`}
                 className="text-xs font-regular uppercase pl-2 self-center "
               >
-                Lingeries{" "}
-                <span className="text-[11px] text-fontColor font-light">
-                  (53)
-                </span>
+                Lingeries
+              
                 <p className="text-secondary text-[11px] capitalize font-normal">
                   Mostrar Todas
                 </p>
               </Link>
-            </div>{" "}
+            </div>
             <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
-              {/* <div className="flex ">
+              <div className="flex ">
                 <Image
                   src="/icons/pijamas.svg"
-                  alt="icone de lingerie"
-                  width={50}
-                  height={50}
-                />
-              </div> */}
-
-              <Link
-                href={`/filtered?category=8cb20bbc-b693-42b9-8cfe-8c7da3036772`}
-                className="text-xs font-regular uppercase pl-2 self-center "
-              >
-                Pijamas{" "}
-                <span className="text-[11px] text-fontColor font-light">
-                  (39)
-                </span>
-                <p className="text-secondary text-[11px] capitalize font-normal">
-                  Mostrar Todas
-                </p>
-              </Link>
-            </div>{" "}
-            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
-              <div className="flex">
-                <Image
-                  src="/icons/boy.svg"
                   alt="icone de lingerie"
                   width={50}
                   height={50}
@@ -106,13 +81,33 @@ const Home: NextPage<HomeProps> = ({ initialCategories }) => {
               </div>
 
               <Link
+                href={`/filtered?category=8cb20bbc-b693-42b9-8cfe-8c7da3036772`}
+                className="text-xs font-regular uppercase pl-2 self-center "
+              >
+                Pijamas
+             
+                <p className="text-secondary text-[11px] capitalize font-normal">
+                  Mostrar Todas
+                </p>
+              </Link>
+            </div>
+            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
+              <div className="flex text-primaryDark dark:text-primaryLight">
+                <Image
+                  src="/icons/boy.svg"
+                  alt="icone de lingerie"
+                  width={50}
+                  height={50}
+                  
+                />
+              </div>
+
+              <Link
                 href={`filtered?category=8937d517-7071-4d09-94b9-9306853a7a5f`}
                 className="text-xs font-regular uppercase pl-2 self-center"
               >
-                Para o seu Boy{" "}
-                <span className="text-[11px] text-fontColor font-light">
-                  (26)
-                </span>
+                Para o seu Boy
+              
                 <p className="text-secondary text-[11px] capitalize font-normal">
                   Mostrar Todas
                 </p>

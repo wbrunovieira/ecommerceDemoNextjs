@@ -36,7 +36,7 @@ const Cart = () => {
     updateQuantity(id, -1);
   };
   return (
-    <div className="bg-primaryLight text-fontColor w-[600px] mt-4 p-8 rounded-lg">
+    <div className="bg-primaryLight text-fontColor dark:text-primaryLight  w-[600px] mt-4 p-8 rounded-lg">
       <div className="container mx-auto py-4 ">
         <h1 className="text-3xl font-bold mb-4 text-fontColor "></h1>
 

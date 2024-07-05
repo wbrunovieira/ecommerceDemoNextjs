@@ -27,7 +27,7 @@ const SimilarProducts: React.FC<SimilarProductsProps> = ({
           />
         </div>
         <div className="flex flex-col ml-2">
-          <h3 className=" text-fontColor font-semibold text-sm">{title}</h3>
+          <h3 className=" text-fontColor dark:text-primaryLight font-semibold text-sm">{title}</h3>
           <div className="flex justify-center items-center gap-2">
             <Image
               src="/icons/heart-icon.svg"
@@ -37,7 +37,7 @@ const SimilarProducts: React.FC<SimilarProductsProps> = ({
             />
             <p className="text-xs mt-2 mb-2">Lista de Desejos</p>
           </div>
-          <p className="text-sm text-fontColor font-semibold text-center">
+          <p className="text-sm text-fontColor dark:text-primaryLight  font-semibold text-center">
             R$ {price},00
           </p>
           <div className="flex justify-center items-center py-2 mt-2 border border-light rounded">
