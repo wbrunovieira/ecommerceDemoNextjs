@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 
+
 import {
   Sheet,
   SheetContent,
@@ -12,6 +13,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+import { Bar, BarChart, CartesianGrid , XAxis } from "recharts"
+ 
+import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+import { ChartLegend, ChartLegendContent } from "@/components/ui/chart"
+import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+
+
+ 
 
 interface Color {
   _id: {
@@ -68,6 +80,21 @@ interface Product {
   imageUrl: string;
   erpId: string;
 }
+interface Order {
+  id: string;
+  customer: string;
+  date: string;
+  total: number;
+  status: string;
+}
+
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  orders: number;
+  totalSpent: number;
+}
 
 const AdminPage: React.FC = () => {
   const router = useRouter();
@@ -78,6 +105,9 @@ const AdminPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
 
   const [editingColorId, setEditingColorId] = useState<string | null>(null);
   const [editColorData, setEditColorData] = useState({ name: "", hex: "" });
@@ -180,10 +210,38 @@ const AdminPage: React.FC = () => {
       }
     };
 
+    const fetchOrders = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3333/orders/all`, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        setOrders(response.data.orders);
+      } catch (error) {
+        console.error("Erro ao buscar os pedidos: ", error);
+      }
+    };
+
+    const fetchCustomers = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3333/customers/all`, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        setCustomers(response.data.customers);
+      } catch (error) {
+        console.error("Erro ao buscar os clientes: ", error);
+      }
+    };
+
     fetchBrands()
     fetchColors();
     fetchSizes();
     fetchCategories()
+    fetchOrders();
+    fetchCustomers();
   }, []);
 
   const handleEditClick = (color: Color) => {
@@ -427,6 +485,51 @@ const AdminPage: React.FC = () => {
       console.error("Erro ao salvar o produto: ", error);
     }
   };
+
+  const orderData = {
+    labels: orders.map(order => order.date),
+    datasets: [
+      {
+        label: 'Pedidos',
+        data: orders.map(order => order.total),
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const chartConfig = {
+  desktop: {
+    label: "Desktop",
+    color: "#F0B1CC",
+  },
+  mobile: {
+    label: "Mobile",
+    color: "#D3686C",
+  },
+} satisfies ChartConfig
+
+  const customerData = {
+    labels: customers.map(customer => customer.name),
+    datasets: [
+      {
+        label: 'Clientes',
+        data: customers.map(customer => customer.totalSpent),
+        backgroundColor: 'rgba(200, 10, 255, 1)',
+        borderColor: 'rgba(153, 102, 255, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+  const chartData = [
+  { month: "January", desktop: 186, mobile: 80 },
+  { month: "February", desktop: 305, mobile: 200 },
+  { month: "March", desktop: 237, mobile: 120 },
+  { month: "April", desktop: 73, mobile: 190 },
+  { month: "May", desktop: 209, mobile: 130 },
+  { month: "June", desktop: 214, mobile: 140 },
+]
 
 
   if (status === "loading") {
@@ -946,9 +1049,225 @@ const AdminPage: React.FC = () => {
         <h1 className="text-2xl text-primaryDark dark:text-primaryLight font-semibold text-gray-900">
           Admin Dashboard
         </h1>
-        <p className="mt-4 text-primaryDark dark:text-primaryLight">
+        <p className="mt-4 text-primaryDark dark:text-primaryLight mb-4">
           Bem vindo a area de Adm do Site Stylos
         </p>
+
+        <div className="">
+        <Tabs defaultValue="vendas" className="w-full">
+          <TabsList>
+            <TabsTrigger value="vendas">Por Vendas</TabsTrigger>
+            <TabsTrigger value="produto">Por Produto</TabsTrigger>
+          </TabsList>
+          <TabsContent value="vendas">
+                  
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+
+            <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+              <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">Clientes</h2>
+            
+
+
+            <ChartContainer config={chartConfig} className="min-h-[50px] w-full">
+            <BarChart accessibilityLayer data={chartData}>
+                    <CartesianGrid vertical={false} />
+
+                    <XAxis
+                dataKey="month"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                    <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                    <ChartLegend content={<ChartLegendContent />} />
+            </BarChart>
+            </ChartContainer>
+            </div> 
+            <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+              <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">Clientes</h2>
+            
+
+
+            <ChartContainer config={chartConfig} className="min-h-[50px] w-full">
+            <BarChart accessibilityLayer data={chartData}>
+                    <CartesianGrid vertical={false} />
+
+                    <XAxis
+                dataKey="month"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                    <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                    <ChartLegend content={<ChartLegendContent />} />
+            </BarChart>
+            </ChartContainer>
+            </div> 
+            <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+              <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">Visitas no site</h2>
+            
+
+
+            <ChartContainer config={chartConfig} className="min-h-[50px] w-full">
+            <BarChart accessibilityLayer data={chartData}>
+                    <CartesianGrid vertical={false} />
+
+                    <XAxis
+                dataKey="month"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <ChartTooltip content={<ChartTooltipContent />} />
+                    <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                    <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                    <ChartLegend content={<ChartLegendContent />} />
+            </BarChart>
+            </ChartContainer>
+            </div> 
+        </div>
+
+
+        <div className="mt-8">
+        <h2 className="text-xl font-semibold">Últimos Pedidos</h2>
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
+          <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+            <tr>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">ID</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Cliente</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Data</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Total</th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Status</th>
+            </tr>
+          </thead>
+          <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+            {orders.map((order) => (
+              <tr key={order.id}>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.id}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.customer}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.date}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.total}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        </div>
+
+          </TabsContent>
+          <TabsContent value="produto">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+
+        <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+          <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">Fabricante</h2>
+
+
+
+        <ChartContainer config={chartConfig} className="min-h-[50px] w-full">
+        <BarChart accessibilityLayer data={chartData}>
+                <CartesianGrid vertical={false} />
+
+                <XAxis
+            dataKey="month"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.slice(0, 3)}
+          />
+          <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                <ChartLegend content={<ChartLegendContent />} />
+        </BarChart>
+        </ChartContainer>
+        </div> 
+        <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+          <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">Cores</h2>
+
+
+
+        <ChartContainer config={chartConfig} className="min-h-[50px] w-full">
+        <BarChart accessibilityLayer data={chartData}>
+                <CartesianGrid vertical={false} />
+
+                <XAxis
+            dataKey="month"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.slice(0, 3)}
+          />
+          <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                <ChartLegend content={<ChartLegendContent />} />
+        </BarChart>
+        </ChartContainer>
+        </div> 
+        <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+          <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">Por Categoria</h2>
+
+
+
+        <ChartContainer config={chartConfig} className="min-h-[50px] w-full">
+        <BarChart accessibilityLayer data={chartData}>
+                <CartesianGrid vertical={false} />
+
+                <XAxis
+            dataKey="month"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => value.slice(0, 3)}
+          />
+          <ChartTooltip content={<ChartTooltipContent />} />
+                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                <ChartLegend content={<ChartLegendContent />} />
+        </BarChart>
+        </ChartContainer>
+        </div> 
+        </div>
+
+
+        <div className="mt-8">
+        <h2 className="text-xl font-semibold">Últimos Pedidos</h2>
+        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
+        <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+        <tr>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">ID</th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Cliente</th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Data</th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Total</th>
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Status</th>
+        </tr>
+        </thead>
+        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+        {orders.map((order) => (
+          <tr key={order.id}>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.id}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.customer}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.date}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.total}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{order.status}</td>
+          </tr>
+        ))}
+        </tbody>
+        </table>
+        </div>
+          </TabsContent>
+</Tabs>
+ 
+
+        </div>
       </main>
     </div>
   );
