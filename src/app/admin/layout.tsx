@@ -7,6 +7,7 @@ import { Montserrat } from "next/font/google";
 
 
 import { ThemeProvider } from "@/components/theme-provider";
+import HeaderAdmin from "@/components/HeaderAdmin";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -29,6 +30,7 @@ export default function AdminLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <HeaderAdmin />
           
           <main>{children}</main>
         </ThemeProvider>

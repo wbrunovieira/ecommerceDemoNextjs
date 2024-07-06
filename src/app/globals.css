@@ -144,6 +144,12 @@ body {
   grid-template-areas: "left search right";
   grid-auto-rows: minmax(100px, auto);
 }
+.custom-grid-adm {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-areas: "left search right";
+  grid-auto-rows: minmax(10px, auto);
+}
 
 .left {
   grid-area: left;
