@@ -438,20 +438,27 @@ const AdminPage: React.FC = () => {
   }
 
   return (
-    <div className="flex min-h-screen z-20">
-      <div className="w-64 bg-primaryLight dark:bg-primaryDark text-primaryDark dark:text-primaryLight  flex flex-col z-20">
-        <div className="flex items-center justify-center h-16 border-b border-gray-700 z-20">
+    <div className="flex min-h-screen z-20 divide-x">
+      <div className="w-64 bg-primaryLight dark:bg-primaryDark text-primaryDark dark:text-primaryLight  flex flex-col z-20 ">
+        <div className="flex items-center justify-center h-16 border-b border-gray-700 z-20 ">
           <span className="text-xl text-primaryDark dark:text-primaryLight font-semibold z-20">Admin</span>
         </div>
-        <nav className="flex-1 px-2 py-4 space-y-4 z-20">
+        <nav className="flex-1 px-2 space-y-1 z-20">
 
 
-     <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
+     <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded ">
             <Sheet>
-              <SheetTrigger>Produto</SheetTrigger>
+              
+    <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
+
+              <SheetTrigger>Produtos</SheetTrigger>
+    </div>
+              
               <SheetContent side="right" size="extraLarge">
                 <SheetHeader>
-                  <SheetTitle>Produto</SheetTitle>
+                
+                  <SheetTitle>Produtos</SheetTitle>
+                  
                   <SheetDescription>Descrição do produto</SheetDescription>
                 </SheetHeader>
                 <div className="p-4">
@@ -538,7 +545,7 @@ const AdminPage: React.FC = () => {
                             name="name"
                             value={editProductData.name}
                             onChange={handleProductInputChange}
-                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
                           />
                         </div>
                         <div>
@@ -548,7 +555,7 @@ const AdminPage: React.FC = () => {
                             name="description"
                             value={editProductData.description}
                             onChange={handleProductInputChange}
-                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
                           />
                         </div>
                         <div>
@@ -558,7 +565,7 @@ const AdminPage: React.FC = () => {
                             name="price"
                             value={editProductData.price}
                             onChange={handleProductInputChange}
-                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
                           />
                         </div>
                         <div>
@@ -568,7 +575,7 @@ const AdminPage: React.FC = () => {
                             name="stock"
                             value={editProductData.stock}
                             onChange={handleProductInputChange}
-                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
                           />
                         </div>
                         <div>
@@ -588,7 +595,7 @@ const AdminPage: React.FC = () => {
                             name="brand"
                             value={editProductData.brand}
                             onChange={handleProductInputChange}
-                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
                           />
                         </div>
                         <div>
@@ -608,7 +615,7 @@ const AdminPage: React.FC = () => {
                             name="erpId"
                             value={editProductData.erpId}
                             onChange={handleProductInputChange}
-                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
                           />
                         </div>
                       </div>
@@ -621,10 +628,13 @@ const AdminPage: React.FC = () => {
 
           <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
             <Sheet>
-              <SheetTrigger>Categoria</SheetTrigger>
+            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
+
+              <SheetTrigger>Categorias</SheetTrigger>
+              </div>
               <SheetContent side="right" size="extraLarge">
                 <SheetHeader>
-                  <SheetTitle>Categoria</SheetTitle>
+                  <SheetTitle>Categorias</SheetTitle>
                   <SheetDescription>Categoria Descrição</SheetDescription>
                 </SheetHeader>
                 <div className="p-4">
@@ -699,11 +709,14 @@ const AdminPage: React.FC = () => {
 
    <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
             <Sheet>
+            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
+
               <SheetTrigger>Cores</SheetTrigger>
+              </div>
               <SheetContent side="right" size="extraLarge">
                 <SheetHeader>
-                  <SheetTitle>Cor</SheetTitle>
-                  <SheetDescription>Cor Descrição</SheetDescription>
+                  <SheetTitle>Cores</SheetTitle>
+                  <SheetDescription>Cores Descrição</SheetDescription>
                 </SheetHeader>
                 <div className="p-4">
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -775,10 +788,14 @@ const AdminPage: React.FC = () => {
 
           <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
             <Sheet>
+            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
+
               <SheetTrigger>Tamanhos</SheetTrigger>
+              </div>
+
               <SheetContent side="right" size="extraLarge">
                 <SheetHeader>
-                  <SheetTitle>Tamanho</SheetTitle>
+                  <SheetTitle>Tamanhos</SheetTitle>
                   
                 </SheetHeader>
                 <div className="p-4">
@@ -844,10 +861,13 @@ const AdminPage: React.FC = () => {
 
           <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
             <Sheet>
-              <SheetTrigger>Fabricante</SheetTrigger>
+            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
+
+              <SheetTrigger>Fabricantes</SheetTrigger>
+              </div>
               <SheetContent side="right" size="extraLarge">
                 <SheetHeader>
-                  <SheetTitle>Fabricante</SheetTitle>
+                  <SheetTitle>Fabricantes</SheetTitle>
                   <SheetDescription>Fabricante Descrição</SheetDescription>
                 </SheetHeader>
                 <div className="p-4">

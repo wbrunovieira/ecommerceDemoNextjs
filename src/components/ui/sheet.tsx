@@ -84,7 +84,7 @@ const SheetContent = React.forwardRef<
       <SheetOverlay />
       <SheetPrimitive.Content
         ref={ref}
-        className={cn(sheetVariants({ side, size, colorScheme }), className)}
+        className={cn(sheetVariants({ side, size, colorScheme }), className, "overflow-y-auto")}
         {...props}
       >
         {children}
@@ -118,7 +118,7 @@ const SheetFooter = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2",
+      "flex flex-col-reverse  sm:flex-row sm:justify-end sm:space-x-2",
       className
     )}
     {...props}
@@ -133,7 +133,7 @@ const SheetTitle = React.forwardRef<
   <SheetPrimitive.Title
     ref={ref}
     className={cn(
-      "text-lg font-semibold text-primaryDark dark:text-primary-light ",
+      "text-lg font-semibold text-primaryDark text-4xl dark:text-primary-light ",
       className
     )}
     {...props}
@@ -147,7 +147,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SheetPrimitive.Description
     ref={ref}
-    className={cn("text-sm text-primaryDark dark:text-primary-light ", className)}
+    className={cn("text-sm  text-primaryDark dark:text-primary-light ", className)}
     {...props}
   />
 ));
