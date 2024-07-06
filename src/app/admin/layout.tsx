@@ -1,16 +1,38 @@
-import React, { ReactNode } from "react";
+import type { Metadata } from "next";
 
 
-interface LayoutProps {
-  children: ReactNode;
-}
+import "../globals.css";
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
-  return (
-    <div>
-      <main>{children}</main>
-    </div>
-  );
+import { Montserrat } from "next/font/google";
+
+
+import { ThemeProvider } from "@/components/theme-provider";
+
+const montserrat = Montserrat({ subsets: ["latin"] });
+
+export const metadata: Metadata = {
+  title: "Admin Panel - Stylos Lingerie",
+  description: "Painel administrativo da loja online de roupas intimas.",
 };
 
-export default Layout;
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="pt-BR">
+      <body className={montserrat.className}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          
+          <main>{children}</main>
+        </ThemeProvider>
+      </body>
+    </html>
+  );
+}

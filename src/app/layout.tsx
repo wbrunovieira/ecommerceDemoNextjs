@@ -4,8 +4,7 @@ import "./globals.css";
 
 import { Montserrat } from "next/font/google";
 
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+
 import NextAuthSessionProvider from "@/providers/sessionProvider";
 import ClearCartOnLogout from "@/utils/ClearCartOnLogout";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -32,10 +31,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NextAuthSessionProvider>
-            <Header />
+           
             {children}
             <ClearCartOnLogout />
-            <Footer />
+            
           </NextAuthSessionProvider>
         </ThemeProvider>
       </body>
