@@ -46,6 +46,17 @@ interface Category {
   };
 }
 
+interface Brand {
+  _id: {
+    value: string;
+  };
+  props: {
+    name: string;
+    imageUrl: string;
+    erpId: string;
+  };
+}
+
 const AdminPage: React.FC = () => {
   const router = useRouter();
 
@@ -53,6 +64,7 @@ const AdminPage: React.FC = () => {
   const [colors, setColors] = useState<Color[]>([]);
   const [sizes, setSizes] = useState<Size[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
 
   const [editingColorId, setEditingColorId] = useState<string | null>(null);
   const [editColorData, setEditColorData] = useState({ name: "", hex: "" });
@@ -60,10 +72,13 @@ const AdminPage: React.FC = () => {
   const [editSizeData, setEditSizeData] = useState({ name: "", description: "" });
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [editCategoryData, setEditCategoryData] = useState({ name: "", imageUrl: "" });
+  const [editingBrandId, setEditingBrandId] = useState<string | null>(null);
+  const [editBrandData, setEditBrandData] = useState({ name: "", imageUrl: "" });
  
   console.log('colors',colors)
   console.log('sizes',sizes)
   console.log('categories',categories)
+  console.log('brands',brands)
   
 
   useEffect(() => {
@@ -123,6 +138,20 @@ const AdminPage: React.FC = () => {
       }
     };
 
+    const fetchBrands = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3333/brands/all?page=1&pageSize=10`, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        setBrands(response.data.brands);
+      } catch (error) {
+        console.error("Erro ao buscar os fabricantes: ", error);
+      }
+    };
+
+    fetchBrands()
     fetchColors();
     fetchSizes();
     fetchCategories()
@@ -218,6 +247,37 @@ const AdminPage: React.FC = () => {
       setEditingCategoryId(null);
     } catch (error) {
       console.error("Erro ao salvar a categoria: ", error);
+    }
+  };
+
+  const handleEditBrandClick = (brand: Brand) => {
+    setEditingBrandId(brand._id.value);
+    setEditBrandData({ name: brand.props.name, imageUrl: brand.props.imageUrl });
+  };
+
+  const handleBrandInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditBrandData(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSaveBrandClick = async (brandId: string) => {
+    try {
+      await axios.put(
+        `http://localhost:3333/brands/${brandId}`,
+        { name: editBrandData.name, imageUrl: editBrandData.imageUrl },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.accessToken}`
+          }
+        }
+      );
+      setBrands(prevBrands => prevBrands.map(brand => 
+        brand._id.value === brandId ? { ...brand, props: { ...brand.props, ...editBrandData } } : brand
+      ));
+      setEditingBrandId(null);
+    } catch (error) {
+      console.error("Erro ao salvar o fabricante: ", error);
     }
   };
 
@@ -477,23 +537,83 @@ const AdminPage: React.FC = () => {
           </div>
 
 
-          <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
+          <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
             <Sheet>
               <SheetTrigger>Fabricante</SheetTrigger>
-              <SheetContent
-                side="right"
-                size="extraLarge"
-               
-              >
+              <SheetContent side="right" size="extraLarge">
                 <SheetHeader>
                   <SheetTitle>Fabricante</SheetTitle>
-                  <SheetDescription>
-                  Fabricante Descricao
-                  </SheetDescription>
+                  <SheetDescription>Fabricante Descrição</SheetDescription>
                 </SheetHeader>
+                <div className="p-4">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">ID</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Nome</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Imagem</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">ERP ID</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                      {brands.map((brand) => (
+                        <tr key={brand._id.value}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{brand._id.value}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                            {editingBrandId === brand._id.value ? (
+                              <input
+                                type="text"
+                                name="name"
+                                value={editBrandData.name}
+                                onChange={handleBrandInputChange}
+                                className="px-2 py-1 border border-gray-300 rounded"
+                              />
+                            ) : (
+                              brand.props.name
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                            {editingBrandId === brand._id.value ? (
+                              <input
+                                type="text"
+                                name="imageUrl"
+                                value={editBrandData.imageUrl}
+                                onChange={handleBrandInputChange}
+                                className="px-2 py-1 border border-gray-300 rounded"
+                              />
+                            ) : (
+                              brand.props.imageUrl
+                            )}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{brand.props.erpId}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                            {editingBrandId === brand._id.value ? (
+                              <button
+                                onClick={() => handleSaveBrandClick(brand._id.value)}
+                                className="px-4 py-2 bg-primary text-white rounded"
+                              >
+                                Salvar
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleEditBrandClick(brand)}
+                                className="px-4 py-2 bg-secondary text-white rounded"
+                              >
+                                Editar
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </SheetContent>
             </Sheet>
           </div>
+
+
         </nav>
       </div>
 
