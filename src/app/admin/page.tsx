@@ -17,6 +17,14 @@ import {
 import { Bar, BarChart, CartesianGrid , XAxis } from "recharts"
  
 import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { ChartLegend, ChartLegendContent } from "@/components/ui/chart"
 import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -1060,6 +1068,47 @@ const AdminPage: React.FC = () => {
             <TabsTrigger value="produto">Por Produto</TabsTrigger>
           </TabsList>
           <TabsContent value="vendas">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+          <Card>
+              <CardHeader>
+                <CardTitle>Vendas hoje</CardTitle>
+                
+              </CardHeader>
+              <CardContent>
+              <p>R$ 1.100,00</p>
+              </CardContent>
+              <CardFooter>
+              <p>+ 10% que ontem</p>
+              </CardFooter>
+          </Card>
+          <Card>
+
+            <CardHeader>
+              <CardTitle>Vendas essa semana</CardTitle>
+              
+            </CardHeader>
+            <CardContent>
+              <p>R$ 5.600,00</p>
+            </CardContent>
+            <CardFooter>
+              <p>+ 20% que a semana anterior</p>
+            </CardFooter>
+          </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Vendas esse mes </CardTitle>
+               
+              </CardHeader>
+              <CardContent>
+              <p>R$ 42.100,00</p>
+              </CardContent>
+              <CardFooter>
+              <p>+ 32% que o mes anterior</p>
+              </CardFooter>
+            </Card>
+
+            </div>
                   
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
 
