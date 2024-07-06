@@ -57,6 +57,18 @@ interface Brand {
   };
 }
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  category: string;
+  brand: string;
+  imageUrl: string;
+  erpId: string;
+}
+
 const AdminPage: React.FC = () => {
   const router = useRouter();
 
@@ -65,6 +77,7 @@ const AdminPage: React.FC = () => {
   const [sizes, setSizes] = useState<Size[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   const [editingColorId, setEditingColorId] = useState<string | null>(null);
   const [editColorData, setEditColorData] = useState({ name: "", hex: "" });
@@ -74,11 +87,27 @@ const AdminPage: React.FC = () => {
   const [editCategoryData, setEditCategoryData] = useState({ name: "", imageUrl: "" });
   const [editingBrandId, setEditingBrandId] = useState<string | null>(null);
   const [editBrandData, setEditBrandData] = useState({ name: "", imageUrl: "" });
+  const [editingProductId, setEditingProductId] = useState<string | null>(null);
+  const [editProductData, setEditProductData] = useState<Product>({
+    id: "",
+    name: "",
+    description: "",
+    price: 0,
+    stock: 0,
+    category: "",
+    brand: "",
+    imageUrl: "",
+    erpId: ""
+  });
+
+  const [searchId, setSearchId] = useState("");
+  const [searchName, setSearchName] = useState("");
  
   console.log('colors',colors)
   console.log('sizes',sizes)
   console.log('categories',categories)
   console.log('brands',brands)
+  console.log('products',products)
   
 
   useEffect(() => {
@@ -281,6 +310,125 @@ const AdminPage: React.FC = () => {
     }
   };
 
+ const normalizeProduct = (data: any): Product | null => {
+  console.log('data', data);
+  if (data.props) {
+    if (data.props.product) {
+      
+      return {
+        id: data.props.product._id.value,
+        name: data.props.product.props.name,
+        description: data.props.product.props.description,
+        price: data.props.product.props.price,
+        stock: data.props.product.props.stock,
+        category: data.props.product.props.productCategories?.[0]?.name || '',
+        brand: data.props.product.props.brandName,
+        imageUrl: data.props.product.props.images?.[0] || '',
+        erpId: data.props.product.props.sku
+      };
+    } else {
+      
+      return {
+        id: data._id.value,
+        name: data.props.name,
+        description: data.props.description,
+        price: data.props.price,
+        stock: data.props.stock,
+        category: data.props.productCategories?.[0]?.name || '',
+        brand: data.props.brandName,
+        imageUrl: data.props.images?.[0] || '',
+        erpId: data.props.sku
+      };
+    }
+  } else if (data.id) {
+    return data as Product;
+  }
+  return null;
+};
+
+
+  const fetchAllProducts = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3333/products/all`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      setProducts(response.data.products);
+    } catch (error) {
+      console.error("Erro ao buscar todos os produtos: ", error);
+    }
+  };
+
+  const fetchProductById = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3333/products/${searchId}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const product = normalizeProduct(response.data.product);
+      if (product) {
+        setProducts([product]);
+      }
+      setSearchId('');
+    } catch (error) {
+      console.error("Erro ao buscar produto por ID: ", error);
+    }
+  };
+
+  const fetchProductByName = async () => {
+    try {
+      console.log('searchName',searchName)
+      const response = await axios.get(`http://localhost:3333/products/search?name=${searchName}`, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log('searchName response',response.data.products)
+      const normalizedProducts = response.data.products.map((product: any): Product | null => normalizeProduct(product))
+      .filter((product: Product | null): product is Product => product !== null);
+      console.log('normalizedProducts depois do map',normalizedProducts)
+      setProducts(normalizedProducts);
+
+      setSearchName('');
+    } catch (error) {
+      console.error("Erro ao buscar produto por nome: ", error);
+    }
+  };
+
+  const handleEditProductClick = (product: Product) => {
+    setEditingProductId(product.id);
+    setEditProductData({ ...product });
+  };
+
+  const handleProductInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditProductData(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleSaveProductClick = async (productId: string) => {
+    try {
+      await axios.put(
+        `http://localhost:3333/products/${productId}`,
+        { ...editProductData },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.accessToken}`
+          }
+        }
+      );
+      setProducts(prevProducts => prevProducts.map(product => 
+        product.id === productId ? { ...product, ...editProductData } : product
+      ));
+      setEditingProductId(null);
+    } catch (error) {
+      console.error("Erro ao salvar o produto: ", error);
+    }
+  };
+
+
   if (status === "loading") {
     return <div>Carregando...</div>;
   }
@@ -296,20 +444,177 @@ const AdminPage: React.FC = () => {
           <span className="text-xl text-primaryDark dark:text-primaryLight font-semibold z-20">Admin</span>
         </div>
         <nav className="flex-1 px-2 py-4 space-y-4 z-20">
-          <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
+
+
+     <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
             <Sheet>
               <SheetTrigger>Produto</SheetTrigger>
-              <SheetContent
-                side="right"
-                
-                
-              >
+              <SheetContent side="right" size="extraLarge">
                 <SheetHeader>
                   <SheetTitle>Produto</SheetTitle>
-                  <SheetDescription>
-                    Descricao do produto
-                  </SheetDescription>
+                  <SheetDescription>Descrição do produto</SheetDescription>
                 </SheetHeader>
+                <div className="p-4">
+                  <div className="flex space-x-4 mb-4">
+                    <input
+                      type="text"
+                      placeholder="Buscar por ID"
+                      value={searchId}
+                      onChange={(e) => setSearchId(e.target.value)}
+                      className="px-2 py-1 border border-gray-300 rounded text-primaryLight"
+                    />
+                    <button
+                      onClick={fetchProductById}
+                      className="px-4 py-2 bg-primary text-white rounded"
+                    >
+                      Buscar
+                    </button>
+                  </div>
+                  <div className="flex space-x-4 mb-4">
+                    <input
+                      type="text"
+                      placeholder="Buscar por Nome"
+                      value={searchName}
+                      onChange={(e) => setSearchName(e.target.value)}
+                      className="px-2 py-1 border border-gray-300 rounded text-primaryLight"
+                    />
+                    <button
+                      onClick={fetchProductByName}
+                      className="px-4 py-2 bg-primary text-white rounded"
+                    >
+                      Buscar
+                    </button>
+                  </div>
+                  <button
+                    onClick={fetchAllProducts}
+                    className="px-4 py-2 bg-secondary text-white rounded mb-4"
+                  >
+                    Buscar Todos os Produtos
+                  </button>
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                      <tr>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">ID</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Nome</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">ERP ID</th>
+                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                      {products.map((product) => (
+                        <tr key={product.id}>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{product.id}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{product.name}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">{product.erpId}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                            {editingProductId === product.id ? (
+                              <button
+                                onClick={() => handleSaveProductClick(product.id)}
+                                className="px-4 py-2 bg-secondary text-white rounded"
+                              >
+                                Salvar
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleEditProductClick(product)}
+                                className="px-4 py-2 bg-primary text-white rounded"
+                              >
+                                Editar
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {editingProductId && (
+                    <div className="mt-4">
+                      <h3 className="text-lg font-medium text-primaryDark dark:text-primaryLight">Editar Produto</h3>
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome</label>
+                          <input
+                            type="text"
+                            name="name"
+                            value={editProductData.name}
+                            onChange={handleProductInputChange}
+                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Descrição</label>
+                          <input
+                            type="text"
+                            name="description"
+                            value={editProductData.description}
+                            onChange={handleProductInputChange}
+                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Preço</label>
+                          <input
+                            type="number"
+                            name="price"
+                            value={editProductData.price}
+                            onChange={handleProductInputChange}
+                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Estoque</label>
+                          <input
+                            type="number"
+                            name="stock"
+                            value={editProductData.stock}
+                            onChange={handleProductInputChange}
+                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Categoria</label>
+                          <input
+                            type="text"
+                            name="category"
+                            value={editProductData.category}
+                            onChange={handleProductInputChange}
+                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Marca</label>
+                          <input
+                            type="text"
+                            name="brand"
+                            value={editProductData.brand}
+                            onChange={handleProductInputChange}
+                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Imagem URL</label>
+                          <input
+                            type="text"
+                            name="imageUrl"
+                            value={editProductData.imageUrl}
+                            onChange={handleProductInputChange}
+                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">ERP ID</label>
+                          <input
+                            type="text"
+                            name="erpId"
+                            value={editProductData.erpId}
+                            onChange={handleProductInputChange}
+                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </SheetContent>
             </Sheet>
           </div>
