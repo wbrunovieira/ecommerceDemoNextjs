@@ -3,6 +3,8 @@ import { useCartStore } from "@/context/store";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect } from "react";
+import { useSession } from 'next-auth/react';
+
 import { BsTrash, BsPlus, BsDash } from "react-icons/bs";
 interface Product {
   id: string;
@@ -22,9 +24,16 @@ const Cart = () => {
   const removeFromCart = useCartStore((state: any) => state.removeFromCart);
   const updateQuantity = useCartStore((state: any) => state.updateQuantity);
 
+  const { data: session } = useSession();
+  const setUser = useCartStore((state) => state.setUser);
+
   useEffect(() => {
     initializeCart(cartItems);
-  }, []);
+    if (session?.user?.id) {
+      setUser(session.user.id);
+    }
+
+  }, [session, setUser]);
 
   console.log("cartItems", cartItems);
   

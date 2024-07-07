@@ -8,6 +8,8 @@ import { Montserrat } from "next/font/google";
 import NextAuthSessionProvider from "@/providers/sessionProvider";
 import ClearCartOnLogout from "@/utils/ClearCartOnLogout";
 import { ThemeProvider } from "@/components/theme-provider";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -31,8 +33,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <NextAuthSessionProvider>
-           
+           <Header />
             {children}
+            <Footer />
             <ClearCartOnLogout />
             
           </NextAuthSessionProvider>

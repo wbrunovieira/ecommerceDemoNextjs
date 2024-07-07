@@ -3,7 +3,10 @@ import { useCartStore } from "@/context/store";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useSession } from 'next-auth/react';
+
 import { BsTrash, BsPlus, BsDash } from "react-icons/bs";
+import { useEffect } from "react";
 
 interface FloatCartProps {
   onClose: () => void;
@@ -18,9 +21,13 @@ interface Product {
 }
 
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
+  
   const cartItems = useCartStore((state: any) => state.cartItems);
   const removeFromCart = useCartStore((state: any) => state.removeFromCart);
   const updateQuantity = useCartStore((state: any) => state.updateQuantity);
+
+  const { data: session } = useSession();
+  const setUser = useCartStore((state) => state.setUser);
 
   const handleClickOutside = (event: React.MouseEvent) => {
     if ((event.target as HTMLElement).classList.contains("modal-background")) {
@@ -35,6 +42,12 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
   const decreaseQuantity = (id: string) => {
     updateQuantity(id, -1);
   };
+
+  useEffect(() => {
+    if (session?.user?.id) {
+      setUser(session.user.id);
+    }
+  }, [session, setUser]);
 
   return (
     <div

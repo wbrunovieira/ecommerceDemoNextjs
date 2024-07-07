@@ -3,6 +3,8 @@ import Image from "next/image";
 import Button from "./Button";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
+
+
 import { useRef, useEffect, useState } from "react";
 import { register } from "swiper/element/bundle";
 
@@ -129,6 +131,7 @@ const Product: React.FC<ProductProps> = ({
   const [isStockChecked, setIsStockChecked] = useState<boolean>(false);
 
   const { data: session } = useSession();
+  const setUser = useCartStore((state) => state.setUser);
 
   console.log("similarProducts", similarProducts);
   const hasVariants = variants.length > 0;
@@ -266,8 +269,11 @@ const Product: React.FC<ProductProps> = ({
   const addToCart = useCartStore((state: any) => state.addToCart);
 
   useEffect(() => {
+    if (session?.user?.id) {
+      setUser(session.user.id);
+    }
     console.log("cartItems", cartItems);
-  }, [cartItems]);
+  }, [cartItems,session, setUser]);
 
   useEffect(() => {
     if (!hasVariants) {

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import Button from "./Button";
-import Link from "next/link";
+
 import { useCartStore } from "@/context/store";
 
 interface ProductCategory {

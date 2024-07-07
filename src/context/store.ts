@@ -1,5 +1,6 @@
 import { StateCreator, create } from "zustand";
-import { persist, PersistOptions, createJSONStorage } from "zustand/middleware";
+import { persist, PersistOptions,} from "zustand/middleware";
+import { getSession } from 'next-auth/react';
 
 interface Product {
   id: string;
@@ -21,6 +22,7 @@ interface CartState {
   clearCart: (uuserId?: string) => void;
   updateQuantity: (productId: string, amount: number, userId?: string) => void;
   initializeCart: (products: Product[], userId?: string) => void;
+  setUser: (userId: string) => void;
 }
 
 interface FavoriteState {
@@ -71,6 +73,7 @@ export const useCartStore = create<CartState>(
       cartItems: [],
       userId: null,
       addToCart: (product: Product, userId?: string) =>
+
         set((state: CartState) => {
           if (userId && state.userId && state.userId !== userId) return state;
 
@@ -83,9 +86,15 @@ export const useCartStore = create<CartState>(
             newCartItems[index] = {
               ...newCartItems[index],
               quantity: newCartItems[index].quantity + product.quantity,
+              height: product.height,
+              width: product.width,
+              length: product.length,
+              weight: product.weight,
             };
+            console.log('cartItems',newCartItems)
             return { cartItems: newCartItems };
           }
+          console.log('cartItems state',state)
 
           return { cartItems: [...state.cartItems, product] };
         }),
@@ -135,6 +144,11 @@ export const useCartStore = create<CartState>(
           if (userId && state.userId && state.userId !== userId) return state;
           return { cartItems: products };
         }),
+        setUser: (userId: string) =>
+          set((state: CartState) => ({
+            userId,
+          })),
+
     }),
     {
       name: "cart-storage",
