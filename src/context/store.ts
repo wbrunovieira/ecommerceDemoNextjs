@@ -12,6 +12,19 @@ interface Product {
   width: number;
   length: number;
   weight: number;
+  color?: string; 
+  size?: string;
+}
+
+export interface Color {
+  id: string;
+  name: string;
+  hex: string;
+}
+
+export interface Size {
+  id: string;
+  name: string;
 }
 
 interface CartState {
@@ -39,7 +52,7 @@ interface FavoriteState {
 export interface SelectionState {
   selectedCategory: string | null;
   selectedBrand: string | null;
-  selectedSize: string | null;
+  selectedSize: Size | null;
  
   selectedMinPrice: number | null;
   selectedMaxPrice: number | null;
@@ -47,14 +60,14 @@ export interface SelectionState {
   setSelectedCategory: (categoryId: string | null) => void;
   setSelectedBrand: (brandId: string | null) => void;
   
-  setSelectedSize: (sizeId: string | null) => void;
+  setSelectedSize: (size: Size | null) => void;
   setSelectedMinPrice: (selectedMinPrice: number | null) => void;
   setSelectedMaxPrice: (selectedMaxPrice: number | null) => void;
 }
 
 export interface ColorState {
-  selectedColor: string | null;
-  setSelectedColor: (colorId: string | null) => void;
+  selectedColor: Color | null;
+  setSelectedColor: (color: Color | null) => void;
 }
 
 type MyPersistCart = (
@@ -78,8 +91,11 @@ export const useCartStore = create<CartState>(
           if (userId && state.userId && state.userId !== userId) return state;
 
           const index = state.cartItems.findIndex(
-            (item) => item.id === product.id
+            (item) => item.id === product.id &&
+            item.color === product.color &&
+              item.size === product.size
           );
+
 
           if (index !== -1) {
             let newCartItems = [...state.cartItems];
@@ -92,11 +108,11 @@ export const useCartStore = create<CartState>(
               weight: product.weight,
             };
             console.log('cartItems',newCartItems)
-            return { cartItems: newCartItems };
+            return { cartItems: newCartItems, userId: state.userId || userId || null };
           }
           console.log('cartItems state',state)
 
-          return { cartItems: [...state.cartItems, product] };
+          return { cartItems: [...state.cartItems, product], userId: state.userId || userId || null };
         }),
 
       removeFromCart: (productId: string, userId?: string) =>
@@ -142,7 +158,7 @@ export const useCartStore = create<CartState>(
       initializeCart: (products: Product[], userId?: string) =>
         set((state: CartState) => {
           if (userId && state.userId && state.userId !== userId) return state;
-          return { cartItems: products };
+          return { cartItems: products, userId: userId || state.userId || null };
         }),
         setUser: (userId: string) =>
           set((state: CartState) => ({
@@ -222,8 +238,8 @@ export const useColorStore = create<ColorState>()(
   persist(
     (set) => ({
       selectedColor: null,
-      setSelectedColor: (colorId: string | null) =>
-        set({ selectedColor: colorId }),
+      setSelectedColor: (color: Color | null) =>
+        set({ selectedColor: color }),
     }),
     {
       name: "color-storage",
@@ -250,7 +266,7 @@ export const useSelectionStore = create<SelectionState>()(
 
      
 
-      setSelectedSize: (sizeId: string | null) => set({ selectedSize: sizeId }),
+      setSelectedSize: (size: Size | null) => set({ selectedSize: size }),
 
       setSelectedMinPrice: (selectedMinPrice: number | null) =>
         set((state) => ({

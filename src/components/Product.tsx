@@ -19,7 +19,7 @@ import "swiper/css/virtual";
 import "swiper/css/pagination";
 
 import SimilarProducts from "./SimilarProducts";
-import { useCartStore, useFavoritesStore } from "@/context/store";
+import { useCartStore, useColorStore, useFavoritesStore, useSelectionStore } from "@/context/store";
 import { formatPrice } from "@/utils/formatPrice";
 import Link from "next/link";
 
@@ -31,6 +31,8 @@ interface ProductCart {
   quantity: number;
   image: string;
   price: number;
+  color?: string; 
+  size?: string;
 }
 
 interface Color {
@@ -56,14 +58,7 @@ interface ProductVariant {
   images: string[];
   sku: string;
 }
-interface ProductDetails {
-  name?: string;
-  description?: string;
-  finalPrice?: number;
-  images?: string[];
-  slug?: string;
-  stock?: number;
-}
+
 interface Product {
   image: string;
   title: string;
@@ -119,8 +114,7 @@ const Product: React.FC<ProductProps> = ({
   const swiperElRef = useRef(null);
 
   const [mainImage, setMainImage] = useState(images[0]);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
+
   const [quantity, setQuantity] = useState(1);
   const [selectedVariantId, setSelectedVariantId] = useState<string | null>(
     null
@@ -129,6 +123,10 @@ const Product: React.FC<ProductProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isBuyButtonDisabled, setIsBuyButtonDisabled] = useState(true);
   const [isStockChecked, setIsStockChecked] = useState<boolean>(false);
+  const setSelectedColor = useColorStore((state) => state.setSelectedColor);
+  const selectedColor = useColorStore((state) => state.selectedColor);
+  const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
+  const selectedSize = useSelectionStore((state) => state.selectedSize);
 
   const { data: session } = useSession();
   const setUser = useCartStore((state) => state.setUser);
@@ -177,16 +175,14 @@ const Product: React.FC<ProductProps> = ({
 
   console.log("stock sem fora do chestock", stock);
 
-  const handleSizeChange = (sizeId: string) => {
-    console.log("Selected size ID:", sizeId);
-    setSelectedSize(sizeId);
-    checkStockAndSetVariant(sizeId, selectedColor);
+  const handleSizeChange = (size: Size) => {
+    setSelectedSize(size);
+    checkStockAndSetVariant(size.id, selectedColor?.id || null);
   };
 
-  const handleColorChange = (colorId: string) => {
-    console.log("Selected color ID:", colorId);
-    setSelectedColor(colorId);
-    checkStockAndSetVariant(selectedSize, colorId);
+  const handleColorChange = (color: Color) => {
+    setSelectedColor(color);
+    checkStockAndSetVariant(selectedSize?.id || null, color.id);
   };
 
   const incrementQuantity = () => {
@@ -233,6 +229,8 @@ const Product: React.FC<ProductProps> = ({
               width,
               length,
               weight,
+              color: selectedColor?.name,
+              size: selectedSize?.name,
             }, userId);
           } else {
             alert("Please select a valid size and color combination.");
@@ -430,12 +428,12 @@ const Product: React.FC<ProductProps> = ({
                       <button
                         key={index}
                         className={`w-4 h-4 rounded-full border border-transparent ${
-                          selectedColor === color.id
+                          selectedColor?.id === color.id
                             ? "ring-2 ring-offset-2 shadow-lg ring-secondary"
                             : ""
                         }`}
                         style={{ backgroundColor: color.hex }}
-                        onClick={() => handleColorChange(color.id)}
+                        onClick={() => handleColorChange(color)}
                       ></button>
                     ))}
                   </div>
@@ -450,11 +448,11 @@ const Product: React.FC<ProductProps> = ({
                       <div
                         key={index}
                         className={`border rounded p-2 ${
-                          selectedSize === size.id
+                          selectedSize?.id === size.id
                             ? "bg-primary text-white"
                             : "border-light"
                         }`}
-                        onClick={() => handleSizeChange(size.id)}
+                        onClick={() => handleSizeChange(size)}
                       >
                         {size.name}
                       </div>

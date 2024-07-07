@@ -16,6 +16,8 @@ interface Product {
   width: number;
   length: number;
   weight: number;
+  color?: string;
+  size?: string;
 }
 const Cart = () => {
   const cartItems = useCartStore((state: any) => state.cartItems);
@@ -93,6 +95,12 @@ const Cart = () => {
                 <h2 className="text-base font-light mb-2 whitespace-nowrap">
                   {item.title}
                 </h2>
+                {item.color && (
+                  <p className="text-xs text-gray-500">Cor: {item.color}</p>
+                )}
+                {item.size && (
+                  <p className="text-xs text-gray-500">Tamanho: {item.size}</p>
+                )}
               </div>
               <div className="flex flex-col justify-center items-center">
                 <p className="text-base font-semibold text-primaryDark ">

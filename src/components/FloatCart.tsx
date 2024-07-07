@@ -2,9 +2,7 @@
 import { useCartStore } from "@/context/store";
 import Image from "next/image";
 import Link from "next/link";
-
 import { useSession } from 'next-auth/react';
-
 import { BsTrash, BsPlus, BsDash } from "react-icons/bs";
 import { useEffect } from "react";
 
@@ -18,10 +16,11 @@ interface Product {
   title: string;
   image: string;
   price: number;
+  color?: string;
+  size?: string;
 }
 
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
-  
   const cartItems = useCartStore((state: any) => state.cartItems);
   const removeFromCart = useCartStore((state: any) => state.removeFromCart);
   const updateQuantity = useCartStore((state: any) => state.updateQuantity);
@@ -110,7 +109,15 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                   <BsPlus />
                 </button>
               </div>
-              <p className="text-sm font-medium">{item.title}</p>
+              <div className="flex flex-col items-start">
+                <p className="text-sm font-medium">{item.title}</p>
+                {item.color && (
+                  <p className="text-xs text-gray-500">Cor: {item.color}</p>
+                )}
+                {item.size && (
+                  <p className="text-xs text-gray-500">Tamanho: {item.size}</p>
+                )}
+              </div>
               <p className="text-sm text-gray-500">R$ {item.price}</p>
               <p className="text-sm font-bold">
                 R$ {item.quantity * item.price}
