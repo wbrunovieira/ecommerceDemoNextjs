@@ -5,10 +5,13 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartStore, useFavoritesStore } from "@/context/store";
+import { BiEdit } from "react-icons/bi";
 import { BsTrash } from "react-icons/bs";
 import Button from "@/components/Button";
 import { useEffect, useState } from "react";
 import { format, parseISO, parse } from "date-fns";
+
+import { useDropzone } from "react-dropzone";
 
 import DefaultIcon from "/public/images/default-icon.svg";
 
@@ -22,6 +25,7 @@ export interface User {
   gender?: string;
   profileImageUrl?: string;
 }
+
 interface Product {
   id: string;
   quantity: number;
@@ -347,6 +351,37 @@ const UserPage: NextPage = () => {
     return null;
   }
 
+  const handleDrop = (acceptedFiles: File[]) => {
+    const file = acceptedFiles[0];
+    const formData = new FormData();
+    formData.append("file", file);
+
+    fetch(`http://localhost:3333/accounts/upload/${session?.user?.id}`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${session?.accessToken}`,
+      },
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUserDetails((prevDetails) => ({
+          ...prevDetails,
+          profileImageUrl: data.profileImageUrl,
+        }));
+      })
+      .catch((error) => {
+        console.error("Error uploading file:", error);
+      });
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: handleDrop,
+    accept: {
+      "image/*": [],
+    },
+  });
+
   return (
     <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
       <h1 className="text-2xl text-primaryDark dark:text-primary dark:bg-dark-secondary-gradient font-bold text-center mb-4 z-10">
@@ -361,8 +396,26 @@ const UserPage: NextPage = () => {
         >
           Voltar para Home
         </Link>
+        <div {...getRootProps()} className="relative flex flex-col items-center cursor-pointer z-20">
+          <input {...getInputProps()} />
+          {userDetails.profileImageUrl ? (
+            <Image
+              src={userDetails.profileImageUrl}
+              alt="Imagem do usuário"
+              width={100}
+              height={100}
+              className="rounded-full mb-4"
+            />
+          ) : (
+            <DefaultIcon width={100} height={100} className="rounded-full mb-4 z-20" />
+          )}
 
-        {session.user?.image ? (
+    <BiEdit size={24} className="absolute bottom-2 right-2 top-2 text-primaryDark" />
+          <p className="text-xs text-primaryDark">Clique para alterar a imagem</p>
+        </div>
+
+
+        {/* {session.user?.image ? (
           <Image
             src={session.user.image}
             alt="Imagem do usuário"
@@ -372,7 +425,7 @@ const UserPage: NextPage = () => {
           />
         ) : (
           <DefaultIcon width={100} height={100} className="rounded-full" />
-        )}
+        )} */}
 
         <Link
           href="/cart"
