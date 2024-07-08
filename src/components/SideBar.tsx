@@ -53,6 +53,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
   );
 
   const [showMoreCategories, setShowMoreCategories] = useState(false);
+  const [showMoreSizes, setShowMoreSizes] = useState(false);
   const searchParams = useSearchParams();
 
   gsap.registerPlugin(useGSAP);
@@ -107,20 +108,21 @@ const Sidebar: React.FC<SidebarProps> = () => {
     }
   };
 
-  const handleColorClick = (colorId: string) => {
+  const handleColorClick = (color: Color) => {
     isHome = pathname === "/" || pathname.includes("/product/");
     if (isHome) {
-      router.push(`/filtered?color=${colorId}`);
+      router.push(`/filtered?color=${color.id}`);
     } else {
-      setSelectedColor(colorId === selectedColor ? null : colorId);
+      setSelectedColor(selectedColor?.id === color.id ? null : color);
     }
   };
-  const handleSizeClick = (sizeId: string) => {
+  const handleSizeClick = (size: Size) => {
     isHome = pathname === "/" || pathname.includes("/product/");
     if (isHome) {
-      router.push(`/filtered?size=${sizeId}`);
+      router.push(`/filtered?size=${size.id}}`);
     } else {
-      setSelectedSize(sizeId === selectedSize ? null : sizeId);
+      setSelectedSize(selectedSize?.id === size.id ? null : size);
+
     }
   };
 
@@ -157,7 +159,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
     const fetchSizes = async () => {
       try {
         const res = await fetch(
-          "http://localhost:3333/size/all?page=1&pageSize=10"
+          "http://localhost:3333/size/all?page=1&pageSize=30"
         );
 
         if (!res.ok) {
@@ -166,19 +168,47 @@ const Sidebar: React.FC<SidebarProps> = () => {
 
         const data = await res.json();
         console.log("data sizes", data);
-        const sizeOrder = ["pp", "p", "m", "g", "xg"];
 
-        const fetchedSize = data.size.map((size: any) => ({
+        const sizeOrderMap: { [key: string]: number } = {
+          pp: 1,
+          p: 2,
+          m: 3,
+          g: 4,
+          gg: 5,
+          xg: 6,
+          g1: 7,
+          g2: 8,
+          g3: 9,
+          g5: 10,
+          eg: 11,
+          xl: 12,
+          xgg: 13,
+          '36': 14,
+          '38': 15,
+          '40': 16,
+          '42': 17,
+          '44': 18,
+          '50': 19,
+          '52': 20,
+          '54': 21,
+          '56': 22,
+          '58': 23,
+          '60': 24
+        };
+    
+
+        const fetchedSizes = data.size.map((size: any) => ({
           id: size._id.value,
-          name: size.props.name,
+          name: size.props.name.toLowerCase(),
         }));
-        fetchedSize.sort((a: Size, b: Size) => {
-          return sizeOrder.indexOf(a.name) - sizeOrder.indexOf(b.name);
-        });
 
-        console.log("fetchedSize", fetchedSize);
+      fetchedSizes.sort((a: Size, b: Size) => {
+      return (sizeOrderMap[a.name] || 999) - (sizeOrderMap[b.name] || 999);
+    });
 
-        setSizes(fetchedSize);
+        console.log("fetchedSize", fetchedSizes);
+
+        setSizes(fetchedSizes);
       } catch (error) {
         console.error("Error fetching categories:", error);
         setSizes([]);
@@ -364,13 +394,13 @@ const Sidebar: React.FC<SidebarProps> = () => {
             <div
               key={color.id}
               className={`w-6 h-6 rounded-full cursor-pointer p-2 transform hover:scale-110 hover:shadow-lg transition duration-300 ease-in-out ${
-                selectedColor === color.id ? " border rounded p-4 w-8 h-8 " : ""
+                selectedColor?.id  === color.id ? " border rounded p-4 w-8 h-8 " : ""
               }`}
               style={{
                 backgroundColor: color.hex,
                 border: "1px solid #ddd",
               }}
-              onClick={() => handleColorClick(color.id)}
+              onClick={() => handleColorClick(color)}
               title={color.name}
             ></div>
           ))}
@@ -382,21 +412,32 @@ const Sidebar: React.FC<SidebarProps> = () => {
           Tamanhos
         </h2>
         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-        <div className="flex flex-col gap-1 justify-start p-1 w-16">
+        <div
+          className={`overflow-hidden ${
+            showMoreSizes ? "" : "h-48"
+          } transition-height duration-300 ease-in-out`}
+        >
           {sizes.map((size, index) => (
             <div
               key={size.id}
-              className={`border border-light rounded p-1 text-xs cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out ${
-                selectedSize === size.id
+              className={`border border-light rounded p-1 text-center text-xs cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out mt-2 ${
+                selectedSize?.id === size.id
                   ? "bg-primaryDark text-primaryLight font-bold tracking-wider border"
                   : ""
               }`}
-              onClick={() => handleSizeClick(size.id)}
+              onClick={() => handleSizeClick(size)}
             >
               {capitalizeFirstLetter(size.name)}
             </div>
           ))}
         </div>
+        <button
+          className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out"
+          onClick={() => setShowMoreSizes(!showMoreSizes)}
+        >
+          {showMoreSizes ? "Ver menos" : "Ver mais"}
+        </button>
+        <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
       </div>
 
 

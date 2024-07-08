@@ -1,6 +1,7 @@
 import { StateCreator, create } from "zustand";
 import { persist, PersistOptions,} from "zustand/middleware";
 import { getSession } from 'next-auth/react';
+import axios from "axios";
 
 interface Product {
   id: string;
@@ -36,6 +37,7 @@ interface CartState {
   updateQuantity: (productId: string, amount: number, userId?: string) => void;
   initializeCart: (products: Product[], userId?: string) => void;
   setUser: (userId: string) => void;
+  saveCartToBackend: (userId: string) => void;
 }
 
 interface FavoriteState {
@@ -82,38 +84,34 @@ type MyPersistFavorite = (
 
 export const useCartStore = create<CartState>(
   (persist as MyPersistCart)(
-    (set) => ({
+    (set, get) => ({
       cartItems: [],
       userId: null,
-      addToCart: (product: Product, userId?: string) =>
-
-        set((state: CartState) => {
-          if (userId && state.userId && state.userId !== userId) return state;
-
+      addToCart: async (product: Product) => {
+        set((state) => {
           const index = state.cartItems.findIndex(
             (item) => item.id === product.id &&
-            item.color === product.color &&
-              item.size === product.size
+                      item.color === product.color &&
+                      item.size === product.size
           );
-
 
           if (index !== -1) {
             let newCartItems = [...state.cartItems];
             newCartItems[index] = {
               ...newCartItems[index],
               quantity: newCartItems[index].quantity + product.quantity,
-              height: product.height,
-              width: product.width,
-              length: product.length,
-              weight: product.weight,
             };
-            console.log('cartItems',newCartItems)
-            return { cartItems: newCartItems, userId: state.userId || userId || null };
+            return { cartItems: newCartItems, userId: state.userId || null };
           }
-          console.log('cartItems state',state)
 
-          return { cartItems: [...state.cartItems, product], userId: state.userId || userId || null };
-        }),
+          return { cartItems: [...state.cartItems, product], userId: state.userId || null };
+        });
+
+        const { userId } = get();
+        if (userId) {
+          await get().saveCartToBackend(userId);
+        }
+      },
 
       removeFromCart: (productId: string, userId?: string) =>
         set((state: CartState) => {
@@ -164,6 +162,75 @@ export const useCartStore = create<CartState>(
           set((state: CartState) => ({
             userId,
           })),
+
+          saveCartToBackend: async (userId: string) => {
+            console.log('entrou save cart backend')
+
+            const { cartItems } = get();
+
+            console.log('entrou save cart backend cartItems',cartItems)
+
+            const items = cartItems.map((item) => ({
+              productId: item.id,
+              quantity: item.quantity,
+              price: item.price,
+              colorId: item.color,
+              sizeId: item.size,
+            }));
+    
+            console.log('entrou save cart backend cartItems',items)
+            try {
+              const session = await getSession();
+              const authToken = session?.accessToken;
+
+              const response = await axios.get(
+
+                `http://localhost:3333/cart/${userId}/exists`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${authToken}`,
+                    'Content-Type': 'application/json',
+                  },
+                }
+              );
+              
+              console.log(' retorno exists response.data',response.data)
+
+              if (response.data.exists) {
+                
+                await axios.post(
+                  `http://localhost:3333/cart/add-item/${userId}`,
+                  { items },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${authToken}`,
+                      'Content-Type': 'application/json',
+                    },
+                  }
+                );
+                console.log('Item adicionado ao carrinho existente');
+              } else {
+                console.log('entrou para criar o cart userId', userId)
+                console.log('entrou para criar o cart userId', items)
+               
+                await axios.post(
+                  `http://localhost:3333/cart`,
+                  { userId, items },
+                  {
+                    headers: {
+                      Authorization: `Bearer ${authToken}`,
+                      'Content-Type': 'application/json',
+                    },
+                  }
+                );
+                console.log('Novo carrinho criado');
+              }
+              
+              console.log('salvou o carrinho muito bem')
+            } catch (error) {
+              console.error('Error saving cart to backend:', error);
+            }
+          },
 
     }),
     {
