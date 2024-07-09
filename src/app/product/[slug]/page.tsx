@@ -35,6 +35,7 @@ interface ProductDetails {
   weight?: number;
   slug?: string;
   stock?: number;
+ 
   productCategories: string;
 }
 interface Color {
@@ -170,6 +171,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
     const width = productDetails.width ?? undefined;
     const length = productDetails.length ?? undefined;
     const weight = productDetails.weight ?? undefined;
+    const slug = productDetails.slug ?? undefined;
 
     console.log("productCategories", productCategories);
     const allProducts = await getProducts();
@@ -208,6 +210,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
               height={height}
               length={length}
               weight={weight}
+              slug={slug}
             />
           </div>
         </section>

@@ -24,6 +24,7 @@ import { formatPrice } from "@/utils/formatPrice";
 import Link from "next/link";
 
 import { useSession } from "next-auth/react"; 
+import ShareButtons from "./ShareButtons";
 
 interface ProductCart {
   id: string;
@@ -83,6 +84,7 @@ interface ProductProps {
   stock: number;
   similarProducts: SimilarProduct[];
   variants: ProductVariant[];
+  slug: string;
 }
 interface SimilarProduct {
   id: string;
@@ -110,6 +112,7 @@ const Product: React.FC<ProductProps> = ({
   width,
   length,
   weight,
+  slug,
 }) => {
   const swiperElRef = useRef(null);
 
@@ -416,10 +419,13 @@ const Product: React.FC<ProductProps> = ({
                 </span>
               </button>
             </div>
+            <div className="text-left w-full text-primaryDark dark:text-primaryLight border-x-primary mb-4">
+             <ShareButtons product={{ slug, title, category: categories[0].name }} />
+            </div>
 
             {hasVariants && (
               <>
-                <div className="mt-4 rounded px-2 py-2 max-w-48">
+                <div className="mt-2 rounded px-2 py-2 max-w-48">
                   <h3 className="text-base text-primaryDark dark:text-primaryLight  font-semibold">
                     Cores
                   </h3>
@@ -427,7 +433,7 @@ const Product: React.FC<ProductProps> = ({
                     {colors?.map((color, index) => (
                       <button
                         key={index}
-                        className={`w-4 h-4 rounded-full border border-transparent ${
+                        className={`w-4 h-4 rounded-full border border-secondary ${
                           selectedColor?.id === color.id
                             ? "ring-2 ring-offset-2 shadow-lg ring-secondary"
                             : ""
@@ -462,7 +468,7 @@ const Product: React.FC<ProductProps> = ({
               </>
             )}
 
-            <div className="my-4 px-4 py-2 border-r-4 border-secondary shadow-lg rounded-md bg-primaryLight w-auto">
+            <div className="my-2 px-4 py-2 border-r-4 border-secondary shadow-lg rounded-md bg-primaryLight w-auto">
               <p className="text-primaryDark font-semibold text-lg">
                 {formatPrice(price)}
               </p>
