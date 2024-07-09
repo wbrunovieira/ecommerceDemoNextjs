@@ -28,16 +28,45 @@ export interface Size {
   name: string;
 }
 
+interface CartItem {
+  _id: {
+    value: string;
+  };
+  props: {
+    productId: string;
+    quantity: number;
+    price: number;
+    height: number;
+    width: number;
+    length: number;
+    weight: number;
+    color?: string;
+    size?: string;
+  };
+}
+
+interface Cart {
+  _id: {
+    value: string;
+  };
+  props: {
+    userId: string;
+    items: CartItem[];
+  };
+}
+
 interface CartState {
   cartItems: Product[];
   userId?: string | null;
   addToCart: (product: Product, userId?: string) => void;
-  removeFromCart: (productId: string, userId?: string) => void;
+  removeFromCart: (productId: string, color?: string, size?: string, userId?: string) => void;
   clearCart: (uuserId?: string) => void;
   updateQuantity: (productId: string, amount: number, userId?: string) => void;
   initializeCart: (products: Product[], userId?: string) => void;
   setUser: (userId: string) => void;
-  saveCartToBackend: (userId: string, item: Product) => void;
+  saveCartToBackend: (userId: string, item: Product) => Promise<CartItem>;
+  removeItemFromBackend: (cartId: string, cartItemId: string) => void;
+  fetchCart: (userId: string) => Promise<Cart | null>;
 }
 
 interface FavoriteState {
@@ -108,18 +137,80 @@ export const useCartStore = create<CartState>(
         });
 
         const { userId } = get();
+
         if (userId) {
-          await get().saveCartToBackend(userId,  product);
+          const savedItem = await get().saveCartToBackend(userId,  product);
+          set((state) => {
+            const updatedCartItems = state.cartItems.map((item) =>
+              item.id === product.id && item.color === product.color && item.size === product.size
+                ? { ...item, _id: { value: savedItem._id } }
+                : item
+            );
+            return { cartItems: updatedCartItems };
+          });
+        
         }
       },
 
-      removeFromCart: (productId: string, userId?: string) =>
+      removeFromCart: async (cartItemId: string, userId?: string) => {
         set((state: CartState) => {
           if (userId && state.userId && state.userId !== userId) return state;
           return {
-            cartItems: state.cartItems.filter((item) => item.id !== productId),
+            cartItems: state.cartItems.filter(
+              (item) => item.id !== cartItemId
+            ),
           };
-        }),
+        });
+
+        const { userId: currentUserId } = get();
+
+        if (currentUserId) {
+
+          const cartResult = await get().fetchCart(currentUserId);
+
+          console.log('cartResult em remove from cart',cartResult)
+
+          if (cartResult) {
+
+            const items = cartResult.props.items;
+
+            console.log('entrrou no if em remove from cartcartResult .props.items',cartResult.props.items)
+
+            console.log('entrrou no if em remove from cartcartResult .props.items items',items)
+
+            const cartItem = items.find(item => item._id.value === cartItemId);
+
+            console.log('entrrou no if em remove from cartcartItem',cartItem)
+            if (cartItem) {
+              console.log('ccCHAMNDO  BACK cartItem',cartItem)
+            const removedItem =  await get().removeItemFromBackend(cartResult._id.value, cartItem._id.value);
+            console.log('removedItem da storeeeee',removedItem)
+            }
+          }
+        }
+      },
+
+      fetchCart: async (userId: string) => {
+        try {
+          const session = await getSession();
+          const authToken = session?.accessToken;
+
+          const response = await axios.get(
+            `http://localhost:3333/cart/user/${userId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          return response.data;
+        } catch (error) {
+          console.error('Error fetching cart:', error);
+          return null;
+        }
+      },
 
       clearCart: (userId?: string) =>
         set((state: CartState) => {
@@ -165,26 +256,27 @@ export const useCartStore = create<CartState>(
             userId,
           })),
 
-          saveCartToBackend: async (userId: string, product: Product) => {
-            console.log('entrou save cart backend')
+          saveCartToBackend: async (userId: string, product: Product): Promise<CartItem> => {
+            console.log('entrou save cart backend');
             const item = {
               productId: product.id,
               quantity: product.quantity,
               price: product.price,
-              colorId: product.color,
-              sizeId: product.size,
+              color: product.color,
+              size: product.size,
+              height: product.height,
+              width: product.width,
+              length: product.length,
+              weight: product.weight,
             };
-           
-
-            console.log('entrou save cart backend item',item)
-
-         
+          
+            console.log('entrou save cart backend item', item);
+          
             try {
               const session = await getSession();
               const authToken = session?.accessToken;
-
+          
               const response = await axios.get(
-
                 `http://localhost:3333/cart/${userId}/exists`,
                 {
                   headers: {
@@ -193,14 +285,13 @@ export const useCartStore = create<CartState>(
                   },
                 }
               );
-              
-              console.log(' retorno exists response.data',response.data)
-              
+          
+              console.log('retorno exists response.data', response.data);
+          
               if (response.data.exists) {
-                
-                console.log('vamos la salvar no back o item',item)
-
-                await axios.post(
+                console.log('vamos la salvar no back o item', item);
+          
+                const addItemResponse = await axios.post(
                   `http://localhost:3333/cart/add-item/${userId}`,
                   item,
                   {
@@ -210,14 +301,17 @@ export const useCartStore = create<CartState>(
                     },
                   }
                 );
-                console.log('Item adicionado ao carrinho existente');
+                console.log('Item adicionado ao carrinho existente', addItemResponse.data);
+                return {
+                  _id: { value: addItemResponse.data.itemId },
+                  props: item
+                };
               } else {
-                console.log('entrou para criar o cart userId', userId)
-               
-               
-                await axios.post(
+                console.log('entrou para criar o cart userId', userId);
+          
+                const createCartResponse = await axios.post(
                   `http://localhost:3333/cart`,
-                  { userId, items: [item]},
+                  { userId, items: [item] },
                   {
                     headers: {
                       Authorization: `Bearer ${authToken}`,
@@ -225,14 +319,42 @@ export const useCartStore = create<CartState>(
                     },
                   }
                 );
-                console.log('Novo carrinho criado');
+                console.log('Novo carrinho criado', createCartResponse.data);
+                return {
+                  _id: { value: createCartResponse.data.items[0].itemId },
+                  props: item
+                };
               }
-              
-              console.log('salvou o carrinho muito bem')
             } catch (error) {
               console.error('Error saving cart to backend:', error);
+              throw error;
             }
           },
+          
+          
+          
+
+          removeItemFromBackend: async (cartId: string, cartItemId: string) => {
+            try {
+              console.log('removeItemFromBackend entrou cartId cartItemId',cartId,cartItemId)
+            const session = await getSession();
+          const authToken = session?.accessToken;
+
+         const removedItemResult =  await axios.delete(
+            `http://localhost:3333/cart/${cartId}/item/${cartItemId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+          console.log('Item removido do carrinho no backend removedItemResult',removedItemResult);
+          return removedItemResult; 
+            } catch (error) {
+              console.error('Error removing item from backend:', error);
+            }
+          }
 
     }),
     {
