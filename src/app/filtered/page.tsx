@@ -34,6 +34,8 @@ interface ProductSize {
   name: string;
 }
 
+
+
 interface Product {
   id: string;
   name: string;
@@ -60,7 +62,7 @@ const FilteredResults: NextPage = () => {
 
   const category = searchParams.get("category");
   const brand = searchParams.get("brand");
-  const material = searchParams.get("material");
+
   const color = searchParams.get("color");
   const size = searchParams.get("size");
   const minPrice = searchParams.get("minPrice");
@@ -77,15 +79,13 @@ const FilteredResults: NextPage = () => {
   const selectedSize = useSelectionStore((state) => state.selectedSize);
   const selectedMinPrice = useSelectionStore((state) => state.selectedMinPrice);
   const selectedMaxPrice = useSelectionStore((state) => state.selectedMaxPrice);
-  const selectedMaterial = useSelectionStore((state) => state.selectedMaterial);
+
 
   const setSelectedCategory = useSelectionStore(
     (state) => state.setSelectedCategory
   );
   const setSelectedBrand = useSelectionStore((state) => state.setSelectedBrand);
-  const setSelectedMaterial = useSelectionStore(
-    (state) => state.setSelectedMaterial
-  );
+
   const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
   const setSelectedColor = useColorStore((state) => state.setSelectedColor);
   const setSelectedMinPrice = useSelectionStore(
@@ -130,7 +130,7 @@ const FilteredResults: NextPage = () => {
           name: size.name,
         })),
         brandId: product.props.brandId.value,
-        materialId: product.props.materialId.value,
+       
         brandName: product.props.brandName,
         brandUrl: product.props.brandUrl,
       }));
@@ -158,11 +158,7 @@ const FilteredResults: NextPage = () => {
         (product) => product.brandId === brand
       );
       return selectedBrandObj ? selectedBrandObj.brandName : brand;
-    } else if (material) {
-      const selectedMaterialObj = products.find(
-        (product) => product.materialId === material
-      );
-      return selectedMaterialObj ? selectedMaterialObj.materialId : material;
+   
     } else if (color) {
       const selectedColorObj = products.flatMap((product) =>
         product.productColors.filter((col) => col.color.id.value === color)
@@ -190,7 +186,7 @@ const FilteredResults: NextPage = () => {
       fetchProducts(
         `http://localhost:3333/products/size/${encodeURIComponent(size)}`
       );
-      setSelectedSize(size);
+      setSelectedSize(size as Size);
     } else if (minPrice && maxPrice) {
       fetchProducts(
         `http://localhost:3333/products/price-range?minPrice=${encodeURIComponent(
@@ -199,20 +195,15 @@ const FilteredResults: NextPage = () => {
       );
       setSelectedMinPrice(Number(minPrice));
       setSelectedMaxPrice(Number(maxPrice));
-    } else if (material) {
-      fetchProducts(
-        `http://localhost:3333products/material/${encodeURIComponent(material)}`
-      );
-      setSelectedMaterial(material);
-    }
-  }, [category, brand, size, minPrice, maxPrice, material]);
+    } 
+  }, [category, brand, size, minPrice, maxPrice]);
 
   useEffect(() => {
     if (color) {
       fetchProducts(
         `http://localhost:3333products/color/${encodeURIComponent(color)}`
       );
-      setSelectedColor(color);
+      setSelectedColor(color as Color);
     }
   }, [color]);
 
@@ -236,11 +227,7 @@ const FilteredResults: NextPage = () => {
             (product) => product.brandId === selectedBrand
           );
         }
-        if (selectedMaterial) {
-          filteredProducts = filteredProducts.filter(
-            (product) => product.materialId === selectedMaterial
-          );
-        }
+      
 
         if (selectedColor) {
           filteredProducts = filteredProducts.filter((product) =>
@@ -275,7 +262,7 @@ const FilteredResults: NextPage = () => {
     selectedBrand,
     selectedColor,
     selectedSize,
-    selectedMaterial,
+   
     allProducts,
     initialLoad,
     selectedMinPrice,

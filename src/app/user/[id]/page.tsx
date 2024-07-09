@@ -410,8 +410,8 @@ const UserPage: NextPage = () => {
             <DefaultIcon width={100} height={100} className="rounded-full mb-4 z-20" />
           )}
 
-    <BiEdit size={24} className="absolute bottom-2 right-2 top-2 text-primaryDark" />
-          <p className="text-xs text-primaryDark">Clique para alterar a imagem</p>
+    <BiEdit size={24} className="absolute bottom-2 right-2 top-2 text-primaryDark dark:text-primaryLight" />
+          <p className="text-xs text-primaryDark dark:text-primaryLight">Clique para alterar a imagem</p>
         </div>
 
 

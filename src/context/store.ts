@@ -37,7 +37,7 @@ interface CartState {
   updateQuantity: (productId: string, amount: number, userId?: string) => void;
   initializeCart: (products: Product[], userId?: string) => void;
   setUser: (userId: string) => void;
-  saveCartToBackend: (userId: string) => void;
+  saveCartToBackend: (userId: string, item: Product) => void;
 }
 
 interface FavoriteState {
@@ -109,7 +109,7 @@ export const useCartStore = create<CartState>(
 
         const { userId } = get();
         if (userId) {
-          await get().saveCartToBackend(userId);
+          await get().saveCartToBackend(userId,  product);
         }
       },
 
@@ -153,32 +153,32 @@ export const useCartStore = create<CartState>(
           }
           return state;
         }),
+
       initializeCart: (products: Product[], userId?: string) =>
         set((state: CartState) => {
           if (userId && state.userId && state.userId !== userId) return state;
           return { cartItems: products, userId: userId || state.userId || null };
         }),
+
         setUser: (userId: string) =>
           set((state: CartState) => ({
             userId,
           })),
 
-          saveCartToBackend: async (userId: string) => {
+          saveCartToBackend: async (userId: string, product: Product) => {
             console.log('entrou save cart backend')
+            const item = {
+              productId: product.id,
+              quantity: product.quantity,
+              price: product.price,
+              colorId: product.color,
+              sizeId: product.size,
+            };
+           
 
-            const { cartItems } = get();
+            console.log('entrou save cart backend item',item)
 
-            console.log('entrou save cart backend cartItems',cartItems)
-
-            const items = cartItems.map((item) => ({
-              productId: item.id,
-              quantity: item.quantity,
-              price: item.price,
-              colorId: item.color,
-              sizeId: item.size,
-            }));
-    
-            console.log('entrou save cart backend cartItems',items)
+         
             try {
               const session = await getSession();
               const authToken = session?.accessToken;
@@ -195,12 +195,14 @@ export const useCartStore = create<CartState>(
               );
               
               console.log(' retorno exists response.data',response.data)
-
+              
               if (response.data.exists) {
                 
+                console.log('vamos la salvar no back o item',item)
+
                 await axios.post(
                   `http://localhost:3333/cart/add-item/${userId}`,
-                  { items },
+                  item,
                   {
                     headers: {
                       Authorization: `Bearer ${authToken}`,
@@ -211,11 +213,11 @@ export const useCartStore = create<CartState>(
                 console.log('Item adicionado ao carrinho existente');
               } else {
                 console.log('entrou para criar o cart userId', userId)
-                console.log('entrou para criar o cart userId', items)
+               
                
                 await axios.post(
                   `http://localhost:3333/cart`,
-                  { userId, items },
+                  { userId, items: [item]},
                   {
                     headers: {
                       Authorization: `Bearer ${authToken}`,
