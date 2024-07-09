@@ -26,6 +26,10 @@ import Link from "next/link";
 import { useSession } from "next-auth/react"; 
 import ShareButtons from "./ShareButtons";
 
+
+import { useToast } from "@/components/ui/use-toast"
+
+
 interface ProductCart {
   id: string;
   title: string;
@@ -134,6 +138,8 @@ const Product: React.FC<ProductProps> = ({
   const { data: session } = useSession();
   const setUser = useCartStore((state) => state.setUser);
 
+  const { toast } = useToast()
+
   console.log("similarProducts", similarProducts);
   const hasVariants = variants.length > 0;
 
@@ -207,11 +213,7 @@ const Product: React.FC<ProductProps> = ({
   };
 
   const handleAddToCart = () => {
-    console.log("Entrou em handleAddToCart");
-    console.log("hasVariants:", hasVariants);
-    console.log("selectedVariantId:", selectedVariantId);
-    console.log("availableStock:", availableStock);
-    console.log("quantity:", quantity);
+  
     const userId = session?.user?.id || null;
     if (hasVariants) {
       console.log("Produto tem variantes.");
@@ -235,6 +237,10 @@ const Product: React.FC<ProductProps> = ({
               color: selectedColor?.name,
               size: selectedSize?.name,
             }, userId);
+            toast({
+              title: "Item adicionado ao carrinho",
+              description: "Seu item foi adicionado ao carrinho com sucesso!",
+            });
           } else {
             alert("Please select a valid size and color combination.");
           }
@@ -261,10 +267,18 @@ const Product: React.FC<ProductProps> = ({
           length,
           weight,
         });
+        toast({
+          title: "Item adicionado ao carrinho",
+          description: "Seu item foi adicionado ao carrinho com sucesso!",
+        });
       } else {
         alert("The quantity exceeds the available stock.");
       }
     }
+    toast({
+      title: "Item adicionado ao carrinho",
+      description: "Seu item foi adicionado ao carrinho com sucesso!",
+    });
   };
   const cartItems = useCartStore((state: any) => state.cartItems);
   const addToCart = useCartStore((state: any) => state.addToCart);
@@ -419,6 +433,9 @@ const Product: React.FC<ProductProps> = ({
                 </span>
               </button>
             </div>
+            <div>
+   
+    </div>
             <div className="text-left w-full text-primaryDark dark:text-primaryLight border-x-primary mb-4">
              <ShareButtons product={{ slug, title, category: categories[0].name }} />
             </div>
@@ -439,6 +456,7 @@ const Product: React.FC<ProductProps> = ({
                             : ""
                         }`}
                         style={{ backgroundColor: color.hex }}
+                        title={color.name}
                         onClick={() => handleColorChange(color)}
                       ></button>
                     ))}
@@ -506,11 +524,19 @@ const Product: React.FC<ProductProps> = ({
                   <Button
                     variant="secondary"
                     size="large"
-                    onClick={handleAddToCart}
+                    onClick={() => {
+                      handleAddToCart();
+                      toast({
+                        title: "Item adicionado ao carrinho",
+                        description: "Seu item foi adicionado ao carrinho com sucesso!",
+                      });
+                    }}
                     disabled={isBuyButtonDisabled}
                   >
                     Comprar
                   </Button>
+                 
+                  
                 ) : (
                   <p className="out-of-stock">Produto fora de estoque</p>
                 )

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { Montserrat } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster"
 
 
 import NextAuthSessionProvider from "@/providers/sessionProvider";
@@ -34,7 +35,11 @@ export default function RootLayout({
         >
           <NextAuthSessionProvider>
            <Header />
+           <main>
+
             {children}
+           </main>
+            <Toaster />
             <Footer />
             <ClearCartOnLogout />
             
