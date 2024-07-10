@@ -141,11 +141,7 @@ const AdminPage: React.FC = () => {
   const [searchId, setSearchId] = useState("");
   const [searchName, setSearchName] = useState("");
  
-  console.log('colors',colors)
-  console.log('sizes',sizes)
-  console.log('categories',categories)
-  console.log('brands',brands)
-  console.log('products',products)
+
   
 
   useEffect(() => {
@@ -160,7 +156,7 @@ const AdminPage: React.FC = () => {
   useEffect(() => {
     const fetchColors = async () => {
       try {
-        console.log('entrou no fech colors')
+     
        
        
         const response = await axios.get(`http://localhost:3333/colors/all?page=1&pageSize=10`, {
@@ -168,7 +164,7 @@ const AdminPage: React.FC = () => {
             'Content-Type': 'application/json'
           }
         });
-        console.log('response.data.colors',response.data.colors)
+   
         setColors(response.data.colors);
       } catch (error) {
         console.error("Erro ao buscar as cores: ", error);
@@ -178,13 +174,13 @@ const AdminPage: React.FC = () => {
     const fetchSizes = async () => {
       try {
 
-        console.log('entrou no fetchSizes', )
+      
         const response = await axios.get(`http://localhost:3333/size/all?page=1&pageSize=20`, {
           headers: {
             'Content-Type': 'application/json'
           }
         });
-        console.log('response.data.sizes',response.data.size)
+   
         setSizes(response.data.size);
       } catch (error) {
         console.error("Erro ao buscar os tamanhos: ", error);
@@ -198,7 +194,7 @@ const AdminPage: React.FC = () => {
             'Content-Type': 'application/json'
           }
         });
-        console.log('response.data.categories',response.data.categories)
+
         setCategories(response.data.categories);
       } catch (error) {
         console.error("Erro ao buscar as categorias: ", error);
@@ -377,7 +373,7 @@ const AdminPage: React.FC = () => {
   };
 
  const normalizeProduct = (data: any): Product | null => {
-  console.log('data', data);
+ 
   if (data.props) {
     if (data.props.product) {
       
@@ -445,16 +441,16 @@ const AdminPage: React.FC = () => {
 
   const fetchProductByName = async () => {
     try {
-      console.log('searchName',searchName)
+   
       const response = await axios.get(`http://localhost:3333/products/search?name=${searchName}`, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      console.log('searchName response',response.data.products)
+
       const normalizedProducts = response.data.products.map((product: any): Product | null => normalizeProduct(product))
       .filter((product: Product | null): product is Product => product !== null);
-      console.log('normalizedProducts depois do map',normalizedProducts)
+    
       setProducts(normalizedProducts);
 
       setSearchName('');

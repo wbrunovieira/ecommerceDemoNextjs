@@ -46,7 +46,7 @@ const CadastroForm = () => {
   };
 
   const handleBlur = (field: keyof ErrorMessages, value: string) => {
-    console.log(field, value);
+
     setErrorMessage((prev: ErrorMessages) => {
       let errorMessage = value ? "" : getMessageForField(field);
 
@@ -59,16 +59,16 @@ const CadastroForm = () => {
       }
 
       if (field === "password") {
-        console.log("password", value);
+    
         if (!value) {
-          console.log("password ta vazio", value);
+    
           errorMessage = getMessageForField(field);
         } else if (
           !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
             value
           )
         ) {
-          console.log("password nao atende aos requisitos", value);
+     
           errorMessage =
             "A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.";
         }
@@ -102,7 +102,6 @@ const CadastroForm = () => {
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    console.log("submit", name, email, password, repeatPassword);
 
     gsap.to("#submitButton", {
       scale: 0.95,
@@ -114,7 +113,7 @@ const CadastroForm = () => {
       duration: 0.2,
       ease: "power1.out",
     });
-    console.log("depois da animacao");
+
     if (password !== repeatPassword) {
       setErrorMessage((prev) => ({
         ...prev,
@@ -131,10 +130,10 @@ const CadastroForm = () => {
     });
 
     if (result?.error) {
-      console.log(result);
+
       return;
     }
-    console.log("conexao bem sucedida e redirecionando");
+
 
     await update();
     router.replace("/");

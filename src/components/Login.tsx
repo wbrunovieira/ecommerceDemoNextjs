@@ -37,37 +37,34 @@ const Login = () => {
   const handleSubmit = async (e: SyntheticEvent) => {
     setIsButtonInDisabled(true);
     e.preventDefault();
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("entrou no submit");
+
     const result = await signIn("credentials", {
       email,
       password,
       redirect: false,
     });
 
-    console.log("result", result);
+
     if (result?.error) {
       setErrorMessage({ email: "", password: "Credenciais inválidas" });
-      console.log("Login Error:", result.error);
+  
       return;
     }
 
-    console.log("Login Successful:", result);
+
     router.push("/");
   };
 
   const handleGoogleSignIn = async () => {
     setIsButtonInDisabled(true);
-    console.log("handleGoogleSignIn called");
+
     const result = await signIn("google", { callbackUrl: "/" });
 
     if (result?.error) {
-      console.log("Google Sign-In Error:", result.error);
+
       return;
     }
-    console.log("Google Sign-In Successful:", result);
-
+ 
     router.push("/");
   };
 
@@ -90,7 +87,7 @@ const Login = () => {
   }
 
   const handleBlur = (field: keyof ErrorMessages, value: string) => {
-    console.log(field, value);
+
     setErrorMessage((prev: ErrorMessages) => {
       let errorMessage = value ? "" : getMessageForField(field);
 
@@ -103,16 +100,16 @@ const Login = () => {
       }
 
       if (field === "password") {
-        console.log("password", value);
+
         if (!value) {
-          console.log("password ta vazio", value);
+    
           errorMessage = getMessageForField(field);
         } else if (
           !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
             value
           )
         ) {
-          console.log("password nao atende aos requisitos", value);
+  
           errorMessage =
             "A senha deve conter pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial.";
         }

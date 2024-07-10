@@ -6,10 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 
 const LogginButton = () => {
-  console.log("LogginButton");
+
   const { data: session, status } = useSession();
-  console.log("session", session);
-  console.log("status", status);
+
 
   if (status === "loading") {
     return <div className="text-xs">...</div>;
@@ -18,8 +17,7 @@ const LogginButton = () => {
   if (session && session.user) {
     const userName = session.user?.name;
     let id = session.user?.id;
-    console.log("userName", userName);
-    console.log("session && session.user", session, session.user);
+
     return (
       <div className="flex items-center gap-2 ">
         <Link href={`/user/${session.user.id}`} passHref>

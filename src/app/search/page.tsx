@@ -66,7 +66,7 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
             throw new Error("Network response was not ok");
           }
           const data = await response.json();
-          console.log("response data", data);
+     
 
           const mappedProducts = data.products.map((product: any) => ({
             id: product._id.value,
@@ -88,7 +88,7 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
             brandName: product.props.brandName,
             brandLogo: product.props.brandUrl,
           }));
-          console.log("mappedProducts", mappedProducts);
+      
           setProducts(mappedProducts);
         } catch (error) {
           console.error("Error fetching search results:", error);

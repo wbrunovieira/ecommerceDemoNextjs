@@ -37,8 +37,7 @@ const Cart = () => {
 
   }, [session, setUser]);
 
-  console.log("cartItems", cartItems);
-  
+ 
   const increaseQuantity = (id: string) => {
     updateQuantity(id, 1);
   };

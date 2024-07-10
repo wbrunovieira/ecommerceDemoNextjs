@@ -50,8 +50,6 @@ const PriceFilter = ({ isHome }: { isHome: boolean }) => {
       router.push(`/filtered${queryParams}`);
     }
   };
-  console.log("selectedMinPrice", selectedMinPrice);
-  console.log("selectedMaxPrice", selectedMaxPrice);
 
   return (
     <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded bg-primaryLight dark:bg-dark-secondary-gradient">

@@ -98,7 +98,7 @@ const UserPage: NextPage = () => {
     });
 
     try {
-      console.log("Dados do usuário a serem enviados:", cleanedUserDetails);
+   
 
       const response = await fetch(
         `http://localhost:3333/adress/${session?.user?.id}/addresses/${address._id.value}`,
@@ -111,7 +111,7 @@ const UserPage: NextPage = () => {
           body: JSON.stringify(cleanedUserDetails),
         }
       );
-      console.log("response no handle save adress", response);
+      
 
       if (response.ok) {
         fetchAddresses();
@@ -125,11 +125,10 @@ const UserPage: NextPage = () => {
   };
 
   const fetchAddresses = async () => {
-    console.log("entrou no fetchAddresses ");
-    console.log("session?.user?.id ", session?.user?.id);
+
 
     try {
-      console.log("entrou no try fetchAddresses ");
+   
       const response = await fetch(
         `http://localhost:3333/adress/by-user-id?userId=${session?.user?.id}`,
         {
@@ -141,14 +140,11 @@ const UserPage: NextPage = () => {
         }
       );
 
-      console.log("entrou no try fetchAddresses  response", response);
-      console.log("entrou  session?.accessToken", session?.accessToken);
-      console.log("response aqui o", response);
 
       if (response.ok) {
         const data = await response.json();
 
-        console.log("data aqui mesmo", data);
+   
         setAddresses(data.addresses);
         setUserDetails({
           name: data.user.name,
@@ -216,7 +212,7 @@ const UserPage: NextPage = () => {
         : null,
     });
     try {
-      console.log("Dados do usuário a serem enviados:", cleanedUserDetails);
+
 
       const response = await fetch(
         `http://localhost:3333/accounts/edit/${session?.user?.id}`,
@@ -230,7 +226,6 @@ const UserPage: NextPage = () => {
         }
       );
 
-      console.log("response de salvar os dados do user", response);
 
       if (response.ok) {
         setIsEditingUser(false);
@@ -280,13 +275,6 @@ const UserPage: NextPage = () => {
         }),
       });
 
-      console.log("response handleCreateAddress response", response);
-      console.log(
-        "response handleCreateAddress session?.accessToken",
-        session?.accessToken
-      );
-      console.log("response handleCreateAddress", response);
-      console.log("response handleCreateAddress", response);
 
       if (response.ok) {
         fetchAddresses();

@@ -138,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
         }
 
         const data = await res.json();
-        console.log("data categories", data.categories);
+   
 
         const fetchedCategories = data.categories.map((category: any) => {
           const imageUrl = category.props.imageUrl?.replace('http://localhost:3000/public', '/icons') || "/icons/default-image.png";
@@ -149,7 +149,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
             imageUrl,
           };
         });
-        console.log("fetchedCategories", fetchedCategories);
+  
         setCategories(fetchedCategories);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -167,7 +167,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
         }
 
         const data = await res.json();
-        console.log("data sizes", data);
+    
 
         const sizeOrderMap: { [key: string]: number } = {
           pp: 1,
@@ -206,7 +206,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
       return (sizeOrderMap[a.name] || 999) - (sizeOrderMap[b.name] || 999);
     });
 
-        console.log("fetchedSize", fetchedSizes);
+      
 
         setSizes(fetchedSizes);
       } catch (error) {
@@ -226,14 +226,14 @@ const Sidebar: React.FC<SidebarProps> = () => {
         }
 
         const data = await res.json();
-        console.log("data colors", data);
+       
 
         const fetchedColors = data.colors.map((color: any) => ({
           id: color._id.value,
           name: color.props.name,
           hex: color.props.hex || "#00000",
         }));
-        console.log("fetchedColors", fetchedColors);
+      
         setColors(fetchedColors);
       } catch (error) {
         console.error("Error fetching categories:", error);

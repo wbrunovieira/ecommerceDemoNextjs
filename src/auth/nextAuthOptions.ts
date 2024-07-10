@@ -17,10 +17,10 @@ export const nextAuthOptions: NextAuthOptions = {
         password: { label: "password", type: "password" },
       },
       async authorize(credentials, req) {
-        console.log("Autorizando com credenciais:", credentials);
+    
 
         if (!credentials) {
-          console.log("Credenciais não fornecidas");
+  
           return null;
         }
 
@@ -33,7 +33,7 @@ export const nextAuthOptions: NextAuthOptions = {
           }
         );
 
-        console.log("responseCheck", responseCheck);
+      
 
         const exists = await responseCheck.text();
         const userExists = exists.trim().toLowerCase() === "true";
@@ -50,14 +50,12 @@ export const nextAuthOptions: NextAuthOptions = {
           });
 
           if (!responseCreate.ok) {
-            console.log("Falha ao criar usuário");
+       
             return null;
           }
 
           const user = await responseCreate.json();
-          console.log("Usuário criado com sucesso:", user);
-
-          console.log("Usuário autenticado:user.user.name", user.user.name);
+       
 
           return {
             user: {
@@ -78,17 +76,11 @@ export const nextAuthOptions: NextAuthOptions = {
         });
 
         if (!response.ok) {
-          console.log("Falha ao autenticar");
+ 
           return null;
         }
 
         const user = await response.json();
-
-        console.log("Usuário autenticado:user.id", user.user.id);
-        console.log(
-          "Usuário autenticado user.access_token:",
-          user.access_token
-        );
 
         return {
           user: {
@@ -131,7 +123,7 @@ export const nextAuthOptions: NextAuthOptions = {
       if (account?.provider === "google") {
         const endpointCheck = "http://localhost:3333/accounts/check";
         const endpointCreate = "http://localhost:3333/accounts/google";
-        console.log("profile", profile);
+    
 
         const payload = {
           name: profile?.name,
@@ -139,8 +131,7 @@ export const nextAuthOptions: NextAuthOptions = {
           googleUserId: profile?.sub,
           profileImageUrl: profile?.picture || "",
         };
-        console.log("payload", payload);
-        console.log("email", profile?.email);
+   
 
         const responseCheck = await fetch(endpointCheck, {
           method: "POST",
@@ -149,26 +140,24 @@ export const nextAuthOptions: NextAuthOptions = {
           },
           body: JSON.stringify({ email: profile?.email }),
         });
-        console.log("responseCheck", responseCheck);
+    
 
         const responseText = await responseCheck.text();
         const response = JSON.parse(responseText);
         const { found, user: existingUser } = response;
-        console.log("responseText", responseText);
+      
 
-        console.log("response", response);
-        console.log("found", found);
-        console.log("existingUser", existingUser);
+
 
         if (responseCheck.ok && found) {
-          console.log("Usuário já existe");
+     
           user.id = existingUser.id;
-          console.log("user.id", existingUser.id);
+  
           user.email = existingUser.email;
           user.name = existingUser.name;
           return true;
         } else if (responseCheck.ok && !found) {
-          console.log("Usuário não existe");
+        
 
           const responseCreate = await fetch(endpointCreate, {
             method: "POST",
@@ -178,7 +167,6 @@ export const nextAuthOptions: NextAuthOptions = {
             body: JSON.stringify(payload),
           });
 
-          console.log("responseCreate", responseCreate);
 
           if (!responseCreate.ok) {
             console.error("Failed to create user");
@@ -186,19 +174,19 @@ export const nextAuthOptions: NextAuthOptions = {
           }
 
           const createdUser = await responseCreate.json();
-          console.log("Usuário criado com sucesso:", createdUser);
+    
 
           user.id = createdUser.user._id.value;
 
           return true;
         }
-        console.log("chegou aqui no false do fim 1");
+    
       }
 
       if (account?.provider === "credentials") {
         return !!user;
       }
-      console.log("chegou aqui no false do fim");
+   
       return true;
     },
     async jwt({
@@ -212,10 +200,7 @@ export const nextAuthOptions: NextAuthOptions = {
       account: any;
       profile?: ExtendedProfile;
     }) {
-      console.log("JWT Callback - Token inicial:", token);
-      console.log("JWT Callback - User:", user);
-      console.log("JWT Callback - Account:", account);
-      console.log("JWT Callback - Profile:", profile);
+
 
       if (account) {
         token.accessToken = account.access_token;
@@ -239,13 +224,12 @@ export const nextAuthOptions: NextAuthOptions = {
             : user.accessToken;
       }
 
-      console.log("JWT Callback - Token final:", token);
+
       return token;
     },
 
     async session({ session, token }) {
-      console.log("session original", session);
-      console.log("token no session", token);
+
 
       if (typeof token.id === "string") {
         session.user.id = token.id;
@@ -262,9 +246,6 @@ export const nextAuthOptions: NextAuthOptions = {
       session.accessToken =
         typeof token.accessToken === "string" ? token.accessToken : "";
 
-      console.log("Session Modified:", session);
-
-      console.log("session.accessToken", session.accessToken);
       return session;
     },
   },
