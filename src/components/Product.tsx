@@ -144,28 +144,25 @@ const Product: React.FC<ProductProps> = ({
     const { data: session } = useSession();
     const setUser = useCartStore((state) => state.setUser);
 
-    const { toast } = useToast();
+    const cartItems = useCartStore((state: any) => state.cartItems);
+    const addToCart = useCartStore((state: any) => state.addToCart);
 
+    const { toast } = useToast();
 
     const checkStockAndSetVariant = (
         sizeId: string | null,
         colorId: string | null
     ) => {
-     
         if (hasVariants) {
             const selectedVariant = variants.find(
                 (variant) =>
                     variant.sizeId === sizeId && variant.colorId === colorId
             );
 
-
             if (selectedVariant) {
                 setAvailableStock(selectedVariant.stock);
                 setSelectedVariantId(selectedVariant.id);
-
-      
             } else {
-             
                 setAvailableStock(0);
                 setSelectedVariantId(null);
                 setQuantity(1);
@@ -173,14 +170,12 @@ const Product: React.FC<ProductProps> = ({
         }
 
         if (!sizeId && !colorId) {
-          
             setAvailableStock(stock);
             setSelectedVariantId(null);
             setQuantity(1);
         }
         setIsStockChecked(true);
     };
-
 
     const handleSizeChange = (size: Size) => {
         setSelectedSize(size);
@@ -213,11 +208,29 @@ const Product: React.FC<ProductProps> = ({
     };
 
     const handleAddToCart = () => {
+        console.log(
+            'enttrou no handleAddToCart olha tudo que achou:',
+            id,
+            quantity,
+            title,
+            mainImage,
+            price,
+            height,
+            width,
+            length,
+            weight,
+            hasVariants,
+            productIdVariant
+        );
         const userId = session?.user?.id || null;
         if (hasVariants) {
-       
+            console.log(
+                'handleAddToCart hasVariants ',
+                hasVariants,
+                productIdVariant
+            );
+
             if (selectedVariantId) {
-           
                 if (quantity <= availableStock) {
                     const selectedVariant = variants.find(
                         (variant) => variant.id === selectedVariantId
@@ -237,6 +250,7 @@ const Product: React.FC<ProductProps> = ({
                                 color: selectedColor?.name,
                                 size: selectedSize?.name,
                                 hasVariants,
+                                productIdVariant,
                             },
                             userId
                         );
@@ -257,9 +271,21 @@ const Product: React.FC<ProductProps> = ({
                 alert('Please select a valid size and color combination.');
             }
         } else {
-     
+            console.log(
+                'ok estamos no else que nao e variant entao tem que ta tudo aqui',
+                id,
+                quantity,
+                title,
+                mainImage,
+                price,
+                height,
+                width,
+                length,
+                weight,
+                hasVariants,
+                productIdVariant
+            );
             if (quantity <= availableStock) {
-             
                 addToCart({
                     id,
                     quantity,
@@ -271,6 +297,7 @@ const Product: React.FC<ProductProps> = ({
                     length,
                     weight,
                     hasVariants,
+                    productIdVariant,
                 });
                 toast({
                     title: 'Item adicionado ao carrinho',
@@ -286,14 +313,11 @@ const Product: React.FC<ProductProps> = ({
             description: 'Seu item foi adicionado ao carrinho com sucesso!',
         });
     };
-    const cartItems = useCartStore((state: any) => state.cartItems);
-    const addToCart = useCartStore((state: any) => state.addToCart);
 
     useEffect(() => {
         if (session?.user?.id) {
             setUser(session.user.id);
         }
-       
     }, [cartItems, session, setUser]);
 
     useEffect(() => {
@@ -317,15 +341,12 @@ const Product: React.FC<ProductProps> = ({
                 'swiperprogress',
                 (e) => {
                     const [swiper, progress] = (e as CustomEvent).detail;
-                   
                 }
             );
 
             (swiperElRef.current as HTMLElement).addEventListener(
                 'swiperslidechange',
-                (e) => {
-                   
-                }
+                (e) => {}
             );
         }
     }, []);
@@ -367,8 +388,7 @@ const Product: React.FC<ProductProps> = ({
         }
         toggleFavorite(id, userId);
     };
-  
-  
+
     return (
         <section>
             <div className="flex flex-col ml-2">

@@ -15,7 +15,7 @@ interface Product {
     weight: number;
     color?: string;
     size?: string;
-    hasVariant: boolean;
+    hasVariants: boolean;
     productIdVariant?: string;
 }
 
@@ -38,6 +38,7 @@ interface CartItem {
         productId: string;
         quantity: number;
         productIdVariant?: string;
+        hasVariants: boolean;
         price: number;
         height: number;
         width: number;
@@ -131,10 +132,7 @@ export const useCartStore = create<CartState>(
             addToCart: async (product: Product) => {
                 set((state) => {
                     const index = state.cartItems.findIndex(
-                        (item) =>
-                            item.id === product.id &&
-                            item.color === product.color &&
-                            item.size === product.size
+                        (item) => item.id === product.id
                     );
 
                     if (index !== -1) {
@@ -159,10 +157,29 @@ export const useCartStore = create<CartState>(
                 const { userId } = get();
 
                 if (userId) {
+                    const item = {
+                        id: product.id,
+                        productId: product.id,
+                        title: product.title,
+                        image: product.image,
+                        quantity: product.quantity,
+                        price: product.price,
+                        height: product.height,
+                        width: product.width,
+                        length: product.length,
+                        weight: product.weight,
+                        hasVariants: product.hasVariants,
+                        color: product.hasVariants ? product.color : undefined,
+                        size: product.hasVariants ? product.size : undefined,
+                        productIdVariant: product.hasVariants
+                            ? product.productIdVariant
+                            : undefined,
+                    };
                     const savedItem = await get().saveCartToBackend(
                         userId,
-                        product
+                        item
                     );
+                    console.log('savedItem', savedItem);
                     set((state) => {
                         const updatedCartItems = state.cartItems.map((item) =>
                             item.id === product.id &&
@@ -298,19 +315,20 @@ export const useCartStore = create<CartState>(
                     color: product.color,
                     size: product.size,
                     height: product.height,
-                    hasVariants: product.hasVariant,
-
+                    hasVariants: product.hasVariants,
                     width: product.width,
                     length: product.length,
                     weight: product.weight,
-                    productIdVariant: product.productIdVariant || undefined,
+                    productIdVariant: product.productIdVariant,
                 };
 
                 try {
+                    console.log('item no saveCartToBackend', item);
+
                     const session = await getSession();
                     const authToken = session?.accessToken;
 
-                    const response = await axios.get(
+                    const existsResponse = await axios.get(
                         `http://localhost:3333/cart/${userId}/exists`,
                         {
                             headers: {
@@ -320,7 +338,7 @@ export const useCartStore = create<CartState>(
                         }
                     );
 
-                    if (response.data.exists) {
+                    if (existsResponse.data.exists) {
                         const addItemResponse = await axios.post(
                             `http://localhost:3333/cart/add-item/${userId}`,
                             item,
@@ -337,6 +355,7 @@ export const useCartStore = create<CartState>(
                             props: item,
                         };
                     } else {
+                        console.log('cart nao existe, vamos criar item', item);
                         const createCartResponse = await axios.post(
                             `http://localhost:3333/cart`,
                             { userId, items: [item] },
@@ -348,9 +367,22 @@ export const useCartStore = create<CartState>(
                             }
                         );
 
+                        console.log('createCartResponse', createCartResponse);
+
+                        console.log(
+                            'createCartResponse',
+                            createCartResponse.data
+                        );
+                        const createdItem =
+                            createCartResponse.data.cart.props.items[0];
+                        console.log(
+                            'createCartResponse',
+                            createCartResponse.data
+                        );
+
                         return {
                             _id: {
-                                value: createCartResponse.data.items[0].itemId,
+                                value: createdItem._id.value,
                             },
                             props: item,
                         };
