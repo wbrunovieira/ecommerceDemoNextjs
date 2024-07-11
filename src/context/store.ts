@@ -179,6 +179,7 @@ export const useCartStore = create<CartState>(
                         userId,
                         item
                     );
+
                     console.log('savedItem', savedItem);
                     set((state) => {
                         const updatedCartItems = state.cartItems.map((item) =>
@@ -308,6 +309,7 @@ export const useCartStore = create<CartState>(
                 userId: string,
                 product: Product
             ): Promise<CartItem> => {
+                console.log('entrou saveCartToBackend userId product',userId,product )
                 const item = {
                     productId: product.id,
                     quantity: product.quantity,
@@ -324,10 +326,10 @@ export const useCartStore = create<CartState>(
 
                 try {
                     console.log('item no saveCartToBackend', item);
-
+                    
                     const session = await getSession();
                     const authToken = session?.accessToken;
-
+                    
                     const existsResponse = await axios.get(
                         `http://localhost:3333/cart/${userId}/exists`,
                         {
@@ -337,8 +339,11 @@ export const useCartStore = create<CartState>(
                             },
                         }
                     );
-
+                    console.log('existsResponse', existsResponse);
+                    
                     if (existsResponse.data.exists) {
+                        console.log('existsResponse.data.exists', existsResponse.data.exists);
+                        console.log('existsResponse.data.exists item ', item);
                         const addItemResponse = await axios.post(
                             `http://localhost:3333/cart/add-item/${userId}`,
                             item,
@@ -350,10 +355,13 @@ export const useCartStore = create<CartState>(
                             }
                         );
 
+                        console.log('addItemResponse', addItemResponse);
+
                         return {
                             _id: { value: addItemResponse.data.itemId },
                             props: item,
                         };
+                        
                     } else {
                         console.log('cart nao existe, vamos criar item', item);
                         const createCartResponse = await axios.post(
