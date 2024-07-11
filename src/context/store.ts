@@ -9,6 +9,7 @@ interface Product {
     image: string;
     price: number;
     quantity: number;
+
     height: number;
     width: number;
     length: number;
@@ -59,16 +60,16 @@ interface Cart {
     };
 }
 
+interface SaveCartResponse {
+    cartId: string;
+    cartItemId: string;
+}
+
 interface CartState {
     cartItems: Product[];
     userId?: string | null;
     addToCart: (product: Product, userId?: string) => void;
-    removeFromCart: (
-        productId: string,
-        color?: string,
-        size?: string,
-        userId?: string
-    ) => void;
+    removeFromCart: (cartId: string, cartItemId: string) => void;
     clearCart: (uuserId?: string) => void;
     updateQuantity: (
         productId: string,
@@ -77,7 +78,10 @@ interface CartState {
     ) => void;
     initializeCart: (products: Product[], userId?: string) => void;
     setUser: (userId: string) => void;
-    saveCartToBackend: (userId: string, item: Product) => Promise<CartItem>;
+    saveCartToBackend: (
+        userId: string,
+        item: Product
+    ) => Promise<SaveCartResponse>;
     removeItemFromBackend: (cartId: string, cartItemId: string) => void;
     fetchCart: (userId: string) => Promise<Cart | null>;
 }
@@ -129,6 +133,7 @@ export const useCartStore = create<CartState>(
         (set, get) => ({
             cartItems: [],
             userId: null,
+
             addToCart: async (product: Product) => {
                 set((state) => {
                     const index = state.cartItems.findIndex(
@@ -181,50 +186,76 @@ export const useCartStore = create<CartState>(
                     );
 
                     console.log('savedItem', savedItem);
+
                     set((state) => {
                         const updatedCartItems = state.cartItems.map((item) =>
-                            item.id === product.id &&
-                            item.color === product.color &&
-                            item.size === product.size
-                                ? { ...item, _id: { value: savedItem._id } }
+                            item.id === product.id
+                                ? {
+                                      ...item,
+                                      _id: { value: savedItem.cartItemId },
+                                  }
                                 : item
                         );
-                        return { cartItems: updatedCartItems };
+                        console.log('updatedCartItems', updatedCartItems);
+                        console.log('savedItem', savedItem.cartId);
+                        return {
+                            cartItems: updatedCartItems,
+                            cartId: savedItem.cartId,
+                        };
                     });
                 }
             },
 
-            removeFromCart: async (cartItemId: string, userId?: string) => {
-                set((state: CartState) => {
-                    if (userId && state.userId && state.userId !== userId)
-                        return state;
-                    return {
+            removeFromCart: async (cartId: string, cartItemId: string) => {
+                console.log('removeFromCart inicio cartId', cartId);
+                console.log('removeFromCart inicio cartItemId', cartItemId);
+                const { userId } = get();
+
+                if (!cartItemId) {
+                    console.error('cartItemId is undefined');
+                    return;
+                }
+
+                if (userId) {
+                    try {
+                        const cartResult = await get().fetchCart(userId);
+
+                        console.log('removeFromCart cartResult', cartResult);
+
+                        const cartItem = cartResult?.props.items.find(
+                            (item) => item._id.value === cartItemId
+                        );
+                        console.log('removeFromCart cartItem', cartItem);
+                        if (cartItem) {
+                            await get().removeItemFromBackend(
+                                cartId,
+                                cartItemId
+                            );
+                            set((state) => ({
+                                cartItems: state.cartItems.filter(
+                                    (item) =>
+                                        item.id !== cartItem.props.productId
+                                ),
+                            }));
+                            console.log(
+                                `Item ${cartItemId} removed from cart and backend for user ${userId}`
+                            );
+                        } else {
+                            console.error('Cart item not found');
+                        }
+                    } catch (error) {
+                        console.error(
+                            'Error removing item from backend:',
+                            error
+                        );
+                    }
+                } else {
+                    set((state) => ({
                         cartItems: state.cartItems.filter(
                             (item) => item.id !== cartItemId
                         ),
-                    };
-                });
-
-                const { userId: currentUserId } = get();
-
-                if (currentUserId) {
-                    const cartResult = await get().fetchCart(currentUserId);
-
-                    if (cartResult) {
-                        const items = cartResult.props.items;
-
-                        const cartItem = items.find(
-                            (item) => item._id.value === cartItemId
-                        );
-
-                        if (cartItem) {
-                            const removedItem =
-                                await get().removeItemFromBackend(
-                                    cartResult._id.value,
-                                    cartItem._id.value
-                                );
-                        }
-                    }
+                    }));
+                    console.log(`Item ${cartItemId} removed from cart locally`);
                 }
             },
 
@@ -308,8 +339,12 @@ export const useCartStore = create<CartState>(
             saveCartToBackend: async (
                 userId: string,
                 product: Product
-            ): Promise<CartItem> => {
-                console.log('entrou saveCartToBackend userId product',userId,product )
+            ): Promise<SaveCartResponse> => {
+                console.log(
+                    'entrou saveCartToBackend userId product',
+                    userId,
+                    product
+                );
                 const item = {
                     productId: product.id,
                     quantity: product.quantity,
@@ -326,10 +361,10 @@ export const useCartStore = create<CartState>(
 
                 try {
                     console.log('item no saveCartToBackend', item);
-                    
+
                     const session = await getSession();
                     const authToken = session?.accessToken;
-                    
+
                     const existsResponse = await axios.get(
                         `http://localhost:3333/cart/${userId}/exists`,
                         {
@@ -340,10 +375,14 @@ export const useCartStore = create<CartState>(
                         }
                     );
                     console.log('existsResponse', existsResponse);
-                    
+
                     if (existsResponse.data.exists) {
-                        console.log('existsResponse.data.exists', existsResponse.data.exists);
+                        console.log(
+                            'existsResponse.data.exists',
+                            existsResponse.data.exists
+                        );
                         console.log('existsResponse.data.exists item ', item);
+
                         const addItemResponse = await axios.post(
                             `http://localhost:3333/cart/add-item/${userId}`,
                             item,
@@ -355,13 +394,19 @@ export const useCartStore = create<CartState>(
                             }
                         );
 
-                        console.log('addItemResponse', addItemResponse);
+                        console.log(
+                            'addItemResponse cartId',
+                            addItemResponse.data.cartId
+                        );
+                        console.log(
+                            'addItemResponse.data.itemId',
+                            addItemResponse.data.itemId
+                        );
 
                         return {
-                            _id: { value: addItemResponse.data.itemId },
-                            props: item,
+                            cartId: existsResponse.data.cartId,
+                            cartItemId: addItemResponse.data._id.value,
                         };
-                        
                     } else {
                         console.log('cart nao existe, vamos criar item', item);
                         const createCartResponse = await axios.post(
@@ -381,18 +426,22 @@ export const useCartStore = create<CartState>(
                             'createCartResponse',
                             createCartResponse.data
                         );
-                        const createdItem =
-                            createCartResponse.data.cart.props.items[0];
+
                         console.log(
-                            'createCartResponse',
-                            createCartResponse.data
+                            'createCartResponse createCartResponse.data.cart._id.value',
+                            createCartResponse.data.cart._id.value
+                        );
+                        console.log(
+                            'createCartResponse createCartResponse.data.cart.props.items[0]._id.value',
+                            createCartResponse.data.cart.props.items[0]._id
+                                .value
                         );
 
                         return {
-                            _id: {
-                                value: createdItem._id.value,
-                            },
-                            props: item,
+                            cartId: createCartResponse.data.cart._id.value,
+                            cartItemId:
+                                createCartResponse.data.cart.props.items[0]._id
+                                    .value,
                         };
                     }
                 } catch (error) {
@@ -406,6 +455,11 @@ export const useCartStore = create<CartState>(
                 cartItemId: string
             ) => {
                 try {
+                    console.log(
+                        'removeItemFromBackend cartId cartItemId',
+                        cartId,
+                        cartItemId
+                    );
                     const session = await getSession();
                     const authToken = session?.accessToken;
 
@@ -417,6 +471,10 @@ export const useCartStore = create<CartState>(
                                 'Content-Type': 'application/json',
                             },
                         }
+                    );
+                    console.log(
+                        'removeItemFromBackend removedItemResult',
+                        removedItemResult
                     );
 
                     return removedItemResult;
