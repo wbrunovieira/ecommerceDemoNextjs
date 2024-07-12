@@ -15,7 +15,9 @@ interface Product {
     length: number;
     weight: number;
     color?: string;
+    colorId?: string;
     size?: string;
+    sizeId?: string;
     hasVariants: boolean;
     productIdVariant?: string;
 }
@@ -37,6 +39,7 @@ interface CartItem {
     };
     props: {
         productId: string;
+
         quantity: number;
         productIdVariant?: string;
         hasVariants: boolean;
@@ -46,7 +49,9 @@ interface CartItem {
         length: number;
         weight: number;
         color?: string;
+        colorId?: string;
         size?: string;
+        sizeId?: string;
     };
 }
 
@@ -118,15 +123,15 @@ export interface ColorState {
     setSelectedColor: (color: Color | null) => void;
 }
 
-type MyPersistCart = (
-    config: StateCreator<CartState>,
-    options: PersistOptions<CartState>
-) => StateCreator<CartState>;
-
 type MyPersistFavorite = (
     config: StateCreator<FavoriteState>,
     options: PersistOptions<FavoriteState>
 ) => StateCreator<FavoriteState>;
+
+type MyPersistCart = (
+    config: StateCreator<CartState>,
+    options: PersistOptions<CartState>
+) => StateCreator<CartState>;
 
 export const useCartStore = create<CartState>(
     (persist as MyPersistCart)(
@@ -162,27 +167,37 @@ export const useCartStore = create<CartState>(
                 const { userId } = get();
 
                 if (userId) {
-                    const item = {
-                        id: product.id,
-                        productId: product.id,
-                        title: product.title,
-                        image: product.image,
-                        quantity: product.quantity,
-                        price: product.price,
-                        height: product.height,
-                        width: product.width,
-                        length: product.length,
-                        weight: product.weight,
-                        hasVariants: product.hasVariants,
-                        color: product.hasVariants ? product.color : undefined,
-                        size: product.hasVariants ? product.size : undefined,
-                        productIdVariant: product.hasVariants
-                            ? product.productIdVariant
-                            : undefined,
-                    };
+                    // const item = {
+                    //     id: product.id,
+                    //     productId: product.id,
+                    //     title: product.title,
+                    //     image: product.image,
+                    //     quantity: product.quantity,
+                    //     price: product.price,
+                    //     height: product.height,
+                    //     width: product.width,
+                    //     length: product.length,
+                    //     weight: product.weight,
+                    //     hasVariants: product.hasVariants,
+                    //     color: product.hasVariants
+                    //         ? product.color?.name
+                    //         : undefined,
+                    //     colorId: product.hasVariants
+                    //         ? product.color?.id
+                    //         : undefined,
+                    //     size: product.hasVariants
+                    //         ? product.size?.name
+                    //         : undefined,
+                    //     sizeId: product.hasVariants
+                    //         ? product.size?.id
+                    //         : undefined,
+                    //     productIdVariant: product.hasVariants
+                    //         ? product.productIdVariant
+                    //         : undefined,
+                    // };
                     const savedItem = await get().saveCartToBackend(
                         userId,
-                        item
+                        product
                     );
 
                     console.log('savedItem', savedItem);
@@ -347,10 +362,13 @@ export const useCartStore = create<CartState>(
                 );
                 const item = {
                     productId: product.id,
+
                     quantity: product.quantity,
                     price: product.price,
-                    color: product.color,
-                    size: product.size,
+                    colorId: product.colorId,
+
+                    sizeId: product.sizeId,
+
                     height: product.height,
                     hasVariants: product.hasVariants,
                     width: product.width,
@@ -394,13 +412,15 @@ export const useCartStore = create<CartState>(
                             }
                         );
 
+                        console.log('addItemResponse ', addItemResponse);
                         console.log(
                             'addItemResponse cartId',
-                            addItemResponse.data.cartId
+                            addItemResponse.data.props.cartId
                         );
+
                         console.log(
                             'addItemResponse.data.itemId',
-                            addItemResponse.data.itemId
+                            addItemResponse.data._id.value
                         );
 
                         return {

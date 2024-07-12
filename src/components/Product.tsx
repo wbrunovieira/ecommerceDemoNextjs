@@ -223,6 +223,7 @@ const Product: React.FC<ProductProps> = ({
             productIdVariant
         );
         const userId = session?.user?.id || null;
+
         if (hasVariants) {
             console.log(
                 'handleAddToCart hasVariants ',
@@ -248,7 +249,9 @@ const Product: React.FC<ProductProps> = ({
                                 length,
                                 weight,
                                 color: selectedColor?.name,
+                                colorId: selectedColor?.id,
                                 size: selectedSize?.name,
+                                sizeId: selectedSize?.id,
                                 hasVariants,
                                 productIdVariant,
                             },
