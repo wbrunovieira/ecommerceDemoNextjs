@@ -1,155 +1,156 @@
-import Image from "next/image";
-import { useSession } from "next-auth/react";
-import Button from "./Button";
+import Image from 'next/image';
+import { useSession } from 'next-auth/react';
+import Button from './Button';
 
-import { useCartStore } from "@/context/store";
+import { useCartStore } from '@/context/store';
 
 interface ProductCategory {
-  category: {
-    name: string;
-  };
+    category: {
+        name: string;
+    };
 }
 
 interface CardProps {
-  id: string;
-  title: string;
-  categories: ProductCategory[];
-  precoAntigo?: number;
-  precoNovo: number;
-  emPromocao?: boolean;
-  eNovidade?: boolean;
-  desconto?: number;
-  imageSRC?: string;
-  brandName?: string;
-  brandLogo?: string;
+    id: string;
+    title: string;
+    categories: ProductCategory[];
+    precoAntigo?: number;
+    precoNovo: number;
+    emPromocao?: boolean;
+    eNovidade?: boolean;
+    desconto?: number;
+    imageSRC?: string;
+    brandName?: string;
+    brandLogo?: string;
+    hasVariants: boolean;
 }
 
 interface ProductCart {
-  id: string;
-  quantity: number;
-  title: string;
-  image: string;
-  precoNovo: number;
+    id: string;
+    quantity: number;
+    title: string;
+    image: string;
+    precoNovo: number;
 }
 const Card: React.FC<CardProps> = ({
-  id,
-  title,
-  precoAntigo,
-  precoNovo,
-  emPromocao = false,
-  desconto,
-  imageSRC,
-  categories = [],
-  eNovidade,
-  brandName,
-
-  brandLogo,
+    id,
+    title,
+    precoAntigo,
+    precoNovo,
+    emPromocao = false,
+    desconto,
+    imageSRC,
+    categories = [],
+    eNovidade,
+    brandName,
+    hasVariants,
+    brandLogo,
 }) => {
-  const addToCart = useCartStore((state: any) => state.addToCart);
-  const { data: session } = useSession();
+    const addToCart = useCartStore((state: any) => state.addToCart);
+    const { data: session } = useSession();
+    console.log('hasVariants', hasVariants);
 
-  const handleAddToCart = (product: ProductCart) => {
-    
-    const userId = session?.user?.id || null;
-    addToCart(
-      {
-        id: product.id,
-        title: product.title,
-        quantity: 1,
-        image: validImageSRC,
-        price: product.precoNovo,
-      },
-      userId
-    );
-  };
-
-  const validImageSRC = imageSRC || "/images/foto1.jpg";
-  const formattedCategories = categories
-    .map((cat) => cat.category.name)
-    .join(", ");
-
-  return (
-    <div className="max-w-sm rounded-md shadow-lg bg-primaryLight dark:bg-dark-secondary-gradient m-2 h-96 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-400 ease-in-out">
-      <div className="relative overflow-hidden flex-shrink-0 rounded-md h-[200px]">
-        <Image
-          src={validImageSRC}
-          width={400}
-          height={300}
-          alt={title}
-          layout="responsive"
-          objectFit="fill"
-          objectPosition="center center"
-        />
-        {emPromocao && (
-          <div className="absolute promocao1 transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase">
-            PROMOÇÃO
-          </div>
-        )}
-        {eNovidade && (
-          <div className="absolute novidade transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase">
-            Novidade
-          </div>
-        )}
-        {desconto && (
-          <div className="relative">
-            <div className="absolute descont-badge rounded">{`${desconto}%`}</div>
-          </div>
-        )}
-      </div>
-      <div className="flex-1 px-6 py-4 flex flex-col justify-between">
-        <div>
-          <h3 className="font-regular text-xs text-primary">
-            {formattedCategories}
-          </h3>
-          <h2 className="semibold text-xl mb-2 text-fontColor dark:text-darkFontColor">
-            {title}
-          </h2>
-          <p className="text-gray-700 text-sm font-bold text-fontColor dark:text-dark ">
-            {precoAntigo && (
-              <span className="line-through mr-2 font-extralight">
-                R${precoAntigo.toFixed(2)}
-              </span>
-            )}
-            <span className="text-primaryDark dark:text-dark FontColor">
-              R${precoNovo.toFixed(2)}
-            </span>
-          </p>
-        </div>
-        <div className="pb-2 mt-2">
-          <Button
-            variant="secondary"
-            size="small"
-            onClick={(e) => {
-              e.preventDefault();
-              handleAddToCart({
-                id,
-                title,
+    const handleAddToCart = (product: ProductCart) => {
+        const userId = session?.user?.id || null;
+        addToCart(
+            {
+                id: product.id,
+                title: product.title,
                 quantity: 1,
                 image: validImageSRC,
-                precoNovo,
-              });
-            }}
-          >
-            Saber mais
-          </Button>
+                price: product.precoNovo,
+            },
+            userId
+        );
+    };
+
+    const validImageSRC = imageSRC || '/images/foto1.jpg';
+    const formattedCategories = categories
+        .map((cat) => cat.category.name)
+        .join(', ');
+
+    return (
+        <div className="max-w-sm rounded-md shadow-lg bg-primaryLight dark:bg-dark-secondary-gradient m-2 h-96 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-400 ease-in-out">
+            <div className="relative overflow-hidden flex-shrink-0 rounded-md h-[200px]">
+                <Image
+                    src={validImageSRC}
+                    width={400}
+                    height={300}
+                    alt={title}
+                    layout="responsive"
+                    objectFit="fill"
+                    objectPosition="center center"
+                />
+                {emPromocao && (
+                    <div className="absolute promocao1 transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase">
+                        PROMOÇÃO
+                    </div>
+                )}
+                {eNovidade && (
+                    <div className="absolute novidade transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase">
+                        Novidade
+                    </div>
+                )}
+                {desconto && (
+                    <div className="relative">
+                        <div className="absolute descont-badge rounded">{`${desconto}%`}</div>
+                    </div>
+                )}
+            </div>
+            <div className="flex-1 px-6 py-4 flex flex-col justify-between">
+                <div>
+                    <h3 className="font-regular text-xs text-primary">
+                        {formattedCategories}
+                    </h3>
+                    <h2 className="semibold text-xl mb-2 text-fontColor dark:text-darkFontColor">
+                        {title}
+                    </h2>
+                    <p className="text-gray-700 text-sm font-bold text-fontColor dark:text-dark ">
+                        {precoAntigo && (
+                            <span className="line-through mr-2 font-extralight">
+                                R${precoAntigo.toFixed(2)}
+                            </span>
+                        )}
+                        <span className="text-primaryDark dark:text-dark FontColor">
+                            R${precoNovo.toFixed(2)}
+                        </span>
+                    </p>
+                </div>
+                <div className="pb-2 mt-2">
+                    <Button
+                        variant="secondary"
+                        size="small"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleAddToCart({
+                                id,
+                                title,
+                                quantity: 1,
+                                image: validImageSRC,
+                                precoNovo,
+                            });
+                        }}
+                    >
+                        {hasVariants ? 'Saber mais' : 'Comprar'}
+                    </Button>
+                </div>
+                {brandName && brandLogo && (
+                    <div className="flex items-center mt-4">
+                        <Image
+                            src={brandLogo}
+                            width={20}
+                            height={20}
+                            alt={brandName}
+                            className="mr-2"
+                        />
+                        <span className="text-xs text-gray-600 dark:text-darkFontColor">
+                            {brandName}
+                        </span>
+                    </div>
+                )}
+            </div>
         </div>
-        {brandName && brandLogo && (
-          <div className="flex items-center mt-4">
-            <Image
-              src={brandLogo}
-              width={20}
-              height={20}
-              alt={brandName}
-              className="mr-2"
-            />
-            <span className="text-xs text-gray-600 dark:text-darkFontColor">
-              {brandName}
-            </span>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Card;
