@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import Button from './Button';
+import Link from 'next/link';
 
 import { useCartStore } from '@/context/store';
 
@@ -23,6 +24,7 @@ interface CardProps {
     brandName?: string;
     brandLogo?: string;
     hasVariants: boolean;
+    slug: string;
 }
 
 interface ProductCart {
@@ -45,10 +47,10 @@ const Card: React.FC<CardProps> = ({
     brandName,
     hasVariants,
     brandLogo,
+    slug,
 }) => {
     const addToCart = useCartStore((state: any) => state.addToCart);
     const { data: session } = useSession();
-    console.log('hasVariants', hasVariants);
 
     const handleAddToCart = (product: ProductCart) => {
         const userId = session?.user?.id || null;
@@ -117,22 +119,30 @@ const Card: React.FC<CardProps> = ({
                     </p>
                 </div>
                 <div className="pb-2 mt-2">
-                    <Button
-                        variant="secondary"
-                        size="small"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            handleAddToCart({
-                                id,
-                                title,
-                                quantity: 1,
-                                image: validImageSRC,
-                                precoNovo,
-                            });
-                        }}
-                    >
-                        {hasVariants ? 'Saber mais' : 'Comprar'}
-                    </Button>
+                    {hasVariants ? (
+                        <Link href={`/product/${slug}`} passHref>
+                            <Button variant="secondary" size="small">
+                                Saber mais
+                            </Button>
+                        </Link>
+                    ) : (
+                        <Button
+                            variant="secondary"
+                            size="small"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleAddToCart({
+                                    id,
+                                    title,
+                                    quantity: 1,
+                                    image: validImageSRC,
+                                    precoNovo,
+                                });
+                            }}
+                        >
+                            {hasVariants ? 'Saber mais' : 'Comprar'}
+                        </Button>
+                    )}
                 </div>
                 {brandName && brandLogo && (
                     <div className="flex items-center mt-4">

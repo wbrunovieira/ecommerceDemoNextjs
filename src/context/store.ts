@@ -20,6 +20,7 @@ interface Product {
     sizeId?: string;
     hasVariants: boolean;
     productIdVariant?: string;
+    _id?: { value: string };
 }
 
 export interface Color {
@@ -33,10 +34,11 @@ export interface Size {
     name: string;
 }
 
-interface CartItem {
+interface CartItem extends Product {
     _id: {
         value: string;
     };
+    cartId?: string;
     props: {
         productId: string;
 
@@ -72,6 +74,7 @@ interface SaveCartResponse {
 
 interface CartState {
     cartItems: Product[];
+    cartId?: string | null;
     userId?: string | null;
     addToCart: (product: Product, userId?: string) => void;
     removeFromCart: (cartId: string, cartItemId: string) => void;
@@ -140,61 +143,54 @@ export const useCartStore = create<CartState>(
             userId: null,
 
             addToCart: async (product: Product) => {
-                set((state) => {
-                    const index = state.cartItems.findIndex(
-                        (item) => item.id === product.id
-                    );
+                // set((state) => {
+                //     const index = state.cartItems.findIndex(
+                //         (item) => item.id === product.id
+                //     );
 
-                    if (index !== -1) {
-                        let newCartItems = [...state.cartItems];
-                        newCartItems[index] = {
-                            ...newCartItems[index],
-                            quantity:
-                                newCartItems[index].quantity + product.quantity,
-                        };
-                        return {
-                            cartItems: newCartItems,
-                            userId: state.userId || null,
-                        };
-                    }
+                //     if (index !== -1) {
+                //         let newCartItems = [...state.cartItems];
+                //         newCartItems[index] = {
+                //             ...newCartItems[index],
+                //             quantity:
+                //                 newCartItems[index].quantity + product.quantity,
+                //         };
+                //         return {
+                //             cartItems: newCartItems,
+                //             userId: state.userId || null,
+                //         };
+                //     }
 
-                    return {
+                //     return {
+                //         cartItems: [...state.cartItems, product],
+                //         userId: state.userId || null,
+                //     };
+                // });
+
+                const existingItem = get().cartItems.find(
+                    (item) => item.id === product.id
+                );
+                if (existingItem) {
+                    set((state) => ({
+                        cartItems: state.cartItems.map((item) =>
+                            item.id === product.id
+                                ? {
+                                      ...item,
+                                      quantity:
+                                          item.quantity + product.quantity,
+                                  }
+                                : item
+                        ),
+                    }));
+                } else {
+                    set((state) => ({
                         cartItems: [...state.cartItems, product],
-                        userId: state.userId || null,
-                    };
-                });
+                    }));
+                }
 
                 const { userId } = get();
 
                 if (userId) {
-                    // const item = {
-                    //     id: product.id,
-                    //     productId: product.id,
-                    //     title: product.title,
-                    //     image: product.image,
-                    //     quantity: product.quantity,
-                    //     price: product.price,
-                    //     height: product.height,
-                    //     width: product.width,
-                    //     length: product.length,
-                    //     weight: product.weight,
-                    //     hasVariants: product.hasVariants,
-                    //     color: product.hasVariants
-                    //         ? product.color?.name
-                    //         : undefined,
-                    //     colorId: product.hasVariants
-                    //         ? product.color?.id
-                    //         : undefined,
-                    //     size: product.hasVariants
-                    //         ? product.size?.name
-                    //         : undefined,
-                    //     sizeId: product.hasVariants
-                    //         ? product.size?.id
-                    //         : undefined,
-                    //     productIdVariant: product.hasVariants
-                    //         ? product.productIdVariant
-                    //         : undefined,
-                    // };
                     const savedItem = await get().saveCartToBackend(
                         userId,
                         product
@@ -202,62 +198,85 @@ export const useCartStore = create<CartState>(
 
                     console.log('savedItem', savedItem);
 
-                    set((state) => {
-                        const updatedCartItems = state.cartItems.map((item) =>
+                    // set((state) => {
+                    //     const updatedCartItems = state.cartItems.map((item) =>
+                    //         item.id === item.id
+                    //             ? {
+                    //                   ...item,
+                    //                   _id: { value: savedItem.cartItemId },
+                    //                   cartId: savedItem.cartId,
+                    //                   colorId: product.colorId,
+                    //                   sizeId: product.sizeId,
+                    //                   height: product.height,
+                    //                   width: product.width,
+                    //                   length: product.length,
+                    //                   weight: product.weight,
+                    //                   hasVariants: product.hasVariants,
+                    //                   productIdVariant:
+                    //                       product.productIdVariant,
+                    //               }
+                    //             : item
+                    //     );
+                    //     console.log('updatedCartItems', updatedCartItems);
+                    //     console.log('savedItem.cartId', savedItem.cartId);
+                    //     console.log(
+                    //         'cartItemId.cartItemId)',
+                    //         savedItem.cartItemId
+                    //     );
+                    //     console.log('savedItem 2 cartId', savedItem.cartId);
+                    //     return {
+                    //         cartItems: updatedCartItems,
+
+                    //         cartId: savedItem.cartId,
+                    //     };
+                    // });
+                    set((state) => ({
+                        cartItems: state.cartItems.map((item) =>
                             item.id === product.id
                                 ? {
                                       ...item,
                                       _id: { value: savedItem.cartItemId },
+                                      cartId: savedItem.cartId,
                                   }
                                 : item
-                        );
-                        console.log('updatedCartItems', updatedCartItems);
-                        console.log('savedItem', savedItem.cartId);
-                        return {
-                            cartItems: updatedCartItems,
-                            cartId: savedItem.cartId,
-                        };
-                    });
+                        ),
+                        cartId: savedItem.cartId,
+                    }));
                 }
             },
 
-            removeFromCart: async (cartId: string, cartItemId: string) => {
-                console.log('removeFromCart inicio cartId', cartId);
-                console.log('removeFromCart inicio cartItemId', cartItemId);
-                const { userId } = get();
+            removeFromCart: async (productId: string) => {
+                console.log('removeFromCart inicio productId', productId);
+                const { userId, cartItems, cartId } = get();
+
+                const itemToRemove = cartItems.find(
+                    (item) => item.id === productId
+                );
+                const cartItemId = itemToRemove?._id?.value;
+                console.log('removeFromCart cartItemId', cartItemId);
+                console.log('removeFromCart itemToRemove', itemToRemove);
 
                 if (!cartItemId) {
-                    console.error('cartItemId is undefined');
+                    console.error('cartItemId not found in cart');
+                    return;
+                }
+                if (!cartId) {
+                    console.error('cartId not found in cart');
                     return;
                 }
 
                 if (userId) {
                     try {
-                        const cartResult = await get().fetchCart(userId);
+                        get().removeItemFromBackend(cartId, cartItemId);
 
-                        console.log('removeFromCart cartResult', cartResult);
-
-                        const cartItem = cartResult?.props.items.find(
-                            (item) => item._id.value === cartItemId
+                        set((state) => ({
+                            cartItems: state.cartItems.filter(
+                                (item) => item.id !== productId
+                            ),
+                        }));
+                        console.log(
+                            `Item ${cartItemId} removed from cart and backend for user ${userId}`
                         );
-                        console.log('removeFromCart cartItem', cartItem);
-                        if (cartItem) {
-                            await get().removeItemFromBackend(
-                                cartId,
-                                cartItemId
-                            );
-                            set((state) => ({
-                                cartItems: state.cartItems.filter(
-                                    (item) =>
-                                        item.id !== cartItem.props.productId
-                                ),
-                            }));
-                            console.log(
-                                `Item ${cartItemId} removed from cart and backend for user ${userId}`
-                            );
-                        } else {
-                            console.error('Cart item not found');
-                        }
                     } catch (error) {
                         console.error(
                             'Error removing item from backend:',
@@ -362,7 +381,7 @@ export const useCartStore = create<CartState>(
                 );
                 const item = {
                     productId: product.id,
-                    cartId:'undefined',
+                    cartId: 'undefined',
                     quantity: product.quantity,
                     price: product.price,
                     colorId: product.colorId,
@@ -424,7 +443,7 @@ export const useCartStore = create<CartState>(
                         );
 
                         return {
-                            cartId: existsResponse.data.cartId,
+                            cartId: addItemResponse.data.props.cartId,
                             cartItemId: addItemResponse.data._id.value,
                         };
                     } else {
@@ -476,10 +495,11 @@ export const useCartStore = create<CartState>(
             ) => {
                 try {
                     console.log(
-                        'removeItemFromBackend cartId cartItemId',
+                        'removeItemFromBackend inicio cartId cartItemId',
                         cartId,
                         cartItemId
                     );
+
                     const session = await getSession();
                     const authToken = session?.accessToken;
 
