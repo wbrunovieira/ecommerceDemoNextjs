@@ -25,6 +25,11 @@ interface CardProps {
     brandLogo?: string;
     hasVariants: boolean;
     slug: string;
+
+    height: number;
+    width: number;
+    length: number;
+    weight: number;
 }
 
 interface ProductCart {
@@ -33,11 +38,17 @@ interface ProductCart {
     title: string;
     image: string;
     precoNovo: number;
+    hasVariants: boolean;
+    height: number;
+    width: number;
+    length: number;
+    weight: number;
 }
 const Card: React.FC<CardProps> = ({
     id,
     title,
     precoAntigo,
+
     precoNovo,
     emPromocao = false,
     desconto,
@@ -48,19 +59,42 @@ const Card: React.FC<CardProps> = ({
     hasVariants,
     brandLogo,
     slug,
+    height,
+    length,
+    weight,
+    width,
 }) => {
     const addToCart = useCartStore((state: any) => state.addToCart);
     const { data: session } = useSession();
 
+    // const handleAddToCart = (product: ProductCart) => {
+    //     const userId = session?.user?.id || null;
+    //     addToCart(
+    //         {
+    //             id: product.id,
+    //             title: product.title,
+    //             quantity: 1,
+    //             image: validImageSRC,
+    //             price: product.precoNovo,
+    //         },
+    //         userId
+    //     );
+    // };
     const handleAddToCart = (product: ProductCart) => {
         const userId = session?.user?.id || null;
+
         addToCart(
             {
                 id: product.id,
-                title: product.title,
                 quantity: 1,
+                title,
                 image: validImageSRC,
                 price: product.precoNovo,
+                height: product.height,
+                width: product.width,
+                length: product.length,
+                weight: product.weight,
+                hasVariants: product.hasVariants,
             },
             userId
         );
@@ -137,6 +171,11 @@ const Card: React.FC<CardProps> = ({
                                     quantity: 1,
                                     image: validImageSRC,
                                     precoNovo,
+                                    height,
+                                    width,
+                                    length,
+                                    weight,
+                                    hasVariants,
                                 });
                             }}
                         >

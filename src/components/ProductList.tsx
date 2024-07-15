@@ -24,6 +24,10 @@ interface Produto {
     discount: number;
     images: string[];
     finalPrice: number;
+    height: number;
+    width: number;
+    length: number;
+    weight: number;
     brand: {
         name: string;
         imageUrl: string;
@@ -72,6 +76,11 @@ const ProductList = () => {
                         eNovidade={produto.isNew}
                         brandName={produto.brand.name}
                         brandLogo={produto.brand.imageUrl}
+                        slug={produto.slug}
+                        height={produto.height}
+                        width={produto.width}
+                        length={produto.length}
+                        weight={produto.weight}
                     />
                 </Link>
             ))}
