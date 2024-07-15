@@ -140,6 +140,7 @@ const FilteredResults: NextPage = () => {
                 description: product.props.description,
                 price: product.props.price,
                 slug: product.props.slug.value,
+                hasVariants: product.props.hasVariants,
                 finalPrice: product.props.finalPrice,
                 onSale: product.props.onSale,
                 isNew: product.props.isNew,

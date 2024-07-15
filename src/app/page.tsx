@@ -1,14 +1,11 @@
 import { NextPage } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 
 import Container from '@/components/Container';
 import Sidebar from '@/components/SideBar';
 import ProductList from '@/components/ProductList';
 import { ImagesSlider } from '@/components/ui/images-slider';
-
-
 
 interface Category {
     id: string;
@@ -149,20 +146,6 @@ const Home: NextPage<HomeProps> = () => {
     );
 };
 
-Home.getInitialProps = async () => {
-    const res = await fetch(
-        `${process.env.BASE_URL}/category/all?page=1&pageSize=10`
-    );
-    const data = await res.json();
 
-    const initialCategories = data.categories.map((category: any) => ({
-        id: category.id,
-        name: category.name,
-        slug: category.slug || '/default-image.png',
-        imageUrl: category.imageUrl || '/default-image.png',
-    }));
-
-    return { initialCategories };
-};
 
 export default Home;

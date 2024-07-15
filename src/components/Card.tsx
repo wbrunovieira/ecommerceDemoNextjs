@@ -187,7 +187,7 @@ const Card: React.FC<CardProps> = ({
                             width={20}
                             height={20}
                             alt={brandName}
-                            className="mr-2"
+                            className="mr-2 object-contain w-5 h-5"
                         />
                         <span className="text-xs text-gray-600 dark:text-darkFontColor">
                             {brandName}

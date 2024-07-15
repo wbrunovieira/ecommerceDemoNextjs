@@ -1,4 +1,4 @@
-import { BsInstagram, BsFacebook, BsTiktok } from 'react-icons/bs';
+
 
 import Logo from '/public/images/LogoStylos.svg';
 import Home from '/public/icons/home.svg';
@@ -47,11 +47,7 @@ const Header = () => {
 
                 <div className="flex justify-center search">
                     <SearchBox />
-                    {/* <PlaceholdersAndVanishInput
-            placeholders={["Pesquisar...", "Buscar produtos...", "O que você procura?"]}
-            onChange={(e) => setQuery(e.target.value)}
-            onSubmit={handleSearch}
-          /> */}
+          
                 </div>
                 <div className="flex justify-end gap-4 right">
                     <LogginButton />

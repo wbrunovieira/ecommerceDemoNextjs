@@ -1,13 +1,14 @@
 'use client';
 import { useCartStore } from '@/context/store';
 import Image from 'next/image';
-import Link from 'next/link';
+
 import { useSession } from 'next-auth/react';
 import { BsTrash, BsPlus, BsDash } from 'react-icons/bs';
 import { useEffect, useState } from 'react';
 import { useToast } from './ui/use-toast';
 
 import { useRouter } from 'next/navigation';
+import AddressModal from './AddressModal';
 
 interface FloatCartProps {
     onClose: () => void;
@@ -23,8 +24,28 @@ interface Product {
     size?: string;
 }
 
+interface Address {
+    _id: {
+        value: string;
+    };
+    props: {
+        userId: string;
+        street: string;
+        number: number;
+        complement?: string;
+        city: string;
+        state: string;
+        country: string;
+        zipCode: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+}
+
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     const [clickedTrash, setClickedTrash] = useState<string | null>(null);
+    const [showAddressModal, setShowAddressModal] = useState(false);
+    const [addresses, setAddresses] = useState<Address[]>([]);
 
     const cartItems = useCartStore((state: any) => state.cartItems);
     const removeFromCart = useCartStore((state: any) => state.removeFromCart);
@@ -35,6 +56,30 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     const { toast } = useToast();
     const setUser = useCartStore((state) => state.setUser);
     const initializeCart = useCartStore((state: any) => state.initializeCart);
+
+    const fetchAddresses = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:3333/adress/by-user-id?userId=${session?.user?.id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session?.accessToken}`,
+                    },
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                setAddresses(data.addresses);
+            } else {
+                console.error('Failed to fetch addresses');
+            }
+        } catch (error) {
+            console.error('Error fetching addresses', error);
+        }
+    };
 
     const handleClickOutside = (event: React.MouseEvent) => {
         if (
@@ -62,7 +107,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         setClickedTrash(null);
     };
 
-    const handleCheckout = () => {
+    const handleCheckout = async () => {
         if (!session) {
             toast({
                 title: 'Necessário login',
@@ -72,7 +117,34 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             });
             router.push('/login');
         } else {
-            router.push('/cart');
+            await fetchAddresses();
+            setShowAddressModal(true);
+        }
+    };
+    const handleAddNewAddress = async (address: Partial<Address['props']>) => {
+        try {
+            const url = `http://localhost:3333/adress/${session?.user?.id}/addresses`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${session?.accessToken}`,
+                },
+                body: JSON.stringify({
+                    ...address,
+                    userId: session?.user?.id,
+                }),
+            });
+
+            if (response.ok) {
+                await fetchAddresses();
+                setShowAddressModal(false);
+                router.push('/cart');
+            } else {
+                console.error('Failed to create address');
+            }
+        } catch (error) {
+            console.error('Error creating address', error);
         }
     };
 
@@ -80,8 +152,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         const initializeUserCart = async () => {
             if (session?.user?.id) {
                 setUser(session.user.id);
-            const cartini = await initializeCart([], session.user.id);
-            console.log('initializeUserCart no float cartini',cartini)
+                const cartini = await initializeCart([], session.user.id);
+                console.log('initializeUserCart no float cartini', cartini);
             }
         };
         initializeUserCart();
@@ -202,6 +274,17 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                     </button>
                 </div>
             </div>
+            {showAddressModal && (
+                <AddressModal
+                    addresses={addresses}
+                    onClose={() => setShowAddressModal(false)}
+                    onConfirm={() => {
+                        setShowAddressModal(false);
+                        router.push('/cart');
+                    }}
+                    onAddNewAddress={handleAddNewAddress}
+                />
+            )}
         </div>
     );
 };
