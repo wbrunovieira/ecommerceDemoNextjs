@@ -1,7 +1,42 @@
 import { StateCreator, create } from 'zustand';
 import { persist, PersistOptions } from 'zustand/middleware';
 import { getSession } from 'next-auth/react';
+import debounce from 'lodash.debounce';
 import axios from 'axios';
+
+// const debounceUpdateQuantity = debounce(
+//     async (
+//         userId: string,
+//         cartId: string,
+//         itemId: string,
+//         quantity: number
+//     ) => {
+//         if (!userId || !cartId || !itemId) {
+//             console.error('Missing parameters for debounceUpdateQuantity');
+//             return;
+//         }
+//         try {
+//             const session = await getSession();
+//             const authToken = session?.accessToken;
+
+//             const response = await axios.patch(
+//                 `http://localhost:3333/cart/${userId}/item/${itemId}`,
+//                 { quantity },
+//                 {
+//                     headers: {
+//                         Authorization: `Bearer ${authToken}`,
+//                         'Content-Type': 'application/json',
+//                     },
+//                 }
+//             );
+
+//             return response.data.cart;
+//         } catch (error) {
+//             console.error('Error updating item quantity in backend:', error);
+//         }
+//     },
+//     1500
+// );
 
 interface Product {
     id: string;
@@ -143,30 +178,6 @@ export const useCartStore = create<CartState>(
             userId: null,
 
             addToCart: async (product: Product) => {
-                // set((state) => {
-                //     const index = state.cartItems.findIndex(
-                //         (item) => item.id === product.id
-                //     );
-
-                //     if (index !== -1) {
-                //         let newCartItems = [...state.cartItems];
-                //         newCartItems[index] = {
-                //             ...newCartItems[index],
-                //             quantity:
-                //                 newCartItems[index].quantity + product.quantity,
-                //         };
-                //         return {
-                //             cartItems: newCartItems,
-                //             userId: state.userId || null,
-                //         };
-                //     }
-
-                //     return {
-                //         cartItems: [...state.cartItems, product],
-                //         userId: state.userId || null,
-                //     };
-                // });
-
                 const existingItem = get().cartItems.find(
                     (item) => item.id === product.id
                 );
@@ -198,38 +209,6 @@ export const useCartStore = create<CartState>(
 
                     console.log('savedItem', savedItem);
 
-                    // set((state) => {
-                    //     const updatedCartItems = state.cartItems.map((item) =>
-                    //         item.id === item.id
-                    //             ? {
-                    //                   ...item,
-                    //                   _id: { value: savedItem.cartItemId },
-                    //                   cartId: savedItem.cartId,
-                    //                   colorId: product.colorId,
-                    //                   sizeId: product.sizeId,
-                    //                   height: product.height,
-                    //                   width: product.width,
-                    //                   length: product.length,
-                    //                   weight: product.weight,
-                    //                   hasVariants: product.hasVariants,
-                    //                   productIdVariant:
-                    //                       product.productIdVariant,
-                    //               }
-                    //             : item
-                    //     );
-                    //     console.log('updatedCartItems', updatedCartItems);
-                    //     console.log('savedItem.cartId', savedItem.cartId);
-                    //     console.log(
-                    //         'cartItemId.cartItemId)',
-                    //         savedItem.cartItemId
-                    //     );
-                    //     console.log('savedItem 2 cartId', savedItem.cartId);
-                    //     return {
-                    //         cartItems: updatedCartItems,
-
-                    //         cartId: savedItem.cartId,
-                    //     };
-                    // });
                     set((state) => ({
                         cartItems: state.cartItems.map((item) =>
                             item.id === product.id
@@ -326,34 +305,76 @@ export const useCartStore = create<CartState>(
                 productId: string,
                 amount: number,
                 userId?: string
-            ) =>
-                set((state: CartState) => {
-                    if (userId && state.userId && state.userId !== userId)
-                        return state;
-                    const index = state.cartItems.findIndex(
-                        (item) => item.id === productId
-                    );
+            ) => {
+                const { cartId, cartItems, userId: stateUserId } = get();
+                const actualUserId = userId || stateUserId;
 
-                    if (index !== -1) {
-                        let newQuantity =
-                            state.cartItems[index].quantity + amount;
-                        if (newQuantity <= 0) {
+                if (!actualUserId || !cartId) return;
+
+                const index = cartItems.findIndex(
+                    (item) => item.id === productId
+                );
+
+                if (index !== -1) {
+                    const currentItem = cartItems[index];
+                    const newQuantity = currentItem.quantity + amount;
+
+                    if (currentItem._id && currentItem._id.value) {
+                        const itemId = currentItem._id.value;
+                        set((state) => {
+                            const newCartItems = state.cartItems.map((item) =>
+                                item.id === productId
+                                    ? { ...item, quantity: newQuantity }
+                                    : item
+                            );
                             return {
-                                cartItems: state.cartItems.filter(
-                                    (item) => item.id !== productId
-                                ),
+                                cartItems: newCartItems,
                             };
-                        } else {
-                            let newCartItems = [...state.cartItems];
-                            newCartItems[index] = {
-                                ...newCartItems[index],
-                                quantity: newQuantity,
-                            };
-                            return { cartItems: newCartItems };
+                        });
+
+                        if (!actualUserId && !cartId && !itemId ) {
+                              console.error('cartItemId not found in cart');
+                    return;
+
                         }
+
+                        // if (actualUserId && cartId && itemId && newQuantity) {
+                        //     debounceUpdateQuantity(
+                        //         actualUserId,
+                        //         cartId,
+                        //         itemId,
+                        //         newQuantity
+                        //     )
+                        //         .then((updatedCart) => {
+                        //             if (updatedCart) {
+                        //                 const newCartItems =
+                        //                     updatedCart.items.map(
+                        //                         (item: any) => ({
+                        //                             ...item.props,
+                        //                             id: item.props.productId,
+                        //                             _id: { value: item.id },
+                        //                             cartId: item.cartId,
+                        //                         })
+                        //                     );
+
+                        //                 set({
+                        //                     cartItems: newCartItems,
+                        //                     cartId: updatedCart.id,
+                        //                 });
+                        //             }
+                        //         })
+                        //         .catch((error) => {
+                        //             console.error(
+                        //                 'Error updating cart state:',
+                        //                 error
+                        //             );
+                        //         });
+                        // }
+                    } else {
+                        console.error('Cart item ID is missing');
                     }
-                    return state;
-                }),
+                }
+            },
 
             initializeCart: (products: Product[], userId?: string) =>
                 set((state: CartState) => {
