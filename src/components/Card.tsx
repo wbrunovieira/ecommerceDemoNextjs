@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import Button from './Button';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { useCartStore } from '@/context/store';
 
@@ -30,6 +30,7 @@ interface CardProps {
     width: number;
     length: number;
     weight: number;
+    onButtonClick: () => void;
 }
 
 interface ProductCart {
@@ -63,23 +64,16 @@ const Card: React.FC<CardProps> = ({
     length,
     weight,
     width,
+    onButtonClick,
 }) => {
     const addToCart = useCartStore((state: any) => state.addToCart);
     const { data: session } = useSession();
+    const router = useRouter();
 
-    // const handleAddToCart = (product: ProductCart) => {
-    //     const userId = session?.user?.id || null;
-    //     addToCart(
-    //         {
-    //             id: product.id,
-    //             title: product.title,
-    //             quantity: 1,
-    //             image: validImageSRC,
-    //             price: product.precoNovo,
-    //         },
-    //         userId
-    //     );
-    // };
+    const handleButtonClick = (slug: string) => {
+        router.push(`/product/${slug}`);
+    };
+
     const handleAddToCart = (product: ProductCart) => {
         const userId = session?.user?.id || null;
 
@@ -113,9 +107,10 @@ const Card: React.FC<CardProps> = ({
                     width={400}
                     height={300}
                     alt={title}
-                    layout="responsive"
-                    objectFit="fill"
-                    objectPosition="center center"
+                    style={{
+                        objectFit: 'fill',
+                        objectPosition: 'center center',
+                    }}
                 />
                 {emPromocao && (
                     <div className="absolute promocao1 transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase">
@@ -154,11 +149,13 @@ const Card: React.FC<CardProps> = ({
                 </div>
                 <div className="pb-2 mt-2">
                     {hasVariants ? (
-                        <Link href={`/product/${slug}`} passHref>
-                            <Button variant="secondary" size="small">
-                                Saber mais
-                            </Button>
-                        </Link>
+                        <Button
+                            variant="secondary"
+                            size="small"
+                            onClick={onButtonClick}
+                        >
+                            Saber mais
+                        </Button>
                     ) : (
                         <Button
                             variant="secondary"

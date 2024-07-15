@@ -4,11 +4,20 @@ import { FaUserAlt } from "react-icons/fa";
 import { FiLogOut } from 'react-icons/fi';
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const LogginButton = () => {
 
   const { data: session, status } = useSession();
+  const [isClient, setIsClient] = useState(false);
 
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  if (!isClient) {
+    return <div className="text-xs">...</div>;
+  }
 
   if (status === "loading") {
     return <div className="text-xs">...</div>;
@@ -16,7 +25,7 @@ const LogginButton = () => {
 
   if (session && session.user) {
     const userName = session.user?.name;
-    let id = session.user?.id;
+    
 
     return (
       <div className="flex items-center gap-2 ">

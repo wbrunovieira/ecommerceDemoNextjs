@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 
 import Card from './Card';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface ProductCategory {
     category: {
@@ -36,6 +37,10 @@ interface Produto {
 
 const ProductList = () => {
     const [produtos, setProdutos] = useState<Produto[]>([]);
+    const router = useRouter();
+    const handleButtonClick = (slug: string) => {
+        router.push(`/product/${slug}`);
+    };
 
     useEffect(() => {
         const fetchProdutos = async () => {
@@ -81,6 +86,7 @@ const ProductList = () => {
                         width={produto.width}
                         length={produto.length}
                         weight={produto.weight}
+                        onButtonClick={() => handleButtonClick(produto.slug)}
                     />
                 </Link>
             ))}

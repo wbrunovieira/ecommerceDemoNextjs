@@ -332,10 +332,9 @@ export const useCartStore = create<CartState>(
                             };
                         });
 
-                        if (!actualUserId && !cartId && !itemId ) {
-                              console.error('cartItemId not found in cart');
-                    return;
-
+                        if (!actualUserId && !cartId && !itemId) {
+                            console.error('cartItemId not found in cart');
+                            return;
                         }
 
                         // if (actualUserId && cartId && itemId && newQuantity) {
@@ -376,15 +375,31 @@ export const useCartStore = create<CartState>(
                 }
             },
 
-            initializeCart: (products: Product[], userId?: string) =>
-                set((state: CartState) => {
-                    if (userId && state.userId && state.userId !== userId)
-                        return state;
-                    return {
-                        cartItems: products,
-                        userId: userId || state.userId || null,
-                    };
-                }),
+            initializeCart: async (products: Product[], userId?: string) => {
+                if (userId) {
+                    const fetchedCart = await get().fetchCart(userId);
+                    if (fetchedCart) {
+                        const items = fetchedCart.props.items.map(
+                            (item: any) => ({
+                                ...item.props,
+                                id: item.props.productId,
+                                _id: { value: item._id.value },
+                                cartId: fetchedCart._id.value,
+                            })
+                        );
+                        set({
+                            cartItems: items,
+                            cartId: fetchedCart._id.value,
+                            userId,
+                        });
+                        return;
+                    }
+                }
+                set({
+                    cartItems: products,
+                    userId: userId || get().userId || null,
+                });
+            },
 
             setUser: (userId: string) =>
                 set((state: CartState) => ({

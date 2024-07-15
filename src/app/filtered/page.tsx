@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
 import { CardS, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
@@ -63,6 +64,11 @@ interface Product {
     brandId: string;
     brandName: string;
     brandUrl: string;
+    height: number;
+    width: number;
+    length: number;
+    weight: number;
+    hasVariants: boolean;
 }
 
 const FilteredResults: NextPage = () => {
@@ -80,6 +86,8 @@ const FilteredResults: NextPage = () => {
     const [allProducts, setAllProducts] = useState<Product[]>([]);
     const [initialLoad, setInitialLoad] = useState(true);
     const [filterName, setFilterName] = useState('');
+
+    const router = useRouter();
 
     const [sortType, setSortType] = useState<string>('');
 
@@ -114,6 +122,10 @@ const FilteredResults: NextPage = () => {
 
     gsap.registerPlugin(useGSAP);
 
+    const handleButtonClick = (slug: string) => {
+        router.push(`/product/${slug}`);
+    };
+
     const fetchProducts = async (url: string) => {
         try {
             const response = await fetch(url);
@@ -121,7 +133,6 @@ const FilteredResults: NextPage = () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-           
 
             const mappedProducts = data.map((product: any) => ({
                 id: product._id?.value,
@@ -154,7 +165,6 @@ const FilteredResults: NextPage = () => {
                 brandUrl: product.props.brandUrl,
             }));
 
-         
             setAllProducts(mappedProducts);
             setProducts(mappedProducts);
             setInitialLoad(false);
@@ -213,12 +223,10 @@ const FilteredResults: NextPage = () => {
         if (!initialLoad) {
             const filterProducts = () => {
                 let filteredProducts = allProducts;
-          
 
                 if (selectedCategory) {
                     filteredProducts = filteredProducts.filter((product) =>
                         product.productCategories.some((cat) => {
-           
                             return cat.category.id.value === selectedCategory;
                         })
                     );
@@ -233,7 +241,6 @@ const FilteredResults: NextPage = () => {
                 if (selectedColor) {
                     filteredProducts = filteredProducts.filter((product) =>
                         product.productColors.some((cat) => {
-                         
                             return cat.color.id.value === selectedColor.id;
                         })
                     );
@@ -258,7 +265,6 @@ const FilteredResults: NextPage = () => {
                 // Apply sorting
                 filteredProducts = sortProducts(filteredProducts, sortType);
 
-              
                 setProducts(filteredProducts);
             };
 
@@ -297,7 +303,7 @@ const FilteredResults: NextPage = () => {
                     size
                 )}`
             );
-            setSelectedSize(size as Size);
+            setSelectedSize({ id: size, name: size });
         } else if (minPrice && maxPrice) {
             fetchProducts(
                 `http://localhost:3333/products/price-range?minPrice=${encodeURIComponent(
@@ -316,7 +322,7 @@ const FilteredResults: NextPage = () => {
                     color
                 )}`
             );
-            setSelectedColor(color as Color);
+            setSelectedColor({ id: color, name: color, hex: color });
         }
     }, [color]);
 
@@ -324,12 +330,10 @@ const FilteredResults: NextPage = () => {
         if (!initialLoad) {
             const filterProducts = () => {
                 let filteredProducts = allProducts;
-            
 
                 if (selectedCategory) {
                     filteredProducts = filteredProducts.filter((product) =>
                         product.productCategories.some((cat) => {
-                   
                             return cat.category.id.value === selectedCategory;
                         })
                     );
@@ -344,7 +348,6 @@ const FilteredResults: NextPage = () => {
                 if (selectedColor) {
                     filteredProducts = filteredProducts.filter((product) =>
                         product.productColors.some((cat) => {
-                         
                             return cat.color.id.value === selectedColor.id;
                         })
                     );
@@ -365,7 +368,7 @@ const FilteredResults: NextPage = () => {
                             product.finalPrice <= selectedMaxPrice
                     );
                 }
-             
+
                 setProducts(filteredProducts);
             };
 
@@ -479,6 +482,15 @@ const FilteredResults: NextPage = () => {
                                             eNovidade={product.isNew}
                                             brandName={product.brandName}
                                             brandLogo={product.brandUrl}
+                                            hasVariants={product.hasVariants}
+                                            slug={product.slug}
+                                            height={product.height}
+                                            width={product.width}
+                                            length={product.length}
+                                            weight={product.weight}
+                                            onButtonClick={() =>
+                                                handleButtonClick(product.slug)
+                                            }
                                         />
                                     </Link>
                                 ))}

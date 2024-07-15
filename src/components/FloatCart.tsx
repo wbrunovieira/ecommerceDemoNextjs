@@ -7,6 +7,8 @@ import { BsTrash, BsPlus, BsDash } from 'react-icons/bs';
 import { useEffect, useState } from 'react';
 import { useToast } from './ui/use-toast';
 
+import { useRouter } from 'next/navigation';
+
 interface FloatCartProps {
     onClose: () => void;
 }
@@ -29,8 +31,10 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     const updateQuantity = useCartStore((state: any) => state.updateQuantity);
 
     const { data: session } = useSession();
+    const router = useRouter();
     const { toast } = useToast();
     const setUser = useCartStore((state) => state.setUser);
+    const initializeCart = useCartStore((state: any) => state.initializeCart);
 
     const handleClickOutside = (event: React.MouseEvent) => {
         if (
@@ -58,11 +62,29 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         setClickedTrash(null);
     };
 
-    useEffect(() => {
-        if (session?.user?.id) {
-            setUser(session.user.id);
+    const handleCheckout = () => {
+        if (!session) {
+            toast({
+                title: 'Necessário login',
+                description:
+                    'Você precisa estar logado para finalizar a compra.',
+                style: { background: '#ff6961' },
+            });
+            router.push('/login');
+        } else {
+            router.push('/cart');
         }
-    }, [session, setUser]);
+    };
+
+    useEffect(() => {
+        const initializeUserCart = async () => {
+            if (session?.user?.id) {
+                setUser(session.user.id);
+                await initializeCart([], session.user.id);
+            }
+        };
+        initializeUserCart();
+    }, [session, setUser, initializeCart]);
 
     return (
         <div
@@ -171,14 +193,12 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                         </p>
                     </div>
 
-                    <Link
-                        href="/cart"
-                        className="px-4 py-2 mt-2 rounded bg-secondary text-primaryLight "
+                    <button
+                        onClick={handleCheckout}
+                        className="px-4 py-2 mt-2 rounded bg-secondary text-primaryLight transition duration-300 hover:scale-105"
                     >
-                        <div className="transition duration-300 hover:scale-105">
-                            Checkout
-                        </div>
-                    </Link>
+                        Checkout
+                    </button>
                 </div>
             </div>
         </div>
