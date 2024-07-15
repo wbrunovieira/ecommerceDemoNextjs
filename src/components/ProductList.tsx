@@ -49,7 +49,7 @@ const ProductList = () => {
                     'http://localhost:3333/products/featured-products'
                 );
                 const data = await response.json();
-                console.log('first', data.products[0]);
+               
                 setProdutos(data.products);
             } catch (error) {
                 console.error('Erro ao buscar produtos:', error);

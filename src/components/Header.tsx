@@ -11,34 +11,13 @@ import Link from 'next/link';
 
 import LogginButton from './LogginButton';
 import ToggleMode from './ToggleMode';
+import { SocialIcons } from './SocialIcons';
 
 const Header = () => {
     return (
         <header className="bg-header-bg dark:bg-header-bg-dark bg-cover sm:h-48 md:h-48 lg:h-36 flex justify-between items-center flex-col w-screen pt-4 px-8 mx-auto custom-header">
             <div className="flex justify-between items-center w-full mb-4 mt-4">
-                <div className="social-icons flex gap-3">
-                    <a
-                        href="https://instagram.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <BsInstagram className="rounded bg-primaryLight dark:bg-primaryLight  text-secondary dark:text-primaryDark transition duration-300 hover:scale-125" />
-                    </a>
-                    <a
-                        href="https://facebook.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <BsFacebook className="rounded  bg-primaryLight dark:bg-primaryLight  text-secondary dark:text-primaryDark transition duration-300 hover:scale-125" />
-                    </a>
-                    <a
-                        href="https://tiktok.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <BsTiktok className="rounded  bg-primaryLight dark:bg-primaryLight   text-secondary dark:text-primaryDark transition duration-300 hover:scale-125" />
-                    </a>
-                </div>
+                <SocialIcons />
 
                 <div>
                     <p className="text-xs text-fontColor font-light dark:text-darkFontColor transition duration-300 hover:scale-110">

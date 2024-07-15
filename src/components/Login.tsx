@@ -203,7 +203,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={isButtonInDisabled}
-                            className="bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
+                            className="flex items-center justify-center bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
                         >
                             {isButtonInDisabled ? (
                                 <svg

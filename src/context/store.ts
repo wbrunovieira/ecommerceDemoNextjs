@@ -1,5 +1,5 @@
 import { StateCreator, create } from 'zustand';
-import { persist, PersistOptions } from 'zustand/middleware';
+import { persist, PersistOptions, createJSONStorage } from 'zustand/middleware';
 import { getSession } from 'next-auth/react';
 import debounce from 'lodash.debounce';
 import axios from 'axios';
@@ -274,6 +274,7 @@ export const useCartStore = create<CartState>(
 
             fetchCart: async (userId: string) => {
                 try {
+                    console.log('iniciou fetchCart');
                     const session = await getSession();
                     const authToken = session?.accessToken;
 
@@ -286,6 +287,7 @@ export const useCartStore = create<CartState>(
                             },
                         }
                     );
+                    console.log('ifetchCart response', response.data);
 
                     return response.data;
                 } catch (error) {
@@ -561,7 +563,7 @@ export const useCartStore = create<CartState>(
         }),
         {
             name: 'cart-storage',
-            getStorage: () => localStorage,
+            storage: createJSONStorage(() => sessionStorage),
         }
     )
 );
@@ -630,7 +632,7 @@ export const useFavoritesStore = create<FavoriteState>(
         }),
         {
             name: 'favorite-storage',
-            getStorage: () => localStorage,
+            storage: createJSONStorage(() => sessionStorage),
         }
     )
 );
@@ -644,7 +646,7 @@ export const useColorStore = create<ColorState>()(
         }),
         {
             name: 'color-storage',
-            getStorage: () => localStorage,
+            storage: createJSONStorage(() => sessionStorage),
         }
     )
 );
@@ -679,7 +681,7 @@ export const useSelectionStore = create<SelectionState>()(
 
         {
             name: 'selection-storage',
-            getStorage: () => localStorage,
+            storage: createJSONStorage(() => sessionStorage),
         } as PersistOptions<SelectionState>
     )
 );

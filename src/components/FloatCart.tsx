@@ -80,7 +80,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         const initializeUserCart = async () => {
             if (session?.user?.id) {
                 setUser(session.user.id);
-                await initializeCart([], session.user.id);
+            const cartini = await initializeCart([], session.user.id);
+            console.log('initializeUserCart no float cartini',cartini)
             }
         };
         initializeUserCart();
