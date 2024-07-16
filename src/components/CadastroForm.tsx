@@ -6,7 +6,6 @@ import { FcGoogle } from 'react-icons/fc';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
 import { useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
-import { gsap } from 'gsap';
 
 interface ErrorMessages {
     name: string;
@@ -31,6 +30,7 @@ const CadastroForm = () => {
 
     const router = useRouter();
     const { data: session, update } = useSession();
+    const [isButtonInDisabled, setIsButtonInDisabled] = useState(false);
 
     const togglePasswordVisibility = (e: SyntheticEvent) => {
         e.preventDefault();
@@ -61,7 +61,7 @@ const CadastroForm = () => {
                 if (!value) {
                     errorMessage = getMessageForField(field);
                 } else if (
-                    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+                    !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&()])[A-Za-z\d@$!%*?&()]{8,}$/.test(
                         value
                     )
                 ) {
@@ -97,18 +97,8 @@ const CadastroForm = () => {
     }
 
     const handleSubmit = async (e: SyntheticEvent) => {
+        setIsButtonInDisabled(true);
         e.preventDefault();
-
-        gsap.to('#submitButton', {
-            scale: 0.95,
-            duration: 0.2,
-            ease: 'power1.out',
-        });
-        gsap.to('#submitButton', {
-            scale: 1,
-            duration: 0.2,
-            ease: 'power1.out',
-        });
 
         if (password !== repeatPassword) {
             setErrorMessage((prev) => ({
@@ -119,12 +109,15 @@ const CadastroForm = () => {
             return;
         }
 
+        console.log('result', name, email, password);
+
         const result = await signIn('credentials', {
             name,
             email,
             password,
             redirect: false,
         });
+        console.log('result', result);
 
         if (result?.error) {
             return;
@@ -290,9 +283,16 @@ const CadastroForm = () => {
 
                         <button
                             type="submit"
+                            disabled={isButtonInDisabled}
                             id="submitButton"
-                            className="bg-secondary mb-4 text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
+                            className="flex items-center justify-center  bg-secondary mb-4 text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
                         >
+                            {isButtonInDisabled ? (
+                                <svg
+                                    className="animate-spin h-5 w-5 mr-3 border-t-2 border-b-2 border-white rounded-3xl"
+                                    viewBox="0 0 24 24"
+                                ></svg>
+                            ) : null}
                             Cadastrar
                         </button>
 
