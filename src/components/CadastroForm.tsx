@@ -234,6 +234,8 @@ const CadastroForm = () => {
                                 </p>
                             )}
                         </div>
+
+                        
                         <label
                             htmlFor="email"
                             className="text-white-important text-xs"

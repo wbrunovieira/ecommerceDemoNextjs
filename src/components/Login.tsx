@@ -180,6 +180,15 @@ const Login = () => {
                                 className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32"
                                 onChange={(e) => setPassword(e.target.value)}
                             />
+                            <div>
+                                <Link
+                                    href="/recuperar-senha"
+                                    className="text-xs text-blue-500 hover:underline"
+                                >
+                                    Esqueci a minha senha
+                                </Link>
+                            </div>
+
                             <span className="absolute inset-y-0 right-0 flex items-center pr-3">
                                 {showPassword ? (
                                     <FiEyeOff
