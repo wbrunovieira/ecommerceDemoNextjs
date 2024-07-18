@@ -121,6 +121,12 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             setShowAddressModal(true);
         }
     };
+
+    const handleAddNewAddresses = (address: Address) => {
+        setAddresses((prevAddresses) => [...prevAddresses, address]);
+        setShowAddressModal(true);
+    };
+
     const handleAddNewAddress = async (address: Partial<Address['props']>) => {
         try {
             const url = `http://localhost:3333/adress/${session?.user?.id}/addresses`;
@@ -137,7 +143,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             });
 
             if (response.ok) {
-                await fetchAddresses();
+                handleAddNewAddresses()
                 setShowAddressModal(false);
                 router.push('/cart');
             } else {

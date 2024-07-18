@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 interface Address {
     _id: {
@@ -34,7 +35,9 @@ const AddressModal: React.FC<AddressModalProps> = ({
     const [isAddingNew, setIsAddingNew] = useState(addresses.length === 0);
     const [newAddress, setNewAddress] = useState<Partial<Address['props']>>({});
 
-    const handleAddNewAddress = () => {
+    const { data: session } = useSession();
+
+    const handleAddNewAddress = async () => {
         if (
             newAddress.street &&
             newAddress.number &&
@@ -43,8 +46,41 @@ const AddressModal: React.FC<AddressModalProps> = ({
             newAddress.country &&
             newAddress.zipCode
         ) {
-            onAddNewAddress(newAddress);
-            setIsAddingNew(false);
+            try {
+                const id = session?.user.id;
+                const response = await fetch(
+                    `http://localhost:3333/adress/${id}/addresses`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${session?.accessToken}`,
+                        },
+                        body: JSON.stringify({
+                            userId: id,
+                            street: newAddress.street,
+                            number: newAddress.number,
+                            complement: newAddress.complement,
+                            city: newAddress.city,
+                            state: newAddress.state,
+                            country: 'Brasil',
+                            zipCode: newAddress.zipCode,
+                        }),
+                    }
+                );
+
+                if (response.ok) {
+                    const savedAddress = await response.json();
+                    onAddNewAddress(savedAddress);
+                    setIsAddingNew(false);
+                    
+                } else {
+                    // Handle response error
+                    console.error('Failed to save address');
+                }
+            } catch (error) {
+                console.error('Error saving address:', error);
+            }
         } else {
             // Show error message or handle validation
         }
