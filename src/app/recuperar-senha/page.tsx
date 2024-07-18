@@ -1,6 +1,7 @@
 'use client';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { SyntheticEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/use-toast';
 import axios from 'axios';
 import Link from 'next/link';
 
@@ -15,6 +16,8 @@ const RecuperarSenha: React.FC = () => {
         email: '',
     });
 
+    const { toast } = useToast();
+
     const router = useRouter();
 
     function getMessageForField(field: keyof ErrorMessages): string {
@@ -28,8 +31,8 @@ const RecuperarSenha: React.FC = () => {
     }
 
     const handleSubmit = async (e: SyntheticEvent) => {
-        setIsButtonInDisabled(true);
         e.preventDefault();
+        setIsButtonInDisabled(true);
 
         const result = await axios.post(
             'http://localhost:3333/accounts/forgot-password/',
@@ -40,6 +43,16 @@ const RecuperarSenha: React.FC = () => {
                 },
             }
         );
+        console.log(' result', result);
+
+        if (result.status === 201) {
+            toast({
+                title: 'Sucesso',
+                description:
+                    '`Enviamos um emal com um link para redefinicao da senha`!',
+            });
+            router.push('/login');
+        }
     };
 
     const handleBlur = (field: keyof ErrorMessages, value: string) => {
@@ -72,7 +85,7 @@ const RecuperarSenha: React.FC = () => {
                 >
                     <label
                         htmlFor="email"
-                        className="text-white-important text-xs"
+                        className="text-primaryDark dark:text-white-important text-xs"
                     >
                         Email
                     </label>

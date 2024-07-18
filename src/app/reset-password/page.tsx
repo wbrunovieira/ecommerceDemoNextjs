@@ -6,20 +6,23 @@ import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Link from 'next/link';
 import { FiEye, FiEyeOff } from 'react-icons/fi';
+
 interface ErrorMessages {
-    password: string;
+    newPassword: string;
     repeatPassword: string;
 }
 
 const ResetPassword = () => {
     const searchParams = useSearchParams();
     const token = searchParams.get('token');
+    let userId = null;
 
-    const [password, setPassword] = useState<string>('');
+    const [newPassword, setnewPassword] = useState<string>('');
+    const [repeatPassword, setRepeatPassword] = useState<string>('');
     const [showPassword, setShowPassword] = useState(false);
     const [isButtonInDisabled, setIsButtonInDisabled] = useState(false);
     const [errorMessage, setErrorMessage] = useState<ErrorMessages>({
-        password: '',
+        newPassword: '',
         repeatPassword: '',
     });
 
@@ -31,8 +34,10 @@ const ResetPassword = () => {
 
     function getMessageForField(field: keyof ErrorMessages): string {
         switch (field) {
-            case 'password':
-                return 'Vamos precisar do seu password. :(';
+            case 'newPassword':
+                return 'Vamos precisar do sua nova senha. :(';
+            case 'repeatPassword':
+                return 'Você precisa repetir a senha.';
 
             default:
                 return '';
@@ -46,25 +51,46 @@ const ResetPassword = () => {
     };
 
     const handleSubmit = async (e: SyntheticEvent) => {
-        setIsButtonInDisabled(true);
         e.preventDefault();
+        setIsButtonInDisabled(true);
+        try {
+            const result = await axios.post(
+                `http://localhost:3333/accounts/reset-password?token=${token}`,
+                { newPassword, token, userId },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            console.log(' result',result)
 
-        const result = await axios.post(
-            'http://localhost:3333/accounts/forgot-password/',
-
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+            if (result.status === 201) {
+                toast({
+                    title: 'Sucesso',
+                    description: 'Senha redefinida com sucesso!',
+                });
+                router.push('/login');
             }
-        );
+            setIsButtonInDisabled(false);
+        } catch (error) {
+            console.error('Erro ao redefinir a senha', error);
+            toast({
+                title: 'Erro',
+                description:
+                    'Não foi possível redefinir a senha. Tente novamente.',
+                variant: 'destructive',
+            });
+        } finally {
+            setIsButtonInDisabled(false);
+        }
     };
 
     const handleBlur = (field: keyof ErrorMessages, value: string) => {
         setErrorMessage((prev: ErrorMessages) => {
             let errorMessage = value ? '' : getMessageForField(field);
 
-            if (field === 'password') {
+            if (field === 'newPassword') {
                 if (!value) {
                     errorMessage = getMessageForField(field);
                 } else if (
@@ -77,7 +103,7 @@ const ResetPassword = () => {
                 }
             }
 
-            if (field === 'repeatPassword' && value !== password) {
+            if (field === 'repeatPassword' && value !== newPassword) {
                 errorMessage = 'As senhas não coincidem.';
             }
 
@@ -91,61 +117,14 @@ const ResetPassword = () => {
     return (
         <div className="fixed inset-0 flex items-center justify-center">
             <div className="absolute bg-primaryLight dark:bg-dark-secondary-gradient p-96 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-96 md:p-48 sm:w-full">
-                <div>Esqueceu a senha?</div>
-                <div>Digite o e-mail cadastrado</div>
+                <div>Digite a nova senha</div>
                 <form
                     onSubmit={handleSubmit}
                     className="flex flex-col space-y-4"
                 >
                     <label
                         htmlFor="email"
-                        className="text-white-important text-xs"
-                    >
-                        Senha
-                    </label>
-                    <div className="relative w-96 md:w-72 sm:w-32">
-                        <input
-                            type={showPassword ? 'text' : 'password'}
-                            name="password"
-                            placeholder="Senha"
-                            autoComplete="password"
-                            value={password}
-                            onBlur={() => handleBlur('password', password)}
-                            className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32"
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                        <div>
-                            <Link
-                                href="/recuperar-senha"
-                                className="text-xs text-blue-500 hover:underline"
-                            >
-                                Esqueci a minha senha
-                            </Link>
-                        </div>
-
-                        <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-                            {showPassword ? (
-                                <FiEyeOff
-                                    onClick={togglePasswordVisibility}
-                                    className="cursor-pointer text-gray-500"
-                                />
-                            ) : (
-                                <FiEye
-                                    onClick={togglePasswordVisibility}
-                                    className="cursor-pointer text-gray-500"
-                                />
-                            )}
-                        </span>
-                        {errorMessage.password && (
-                            <p className="text-redAtention  text-xs italic">
-                                {errorMessage.password}
-                            </p>
-                        )}
-                    </div>
-
-                    <label
-                        htmlFor="email"
-                        className="text-white-important text-xs"
+                        className="text-primaryDark dark:text-white-important text-xs"
                     >
                         Senha
                     </label>
@@ -157,9 +136,11 @@ const ResetPassword = () => {
                             required
                             autoComplete="password"
                             placeholder="Senha"
-                            onBlur={() => handleBlur('password', password)}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
+                            onBlur={() =>
+                                handleBlur('newPassword', newPassword)
+                            }
+                            value={newPassword}
+                            onChange={(e) => setnewPassword(e.target.value)}
                             className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full pr-10 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary placeholder-primary"
                         />
                         <span className="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -175,16 +156,16 @@ const ResetPassword = () => {
                                 />
                             )}
                         </span>
-                        {errorMessage.password && (
+                        {errorMessage.newPassword && (
                             <p className="text-redAtention  text-xs italic">
-                                {errorMessage.password}
+                                {errorMessage.newPassword}
                             </p>
                         )}
                     </div>
 
                     <label
                         htmlFor="email"
-                        className="text-white-important text-xs"
+                        className="text-primaryDark dark:text-white-important text-xs"
                     >
                         Repetir a senha
                     </label>
@@ -216,9 +197,9 @@ const ResetPassword = () => {
                             )}
                         </span>
                     </div>
-                    {errorMessage.password && (
+                    {errorMessage.newPassword && (
                         <p className="text-redAtention text-xs italic">
-                            {errorMessage.password}
+                            {errorMessage.newPassword}
                         </p>
                     )}
                     {errorMessage.repeatPassword && (

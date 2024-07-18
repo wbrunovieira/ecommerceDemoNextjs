@@ -133,6 +133,8 @@ const Sidebar: React.FC<SidebarProps> = () => {
                     throw new Error(`HTTP error! status: ${res.status}`);
                 }
 
+               
+
                 const data = await res.json();
 
                 const fetchedCategories = data.categories.map(
