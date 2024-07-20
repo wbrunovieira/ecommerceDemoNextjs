@@ -4,6 +4,7 @@ import Button from './Button';
 import { useRouter } from 'next/navigation';
 
 import { useCartStore } from '@/context/store';
+import { useToast } from './ui/use-toast';
 
 interface ProductCategory {
     category: {
@@ -70,6 +71,8 @@ const Card: React.FC<CardProps> = ({
     const { data: session } = useSession();
     const router = useRouter();
 
+   const { toast } = useToast();
+
     const handleButtonClick = (slug: string) => {
         router.push(`/product/${slug}`);
     };
@@ -92,6 +95,11 @@ const Card: React.FC<CardProps> = ({
             },
             userId
         );
+
+        toast({
+            title: 'Sucesso',
+            description: 'Item adcionado no carrinho!',
+        });
     };
 
     const validImageSRC = imageSRC || '/images/foto1.jpg';

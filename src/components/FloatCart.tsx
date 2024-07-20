@@ -143,7 +143,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             });
 
             if (response.ok) {
-                handleAddNewAddresses()
+                
                 setShowAddressModal(false);
                 router.push('/cart');
             } else {
