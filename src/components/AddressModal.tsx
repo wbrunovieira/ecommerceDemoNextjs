@@ -73,7 +73,6 @@ const AddressModal: React.FC<AddressModalProps> = ({
                     const savedAddress = await response.json();
                     onAddNewAddress(savedAddress);
                     setIsAddingNew(false);
-                    
                 } else {
                     // Handle response error
                     console.error('Failed to save address');

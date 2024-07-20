@@ -218,6 +218,8 @@ export const nextAuthOptions: NextAuthOptions = {
         },
 
         async session({ session, token }) {
+            console.log('session', session);
+            console.log('token', token);
             if (typeof token.id === 'string') {
                 session.user.id = token.id;
             } else if (typeof token.sub === 'string') {

@@ -143,9 +143,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             });
 
             if (response.ok) {
-                
                 setShowAddressModal(false);
-                router.push('/cart');
+                router.push('/entrega-callback');
             } else {
                 console.error('Failed to create address');
             }
@@ -286,7 +285,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                     onClose={() => setShowAddressModal(false)}
                     onConfirm={() => {
                         setShowAddressModal(false);
-                        router.push('/cart');
+                        router.push('/melhor-envio');
                     }}
                     onAddNewAddress={handleAddNewAddress}
                 />
