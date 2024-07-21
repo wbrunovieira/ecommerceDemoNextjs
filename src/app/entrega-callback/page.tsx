@@ -19,7 +19,7 @@ const MelhorEnvioCallback = () => {
 
             if (code) {
                 try {
-                    const response = await axios.post('/api/me-callback', {
+                    const response = await axios.post('http://localhost:3333/sessions/request-token', {
                         code,
                     });
                     if (response.data.success) {
