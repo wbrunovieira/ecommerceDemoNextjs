@@ -12,7 +12,7 @@ const MelhorEnvioAuthorize = () => {
 
     useEffect(() => {
         if (status === 'unauthenticated') {
-            router.replace('/login'); 
+            router.replace('/login');
         }
     }, [status, router]);
 
@@ -21,9 +21,13 @@ const MelhorEnvioAuthorize = () => {
         setError('');
 
         try {
-            const response = await axios.get('/api/me-authorize');
-            if (response.data.url) {
-                window.location.href = response.data.url; 
+            const response = await axios.get(
+                'http://localhost:3333/sessions/melhor-envio/auth-url'
+            );
+            console.log('response', response);
+            console.log('response.data.authUrl', response.data.authUrl);
+            if (response.data.authUrl) {
+                window.location.href = response.data.authUrl;
             } else {
                 setError('Erro ao tentar autorizar o Melhor Envio.');
             }

@@ -22,7 +22,7 @@ interface Address {
 interface AddressModalProps {
     addresses: Address[];
     onClose: () => void;
-    onConfirm: () => void;
+    onConfirm: (address: Address) => void;
     onAddNewAddress: (address: Partial<Address['props']>) => void;
 }
 
@@ -261,7 +261,11 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                 </p>
                                 <ul>
                                     {addresses.map((address, index) => (
-                                        <li key={index} className="mb-2">
+                                        <li
+                                            key={index}
+                                            className="mb-2 cursor-pointer hover:bg-gray-100 p-2 rounded"
+                                            onClick={() => onConfirm(address)}
+                                        >
                                             {address.props.street},{' '}
                                             {address.props.number},{' '}
                                             {address.props.city},{' '}
@@ -272,12 +276,6 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                     ))}
                                 </ul>
                                 <div className="flex justify-between mt-4">
-                                    <button
-                                        onClick={onConfirm}
-                                        className="bg-green-500 text-white px-4 py-2 rounded"
-                                    >
-                                        Confirmar
-                                    </button>
                                     <button
                                         onClick={() => setIsAddingNew(true)}
                                         className="bg-blue-500 text-white px-4 py-2 rounded"

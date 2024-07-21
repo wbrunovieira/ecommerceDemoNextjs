@@ -46,6 +46,9 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     const [clickedTrash, setClickedTrash] = useState<string | null>(null);
     const [showAddressModal, setShowAddressModal] = useState(false);
     const [addresses, setAddresses] = useState<Address[]>([]);
+    const [selectedAddress, setSelectedAddress] = useState<Address | null>(
+        null
+    );
 
     const cartItems = useCartStore((state: any) => state.cartItems);
     const removeFromCart = useCartStore((state: any) => state.removeFromCart);
@@ -283,7 +286,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                 <AddressModal
                     addresses={addresses}
                     onClose={() => setShowAddressModal(false)}
-                    onConfirm={() => {
+                    onConfirm={(selectedAddress) => {
+                        setSelectedAddress(selectedAddress);
                         setShowAddressModal(false);
                         router.push('/melhor-envio');
                     }}
