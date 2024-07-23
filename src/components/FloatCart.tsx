@@ -53,7 +53,9 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     const cartItems = useCartStore((state: any) => state.cartItems);
     const removeFromCart = useCartStore((state: any) => state.removeFromCart);
     const updateQuantity = useCartStore((state: any) => state.updateQuantity);
-
+    const setSelectedAddressInStore = useCartStore(
+        (state: any) => state.setSelectedAddress
+    );
     const { data: session } = useSession();
     const router = useRouter();
     const { toast } = useToast();
@@ -160,8 +162,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         const initializeUserCart = async () => {
             if (session?.user?.id) {
                 setUser(session.user.id);
-                const cartini = await initializeCart([], session.user.id);
-                console.log('initializeUserCart no float cartini', cartini);
+                const cartInit = await initializeCart([], session.user.id);
+                console.log('initializeUserCart no float cartInit', cartInit);
             }
         };
         initializeUserCart();
@@ -288,6 +290,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                     onClose={() => setShowAddressModal(false)}
                     onConfirm={(selectedAddress) => {
                         setSelectedAddress(selectedAddress);
+                        setSelectedAddressInStore(selectedAddress);
                         setShowAddressModal(false);
                         router.push('/melhor-envio');
                     }}

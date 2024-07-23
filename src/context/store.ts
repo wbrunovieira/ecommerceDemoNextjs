@@ -69,6 +69,24 @@ export interface Size {
     name: string;
 }
 
+interface Address {
+    _id: {
+        value: string;
+    };
+    props: {
+        userId: string;
+        street: string;
+        number: number;
+        complement?: string;
+        city: string;
+        state: string;
+        country: string;
+        zipCode: string;
+        createdAt: string;
+        updatedAt: string;
+    };
+}
+
 interface CartItem extends Product {
     _id: {
         value: string;
@@ -76,7 +94,8 @@ interface CartItem extends Product {
     cartId?: string;
     props: {
         productId: string;
-
+        productName: string;
+        imageUrl: string;
         quantity: number;
         productIdVariant?: string;
         hasVariants: boolean;
@@ -111,6 +130,7 @@ interface CartState {
     cartItems: Product[];
     cartId?: string | null;
     userId?: string | null;
+    selectedAddress?: Address | null;
     addToCart: (product: Product, userId?: string) => void;
     removeFromCart: (cartId: string, cartItemId: string) => void;
     clearCart: (uuserId?: string) => void;
@@ -121,6 +141,7 @@ interface CartState {
     ) => void;
     initializeCart: (products: Product[], userId?: string) => void;
     setUser: (userId: string) => void;
+    setSelectedAddress: (address: Address | null) => void;
     saveCartToBackend: (
         userId: string,
         item: Product
@@ -176,6 +197,7 @@ export const useCartStore = create<CartState>(
         (set, get) => ({
             cartItems: [],
             userId: null,
+            selectedAddress: null,
 
             addToCart: async (product: Product) => {
                 const existingItem = get().cartItems.find(
@@ -380,6 +402,7 @@ export const useCartStore = create<CartState>(
             initializeCart: async (products: Product[], userId?: string) => {
                 if (userId) {
                     const fetchedCart = await get().fetchCart(userId);
+                    console.log('fetchedCart', fetchedCart);
                     if (fetchedCart) {
                         const items = fetchedCart.props.items.map(
                             (item: any) => ({
@@ -408,6 +431,11 @@ export const useCartStore = create<CartState>(
                     userId,
                 })),
 
+            setSelectedAddress: (address: Address | null) =>
+                set((state: CartState) => ({
+                    selectedAddress: address,
+                })),
+
             saveCartToBackend: async (
                 userId: string,
                 product: Product
@@ -423,6 +451,8 @@ export const useCartStore = create<CartState>(
                     quantity: product.quantity,
                     price: product.price,
                     colorId: product.colorId,
+                    productName: product.title,
+                    imageUrl: product.image,
 
                     sizeId: product.sizeId,
 

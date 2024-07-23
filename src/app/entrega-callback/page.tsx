@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+
 import axios from 'axios';
+import { useCartStore } from '@/context/store';
 
 const MelhorEnvioCallback = () => {
     const searchParams = useSearchParams();
@@ -12,20 +14,76 @@ const MelhorEnvioCallback = () => {
     const { data: session } = useSession();
     const [error, setError] = useState('');
 
+    let token;
+
+    const calculateShipment = async (token: string) => {
+        const cartItems = useCartStore.getState().cartItems;
+        const selectedAddress = useCartStore.getState().selectedAddress;
+
+        if (!cartItems.length || !selectedAddress) {
+            console.error('Cart items or selected address is missing');
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                '/melhor-envio/calculate-shipment',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    },
+                    body: JSON.stringify({
+                        token,
+                        cartItems,
+                        selectedAddress,
+                    }),
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error('Failed to calculate shipment');
+            }
+
+            const result = await response.json();
+            console.log('Shipment calculation result:', result);
+            return result;
+        } catch (error) {
+            console.error('Error calculating shipment:', error);
+            throw error;
+        }
+    };
+
     useEffect(() => {
-        
         const fetchAccessToken = async () => {
             const code = searchParams.get('code');
+            console.log('code ', code);
 
             if (code) {
                 try {
-                    const response = await axios.post('http://localhost:3333/sessions/request-token', {
-                        code,
-                    });
-                    if (response.data.success) {
-                        router.replace('/entrega'); 
-                    } else {
-                        setError('Erro ao tentar obter o token de acesso.');
+                    const response = await axios.post(
+                        'http://localhost:3333/sessions/request-token',
+                        {
+                            code,
+                        }
+                    );
+
+                    console.log('response ', response);
+
+                    if (response.status === 201) {
+                        console.log(
+                            'response.data.success ',
+                            response.data.success
+                        );
+
+                        token = response.data.access_token;
+                        console.log('token ', token);
+
+                        const result = await calculateShipment(token);
+                        console.log('result ', result);
+
+                        router.replace('/entrega');
                     }
                 } catch (err) {
                     setError('Erro ao tentar obter o token de acesso.');
@@ -34,7 +92,7 @@ const MelhorEnvioCallback = () => {
         };
 
         fetchAccessToken();
-    }, [router]);
+    }, [router, searchParams]);
 
     return (
         <div className="fixed inset-0 flex items-center justify-center">
