@@ -406,8 +406,21 @@ export const useCartStore = create<CartState>(
                     if (fetchedCart) {
                         const items = fetchedCart.props.items.map(
                             (item: any) => ({
-                                ...item.props,
                                 id: item.props.productId,
+                                title: item.props.productName,
+                                image: item.props.imageUrl,
+                                quantity: item.props.quantity,
+                                price: item.props.price,
+                                height: item.props.height,
+                                width: item.props.width,
+                                length: item.props.length,
+                                weight: item.props.weight,
+                                color: item.props.color,
+                                colorId: item.props.colorId,
+                                size: item.props.size,
+                                sizeId: item.props.sizeId,
+                                hasVariants: item.props.hasVariants,
+                                productIdVariant: item.props.productIdVariant,
                                 _id: { value: item._id.value },
                                 cartId: fetchedCart._id.value,
                             })
