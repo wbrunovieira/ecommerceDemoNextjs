@@ -130,7 +130,14 @@ const FilteredResults: NextPage = () => {
 
     const fetchProducts = async (url: string) => {
         try {
-            const response = await fetch(url);
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': '69420',
+                },
+            });
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -287,24 +294,18 @@ const FilteredResults: NextPage = () => {
     useEffect(() => {
         if (category) {
             fetchProducts(
-                `${BASE_URL}/products/category/${encodeURIComponent(
-                    category
-                )}`
+                `${BASE_URL}/products/category/${encodeURIComponent(category)}`
             );
 
             setSelectedCategory(category);
         } else if (brand) {
             fetchProducts(
-                `${BASE_URL}/products/brand/${encodeURIComponent(
-                    brand
-                )}`
+                `${BASE_URL}/products/brand/${encodeURIComponent(brand)}`
             );
             setSelectedBrand(brand);
         } else if (size) {
             fetchProducts(
-                `${BASE_URL}/products/size/${encodeURIComponent(
-                    size
-                )}`
+                `${BASE_URL}/products/size/${encodeURIComponent(size)}`
             );
             setSelectedSize({ id: size, name: size });
         } else if (minPrice && maxPrice) {
@@ -321,9 +322,7 @@ const FilteredResults: NextPage = () => {
     useEffect(() => {
         if (color) {
             fetchProducts(
-                `${BASE_URL}/products/color/${encodeURIComponent(
-                    color
-                )}`
+                `${BASE_URL}/products/color/${encodeURIComponent(color)}`
             );
             setSelectedColor({ id: color, name: color, hex: color });
         }

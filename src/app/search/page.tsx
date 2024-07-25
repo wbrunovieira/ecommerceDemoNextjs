@@ -63,7 +63,7 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
     const router = useRouter();
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
-    
+
     const handleButtonClick = (slug: string) => {
         router.push(`/product/${slug}`);
     };
@@ -74,7 +74,14 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
                     const response = await fetch(
                         `${BASE_URL}/products/search?name=${encodeURIComponent(
                             query
-                        )}`
+                        )}`,
+                        {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'ngrok-skip-browser-warning': '69420',
+                            },
+                        }
                     );
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
