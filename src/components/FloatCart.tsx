@@ -43,6 +43,7 @@ interface Address {
 }
 
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
+    
     const [clickedTrash, setClickedTrash] = useState<string | null>(null);
     const [showAddressModal, setShowAddressModal] = useState(false);
     const [addresses, setAddresses] = useState<Address[]>([]);
@@ -66,6 +67,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
 
     const fetchAddresses = async () => {
         try {
+            console.log('fetchAddresses entrou ');
             const response = await fetch(
                 `${BASE_URL}/adress/by-user-id?userId=${session?.user?.id}`,
                 {
@@ -73,10 +75,12 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${session?.accessToken}`,
+                        'ngrok-skip-browser-warning': '69420',
                     },
                 }
             );
 
+            console.log('fetchAddresses entrou response ', response);
             if (response.ok) {
                 const data = await response.json();
                 setAddresses(data.addresses);
@@ -125,7 +129,6 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             router.push('/login');
         } else {
             await fetchAddresses();
-            onClose();
             setShowAddressModal(true);
         }
     };
@@ -143,6 +146,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${session?.accessToken}`,
+                    'ngrok-skip-browser-warning': '69420',
                 },
                 body: JSON.stringify({
                     ...address,

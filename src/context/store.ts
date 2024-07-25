@@ -308,6 +308,7 @@ export const useCartStore = create<CartState>(
                             headers: {
                                 Authorization: `Bearer ${authToken}`,
                                 'Content-Type': 'application/json',
+                                'ngrok-skip-browser-warning': '69420',
                             },
                         }
                     );
@@ -491,6 +492,7 @@ export const useCartStore = create<CartState>(
                             headers: {
                                 Authorization: `Bearer ${authToken}`,
                                 'Content-Type': 'application/json',
+                                'ngrok-skip-browser-warning': '69420',
                             },
                         }
                     );
@@ -510,6 +512,7 @@ export const useCartStore = create<CartState>(
                                 headers: {
                                     Authorization: `Bearer ${authToken}`,
                                     'Content-Type': 'application/json',
+                                    'ngrok-skip-browser-warning': '69420',
                                 },
                             }
                         );
@@ -538,6 +541,7 @@ export const useCartStore = create<CartState>(
                                 headers: {
                                     Authorization: `Bearer ${authToken}`,
                                     'Content-Type': 'application/json',
+                                    'ngrok-skip-browser-warning': '69420',
                                 },
                             }
                         );
@@ -592,6 +596,7 @@ export const useCartStore = create<CartState>(
                             headers: {
                                 Authorization: `Bearer ${authToken}`,
                                 'Content-Type': 'application/json',
+                                'ngrok-skip-browser-warning': '69420',
                             },
                         }
                     );

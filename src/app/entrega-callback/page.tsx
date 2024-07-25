@@ -18,8 +18,18 @@ const MelhorEnvioCallback = () => {
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     const calculateShipment = async (token: string) => {
-        const cartItems = useCartStore.getState().cartItems;
-        const selectedAddress = useCartStore.getState().selectedAddress;
+        const { cartItems, selectedAddress } = useCartStore((state) => ({
+            cartItems: state.cartItems,
+            selectedAddress: state.selectedAddress,
+        }));
+        console.log('Current cart items:', cartItems);
+        console.log('Current selected address:', selectedAddress);
+
+        console.log(
+            'Shipment calculation cartItems:selectedAddress',
+            cartItems,
+            selectedAddress
+        );
 
         if (!cartItems.length || !selectedAddress) {
             console.error('Cart items or selected address is missing');
@@ -28,12 +38,13 @@ const MelhorEnvioCallback = () => {
 
         try {
             const response = await fetch(
-                '/melhor-envio/calculate-shipment',
+                'https://sandbox.melhorenvio.com.br/api/v2/me/shipment/calculate',
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
+                        'ngrok-skip-browser-warning': '69420',
                     },
                     body: JSON.stringify({
                         token,
@@ -84,7 +95,7 @@ const MelhorEnvioCallback = () => {
                         const result = await calculateShipment(token);
                         console.log('result ', result);
 
-                        router.replace('/entrega');
+                        // router.replace('/entrega');
                     }
                 } catch (err) {
                     setError('Erro ao tentar obter o token de acesso.');

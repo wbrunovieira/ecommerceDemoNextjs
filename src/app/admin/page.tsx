@@ -164,10 +164,11 @@ const AdminPage: React.FC = () => {
         const fetchColors = async () => {
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/colors/all?page=1&pageSize=10`,
-                    {
+                    `${BASE_URL}/colors/all?page=1&pageSize=10`, {
                         headers: {
                             'Content-Type': 'application/json',
+                            Accept: 'application/json',
+                            'ngrok-skip-browser-warning': '69420',
                         },
                     }
                 );
