@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import Card from './Card';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { getProductsFeatures } from '@/api/products';
 
 interface ProductCategory {
     category: {
@@ -42,15 +44,22 @@ const ProductList = () => {
         router.push(`/product/${slug}`);
     };
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     useEffect(() => {
         const fetchProdutos = async () => {
             try {
-                const response = await fetch(
-                    'http://localhost:3333/products/featured-products'
-                );
-                const data = await response.json();
-               
-                setProdutos(data.products);
+                console.log('BASE_URL ', BASE_URL);
+                const response = await getProductsFeatures();
+                console.log('response do products list', response);
+
+                const data = response;
+                if (data) {
+                    console.log('response ', data);
+                    setProdutos(data);
+                } else {
+                    console.error('Estrutura da resposta inesperada:', data);
+                }
             } catch (error) {
                 console.error('Erro ao buscar produtos:', error);
             }

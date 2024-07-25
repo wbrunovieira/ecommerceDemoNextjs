@@ -20,7 +20,7 @@ import axios from 'axios';
 //             const authToken = session?.accessToken;
 
 //             const response = await axios.patch(
-//                 `http://localhost:3333/cart/${userId}/item/${itemId}`,
+//                 `${BASE_URL}/cart/${userId}/item/${itemId}`,
 //                 { quantity },
 //                 {
 //                     headers: {
@@ -192,6 +192,8 @@ type MyPersistCart = (
     options: PersistOptions<CartState>
 ) => StateCreator<CartState>;
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
 export const useCartStore = create<CartState>(
     (persist as MyPersistCart)(
         (set, get) => ({
@@ -301,7 +303,7 @@ export const useCartStore = create<CartState>(
                     const authToken = session?.accessToken;
 
                     const response = await axios.get(
-                        `http://localhost:3333/cart/user/${userId}`,
+                        `${BASE_URL}/cart/user/${userId}`,
                         {
                             headers: {
                                 Authorization: `Bearer ${authToken}`,
@@ -484,7 +486,7 @@ export const useCartStore = create<CartState>(
                     const authToken = session?.accessToken;
 
                     const existsResponse = await axios.get(
-                        `http://localhost:3333/cart/${userId}/exists`,
+                        `${BASE_URL}cart/${userId}/exists`,
                         {
                             headers: {
                                 Authorization: `Bearer ${authToken}`,
@@ -502,7 +504,7 @@ export const useCartStore = create<CartState>(
                         console.log('existsResponse.data.exists item ', item);
 
                         const addItemResponse = await axios.post(
-                            `http://localhost:3333/cart/add-item/${userId}`,
+                            `${BASE_URL}/cart/add-item/${userId}`,
                             item,
                             {
                                 headers: {
@@ -530,7 +532,7 @@ export const useCartStore = create<CartState>(
                     } else {
                         console.log('cart nao existe, vamos criar item', item);
                         const createCartResponse = await axios.post(
-                            `http://localhost:3333/cart`,
+                            `${BASE_URL}cart`,
                             { userId, items: [item] },
                             {
                                 headers: {
@@ -585,7 +587,7 @@ export const useCartStore = create<CartState>(
                     const authToken = session?.accessToken;
 
                     const removedItemResult = await axios.delete(
-                        `http://localhost:3333/cart/${cartId}/item/${cartItemId}`,
+                        `${BASE_URL}/cart/${cartId}/item/${cartItemId}`,
                         {
                             headers: {
                                 Authorization: `Bearer ${authToken}`,

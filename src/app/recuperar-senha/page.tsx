@@ -16,6 +16,7 @@ const RecuperarSenha: React.FC = () => {
         email: '',
     });
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
     const { toast } = useToast();
 
     const router = useRouter();
@@ -35,7 +36,7 @@ const RecuperarSenha: React.FC = () => {
         setIsButtonInDisabled(true);
 
         const result = await axios.post(
-            'http://localhost:3333/accounts/forgot-password/',
+            `${BASE_URL}/accounts/forgot-password/`,
             { email: email },
             {
                 headers: {

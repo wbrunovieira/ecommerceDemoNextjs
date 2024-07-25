@@ -61,6 +61,9 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
         (state) => state.setSelectedBrand
     );
     const router = useRouter();
+
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+    
     const handleButtonClick = (slug: string) => {
         router.push(`/product/${slug}`);
     };
@@ -69,7 +72,7 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
             const fetchProducts = async () => {
                 try {
                     const response = await fetch(
-                        `http://localhost:3333/products/search?name=${encodeURIComponent(
+                        `${BASE_URL}/products/search?name=${encodeURIComponent(
                             query
                         )}`
                     );

@@ -34,10 +34,43 @@ export type ProductProps = {
     similarProducts?: ProductProps[];
 };
 
+interface ProductCategory {
+    category: {
+        name: string;
+    };
+}
+
+interface Produto {
+    id: string;
+    name: string;
+    description: string;
+    productCategories: ProductCategory[];
+    price: number;
+    hasVariants: boolean;
+    slug: string;
+    FinalPrice: number;
+    onSale: boolean;
+    isNew: boolean;
+    discount: number;
+    images: string[];
+    finalPrice: number;
+    height: number;
+    width: number;
+    length: number;
+    weight: number;
+    brand: {
+        name: string;
+        imageUrl: string;
+    };
+}
+
 export type ProductType = {
     _id: { value: string };
     props: ProductProps;
 };
+interface ProductsResponseFeatured {
+    products: Produto[];
+}
 
 export interface ProductsResponse {
     products: ProductProps[];
@@ -107,11 +140,10 @@ export interface ProductsByCategorieResponse {
         };
     }[];
 }
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
 export async function getCategoriesId(): Promise<string[]> {
-    const response = await fetch(
-        'http://localhost:3333/category/all?page=1&pageSize=10'
-    );
+    const response = await fetch(`${BASE_URL}/category/all?page=1&pageSize=10`);
     const data: CategoriesResponse = await response.json();
 
     if (!Array.isArray(data.categories)) {
@@ -125,12 +157,9 @@ export async function getCategoriesId(): Promise<string[]> {
 export async function getProductsByCategoriesId(
     categoryId: string
 ): Promise<ProductsByCategorieResponse> {
-    const response = await fetch(
-        `http://localhost:3333/products/category/${categoryId}`
-    );
+    const response = await fetch(`${BASE_URL}/products/category/${categoryId}`);
 
     const data: any[] = await response.json();
-
 
     if (!Array.isArray(data)) {
         throw new Error('Expected an array of prodcuts');
@@ -172,12 +201,11 @@ export async function getProductsByCategoriesId(
         },
     }));
 
-
     return { products };
 }
 
 export async function getProducts(): Promise<ProductProps[]> {
-    const response = await fetch('http://localhost:3333/products/all');
+    const response = await fetch(`${BASE_URL}/products/all`);
     const data: ProductsResponse = await response.json();
 
     if (!Array.isArray(data.products)) {
@@ -187,15 +215,41 @@ export async function getProducts(): Promise<ProductProps[]> {
 }
 
 export async function getProduct(id: string) {
-    const response = await fetch(`http://localhost:3333/products/${id}`);
+    const response = await fetch(`${BASE_URL}/products/${id}`);
     return (await response.json()) as ProductType;
 }
 
 export async function getProductBySlug(
     slug: string
 ): Promise<ProductSlugResponse> {
-    const response = await fetch(`http://localhost:3333/products/slug/${slug}`);
+    const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
     const data: ProductSlugResponse = await response.json();
 
     return data;
+}
+
+export async function getProductsFeatures(): Promise<Produto[]> {
+    try {
+        const response = await fetch(`${BASE_URL}/products/featured-products`, {
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'ngrok-skip-browser-warning': '69420',
+            },
+        });
+        console.log('response status: getProductsFeatures', response.status);
+        console.log('response ok: getProductsFeatures', response.ok);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data: ProductsResponseFeatured = await response.json();
+        console.log('data: getProductsFeatures', data);
+
+        return data.products;
+    } catch (error) {
+        console.error('Erro ao buscar produtos: ', error);
+        throw error;
+    }
 }

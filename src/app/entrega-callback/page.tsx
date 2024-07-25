@@ -15,6 +15,7 @@ const MelhorEnvioCallback = () => {
     const [error, setError] = useState('');
 
     let token;
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     const calculateShipment = async (token: string) => {
         const cartItems = useCartStore.getState().cartItems;
@@ -63,7 +64,7 @@ const MelhorEnvioCallback = () => {
             if (code) {
                 try {
                     const response = await axios.post(
-                        'http://localhost:3333/sessions/request-token',
+                        `${BASE_URL}/sessions/request-token`,
                         {
                             code,
                         }

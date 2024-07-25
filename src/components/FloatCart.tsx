@@ -62,10 +62,12 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     const setUser = useCartStore((state) => state.setUser);
     const initializeCart = useCartStore((state: any) => state.initializeCart);
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     const fetchAddresses = async () => {
         try {
             const response = await fetch(
-                `http://localhost:3333/adress/by-user-id?userId=${session?.user?.id}`,
+                `${BASE_URL}/adress/by-user-id?userId=${session?.user?.id}`,
                 {
                     method: 'GET',
                     headers: {
@@ -123,6 +125,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             router.push('/login');
         } else {
             await fetchAddresses();
+            onClose();
             setShowAddressModal(true);
         }
     };
@@ -134,7 +137,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
 
     const handleAddNewAddress = async (address: Partial<Address['props']>) => {
         try {
-            const url = `http://localhost:3333/adress/${session?.user?.id}/addresses`;
+            const url = `${BASE_URL}/adress/${session?.user?.id}/addresses`;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {

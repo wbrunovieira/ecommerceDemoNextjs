@@ -120,6 +120,8 @@ const FilteredResults: NextPage = () => {
         (state) => state.setSelectedMaxPrice
     );
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     gsap.registerPlugin(useGSAP);
 
     const handleButtonClick = (slug: string) => {
@@ -285,7 +287,7 @@ const FilteredResults: NextPage = () => {
     useEffect(() => {
         if (category) {
             fetchProducts(
-                `http://localhost:3333/products/category/${encodeURIComponent(
+                `${BASE_URL}/products/category/${encodeURIComponent(
                     category
                 )}`
             );
@@ -293,21 +295,21 @@ const FilteredResults: NextPage = () => {
             setSelectedCategory(category);
         } else if (brand) {
             fetchProducts(
-                `http://localhost:3333/products/brand/${encodeURIComponent(
+                `${BASE_URL}/products/brand/${encodeURIComponent(
                     brand
                 )}`
             );
             setSelectedBrand(brand);
         } else if (size) {
             fetchProducts(
-                `http://localhost:3333/products/size/${encodeURIComponent(
+                `${BASE_URL}/products/size/${encodeURIComponent(
                     size
                 )}`
             );
             setSelectedSize({ id: size, name: size });
         } else if (minPrice && maxPrice) {
             fetchProducts(
-                `http://localhost:3333/products/price-range?minPrice=${encodeURIComponent(
+                `${BASE_URL}/products/price-range?minPrice=${encodeURIComponent(
                     minPrice
                 )}&maxPrice=${encodeURIComponent(maxPrice)}`
             );
@@ -319,7 +321,7 @@ const FilteredResults: NextPage = () => {
     useEffect(() => {
         if (color) {
             fetchProducts(
-                `http://localhost:3333products/color/${encodeURIComponent(
+                `${BASE_URL}/products/color/${encodeURIComponent(
                     color
                 )}`
             );

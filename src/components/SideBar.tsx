@@ -81,6 +81,8 @@ const Sidebar: React.FC<SidebarProps> = () => {
 
     let isHome = pathname === '/' || pathname.includes('/product/');
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     const capitalizeFirstLetter = (string: string) => {
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     };
@@ -126,14 +128,12 @@ const Sidebar: React.FC<SidebarProps> = () => {
         const fetchCategories = async () => {
             try {
                 const res = await fetch(
-                    'http://localhost:3333/category/all?page=1&pageSize=50'
+                    `${BASE_URL}/category/all?page=1&pageSize=50`
                 );
 
                 if (!res.ok) {
                     throw new Error(`HTTP error! status: ${res.status}`);
                 }
-
-               
 
                 const data = await res.json();
 
@@ -162,7 +162,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
         const fetchSizes = async () => {
             try {
                 const res = await fetch(
-                    'http://localhost:3333/size/all?page=1&pageSize=30'
+                    `${BASE_URL}/size/all?page=1&pageSize=30`
                 );
 
                 if (!res.ok) {
@@ -220,7 +220,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
         const fetchColors = async () => {
             try {
                 const res = await fetch(
-                    'http://localhost:3333/colors/all?page=1&pageSize=10'
+                    `${BASE_URL}/colors/all?page=1&pageSize=10`
                 );
 
                 if (!res.ok) {
@@ -246,7 +246,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
         const fetchBrands = async () => {
             try {
                 const res = await fetch(
-                    'http://localhost:3333/brands/all?page=1&pageSize=10'
+                    `${BASE_URL}/brands/all?page=1&pageSize=10`
                 );
 
                 if (!res.ok) {

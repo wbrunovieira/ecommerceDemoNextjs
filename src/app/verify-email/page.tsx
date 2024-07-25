@@ -11,13 +11,15 @@ const VerifyEmail = () => {
 
     const { toast } = useToast();
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     console.log('verificationStatus', verificationStatus);
     console.log('token', token);
 
     useEffect(() => {
         if (token) {
             console.log('entrou no token');
-            const url = `http://localhost:3333/accounts/verify/${token}`;
+            const url = `${BASE_URL}accounts/verify/${token}`;
             console.log('entrou no token,url', url);
             fetch(url)
                 .then((response) => response.json())

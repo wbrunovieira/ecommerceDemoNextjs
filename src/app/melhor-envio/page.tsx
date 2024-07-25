@@ -10,6 +10,8 @@ const MelhorEnvioAuthorize = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     useEffect(() => {
         if (status === 'unauthenticated') {
             router.replace('/login');
@@ -22,7 +24,7 @@ const MelhorEnvioAuthorize = () => {
 
         try {
             const response = await axios.get(
-                'http://localhost:3333/sessions/melhor-envio/auth-url'
+                `${BASE_URL}/sessions/melhor-envio/auth-url `
             );
             console.log('response', response);
             console.log('response.data.authUrl', response.data.authUrl);

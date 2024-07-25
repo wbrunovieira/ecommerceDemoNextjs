@@ -37,6 +37,8 @@ const AddressModal: React.FC<AddressModalProps> = ({
 
     const { data: session } = useSession();
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     const handleAddNewAddress = async () => {
         if (
             newAddress.street &&
@@ -49,7 +51,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
             try {
                 const id = session?.user.id;
                 const response = await fetch(
-                    `http://localhost:3333/adress/${id}/addresses`,
+                    `${BASE_URL}/adress/${id}/addresses`,
                     {
                         method: 'POST',
                         headers: {

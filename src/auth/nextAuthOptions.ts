@@ -7,7 +7,12 @@ interface ExtendedProfile extends Profile {
     picture?: string;
 }
 
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
+
 export const nextAuthOptions: NextAuthOptions = {
+
+    
     providers: [
         CredentialsProvider({
             name: 'credentials',
@@ -23,7 +28,7 @@ export const nextAuthOptions: NextAuthOptions = {
 
                 console.log('credentials.email ', credentials.email);
                 const responseCheck = await fetch(
-                    'http://localhost:3333/accounts/check',
+                    `${BASE_URL}/accounts/check'`,
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -40,7 +45,7 @@ export const nextAuthOptions: NextAuthOptions = {
                 if (!userExists && credentials.name) {
                     console.log('userExists nao existe vamos criar');
                     const responseCreate = await fetch(
-                        'http://localhost:3333/accounts',
+                        `${BASE_URL}/accounts`,
                         {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -73,7 +78,7 @@ export const nextAuthOptions: NextAuthOptions = {
                     };
                 }
 
-                const response = await fetch('http://localhost:3333/sessions', {
+                const response = await fetch(`${BASE_URL}/sessions`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(credentials),
@@ -125,8 +130,8 @@ export const nextAuthOptions: NextAuthOptions = {
             profile?: ExtendedProfile;
         }) {
             if (account?.provider === 'google') {
-                const endpointCheck = 'http://localhost:3333/accounts/check';
-                const endpointCreate = 'http://localhost:3333/accounts/google';
+                const endpointCheck = `${BASE_URL}/accounts/check`;
+                const endpointCreate = `${BASE_URL}/accounts/google`;
 
                 const payload = {
                     name: profile?.name,

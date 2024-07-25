@@ -85,6 +85,8 @@ const UserPage: NextPage = () => {
     );
     const addToCart = useCartStore((state: any) => state.addToCart);
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     const handleEditAddress = (addressId: string) => {
         setEditingAddressId(addressId);
     };
@@ -109,7 +111,7 @@ const UserPage: NextPage = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:3333/adress/${session?.user?.id}/addresses/${address._id.value}`,
+                `${BASE_URL}/adress/${session?.user?.id}/addresses/${address._id.value}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -134,7 +136,7 @@ const UserPage: NextPage = () => {
     const fetchAddresses = async () => {
         try {
             const response = await fetch(
-                `http://localhost:3333/adress/by-user-id?userId=${session?.user?.id}`,
+                `${BASE_URL}/adress/by-user-id?userId=${session?.user?.id}`,
                 {
                     method: 'GET',
                     headers: {
@@ -169,7 +171,7 @@ const UserPage: NextPage = () => {
     const handleDeleteAddress = async (addressId: string) => {
         try {
             const response = await fetch(
-                `http://localhost:3333/adress/addresses/${addressId}`,
+                `${BASE_URL}/adress/addresses/${addressId}`,
                 {
                     method: 'DELETE',
                     headers: {
@@ -218,7 +220,7 @@ const UserPage: NextPage = () => {
         });
         try {
             const response = await fetch(
-                `http://localhost:3333/accounts/edit/${session?.user?.id}`,
+                `${BASE_URL}/accounts/edit/${session?.user?.id}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -250,7 +252,7 @@ const UserPage: NextPage = () => {
 
     const handleCreateAddress = async () => {
         try {
-            const url = `http://localhost:3333/adress/${session?.user?.id}/addresses`;
+            const url = `${BASE_URL}/adress/${session?.user?.id}/addresses`;
             const body = JSON.stringify({
                 userId: session?.user?.id,
                 street: newAddress.street,
@@ -295,7 +297,7 @@ const UserPage: NextPage = () => {
     const fetchUserDetails = async () => {
         try {
             const response = await fetch(
-                `http://localhost:3333/accounts${session?.user?.id}`,
+                `${BASE_URL}/accounts${session?.user?.id}`,
                 {
                     method: 'GET',
                     headers: {
@@ -346,7 +348,7 @@ const UserPage: NextPage = () => {
         const formData = new FormData();
         formData.append('file', file);
 
-        fetch(`http://localhost:3333/accounts/upload/${session?.user?.id}`, {
+        fetch(`${BASE_URL}/accounts/upload/${session?.user?.id}`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${session?.accessToken}`,

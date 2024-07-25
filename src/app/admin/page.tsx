@@ -149,6 +149,8 @@ const AdminPage: React.FC = () => {
     const [searchId, setSearchId] = useState('');
     const [searchName, setSearchName] = useState('');
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     useEffect(() => {
         if (
             status === 'authenticated' &&
@@ -162,7 +164,7 @@ const AdminPage: React.FC = () => {
         const fetchColors = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3333/colors/all?page=1&pageSize=10`,
+                    `${BASE_URL}/colors/all?page=1&pageSize=10`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -179,7 +181,7 @@ const AdminPage: React.FC = () => {
         const fetchSizes = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3333/size/all?page=1&pageSize=20`,
+                    `${BASE_URL}/size/all?page=1&pageSize=20`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -196,7 +198,7 @@ const AdminPage: React.FC = () => {
         const fetchCategories = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3333/category/all?page=1&pageSize=50`,
+                    `${BASE_URL}/category/all?page=1&pageSize=50`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -213,7 +215,7 @@ const AdminPage: React.FC = () => {
         const fetchBrands = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3333/brands/all?page=1&pageSize=10`,
+                    `${BASE_URL}/brands/all?page=1&pageSize=10`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -229,7 +231,7 @@ const AdminPage: React.FC = () => {
         const fetchOrders = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3333/orders/all`,
+                    `${BASE_URL}/orders/all`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -245,7 +247,7 @@ const AdminPage: React.FC = () => {
         const fetchCustomers = async () => {
             try {
                 const response = await axios.get(
-                    `http://localhost:3333/customers/all`,
+                    `${BASE_URL}/customers/all`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
@@ -279,7 +281,7 @@ const AdminPage: React.FC = () => {
     const handleSaveClick = async (colorId: string) => {
         try {
             await axios.put(
-                `http://localhost:3333/colors/${colorId}`,
+                `${BASE_URL}/colors/${colorId}`,
                 { name: editColorData.name, hex: editColorData.hex },
                 {
                     headers: {
@@ -320,7 +322,7 @@ const AdminPage: React.FC = () => {
     const handleSaveSizeClick = async (sizeId: string) => {
         try {
             await axios.put(
-                `http://localhost:3333/size/${sizeId}`,
+                `${BASE_URL}/size/${sizeId}`,
                 { name: editSizeData.name },
                 {
                     headers: {
@@ -360,7 +362,7 @@ const AdminPage: React.FC = () => {
     const handleSaveCategoryClick = async (categoryId: string) => {
         try {
             await axios.put(
-                `http://localhost:3333/category/${categoryId}`,
+                `${BASE_URL}/category/${categoryId}`,
                 {
                     name: editCategoryData.name,
                     imageUrl: editCategoryData.imageUrl,
@@ -404,7 +406,7 @@ const AdminPage: React.FC = () => {
     const handleSaveBrandClick = async (brandId: string) => {
         try {
             await axios.put(
-                `http://localhost:3333/brands/${brandId}`,
+                `${BASE_URL}/brands/${brandId}`,
                 { name: editBrandData.name, imageUrl: editBrandData.imageUrl },
                 {
                     headers: {
@@ -467,7 +469,7 @@ const AdminPage: React.FC = () => {
     const fetchAllProducts = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/products/all`,
+                `${BASE_URL}/products/all`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -483,7 +485,7 @@ const AdminPage: React.FC = () => {
     const fetchProductById = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/products/${searchId}`,
+                `${BASE_URL}/products/${searchId}`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -503,7 +505,7 @@ const AdminPage: React.FC = () => {
     const fetchProductByName = async () => {
         try {
             const response = await axios.get(
-                `http://localhost:3333/products/search?name=${searchName}`,
+                `${BASE_URL}/products/search?name=${searchName}`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -543,7 +545,7 @@ const AdminPage: React.FC = () => {
     const handleSaveProductClick = async (productId: string) => {
         try {
             await axios.put(
-                `http://localhost:3333/products/${productId}`,
+                `${BASE_URL}/products/${productId}`,
                 { ...editProductData },
                 {
                     headers: {

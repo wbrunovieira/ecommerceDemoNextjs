@@ -32,6 +32,8 @@ const ResetPassword = () => {
 
     const router = useRouter();
 
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
     function getMessageForField(field: keyof ErrorMessages): string {
         switch (field) {
             case 'newPassword':
@@ -55,7 +57,7 @@ const ResetPassword = () => {
         setIsButtonInDisabled(true);
         try {
             const result = await axios.post(
-                `http://localhost:3333/accounts/reset-password?token=${token}`,
+                `${BASE_URL}/accounts/reset-password?token=${token}`,
                 { newPassword, token, userId },
                 {
                     headers: {
