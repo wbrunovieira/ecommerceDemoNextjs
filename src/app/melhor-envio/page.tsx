@@ -25,12 +25,11 @@ const MelhorEnvioAuthorize = () => {
         try {
             console.log('handleAuthorize');
             const response = await axios.get(
-                `${BASE_URL}/sessions/melhor-envio/auth-url `,
+                `${BASE_URL}/sessions/melhor-envio/auth-url`,
                 {
                     headers: {
                         'Content-Type': 'application/json',
                         Accept: 'application/json',
-                        'ngrok-skip-browser-warning': '69420',
                     },
                 }
             );

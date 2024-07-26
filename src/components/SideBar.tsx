@@ -128,11 +128,11 @@ const Sidebar: React.FC<SidebarProps> = () => {
         const fetchCategories = async () => {
             try {
                 const res = await fetch(
-                    `${BASE_URL}/category/all?page=1&pageSize=50`, {
+                    `${BASE_URL}/category/all?page=1&pageSize=50`,
+                    {
                         headers: {
                             'Content-Type': 'application/json',
                             Accept: 'application/json',
-                            'ngrok-skip-browser-warning': '69420',
                         },
                     }
                 );
@@ -168,11 +168,11 @@ const Sidebar: React.FC<SidebarProps> = () => {
         const fetchSizes = async () => {
             try {
                 const res = await fetch(
-                    `${BASE_URL}/size/all?page=1&pageSize=30`, {
+                    `${BASE_URL}/size/all?page=1&pageSize=30`,
+                    {
                         headers: {
                             'Content-Type': 'application/json',
                             Accept: 'application/json',
-                            'ngrok-skip-browser-warning': '69420',
                         },
                     }
                 );
@@ -232,11 +232,11 @@ const Sidebar: React.FC<SidebarProps> = () => {
         const fetchColors = async () => {
             try {
                 const res = await fetch(
-                    `${BASE_URL}/colors/all?page=1&pageSize=10`, {
+                    `${BASE_URL}/colors/all?page=1&pageSize=10`,
+                    {
                         headers: {
                             'Content-Type': 'application/json',
                             Accept: 'application/json',
-                            'ngrok-skip-browser-warning': '69420',
                         },
                     }
                 );
@@ -264,11 +264,11 @@ const Sidebar: React.FC<SidebarProps> = () => {
         const fetchBrands = async () => {
             try {
                 const res = await fetch(
-                    `${BASE_URL}/brands/all?page=1&pageSize=10`, {
+                    `${BASE_URL}/brands/all?page=1&pageSize=10`,
+                    {
                         headers: {
                             'Content-Type': 'application/json',
                             Accept: 'application/json',
-                            'ngrok-skip-browser-warning': '69420',
                         },
                     }
                 );

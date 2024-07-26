@@ -43,7 +43,6 @@ interface Address {
 }
 
 const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
-    
     const [clickedTrash, setClickedTrash] = useState<string | null>(null);
     const [showAddressModal, setShowAddressModal] = useState(false);
     const [addresses, setAddresses] = useState<Address[]>([]);
@@ -75,7 +74,6 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${session?.accessToken}`,
-                        'ngrok-skip-browser-warning': '69420',
                     },
                 }
             );
@@ -146,7 +144,6 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${session?.accessToken}`,
-                    'ngrok-skip-browser-warning': '69420',
                 },
                 body: JSON.stringify({
                     ...address,

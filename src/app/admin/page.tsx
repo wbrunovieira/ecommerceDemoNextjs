@@ -164,11 +164,11 @@ const AdminPage: React.FC = () => {
         const fetchColors = async () => {
             try {
                 const response = await axios.get(
-                    `${BASE_URL}/colors/all?page=1&pageSize=10`, {
+                    `${BASE_URL}/colors/all?page=1&pageSize=10`,
+                    {
                         headers: {
                             'Content-Type': 'application/json',
                             Accept: 'application/json',
-                            'ngrok-skip-browser-warning': '69420',
                         },
                     }
                 );
@@ -231,14 +231,11 @@ const AdminPage: React.FC = () => {
 
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(
-                    `${BASE_URL}/orders/all`,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
+                const response = await axios.get(`${BASE_URL}/orders/all`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
                 setOrders(response.data.orders);
             } catch (error) {
                 console.error('Erro ao buscar os pedidos: ', error);
@@ -247,14 +244,11 @@ const AdminPage: React.FC = () => {
 
         const fetchCustomers = async () => {
             try {
-                const response = await axios.get(
-                    `${BASE_URL}/customers/all`,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
+                const response = await axios.get(`${BASE_URL}/customers/all`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
                 setCustomers(response.data.customers);
             } catch (error) {
                 console.error('Erro ao buscar os clientes: ', error);
@@ -469,14 +463,11 @@ const AdminPage: React.FC = () => {
 
     const fetchAllProducts = async () => {
         try {
-            const response = await axios.get(
-                `${BASE_URL}/products/all`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            const response = await axios.get(`${BASE_URL}/products/all`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
             setProducts(response.data.products);
         } catch (error) {
             console.error('Erro ao buscar todos os produtos: ', error);

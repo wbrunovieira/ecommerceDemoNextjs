@@ -79,7 +79,6 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
                             method: 'GET',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'ngrok-skip-browser-warning': '69420',
                             },
                         }
                     );

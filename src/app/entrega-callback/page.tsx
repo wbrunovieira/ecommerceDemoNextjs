@@ -4,6 +4,8 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
+import { parseCookies, setCookie } from 'nookies';
+
 import axios from 'axios';
 import { useCartStore } from '@/context/store';
 
@@ -14,7 +16,8 @@ const MelhorEnvioCallback = () => {
     const { data: session } = useSession();
     const [error, setError] = useState('');
 
-    let token;
+    let access_token;
+    let refresh_token;
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     const calculateShipment = async (token: string) => {
@@ -44,7 +47,6 @@ const MelhorEnvioCallback = () => {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${token}`,
-                        'ngrok-skip-browser-warning': '69420',
                     },
                     body: JSON.stringify({
                         token,
@@ -67,39 +69,155 @@ const MelhorEnvioCallback = () => {
         }
     };
 
+    const isTokenValid = () => {
+        const cookies = parseCookies();
+        const tokenExpiry = cookies.melhorenvio_token_expiry;
+        if (!tokenExpiry) return false;
+
+        const expiryDate = new Date(tokenExpiry);
+        console.log('expiryDate > new Date() ', expiryDate > new Date());
+        return expiryDate > new Date();
+    };
+
     useEffect(() => {
         const fetchAccessToken = async () => {
             const code = searchParams.get('code');
-            console.log('code ', code);
+            const cookies = parseCookies();
+            const existingToken = cookies.melhorenvio_token;
+            const refreshToken = cookies.melhorenvio_refresh_token;
 
-            if (code) {
+            console.log('code ', code);
+            console.log('existingToken ', existingToken);
+
+            if (existingToken && isTokenValid()) {
+                try {
+                    const result = await calculateShipment(existingToken);
+                    router.replace('/entrega');
+                    return;
+                } catch (error) {
+                    console.error(
+                        'Existing token failed, attempting to refresh...'
+                    );
+                }
+            }
+
+            if (refresh_token) {
                 try {
                     const response = await axios.post(
-                        `${BASE_URL}/sessions/request-token`,
+                        `${BASE_URL}/auth/refresh-token`,
+                        { refresh_token: refreshToken }
+                    );
+                    const { access_token, refresh_token, expires_in } =
+                        response.data;
+                    const expiryDate = new Date(
+                        new Date().getTime() + expires_in * 1000
+                    );
+
+                    setCookie(null, 'melhorenvio_token', access_token, {
+                        maxAge: expires_in,
+                        path: '/',
+                        sameSite: 'strict',
+                    });
+
+                    setCookie(
+                        null,
+                        'melhorenvio_refresh_token',
+                        refresh_token,
                         {
-                            code,
+                            maxAge: 30 * 24 * 60 * 60, // 30 days
+                            path: '/',
+                            sameSite: 'strict',
                         }
                     );
 
-                    console.log('response ', response);
+                    setCookie(
+                        null,
+                        'melhorenvio_token_expiry',
+                        expiryDate.toISOString(),
+                        {
+                            maxAge: expires_in,
+                            path: '/',
+                            sameSite: 'strict',
+                        }
+                    );
 
-                    if (response.status === 201) {
-                        console.log(
-                            'response.data.success ',
-                            response.data.success
+                    const result = await calculateShipment(access_token);
+                    router.replace('/entrega');
+                    return;
+                } catch (error) {
+                    console.error('Refreshing token failed:', error);
+                }
+            }
+
+            if (code) {
+                try {
+                    console.log('code entrou fo if code ', code);
+                    const response = await axios.post(
+                        `${BASE_URL}/sessions/request-token`,
+                        { code },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Accept: 'application/json',
+                            },
+                        }
+                    );
+
+                    console.log('response if code ', response.status);
+                    if (response.status === 201 || response.status === 200) {
+                        const {
+                            access_token,
+                            refresh_token: newRefreshToken,
+                            expires_in,
+                        } = response.data;
+
+                        const expiryDate = new Date(
+                            new Date().getTime() + expires_in * 1000
                         );
 
-                        token = response.data.access_token;
-                        console.log('token ', token);
+                        console.log('newRefreshToken', newRefreshToken);
+                        console.log('access_token', access_token);
+                        console.log('expires_in', expires_in);
 
-                        const result = await calculateShipment(token);
-                        console.log('result ', result);
+                        setCookie(null, 'melhorenvio_token', access_token, {
+                            maxAge: expires_in,
+                            path: '/',
+                            sameSite: 'strict',
+                        });
 
-                        // router.replace('/entrega');
+                        setCookie(
+                            null,
+                            'melhorenvio_refresh_token',
+                            refresh_token,
+                            {
+                                maxAge: 30 * 24 * 60 * 60, // 30 days
+                                path: '/',
+                                sameSite: 'strict',
+                            }
+                        );
+
+                        setCookie(
+                            null,
+                            'melhorenvio_token_expiry',
+                            expiryDate.toISOString(),
+                            {
+                                maxAge: expires_in,
+                                path: '/',
+                                sameSite: 'strict',
+                            }
+                        );
+
+                        console.log('quase calculateShipment');
+                        const result = await calculateShipment(access_token);
+                        console.log('result calculateShipment ', result);
+
+                        router.replace('/entrega');
                     }
                 } catch (err) {
                     setError('Erro ao tentar obter o token de acesso.');
                 }
+            } else {
+                setError('Authorization code is missing.');
             }
         };
 

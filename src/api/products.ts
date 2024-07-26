@@ -234,7 +234,6 @@ export async function getProductsFeatures(): Promise<Produto[]> {
             headers: {
                 'Content-Type': 'application/json',
                 Accept: 'application/json',
-                'ngrok-skip-browser-warning': '69420',
             },
         });
         console.log('response status: getProductsFeatures', response.status);
