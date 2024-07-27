@@ -10,6 +10,7 @@ import axios from 'axios';
 import { useCartStore } from '@/context/store';
 
 const MelhorEnvioCallback = () => {
+    
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -80,16 +81,18 @@ const MelhorEnvioCallback = () => {
     };
 
     useEffect(() => {
+
         const fetchAccessToken = async () => {
             const code = searchParams.get('code');
             const cookies = parseCookies();
             const existingToken = cookies.melhorenvio_token;
             const refreshToken = cookies.melhorenvio_refresh_token;
+            const tokenIsValid = isTokenValid();
 
             console.log('code ', code);
             console.log('existingToken ', existingToken);
 
-            if (existingToken && isTokenValid()) {
+            if (existingToken && tokenIsValid ) {
                 try {
                     const result = await calculateShipment(existingToken);
                     router.replace('/entrega');
@@ -101,19 +104,18 @@ const MelhorEnvioCallback = () => {
                 }
             }
 
-            if (refresh_token) {
+            if (existingToken && !tokenIsValid && refreshToken) {
                 try {
                     const response = await axios.post(
                         `${BASE_URL}/auth/refresh-token`,
                         { refresh_token: refreshToken }
                     );
-                    const { access_token, refresh_token, expires_in } =
-                        response.data;
+                    const { access_token: newAccessToken, refresh_token: newRefreshToken, expires_in } = response.data;
                     const expiryDate = new Date(
                         new Date().getTime() + expires_in * 1000
                     );
 
-                    setCookie(null, 'melhorenvio_token', access_token, {
+                    setCookie(null, 'melhorenvio_token', newAccessToken, {
                         maxAge: expires_in,
                         path: '/',
                         sameSite: 'strict',
@@ -122,7 +124,7 @@ const MelhorEnvioCallback = () => {
                     setCookie(
                         null,
                         'melhorenvio_refresh_token',
-                        refresh_token,
+                        newRefreshToken,
                         {
                             maxAge: 30 * 24 * 60 * 60, // 30 days
                             path: '/',
@@ -141,7 +143,7 @@ const MelhorEnvioCallback = () => {
                         }
                     );
 
-                    const result = await calculateShipment(access_token);
+                    const result = await calculateShipment(newAccessToken);
                     router.replace('/entrega');
                     return;
                 } catch (error) {
