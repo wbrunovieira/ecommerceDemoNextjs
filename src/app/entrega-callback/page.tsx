@@ -10,7 +10,6 @@ import axios from 'axios';
 import { useCartStore } from '@/context/store';
 
 const MelhorEnvioCallback = () => {
-    
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -22,48 +21,38 @@ const MelhorEnvioCallback = () => {
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     const calculateShipment = async (token: string) => {
-        const { cartItems, selectedAddress } = useCartStore((state) => ({
-            cartItems: state.cartItems,
-            selectedAddress: state.selectedAddress,
-        }));
-        console.log('Current cart items:', cartItems);
-        console.log('Current selected address:', selectedAddress);
+        const cartStore = useCartStore();
+        cartStore.logState();
+        const { products, address } = useCartStore
+            .getState()
+            .getCartItemsAndAddressForShipping();
 
-        console.log(
-            'Shipment calculation cartItems:selectedAddress',
-            cartItems,
-            selectedAddress
-        );
+        console.log('products:', products);
+        console.log(' address:', address);
 
-        if (!cartItems.length || !selectedAddress) {
+        if (!products.length || !address) {
             console.error('Cart items or selected address is missing');
             return;
         }
 
         try {
-            const response = await fetch(
-                'https://sandbox.melhorenvio.com.br/api/v2/me/shipment/calculate',
+            const response = await axios.post(
+                `${BASE_URL}/cart/calculate-shipment`,
+                { cartItems: products, selectedAddress: address, token },
                 {
-                    method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json',
                     },
-                    body: JSON.stringify({
-                        token,
-                        cartItems,
-                        selectedAddress,
-                    }),
                 }
             );
 
-            if (!response.ok) {
+            if (!response) {
                 throw new Error('Failed to calculate shipment');
             }
 
-            const result = await response.json();
-            console.log('Shipment calculation result:', result);
-            return result;
+            console.log('Shipment calculation result:', response);
+            return response;
         } catch (error) {
             console.error('Error calculating shipment:', error);
             throw error;
@@ -81,7 +70,6 @@ const MelhorEnvioCallback = () => {
     };
 
     useEffect(() => {
-
         const fetchAccessToken = async () => {
             const code = searchParams.get('code');
             const cookies = parseCookies();
@@ -92,7 +80,7 @@ const MelhorEnvioCallback = () => {
             console.log('code ', code);
             console.log('existingToken ', existingToken);
 
-            if (existingToken && tokenIsValid ) {
+            if (existingToken && tokenIsValid) {
                 try {
                     const result = await calculateShipment(existingToken);
                     router.replace('/entrega');
@@ -110,7 +98,11 @@ const MelhorEnvioCallback = () => {
                         `${BASE_URL}/auth/refresh-token`,
                         { refresh_token: refreshToken }
                     );
-                    const { access_token: newAccessToken, refresh_token: newRefreshToken, expires_in } = response.data;
+                    const {
+                        access_token: newAccessToken,
+                        refresh_token: newRefreshToken,
+                        expires_in,
+                    } = response.data;
                     const expiryDate = new Date(
                         new Date().getTime() + expires_in * 1000
                     );
@@ -151,7 +143,7 @@ const MelhorEnvioCallback = () => {
                 }
             }
 
-            if (code) {
+            if (!existingToken && code) {
                 try {
                     console.log('code entrou fo if code ', code);
                     const response = await axios.post(

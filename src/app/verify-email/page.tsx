@@ -19,7 +19,7 @@ const VerifyEmail = () => {
     useEffect(() => {
         if (token) {
             console.log('entrou no token');
-            const url = `${BASE_URL}accounts/verify/${token}`;
+            const url = `${BASE_URL}/accounts/verify/${token}`;
             console.log('entrou no token,url', url);
             fetch(url)
                 .then((response) => response.json())

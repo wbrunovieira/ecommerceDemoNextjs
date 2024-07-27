@@ -148,6 +148,19 @@ interface CartState {
     ) => Promise<SaveCartResponse>;
     removeItemFromBackend: (cartId: string, cartItemId: string) => void;
     fetchCart: (userId: string) => Promise<Cart | null>;
+    getCartItemsAndAddressForShipping: () => {
+        products: Array<{
+            id: string;
+            width: number;
+            height: number;
+            length: number;
+            weight: number;
+            insurance_value: number;
+            quantity: number;
+        }>;
+        address: { postal_code: string };
+    };
+    logState: () => void;
 }
 
 interface FavoriteState {
@@ -200,7 +213,6 @@ export const useCartStore = create<CartState>(
             cartItems: [],
             userId: null,
             selectedAddress: null,
-
             addToCart: async (product: Product) => {
                 const existingItem = get().cartItems.find(
                     (item) => item.id === product.id
@@ -405,6 +417,7 @@ export const useCartStore = create<CartState>(
                 if (userId) {
                     const fetchedCart = await get().fetchCart(userId);
                     console.log('fetchedCart', fetchedCart);
+
                     if (fetchedCart) {
                         const items = fetchedCart.props.items.map(
                             (item: any) => ({
@@ -427,6 +440,7 @@ export const useCartStore = create<CartState>(
                                 cartId: fetchedCart._id.value,
                             })
                         );
+                        console.log('items', items);
                         set({
                             cartItems: items,
                             cartId: fetchedCart._id.value,
@@ -448,6 +462,7 @@ export const useCartStore = create<CartState>(
 
             setSelectedAddress: (address: Address | null) =>
                 set((state: CartState) => ({
+                    ...state,
                     selectedAddress: address,
                 })),
 
@@ -486,7 +501,7 @@ export const useCartStore = create<CartState>(
                     const authToken = session?.accessToken;
 
                     const existsResponse = await axios.get(
-                        `${BASE_URL}cart/${userId}/exists`,
+                        `${BASE_URL}/cart/${userId}/exists`,
                         {
                             headers: {
                                 Authorization: `Bearer ${authToken}`,
@@ -532,7 +547,7 @@ export const useCartStore = create<CartState>(
                     } else {
                         console.log('cart nao existe, vamos criar item', item);
                         const createCartResponse = await axios.post(
-                            `${BASE_URL}cart`,
+                            `${BASE_URL}/cart`,
                             { userId, items: [item] },
                             {
                                 headers: {
@@ -605,7 +620,57 @@ export const useCartStore = create<CartState>(
                     console.error('Error removing item from backend:', error);
                 }
             },
+
+            getCartItemsAndAddressForShipping: () => {
+                console.log('entrou no getCartItemsAndAddressForShipping');
+                const { userId } = get();
+                const { cartItems } = get();
+                const { selectedAddress } = get();
+
+                console.log(
+                    'getCartItemsAndAddressForShipping cartItems: ',
+                    cartItems
+                );
+                console.log(
+                    'getCartItemsAndAddressForShipping selectedAddress: ',
+                    selectedAddress
+                );
+                console.log(
+                    'getCartItemsAndAddressForShipping userId: ',
+                    userId
+                );
+
+                if (!cartItems || cartItems.length === 0) {
+                    console.error('No cart items found');
+                    return { products: [], address: { postal_code: '' } };
+                }
+
+                const products = cartItems.map((item) => ({
+                    id: item.id,
+                    width: item.width,
+                    height: item.height,
+                    length: item.length,
+                    weight: item.weight,
+                    insurance_value: item.price * item.quantity,
+                    quantity: item.quantity,
+                }));
+                console.log(
+                    'getCartItemsAndAddressForShipping cartItems products ',
+                    cartItems,
+                    products
+                );
+
+                const address = selectedAddress
+                    ? { postal_code: selectedAddress?.props?.zipCode }
+                    : { postal_code: '' };
+
+                return { products, address };
+            },
+            logState: () => {
+                console.log('Cart State:', get());
+            },
         }),
+
         {
             name: 'cart-storage',
             storage: createJSONStorage(() => sessionStorage),
