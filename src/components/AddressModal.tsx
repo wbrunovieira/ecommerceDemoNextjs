@@ -91,7 +91,11 @@ const AddressModal: React.FC<AddressModalProps> = ({
     const handleCepChange = async (cep: string) => {
         console.log('entrou handleCepChange');
         const cleanedCep = cep.replace(/\D/g, '');
-        setNewAddress({ ...newAddress, zipCode: cleanedCep });
+        console.log('entrou handleCepChange cleanedCep', cleanedCep);
+        setNewAddress((prevAddress) => ({
+            ...prevAddress,
+            zipCode: cleanedCep,
+        }));
         if (cleanedCep.length === 8) {
             try {
                 const response = await fetch(
@@ -105,6 +109,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                         street: data.logradouro,
                         complement: data.complemento,
                         city: data.localidade,
+
                         state: data.uf,
                         country: 'Brasil',
                     });
@@ -142,6 +147,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                     }
                                 />
                             </div>
+
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
                                     Rua

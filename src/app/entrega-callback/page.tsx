@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
 import { parseCookies, setCookie } from 'nookies';
@@ -220,10 +220,7 @@ const MelhorEnvioCallback = () => {
         let { address } = useCartStore
             .getState()
             .getCartItemsAndAddressForShipping();
-        console.log(
-            'entrou calculateShipment selectedAddress',
-            selectedAddress
-        );
+
         console.log('entrou calculateShipment address', address);
 
         if (!cartItems.length || !address) {
@@ -240,28 +237,33 @@ const MelhorEnvioCallback = () => {
             insurance_value: item.price * item.quantity,
             quantity: item.quantity,
         }));
-
-        address = selectedAddress
-            ? { postal_code: selectedAddress.props.zipCode }
-            : { postal_code: '' };
+        console.log('calculateShipment products', products);
 
         try {
+            console.log('calculateShipment agora vamos mandar tudo', {
+                cartItems: products,
+                selectedAddress: address.zipCode,
+                token,
+            });
+            const session = await getSession();
+            const authToken = session?.accessToken;
             const response = await axios.post(
                 `${BASE_URL}/cart/calculate-shipment`,
                 { cartItems: products, selectedAddress: address, token },
                 {
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${authToken}`,
                         Accept: 'application/json',
                     },
                 }
             );
+            console.log('Shipment calculation result:', response);
 
             if (!response) {
                 throw new Error('Failed to calculate shipment');
             }
 
-            console.log('Shipment calculation result:', response);
             return response;
         } catch (error) {
             console.error('Error calculating shipment:', error);

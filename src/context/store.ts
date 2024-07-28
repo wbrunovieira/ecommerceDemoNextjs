@@ -158,7 +158,7 @@ interface CartState {
             insurance_value: number;
             quantity: number;
         }>;
-        address: { postal_code: string };
+        address: { zipCode: string };
     };
     logState: () => void;
 }
@@ -447,7 +447,10 @@ export const useCartStore = create<CartState>(
                                 cartId: fetchedCart._id.value,
                                 userId,
                             };
-                            console.log('New state after fetching cart:', newState);
+                            console.log(
+                                'New state after fetching cart:',
+                                newState
+                            );
                             return newState;
                         });
                         return;
@@ -458,7 +461,10 @@ export const useCartStore = create<CartState>(
                         cartItems: products,
                         userId: userId || get().userId || null,
                     };
-                    console.log('New state after setting initial cart:', newState);
+                    console.log(
+                        'New state after setting initial cart:',
+                        newState
+                    );
                     return newState;
                 });
             },
@@ -698,7 +704,7 @@ export const useCartStore = create<CartState>(
 
                 if (!cartItems || cartItems.length === 0) {
                     console.error('No cart items found');
-                    return { products: [], address: { postal_code: '' } };
+                    return { products: [], address: { zipCode: '' } };
                 }
 
                 const products = cartItems.map((item) => ({
@@ -717,8 +723,8 @@ export const useCartStore = create<CartState>(
                 );
 
                 const address = selectedAddress
-                    ? { postal_code: selectedAddress?.props?.zipCode }
-                    : { postal_code: '' };
+                    ? { zipCode: selectedAddress?.props?.zipCode }
+                    : { zipCode: '' };
 
                 return { products, address };
             },
