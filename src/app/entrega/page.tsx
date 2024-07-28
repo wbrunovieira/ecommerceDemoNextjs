@@ -13,38 +13,6 @@ const ShippingOptions = () => {
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
-    useEffect(() => {
-        const fetchShippingOptions = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.post(
-                    `${BASE_URL}/cart/calculate-shipment`,
-                    {
-                        // token,
-                        cartItems,
-                        selectedAddress,
-                    },
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Accept: 'application/json',
-                        },
-                    }
-                );
-                console.log('fetchShippingOptions response', response);
-                setShippingOptions(response.data);
-            } catch (error) {
-                setError('Erro ao obter as opções de frete.');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        if (status === 'authenticated') {
-            fetchShippingOptions();
-        }
-    }, [status]);
-
     return (
         <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-primaryLight p-8 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-16 md:p-12 sm:w-full">
@@ -60,25 +28,7 @@ const ShippingOptions = () => {
                             {error}
                         </p>
                     )}
-                    {!loading && !error && (
-                        <ul className="text-white">
-                            {/* {shippingOptions.map((option, index) => (
-                                <li key={index} className="mb-4">
-                                    <p>
-                                        <strong>Nome:</strong> {option.name}
-                                    </p>
-                                    <p>
-                                        <strong>Preço:</strong> R${' '}
-                                        {option.price.toFixed(2)}
-                                    </p>
-                                    <p>
-                                        <strong>Tempo de Entrega:</strong>{' '}
-                                        {option.deliveryTime}
-                                    </p>
-                                </li>
-                            ))} */}
-                        </ul>
-                    )}
+                    {!loading && !error && <ul className="text-white"></ul>}
                 </div>
             </div>
         </div>

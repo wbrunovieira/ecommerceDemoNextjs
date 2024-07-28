@@ -27,6 +27,13 @@ interface Address {
     };
 }
 
+interface ShippingOption {
+    name: string;
+    currency: string;
+    delivery_time: number;
+    price: number;
+}
+
 const MelhorEnvioCallback = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -39,6 +46,10 @@ const MelhorEnvioCallback = () => {
     const { data: session } = useSession();
     const [error, setError] = useState('');
     const [isCartInitialized, setIsCartInitialized] = useState(false);
+    const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>(
+        []
+    );
+    const [loading, setLoading] = useState(true);
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -81,7 +92,11 @@ const MelhorEnvioCallback = () => {
                     'entrou no ele existe existingToken result',
                     result
                 );
-                router.replace('/entrega');
+                if (result && result.data) {
+                    setShippingOptions(result.data);
+                }
+                setLoading(false);
+
                 return;
             } catch (error) {
                 console.error(
@@ -130,7 +145,10 @@ const MelhorEnvioCallback = () => {
 
                 const result = await calculateShipment(newAccessToken);
                 console.log('entrou no  refreshToken result', result);
-                router.replace('/entrega');
+                if (result && result.data) {
+                    setShippingOptions(result.data);
+                }
+                setLoading(false);
                 return;
             } catch (error) {
                 console.error('Refreshing token failed:', error);
@@ -201,8 +219,10 @@ const MelhorEnvioCallback = () => {
                     );
                     const result = await calculateShipment(access_token);
                     console.log('result calculateShipment ', result);
-
-                    router.replace('/entrega');
+                    if (result && result.data) {
+                        setShippingOptions(result.data);
+                    }
+                    setLoading(false);
                 }
             } catch (err) {
                 setError('Erro ao tentar obter o token de acesso.');
@@ -281,22 +301,46 @@ const MelhorEnvioCallback = () => {
         return expiryDate > new Date();
     };
 
+    const handleSelectShippingOption = (option) => {
+        console.log('handleSelectShippingOption', option);
+
+        router.replace('/entrega');
+    };
+
     return (
         <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-primaryLight p-8 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-16 md:p-12 sm:w-full">
                 <div className="relative z-10 bg-primary p-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
                     <h2 className="text-2xl font-bold text-secondary mb-4">
-                        Callback Melhor Envio
+                        Opções de Frete
                     </h2>
-                    {error && (
+                    {loading ? (
+                        <p className="text-white mb-4">Carregando...</p>
+                    ) : error ? (
                         <p className="text-red-500 text-xs italic mb-4">
                             {error}
                         </p>
+                    ) : (
+                        <ul className="text-white">
+                            {shippingOptions.map((option, index) => (
+                                <li
+                                    key={index}
+                                    onClick={() =>
+                                        handleSelectShippingOption(option)
+                                    }
+                                    className="mb-2 p-2 border border-secondary rounded cursor-pointer hover:bg-secondaryDark"
+                                >
+                                    <p className="font-semibold">
+                                        {option.name}
+                                    </p>
+                                    <p>Prazo: {option.delivery_time} dias</p>
+                                    <p>
+                                        Preço: {option.price} {option.currency}
+                                    </p>
+                                </li>
+                            ))}
+                        </ul>
                     )}
-                    <p className="text-white mb-4">
-                        Estamos processando sua autorização. Por favor,
-                        aguarde...
-                    </p>
                 </div>
             </div>
         </div>
