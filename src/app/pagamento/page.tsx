@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import { useCartStore } from '@/context/store';
+import WalletComponent from '@/components/WalletComponent';
 
 const ShippingOptions = () => {
     const { data: session, status } = useSession();
@@ -12,23 +13,13 @@ const ShippingOptions = () => {
     const { cartItems, selectedAddress } = useCartStore();
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
-
+    const preferenceId = '<PREFERENCE_ID>'; 
     return (
         <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-primaryLight p-8 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-16 md:p-12 sm:w-full">
                 <div className="relative z-10 bg-primary p-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-bold text-secondary mb-4">
-                        Opções de Frete
-                    </h2>
-                    {loading && (
-                        <p className="text-white mb-4">Carregando...</p>
-                    )}
-                    {error && (
-                        <p className="text-red-500 text-xs italic mb-4">
-                            {error}
-                        </p>
-                    )}
-                    {!loading && !error && <ul className="text-white"></ul>}
+                <h1 className="text-3xl font-bold text-center my-8">Pagamento com Mercado Pago</h1>
+                    <WalletComponent preferenceId={preferenceId} />
                 </div>
             </div>
         </div>
