@@ -104,15 +104,14 @@ const AddressModal: React.FC<AddressModalProps> = ({
                 const data = await response.json();
                 console.log('viacep in newAddress', data);
                 if (!data.erro) {
-                    setNewAddress({
-                        ...newAddress,
+                    setNewAddress((prevAddress) => ({
+                        ...prevAddress,
                         street: data.logradouro,
                         complement: data.complemento,
                         city: data.localidade,
-
                         state: data.uf,
                         country: 'Brasil',
-                    });
+                    }));
                 } else {
                     // Handle CEP not found
                 }

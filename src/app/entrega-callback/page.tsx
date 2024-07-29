@@ -301,9 +301,45 @@ const MelhorEnvioCallback = () => {
         return expiryDate > new Date();
     };
 
-    const handleSelectShippingOption = (option) => {
+    const handleSelectShippingOption = async (option) => {
         console.log('handleSelectShippingOption', option);
         useCartStore.getState().setSelectedShippingOption(option);
+        const userId = session!.user.id;
+
+        if (!userId) {
+            console.error('User ID is missing');
+            return;
+        }
+
+        const shippingData = {
+            userId: userId,
+            name: option.name,
+            shippingCost: parseFloat(option.price.toString()),
+            deliveryTime: option.delivery_time,
+        };
+        console.log('handleSelectShippingOption shippingData', shippingData);
+
+        try {
+            const response = await axios.post(
+                `${BASE_URL}/shipping/create`,
+                shippingData,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                    },
+                }
+            );
+            console.log('handleSelectShippingOption', response);
+
+            if (response.status === 201 || response.status === 200) {
+                router.replace('/entrega');
+            } else {
+                console.error('Failed to create shipment:', response.data);
+            }
+        } catch (error) {
+            console.error('Error creating shipment:', error);
+        }
 
         router.replace('/entrega');
     };
