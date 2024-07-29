@@ -133,6 +133,7 @@ interface CartState {
     selectedAddress?: Address | null;
     addToCart: (product: Product, userId?: string) => void;
     removeFromCart: (cartId: string, cartItemId: string) => void;
+    selectedShippingOption?: ShippingOption | null;
     clearCart: (uuserId?: string) => void;
     updateQuantity: (
         productId: string,
@@ -142,6 +143,8 @@ interface CartState {
     initializeCart: (products: Product[], userId?: string) => Promise<void>;
     setUser: (userId: string) => void;
     setSelectedAddress: (address: Address | null) => void;
+    setSelectedShippingOption: (option: ShippingOption | null) => void;
+    getSelectedShippingOption: () => ShippingOption | null;
     saveCartToBackend: (
         userId: string,
         item: Product
@@ -161,6 +164,13 @@ interface CartState {
         address: { zipCode: string };
     };
     logState: () => void;
+}
+
+interface ShippingOption {
+    name: string;
+    currency: string;
+    delivery_time: number;
+    price: number;
 }
 
 interface FavoriteState {
@@ -731,6 +741,16 @@ export const useCartStore = create<CartState>(
             logState: () => {
                 console.log('Cart State:', get());
             },
+            setSelectedShippingOption: (option: ShippingOption | null) =>
+                set((state: CartState) => ({
+                    ...state,
+                    selectedShippingOption: option,
+                })),
+
+                getSelectedShippingOption: () => {
+                    const option = get().selectedShippingOption;
+                    return option !== undefined ? option : null;
+                }
         }),
 
         {

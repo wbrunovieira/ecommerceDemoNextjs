@@ -303,6 +303,7 @@ const MelhorEnvioCallback = () => {
 
     const handleSelectShippingOption = (option) => {
         console.log('handleSelectShippingOption', option);
+        useCartStore.getState().setSelectedShippingOption(option);
 
         router.replace('/entrega');
     };
