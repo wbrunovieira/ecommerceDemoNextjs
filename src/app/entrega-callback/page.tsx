@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { v4 as uuidv4 } from 'uuid';
 
 import { parseCookies, setCookie } from 'nookies';
 
@@ -43,6 +44,8 @@ const MelhorEnvioCallback = () => {
     );
     const initializeCart = useCartStore((state) => state.initializeCart);
     const setUser = useCartStore((state) => state.setUser);
+    const createPreference = useCartStore((state) => state.createPreference);
+
     const { data: session } = useSession();
     const [error, setError] = useState('');
     const [isCartInitialized, setIsCartInitialized] = useState(false);
@@ -333,7 +336,9 @@ const MelhorEnvioCallback = () => {
             console.log('handleSelectShippingOption', response);
 
             if (response.status === 201 || response.status === 200) {
-                router.replace('/entrega');
+                const uuid = uuidv4();
+                const preference = await createPreference(String(uuid), option);
+                router.replace('/checkout');
             } else {
                 console.error('Failed to create shipment:', response.data);
             }
@@ -341,7 +346,7 @@ const MelhorEnvioCallback = () => {
             console.error('Error creating shipment:', error);
         }
 
-        router.replace('/entrega');
+        router.replace('/checkout');
     };
 
     return (

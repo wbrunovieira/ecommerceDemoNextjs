@@ -38,26 +38,6 @@ import axios from 'axios';
 //     1500
 // );
 
-interface Product {
-    id: string;
-    title: string;
-    image: string;
-    price: number;
-    quantity: number;
-
-    height: number;
-    width: number;
-    length: number;
-    weight: number;
-    color?: string;
-    colorId?: string;
-    size?: string;
-    sizeId?: string;
-    hasVariants: boolean;
-    productIdVariant?: string;
-    _id?: { value: string };
-}
-
 export interface Color {
     id: string;
     name: string;
@@ -85,6 +65,26 @@ interface Address {
         createdAt: string;
         updatedAt: string;
     };
+}
+
+interface Product {
+    id: string;
+    title: string;
+    image: string;
+    price: number;
+    quantity: number;
+
+    height: number;
+    width: number;
+    length: number;
+    weight: number;
+    color?: string;
+    colorId?: string;
+    size?: string;
+    sizeId?: string;
+    hasVariants: boolean;
+    productIdVariant?: string;
+    _id?: { value: string };
 }
 
 interface CartItem extends Product {
@@ -164,6 +164,10 @@ interface CartState {
         address: { zipCode: string };
     };
     logState: () => void;
+    createPreference: (
+        token: string,
+        shippingOption: ShippingOption
+    ) => Promise<any>;
 }
 
 interface ShippingOption {
@@ -747,10 +751,54 @@ export const useCartStore = create<CartState>(
                     selectedShippingOption: option,
                 })),
 
-                getSelectedShippingOption: () => {
-                    const option = get().selectedShippingOption;
-                    return option !== undefined ? option : null;
+            getSelectedShippingOption: () => {
+                const option = get().selectedShippingOption;
+                return option !== undefined ? option : null;
+            },
+
+            createPreference: async (
+                id: string,
+                shippingOption: ShippingOption
+            ) => {
+                const { cartItems } = get();
+                const total = cartItems.reduce(
+                    (acc, item) => acc + item.price * item.quantity,
+                    0
+                );
+                const totalWithShipping = total + shippingOption.price;
+
+                const preferenceData = {
+                    items: [
+                        {
+                            id,
+                            title: 'Carrinho de Compras Stylos Lingeries',
+                            quantity: 1,
+                            unit_price: totalWithShipping,
+                        },
+                    ],
+                };
+
+                try {
+                    const session = await getSession();
+                    const authToken = session?.accessToken;
+
+                    const response = await axios.post(
+                        `${BASE_URL}/create-preference`,
+                        preferenceData,
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${authToken}`,
+                            },
+                        }
+                    );
+
+                    return response.data;
+                } catch (error) {
+                    console.error('Error creating preference:', error);
+                    throw error;
                 }
+            },
         }),
 
         {
