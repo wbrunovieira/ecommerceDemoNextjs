@@ -623,7 +623,7 @@ export const useCartStore = create<CartState>(
                     } else {
                         console.log('cart nao existe, vamos criar item', item);
                         const createCartResponse = await axios.post(
-                            `${BASE_URL}/cart`,
+                            `${BASE_URL}/cart/create-preference`,
                             { userId, items: [item] },
                             {
                                 headers: {
@@ -768,30 +768,38 @@ export const useCartStore = create<CartState>(
                 const totalWithShipping = total + shippingOption.price;
 
                 const preferenceData = {
-                    items: [
-                        {
-                            id,
-                            title: 'Carrinho de Compras Stylos Lingeries',
-                            quantity: 1,
-                            unit_price: totalWithShipping,
-                        },
-                    ],
+                    id,
+                    description: 'Carrinho de Compras Stylos Lingeries',
+                    price: Number(totalWithShipping), 
+                    quantity: 1,
                 };
+                console.log('createPreference preferenceData', preferenceData);
+                console.log(
+                    'createPreference preferenceData[0]',
+                    preferenceData[0]
+                );
+                console.log(
+                    'createPreference JSON.stringify(preferenceData)',
+                    JSON.stringify(preferenceData)
+                );
 
                 try {
                     const session = await getSession();
                     const authToken = session?.accessToken;
-
+                    const url = `${BASE_URL}/cart/create-preference`;
+                    console.log('createPreference url', url);
+                    console.log('createPreference authToken', authToken);
                     const response = await axios.post(
-                        `${BASE_URL}/create-preference`,
-                        preferenceData,
+                        url,
+                        JSON.stringify(preferenceData),
                         {
                             headers: {
-                                'Content-Type': 'application/json',
                                 Authorization: `Bearer ${authToken}`,
+                                'Content-Type': 'application/json',
                             },
                         }
                     );
+                    console.log('createPreference response', response);
 
                     return response.data;
                 } catch (error) {

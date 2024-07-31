@@ -338,7 +338,13 @@ const MelhorEnvioCallback = () => {
             if (response.status === 201 || response.status === 200) {
                 const uuid = uuidv4();
                 const preference = await createPreference(String(uuid), option);
-                router.replace('/checkout');
+
+                console.log('handleSelectShippingOption option', option);
+                console.log(
+                    'handleSelectShippingOption preference',
+                    preference
+                );
+                // router.replace('/checkout');
             } else {
                 console.error('Failed to create shipment:', response.data);
             }
@@ -346,7 +352,7 @@ const MelhorEnvioCallback = () => {
             console.error('Error creating shipment:', error);
         }
 
-        router.replace('/checkout');
+        // router.replace('/checkout');
     };
 
     return (
