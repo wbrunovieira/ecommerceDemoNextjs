@@ -18,7 +18,7 @@ const ShippingOptions = () => {
         <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-primaryLight p-8 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-16 md:p-12 sm:w-full">
                 <div className="relative z-10 bg-primary p-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
-                <h1 className="text-3xl font-bold text-center my-8">Pagamento com Mercado Pago</h1>
+                <h1 className="text-3xl font-bold text-center my-8">Pagamento Pendente</h1>
                     <WalletComponent preferenceId={preferenceId} />
                 </div>
             </div>

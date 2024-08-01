@@ -53,6 +53,7 @@ const MelhorEnvioCallback = () => {
         []
     );
     const [loading, setLoading] = useState(true);
+    const [preferenceId, setPreferenceId] = useState(null);
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -333,18 +334,25 @@ const MelhorEnvioCallback = () => {
                     },
                 }
             );
+
             console.log('handleSelectShippingOption', response);
 
             if (response.status === 201 || response.status === 200) {
                 const uuid = uuidv4();
                 const preference = await createPreference(String(uuid), option);
 
-                console.log('handleSelectShippingOption option', option);
+                setPreferenceId(preference.id);
+
                 console.log(
                     'handleSelectShippingOption preference',
                     preference
                 );
-                // router.replace('/checkout');
+
+                console.log(
+                    'handleSelectShippingOption preference.id',
+                    preference.id
+                );
+                router.replace('/checkout');
             } else {
                 console.error('Failed to create shipment:', response.data);
             }

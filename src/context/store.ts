@@ -164,10 +164,12 @@ interface CartState {
         address: { zipCode: string };
     };
     logState: () => void;
+    preferenceId?: string | null;
     createPreference: (
         token: string,
         shippingOption: ShippingOption
     ) => Promise<any>;
+    setPreferenceId: (preferenceId: string) => void;
 }
 
 interface ShippingOption {
@@ -227,6 +229,8 @@ export const useCartStore = create<CartState>(
             cartItems: [],
             userId: null,
             selectedAddress: null,
+            preferenceId: null,
+
             addToCart: async (product: Product) => {
                 const existingItem = get().cartItems.find(
                     (item) => item.id === product.id
@@ -755,6 +759,9 @@ export const useCartStore = create<CartState>(
                 const option = get().selectedShippingOption;
                 return option !== undefined ? option : null;
             },
+            setPreferenceId: (preferenceId: string) => {
+                set({ preferenceId });
+            },
 
             createPreference: async (
                 id: string,
@@ -762,22 +769,37 @@ export const useCartStore = create<CartState>(
             ) => {
                 const { cartItems } = get();
                 const total = cartItems.reduce(
-                    (acc, item) => acc + item.price * item.quantity,
+                    (acc, item) =>
+                        acc + Number(item.price) * Number(item.quantity),
                     0
                 );
-                const totalWithShipping = total + shippingOption.price;
+                const shippingPrice = Number(shippingOption.price);
+                const totalWithShipping = total + shippingPrice;
+
+                console.log(
+                    'createPreference totalWithShipping',
+                    totalWithShipping
+                );
+                console.log('Cart total:', total);
+                console.log('Shipping price:', shippingPrice);
+                console.log('Total with shipping:', totalWithShipping);
+
+                const formattedTotalWithShipping = parseFloat(
+                    totalWithShipping.toFixed(2)
+                );
+                console.log(
+                    'Formatted total with shipping:',
+                    formattedTotalWithShipping
+                );
 
                 const preferenceData = {
                     id,
                     description: 'Carrinho de Compras Stylos Lingeries',
-                    price: Number(totalWithShipping), 
+                    price: formattedTotalWithShipping,
                     quantity: 1,
                 };
                 console.log('createPreference preferenceData', preferenceData);
-                console.log(
-                    'createPreference preferenceData[0]',
-                    preferenceData[0]
-                );
+
                 console.log(
                     'createPreference JSON.stringify(preferenceData)',
                     JSON.stringify(preferenceData)
@@ -789,17 +811,15 @@ export const useCartStore = create<CartState>(
                     const url = `${BASE_URL}/cart/create-preference`;
                     console.log('createPreference url', url);
                     console.log('createPreference authToken', authToken);
-                    const response = await axios.post(
-                        url,
-                        JSON.stringify(preferenceData),
-                        {
-                            headers: {
-                                Authorization: `Bearer ${authToken}`,
-                                'Content-Type': 'application/json',
-                            },
-                        }
-                    );
+                    const response = await axios.post(url, preferenceData, {
+                        headers: {
+                            Authorization: `Bearer ${authToken}`,
+                            'Content-Type': 'application/json',
+                        },
+                    });
                     console.log('createPreference response', response);
+                    const preferenceId = response.data.id;
+                    set({ preferenceId });
 
                     return response.data;
                 } catch (error) {
