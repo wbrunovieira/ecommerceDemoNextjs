@@ -166,6 +166,7 @@ interface CartState {
     logState: () => void;
     preferenceId?: string | null;
     createPreference: (
+        cartId: string,
         token: string,
         shippingOption: ShippingOption
     ) => Promise<any>;
@@ -226,6 +227,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 export const useCartStore = create<CartState>(
     (persist as MyPersistCart)(
         (set, get) => ({
+            cartId: null,
             cartItems: [],
             userId: null,
             selectedAddress: null,
@@ -746,9 +748,11 @@ export const useCartStore = create<CartState>(
 
                 return { products, address };
             },
+
             logState: () => {
                 console.log('Cart State:', get());
             },
+            
             setSelectedShippingOption: (option: ShippingOption | null) =>
                 set((state: CartState) => ({
                     ...state,
@@ -764,6 +768,7 @@ export const useCartStore = create<CartState>(
             },
 
             createPreference: async (
+                cartId: string,
                 id: string,
                 shippingOption: ShippingOption
             ) => {
@@ -811,7 +816,7 @@ export const useCartStore = create<CartState>(
                     const url = `${BASE_URL}/cart/create-preference`;
                     console.log('createPreference url', url);
                     console.log('createPreference authToken', authToken);
-                    const response = await axios.post(url, preferenceData, {
+                    const response = await axios.post(url, { cartId, ...preferenceData }, {
                         headers: {
                             Authorization: `Bearer ${authToken}`,
                             'Content-Type': 'application/json',

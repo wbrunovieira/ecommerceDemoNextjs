@@ -12,11 +12,11 @@ const MelhorEnvioAuthorize = () => {
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
-    useEffect(() => {
-        if (status === 'unauthenticated') {
-            router.replace('/login');
-        }
-    }, [status, router]);
+    // useEffect(() => {
+    //     if (status === 'unauthenticated') {
+    //         router.replace('/login');
+    //     }
+    // }, [status, router]);
 
     const handleAuthorize = async () => {
         setIsLoading(true);
@@ -33,6 +33,7 @@ const MelhorEnvioAuthorize = () => {
                     },
                 }
             );
+            
             console.log('response', response);
             console.log('response.data.authUrl', response.data.authUrl);
             if (response.data.authUrl) {

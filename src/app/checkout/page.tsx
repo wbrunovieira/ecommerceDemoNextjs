@@ -26,6 +26,8 @@ const CheckoutPage = () => {
     console.log('mercadoPagoPublicKey', mercadoPagoPublicKey);
     console.log('preferenceId', preferenceId);
 
+    const notificationUrl = 'https://www.your-site.com/ipn';
+
     return (
         <div className="fixed inset-0 flex items-center justify-center">
             <div className="bg-primaryLight p-8 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-16 md:p-12 sm:w-full">
@@ -35,7 +37,9 @@ const CheckoutPage = () => {
                     </h1>
 
                     <Wallet
-                        initialization={{ preferenceId: preferenceId }}
+                        initialization={{
+                            preferenceId: preferenceId,
+                        }}
                         customization={{ texts: { valueProp: 'smart_option' } }}
                     />
                 </div>

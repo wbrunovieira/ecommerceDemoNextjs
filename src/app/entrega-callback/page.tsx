@@ -39,6 +39,7 @@ const MelhorEnvioCallback = () => {
     const searchParams = useSearchParams();
     const router = useRouter();
     const cartItems = useCartStore((state: any) => state.cartItems);
+    const cartId = useCartStore((state) => state.cartId);
     const [selectedAddress, setSelectedAddress] = useState<Address | null>(
         null
     );
@@ -338,8 +339,19 @@ const MelhorEnvioCallback = () => {
             console.log('handleSelectShippingOption', response);
 
             if (response.status === 201 || response.status === 200) {
+
                 const uuid = uuidv4();
-                const preference = await createPreference(String(uuid), option);
+                if (!cartId) {
+                    console.error('Cart ID is missing');
+                    setError('Cart ID is not set. Please try again.');
+                    return;
+                }
+                
+                const preference = await createPreference(
+                    cartId,
+                    String(uuid),
+                    option
+                );
 
                 setPreferenceId(preference.id);
 
