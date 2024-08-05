@@ -628,8 +628,9 @@ export const useCartStore = create<CartState>(
                         };
                     } else {
                         console.log('cart nao existe, vamos criar item', item);
+
                         const createCartResponse = await axios.post(
-                            `${BASE_URL}/cart/create-preference`,
+                            `${BASE_URL}/cart/`,
                             { userId, items: [item] },
                             {
                                 headers: {
@@ -752,7 +753,7 @@ export const useCartStore = create<CartState>(
             logState: () => {
                 console.log('Cart State:', get());
             },
-            
+
             setSelectedShippingOption: (option: ShippingOption | null) =>
                 set((state: CartState) => ({
                     ...state,
@@ -816,12 +817,16 @@ export const useCartStore = create<CartState>(
                     const url = `${BASE_URL}/cart/create-preference`;
                     console.log('createPreference url', url);
                     console.log('createPreference authToken', authToken);
-                    const response = await axios.post(url, { cartId, ...preferenceData }, {
-                        headers: {
-                            Authorization: `Bearer ${authToken}`,
-                            'Content-Type': 'application/json',
-                        },
-                    });
+                    const response = await axios.post(
+                        url,
+                        { cartId, ...preferenceData },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${authToken}`,
+                                'Content-Type': 'application/json',
+                            },
+                        }
+                    );
                     console.log('createPreference response', response);
                     const preferenceId = response.data.id;
                     set({ preferenceId });
