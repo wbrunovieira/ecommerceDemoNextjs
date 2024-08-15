@@ -58,31 +58,19 @@ export const nextAuthOptions: NextAuthOptions = {
                     }
 
                     const user = await responseCreate.json();
-
                     console.log('criado user', user);
-
-                    console.log(
-                        'criado user.user._id.value',
-                        user.user._id.value
-                    );
-                    console.log(
-                        'criado user.user.props.name',
-                        user.user.props.name
-                    );
 
                     return {
                         user: {
-                            id: user.user._id.value,
-                            name: user.user.props.name,
-                            email: user.user.props.email,
+                            id: user.user.id,
+                            name: user.user.name,
+                            email: user.user.email,
                         },
                         accessToken: user.access_token,
-                        id: user.user._id.value,
-                        name: user.user.props.name,
+                        id: user.user.id,
+                        name: user.user.name,
                     };
                 }
-
-                console.log('credentials', credentials);
 
                 const response = await fetch(`${BASE_URL}/sessions`, {
                     method: 'POST',
@@ -95,24 +83,18 @@ export const nextAuthOptions: NextAuthOptions = {
                 }
 
                 const user = await response.json();
-                console.log('Dados de autenticação:', user);
 
-                if (!user.user || !user.access_token) {
-                    console.log('Dados de autenticação incompletos:', user);
-                    return null;
-                }
-
-                const userData = {
+                return {
                     user: {
                         id: user.user.id,
                         name: user.user.name,
                         email: user.user.email,
                     },
                     accessToken: user.access_token,
+                    id: user.user.id,
+                    name: user.user.name,
+                    email: user.user.email,
                 };
-
-                console.log('Usuário autenticado:', userData);
-                return userData;
             },
         }),
         GoogleProvider({

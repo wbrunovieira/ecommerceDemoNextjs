@@ -489,54 +489,7 @@ export const useCartStore = create<CartState>(
                 });
             },
 
-            // initializeCart: async (products: Product[], userId?: string) => {
-            //     if (userId) {
-            //         const fetchedCart = await get().fetchCart(userId);
-            //         console.log('fetchedCart', fetchedCart);
-
-            //         if (fetchedCart) {
-            //             const items = fetchedCart.props.items.map(
-            //                 (item: any) => ({
-            //                     id: item.props.productId,
-            //                     title: item.props.productName,
-            //                     image: item.props.imageUrl,
-            //                     quantity: item.props.quantity,
-            //                     price: item.props.price,
-            //                     height: item.props.height,
-            //                     width: item.props.width,
-            //                     length: item.props.length,
-            //                     weight: item.props.weight,
-            //                     color: item.props.color,
-            //                     colorId: item.props.colorId,
-            //                     size: item.props.size,
-            //                     sizeId: item.props.sizeId,
-            //                     hasVariants: item.props.hasVariants,
-            //                     productIdVariant: item.props.productIdVariant,
-            //                     _id: { value: item._id.value },
-            //                     cartId: fetchedCart._id.value,
-            //                 })
-            //             );
-            //             console.log('items', items);
-
-            //             set((state) => {
-            //                 const newState = {
-            //                     cartItems: items,
-            //                     cartId: fetchedCart._id.value,
-            //                     userId,
-            //                 };
-            //                 console.log('New state after fetching cart:', newState);
-            //                 return newState;
-            //             });
-
-            //             return;
-            //         }
-            //     }
-            //     set({
-            //         cartItems: products,
-            //         userId: userId || get().userId || null,
-            //     });
-            // },
-
+           
             setUser: (userId: string) =>
                 set((state: CartState) => ({
                     userId,

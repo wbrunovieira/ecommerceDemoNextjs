@@ -9,6 +9,7 @@ import { useToast } from './ui/use-toast';
 
 import { useRouter } from 'next/navigation';
 import AddressModal from './AddressModal';
+import { MdOutlineConfirmationNumber } from 'react-icons/md';
 
 interface FloatCartProps {
     onClose: () => void;
@@ -81,7 +82,13 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             console.log('fetchAddresses entrou response ', response);
             if (response.ok) {
                 const data = await response.json();
-                setAddresses(data.addresses);
+                const foundAddresses = data.addresses;
+                if (foundAddresses && foundAddresses.length > 0) {
+                    setAddresses(foundAddresses);
+                    setShowAddressModal(true);
+                } else {
+                    setShowAddressModal(true);
+                }
             } else {
                 console.error('Failed to fetch addresses');
             }
@@ -127,7 +134,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             router.push('/login');
         } else {
             await fetchAddresses();
-            setShowAddressModal(true);
+            // setShowAddressModal(true);
         }
     };
 
@@ -150,10 +157,16 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                     userId: session?.user?.id,
                 }),
             });
+            console.log('handleAddNewAddress response', response);
 
             if (response.ok) {
-                setShowAddressModal(false);
-                router.push('/entrega-callback');
+                const newAddress = await response.json();
+                console.log('handleAddNewAddress newAddress', newAddress);
+                setAddresses((prevAddresses) => [...prevAddresses, newAddress]);
+                setSelectedAddress(newAddress);
+                setShowAddressModal(true);
+                handleAddNewAddresses(newAddress);
+                router.push('/frete');
             } else {
                 console.error('Failed to create address');
             }
@@ -296,7 +309,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                         setSelectedAddress(selectedAddress);
                         setSelectedAddressInStore(selectedAddress);
                         setShowAddressModal(false);
-                        router.push('/melhor-envio');
+                        router.push('/frete');
                     }}
                     onAddNewAddress={handleAddNewAddress}
                 />
