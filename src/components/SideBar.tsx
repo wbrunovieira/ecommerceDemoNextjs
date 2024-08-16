@@ -2,15 +2,15 @@
 
 import Image from 'next/image';
 
-
 import PriceFilter from './PriceFilter';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import { useColorStore, useSelectionStore } from '@/context/store';
+import { useColorStore, useLoadingStore, useSelectionStore } from '@/context/store';
 
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+
 
 interface Category {
     id: string;
@@ -78,6 +78,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
     const setSelectedMaxPrice = useSelectionStore(
         (state) => state.setSelectedMaxPrice
     );
+   
 
     let isHome = pathname === '/' || pathname.includes('/product/');
 
@@ -348,6 +349,8 @@ const Sidebar: React.FC<SidebarProps> = () => {
                 <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider mb-2">
                     Categorias
                 </h2>
+
+            
                 <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
                 <div
                     className={`overflow-hidden ${

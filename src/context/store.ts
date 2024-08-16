@@ -191,6 +191,11 @@ interface FavoriteState {
     toggleFavorite: (productId: string, userId?: string | null) => void;
 }
 
+interface LoadingState {
+    isLoading: boolean;
+    setLoading: (loading: boolean) => void;
+}
+
 export interface SelectionState {
     selectedCategory: string | null;
     selectedBrand: string | null;
@@ -223,6 +228,19 @@ type MyPersistCart = (
 ) => StateCreator<CartState>;
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
+export const useLoadingStore = create<LoadingState>()(
+    persist(
+        (set) => ({
+            isLoading: false,
+            setLoading: (loading: boolean) => set({ isLoading: loading }),
+        }),
+        {
+            name: 'loading-storage',
+            storage: createJSONStorage(() => sessionStorage),
+        }
+    )
+);
 
 export const useCartStore = create<CartState>(
     (persist as MyPersistCart)(
@@ -489,7 +507,6 @@ export const useCartStore = create<CartState>(
                 });
             },
 
-           
             setUser: (userId: string) =>
                 set((state: CartState) => ({
                     userId,

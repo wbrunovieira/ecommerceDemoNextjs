@@ -1,5 +1,5 @@
 'use client';
-import { useCartStore } from '@/context/store';
+import { useCartStore, useLoadingStore } from '@/context/store';
 import Image from 'next/image';
 
 import { useSession } from 'next-auth/react';
@@ -9,6 +9,8 @@ import { useToast } from './ui/use-toast';
 
 import { useRouter } from 'next/navigation';
 import AddressModal from './AddressModal';
+import LoadingModal from './LoadingModal';
+import useLoadingHandler from '@/utils/useLoadingHandler';
 
 interface FloatCartProps {
     onClose: () => void;
@@ -63,6 +65,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     const { toast } = useToast();
     const setUser = useCartStore((state) => state.setUser);
     const initializeCart = useCartStore((state: any) => state.initializeCart);
+    const setLoading = useLoadingStore((state) => state.setLoading);
+    const [isFreightLoading, setIsFreightLoading] = useState(false);
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -104,11 +108,19 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         setShowAddressModal(false);
     };
 
-    const handleModalConfirm = (selectedAddress: Address) => {
+    const handleModalConfirm = async (selectedAddress: Address) => {
         setSelectedAddress(selectedAddress);
+        setIsLoading(true);
+        setIsFreightLoading(true);
         setSelectedAddressInStore(selectedAddress);
         handleModalClose();
+        setLoading(true);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         router.push('/frete');
+
+        setIsFreightLoading(false);
+
+        useLoadingHandler();
     };
 
     const handleClickOutside = (event: React.MouseEvent) => {
@@ -168,7 +180,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         };
         initializeUserCart();
     }, [session, setUser, initializeCart]);
-
+    console.log('isLoading float', isLoading);
     return (
         <div
             className="fixed top-28 right-2 flex items-center justify-center z-50 bg-primaryLight border rounded-md shadow-xl border-secondary bg-opacity-80 modal-background"
@@ -278,9 +290,10 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
 
                     <button
                         onClick={handleCheckout}
+                        disabled={isLoading}
                         className="px-4 py-2 mt-2 rounded bg-secondary text-primaryLight transition duration-300 hover:scale-105"
                     >
-                        Checkout
+                        {isLoading ? 'Carregando...' : 'Checkout'}
                     </button>
                 </div>
             </div>
@@ -302,6 +315,13 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                         <span className="sr-only">Carregando...</span>
                     </div>
                 </div>
+            )}
+
+            {isFreightLoading && (
+                <LoadingModal
+                    isOpen={isFreightLoading}
+                    message="Procurando os melhores fretes para você..."
+                />
             )}
         </div>
     );

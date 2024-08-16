@@ -7,7 +7,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 import axios from 'axios';
 
-import { useCartStore } from '@/context/store';
+import { useCartStore, useLoadingStore } from '@/context/store';
+import LoadingHandler from '@/components/LoadingHandler';
+import useLoadingHandler from '@/utils/useLoadingHandler';
 
 interface Address {
     _id: {
@@ -35,6 +37,7 @@ interface ShippingOption {
 }
 
 const FretePage = () => {
+    useLoadingHandler();
     const searchParams = useSearchParams();
     const router = useRouter();
     const cartItems = useCartStore((state: any) => state.cartItems);
@@ -52,7 +55,9 @@ const FretePage = () => {
     const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>(
         []
     );
-    const [loading, setLoading] = useState(true);
+    const isLoading = useLoadingStore((state) => state.isLoading);
+    const setLoading = useLoadingStore((state) => state.setLoading);
+    const [loadingin, setLoadingin] = useState(true);
     const [preferenceId, setPreferenceId] = useState(null);
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
@@ -208,6 +213,7 @@ const FretePage = () => {
 
         router.replace('/checkout');
     };
+    console.log('frete isLoading', isLoading);
 
     return (
         <div className="fixed inset-0 flex items-center justify-center">
@@ -216,7 +222,7 @@ const FretePage = () => {
                     <h2 className="text-2xl font-bold text-secondary mb-4">
                         Opções de Frete
                     </h2>
-                    {loading ? (
+                    {loadingin ? (
                         <p className="text-white mb-4">Carregando...</p>
                     ) : error ? (
                         <p className="text-red-500 text-xs italic mb-4">
@@ -244,6 +250,7 @@ const FretePage = () => {
                         </ul>
                     )}
                 </div>
+                <LoadingHandler />
             </div>
         </div>
     );
