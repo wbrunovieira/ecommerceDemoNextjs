@@ -74,12 +74,12 @@ const AddressModal: React.FC<AddressModalProps> = ({
                     const data = await response.json();
                     const savedAddress = data.address;
                     console.log('entrou no if (response.ok');
-                   
 
                     console.log('savedAddressa', savedAddress);
                     setNewAddress({});
                     setIsAddingNew(false);
                     onConfirm(savedAddress);
+                    onClose();
 
                     console.log('addresses', addresses);
                 } else {
@@ -277,7 +277,11 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                         <li
                                             key={index}
                                             className="mb-2 cursor-pointer hover:bg-gray-100 p-2 rounded"
-                                            onClick={() => onConfirm(address)}
+                                            onClick={() => {
+                                                onConfirm(address);
+                                                console.log('Chamando onClose');
+                                                onClose;
+                                            }}
                                         >
                                             {address.props.street},{' '}
                                             {address.props.number},{' '}
@@ -290,7 +294,9 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                 </ul>
                                 <div className="flex justify-between mt-4">
                                     <button
-                                        onClick={() => setIsAddingNew(true)}
+                                        onClick={() => {
+                                            setIsAddingNew(true);
+                                        }}
                                         className="bg-blue-500 text-white px-4 py-2 rounded"
                                     >
                                         Adicionar Outro Endereço

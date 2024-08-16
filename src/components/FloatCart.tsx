@@ -10,7 +10,6 @@ import { useToast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
 import AddressModal from './AddressModal';
 
-
 interface FloatCartProps {
     onClose: () => void;
 }
@@ -97,10 +96,20 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         }
     };
 
+    const handleModalClose = () => {
+        setShowAddressModal(false);
+    };
+
+    const handleModalConfirm = (selectedAddress: Address) => {
+        setSelectedAddress(selectedAddress);
+        setSelectedAddressInStore(selectedAddress);
+        handleModalClose();
+        router.push('/frete');
+    };
+
     const handleClickOutside = (event: React.MouseEvent) => {
-        if (
-            (event.target as HTMLElement).classList.contains('modal-background')
-        ) {
+        const modalElement = document.querySelector('.modal-content');
+        if (modalElement && !modalElement.contains(event.target as Node)) {
             onClose();
         }
     };
@@ -134,7 +143,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             router.push('/login');
         } else {
             await fetchAddresses();
-            // setShowAddressModal(true);
+
+            setShowAddressModal(true);
         }
     };
 
@@ -142,8 +152,6 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         setAddresses((prevAddresses) => [...prevAddresses, address]);
         setShowAddressModal(true);
     };
-
-
 
     useEffect(() => {
         const initializeUserCart = async () => {
@@ -158,11 +166,11 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
 
     return (
         <div
-            className="fixed top-28 right-2 flex items-center justify-center z-50 bg-primaryLight border rounded-md shadow-xl border-secondary bg-opacity-80"
+            className="fixed top-28 right-2 flex items-center justify-center z-50 bg-primaryLight border rounded-md shadow-xl border-secondary bg-opacity-80 modal-background"
             onClick={handleClickOutside}
         >
             <div
-                className="relative bg-white rounded-lg shadow-xl p-6 mb-4 max-w-lg w-full"
+                className="relative bg-white rounded-lg shadow-xl p-6 mb-4 max-w-lg w-full modal-content"
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
@@ -274,14 +282,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             {showAddressModal && (
                 <AddressModal
                     addresses={addresses}
-                    onClose={() => setShowAddressModal(false)}
-                    onConfirm={(selectedAddress) => {
-                        setSelectedAddress(selectedAddress);
-                        setSelectedAddressInStore(selectedAddress);
-                        setShowAddressModal(false);
-                        router.push('/frete');
-                    }}
-                    
+                    onClose={handleModalClose}
+                    onConfirm={handleModalConfirm}
                 />
             )}
         </div>

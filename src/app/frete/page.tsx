@@ -65,6 +65,7 @@ const FretePage = () => {
                 setIsCartInitialized(true);
             }
         };
+
         initializeUserCart();
     }, [session, setUser, initializeCart]);
 
@@ -142,6 +143,7 @@ const FretePage = () => {
         console.log('handleSelectShippingOption', option);
         useCartStore.getState().setSelectedShippingOption(option);
         const userId = session!.user.id;
+        cartId;
 
         if (!userId) {
             console.error('User ID is missing');
@@ -150,6 +152,7 @@ const FretePage = () => {
 
         const shippingData = {
             userId: userId,
+            cartId: cartId,
             name: option.name,
             shippingCost: parseFloat(option.price.toString()),
             deliveryTime: option.delivery_time,
