@@ -50,6 +50,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         null
     );
 
+    const [isLoading, setIsLoading] = useState(false);
+
     const cartItems = useCartStore((state: any) => state.cartItems);
     const removeFromCart = useCartStore((state: any) => state.removeFromCart);
     const updateQuantity = useCartStore((state: any) => state.updateQuantity);
@@ -93,6 +95,8 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             }
         } catch (error) {
             console.error('Error fetching addresses', error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -142,6 +146,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             });
             router.push('/login');
         } else {
+            setIsLoading(true);
             await fetchAddresses();
 
             setShowAddressModal(true);
@@ -285,6 +290,18 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                     onClose={handleModalClose}
                     onConfirm={handleModalConfirm}
                 />
+            )}
+            {isLoading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+                </div>
+            )}
+            {isLoading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="spinner-border text-light" role="status">
+                        <span className="sr-only">Carregando...</span>
+                    </div>
+                </div>
             )}
         </div>
     );
