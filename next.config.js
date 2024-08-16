@@ -1,16 +1,16 @@
 // next.config.js
 const nextConfig = {
-  images: {
-    domains: ['lh3.googleusercontent.com'],
-  },
-  webpack(config) {
-    config.module.rules.push({
-      test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    });
+    images: {
+        domains: ['lh3.googleusercontent.com', 'cdn.connectplug.com.br'],
+    },
+    webpack(config) {
+        config.module.rules.push({
+            test: /\.svg$/,
+            use: ['@svgr/webpack'],
+        });
 
-    return config;
-  },
+        return config;
+    },
 };
 
 module.exports = nextConfig;

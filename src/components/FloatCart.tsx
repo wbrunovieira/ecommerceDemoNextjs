@@ -9,7 +9,7 @@ import { useToast } from './ui/use-toast';
 
 import { useRouter } from 'next/navigation';
 import AddressModal from './AddressModal';
-import { MdOutlineConfirmationNumber } from 'react-icons/md';
+
 
 interface FloatCartProps {
     onClose: () => void;
@@ -143,37 +143,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         setShowAddressModal(true);
     };
 
-    const handleAddNewAddress = async (address: Partial<Address['props']>) => {
-        try {
-            const url = `${BASE_URL}/adress/${session?.user?.id}/addresses`;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${session?.accessToken}`,
-                },
-                body: JSON.stringify({
-                    ...address,
-                    userId: session?.user?.id,
-                }),
-            });
-            console.log('handleAddNewAddress response', response);
 
-            if (response.ok) {
-                const newAddress = await response.json();
-                console.log('handleAddNewAddress newAddress', newAddress);
-                setAddresses((prevAddresses) => [...prevAddresses, newAddress]);
-                setSelectedAddress(newAddress);
-                setShowAddressModal(true);
-                handleAddNewAddresses(newAddress);
-                router.push('/frete');
-            } else {
-                console.error('Failed to create address');
-            }
-        } catch (error) {
-            console.error('Error creating address', error);
-        }
-    };
 
     useEffect(() => {
         const initializeUserCart = async () => {
@@ -311,7 +281,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                         setShowAddressModal(false);
                         router.push('/frete');
                     }}
-                    onAddNewAddress={handleAddNewAddress}
+                    
                 />
             )}
         </div>

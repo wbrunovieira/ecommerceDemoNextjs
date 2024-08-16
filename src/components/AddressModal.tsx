@@ -23,14 +23,12 @@ interface AddressModalProps {
     addresses: Address[];
     onClose: () => void;
     onConfirm: (address: Address) => void;
-    onAddNewAddress: (address: Partial<Address['props']>) => void;
 }
 
 const AddressModal: React.FC<AddressModalProps> = ({
     addresses,
     onClose,
     onConfirm,
-    onAddNewAddress,
 }) => {
     const [isAddingNew, setIsAddingNew] = useState(addresses.length === 0);
     const [newAddress, setNewAddress] = useState<Partial<Address['props']>>({});
@@ -73,13 +71,16 @@ const AddressModal: React.FC<AddressModalProps> = ({
                 console.log('responsehandleAddNewAddress', response);
 
                 if (response.ok) {
+                    const data = await response.json();
+                    const savedAddress = data.address;
                     console.log('entrou no if (response.ok');
-                    const savedAddress = await response.json();
-                    console.log('savedAddress', savedAddress);
-                    onAddNewAddress(savedAddress);
+                   
+
+                    console.log('savedAddressa', savedAddress);
+                    setNewAddress({});
                     setIsAddingNew(false);
                     onConfirm(savedAddress);
-                    console.log('onAddNewAddress', onAddNewAddress);
+
                     console.log('addresses', addresses);
                 } else {
                     console.error('Failed to save address');
