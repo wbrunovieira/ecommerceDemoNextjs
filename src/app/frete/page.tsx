@@ -9,7 +9,6 @@ import axios from 'axios';
 
 import { useCartStore, useLoadingStore } from '@/context/store';
 import LoadingHandler from '@/components/LoadingHandler';
-import useLoadingHandler from '@/utils/useLoadingHandler';
 
 interface Address {
     _id: {
@@ -37,7 +36,6 @@ interface ShippingOption {
 }
 
 const FretePage = () => {
-    useLoadingHandler();
     const searchParams = useSearchParams();
     const router = useRouter();
     const cartItems = useCartStore((state: any) => state.cartItems);
@@ -85,6 +83,7 @@ const FretePage = () => {
         setLoading(false);
         if (result && result.data) {
             setShippingOptions(result.data);
+            setLoadingin(false);
         }
     };
 

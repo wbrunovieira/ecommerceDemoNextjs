@@ -9,20 +9,27 @@ import Fireworks from 'react-canvas-confetti/dist/presets/fireworks';
 const SuccessPage = () => {
     const searchParams = useSearchParams();
     const collection_id = searchParams.get('collection_id');
+    const merchant_order_id = searchParams.get('merchant_order_id');
+    const clearStorage = useCartStore((state) => state.clearStorage);
     const cartId = useCartStore((state) => state.cartId);
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
+    console.log('cartId out', cartId);
     useEffect(() => {
-        if (collection_id) {
-            
+        if (collection_id && cartId) {
             const sendCollectionIdToBackend = async () => {
                 try {
+                    console.log('collection_id', collection_id);
+                    console.log('cartId', cartId);
                     const response = await axios.post(
                         `${BASE_URL}/shipping/payment-success`,
                         {
                             collection_id,
                             cartId,
+                            merchant_order_id,
                         }
                     );
+                    
                     console.log('Resposta do backend:', response.data);
                 } catch (error) {
                     console.error(
@@ -33,8 +40,9 @@ const SuccessPage = () => {
             };
 
             sendCollectionIdToBackend();
+            clearStorage();
         }
-    }, [collection_id]);
+    }, [collection_id, cartId]);
 
     return (
         <div className="fixed inset-0 flex items-center justify-center">

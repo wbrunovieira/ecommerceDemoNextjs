@@ -10,7 +10,6 @@ import { useToast } from './ui/use-toast';
 import { useRouter } from 'next/navigation';
 import AddressModal from './AddressModal';
 import LoadingModal from './LoadingModal';
-import useLoadingHandler from '@/utils/useLoadingHandler';
 
 interface FloatCartProps {
     onClose: () => void;
@@ -119,8 +118,6 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         router.push('/frete');
 
         setIsFreightLoading(false);
-
-        useLoadingHandler();
     };
 
     const handleClickOutside = (event: React.MouseEvent) => {

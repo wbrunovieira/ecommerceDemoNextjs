@@ -134,7 +134,8 @@ interface CartState {
     addToCart: (product: Product, userId?: string) => void;
     removeFromCart: (cartId: string, cartItemId: string) => void;
     selectedShippingOption?: ShippingOption | null;
-    clearCart: (uuserId?: string) => void;
+    clearCart: (userId?: string) => void;
+    clearStorage: () => void;
     updateQuantity: (
         productId: string,
         amount: number,
@@ -376,6 +377,18 @@ export const useCartStore = create<CartState>(
                         return state;
                     return { cartItems: [] };
                 }),
+
+            clearStorage: () => {
+                set(() => ({
+                    cartItems: [],
+                    cartId: null,
+                    userId: null,
+                    selectedAddress: null,
+                    preferenceId: null,
+                    selectedShippingOption: null,
+                }));
+                sessionStorage.removeItem('cart-storage');
+            },
 
             updateQuantity: (
                 productId: string,
