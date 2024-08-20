@@ -25,29 +25,51 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* Segunda linha com logo e ícones */}
-            <div className="flex justify-between items-center w-full flex-wrap">
+            {/* Segunda linha com logo, SearchBox e ícones - Desktop */}
+            <div className="hidden md:flex justify-between items-center w-full">
                 {/* Logo */}
                 <Link href="/" passHref>
                     <Logo className="w-24 md:w-32 cursor-pointer" />
                 </Link>
 
-                {/* Ícones de controle no mobile (à direita) */}
-            </div>
-
-            <div className="flex items-center justify-between gap-2 md:gap-4">
-                {' '}
-                <div className="flex items-center gap-2">
-                    <LogginButton />
+                {/* SearchBox centralizado */}
+                <div className="flex flex-1 justify-center">
+                    <SearchBox />
                 </div>
-                
-                <div className="flex items-center gap-2">
+
+                {/* Ícones de controle */}
+                <div className="flex items-center gap-2 md:gap-4">
+                    <LogginButton />
                     <ToggleMode />
                     <CartButton />
                     <MobileMenu />
                 </div>
             </div>
-            <div className="flex justify-center mt-4">
+
+            {/* Mobile Layout */}
+            <div className="flex md:hidden flex-wrap justify-between items-center w-full">
+                {/* Logo */}
+                <div className="flex items-center justify-between gap-2 md:gap-4 w-full">
+                    <Link href="/" passHref>
+                        <Logo className="w-24 md:w-32 cursor-pointer" />
+                    </Link>
+                    <MobileMenu />
+                </div>
+
+                {/* Ícones de controle no mobile (à direita) */}
+                <div className="flex items-center justify-between gap-2 md:gap-4 w-full">
+                    <div className="flex items-center gap-2">
+                        <LogginButton />
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <ToggleMode />
+                        <CartButton />
+                    </div>
+                </div>
+            </div>
+
+            {/* SearchBox para mobile */}
+            <div className="flex justify-center mt-4 md:hidden">
                 <SearchBox />
             </div>
 

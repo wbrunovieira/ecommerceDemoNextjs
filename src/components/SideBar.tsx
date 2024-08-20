@@ -37,11 +37,10 @@ interface Size {
     name: string;
 }
 
-interface SidebarProps {
-    initialCategories: Category[];
-}
 
-const Sidebar: React.FC<SidebarProps> = () => {
+
+const Sidebar: React.FC = () => {
+
     const [products, setProducts] = useState<any[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
 

@@ -39,7 +39,7 @@ const CartButton = () => {
         <>
             <button
                 onClick={toggleCartModal}
-                className="flex items-center justify-center hover:scale-110 transition duration-300 bg-primaryLight rounded-full p-2 h-12 w-12"
+                className="flex items-center justify-center hover:scale-110 transition duration-300 bg-primaryLight rounded-md p-2 h-10 w-12"
             >
                 <div className="relative text-primary2">
                     <BsCart4 className="text-primary2 dark:text-primaryDark w-5 h-5 md:w-6 md:h-6" />

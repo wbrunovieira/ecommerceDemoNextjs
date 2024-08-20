@@ -134,7 +134,7 @@ const Home: NextPage<HomeProps> = () => {
 
                 <section className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
                     <div className="md:col-span-1">
-                        <Sidebar initialCategories={[]} />
+                        <Sidebar />
                     </div>
 
                     <div className="md:col-span-3">
@@ -145,7 +145,5 @@ const Home: NextPage<HomeProps> = () => {
         </>
     );
 };
-
-
 
 export default Home;
