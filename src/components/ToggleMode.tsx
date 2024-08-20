@@ -22,9 +22,9 @@ const ToggleMode = () => {
             onClick={() => setTheme(`${dark ? 'light' : 'dark'}`)}
         >
             {dark ? (
-                <Sun className="hover:cursor-pointer text-primary2 hover:text-primary" />
+                <Sun className="w-4 md:w-6 h-6 hover:cursor-pointer text-primary2 hover:text-primaryLight" />
             ) : (
-                <Moon className="hover:cursor-pointer text-primary2 hover:text-primary" />
+                <Moon className="w-4 md:w-6 h-6 hover:cursor-pointer text-primary2 hover:text-primaryLight" />
             )}
         </ButtonShadcn>
     );

@@ -32,19 +32,19 @@ const LogginButton = () => {
         const userName = truncateName(session.user?.name);
 
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
                 <Link href={`/user/${session.user.id}`} passHref>
-                    <div className="flex items-center gap-2 text-primary2 dark:text-darkFontColor transition duration-300 hover:scale-110 text-xs font-semibold border px-3 py-2 rounded-md bg-primaryLight dark:bg-dark-secondary-gradient h-10">
+                    <div className="flex items-center gap-2 text-primary2 dark:text-darkFontColor transition duration-300 hover:scale-110 text-[0.6rem] md:text-xs font-semibold border px-2 py-0 md:px-3 md:py-2 rounded-md bg-primaryLight dark:bg-dark-secondary-gradient h-10">
                         {session.user?.image ? (
                             <Image
                                 src={session.user.image}
                                 alt="Imagem do usuário"
                                 width={24}
                                 height={24}
-                                className="w-6 h-6 rounded-full items-center border border-secondary"
+                                className="w-2 md:w-4 h-4 rounded-full items-center border border-secondary"
                             />
                         ) : (
-                            <FaUserAlt className="w-6 h-6 text-primary2 dark:text-primaryLight" />
+                            <FaUserAlt className="w-3 h-3 md:w-6 md:h-6 text-primary2 dark:text-primaryLight text-xs" />
                         )}
                         Olá, {userName}
                     </div>
@@ -56,7 +56,6 @@ const LogginButton = () => {
                     <FiLogOut className="w-6 h-6 text-primary2 dark:text-primaryLight" />
                 </button>
             </div>
-          
         );
     } else {
         return (
