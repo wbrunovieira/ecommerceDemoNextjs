@@ -71,7 +71,7 @@ const Card: React.FC<CardProps> = ({
     const { data: session } = useSession();
     const router = useRouter();
 
-   const { toast } = useToast();
+    const { toast } = useToast();
 
     const handleButtonClick = (slug: string) => {
         router.push(`/product/${slug}`);
@@ -116,7 +116,7 @@ const Card: React.FC<CardProps> = ({
                     height={300}
                     alt={title}
                     style={{
-                        objectFit: 'fill',
+                        objectFit: 'cover',
                         objectPosition: 'center center',
                     }}
                 />
@@ -130,9 +130,9 @@ const Card: React.FC<CardProps> = ({
                         Novidade
                     </div>
                 )}
-                {desconto && (
+                {desconto && desconto > 0 && (
                     <div className="relative">
-                        <div className="absolute descont-badge rounded">{`${desconto}%`}</div>
+                        <div className="absolute desconto-badge rounded">{`${desconto}%`}</div>
                     </div>
                 )}
             </div>
@@ -187,21 +187,21 @@ const Card: React.FC<CardProps> = ({
                             {hasVariants ? 'Saber mais' : 'Comprar'}
                         </Button>
                     )}
+                    {brandName && brandLogo && (
+                        <div className="flex items-center mt-2">
+                            <Image
+                                src={brandLogo}
+                                width={20}
+                                height={20}
+                                alt={brandName}
+                                className="mr-2 object-contain w-5 h-5"
+                            />
+                            <span className="text-xs text-gray-600 dark:text-darkFontColor">
+                                {brandName}
+                            </span>
+                        </div>
+                    )}
                 </div>
-                {brandName && brandLogo && (
-                    <div className="flex items-center mt-4">
-                        <Image
-                            src={brandLogo}
-                            width={20}
-                            height={20}
-                            alt={brandName}
-                            className="mr-2 object-contain w-5 h-5"
-                        />
-                        <span className="text-xs text-gray-600 dark:text-darkFontColor">
-                            {brandName}
-                        </span>
-                    </div>
-                )}
             </div>
         </div>
     );
