@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion'; // Para animação suave
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai'; // Ícones de menu e fechar
 import Link from 'next/link';
+import SideBar from './SideBar';
 
 const MobileMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -47,6 +48,7 @@ const MobileMenu = () => {
                     </div>
                     <nav className="flex flex-col gap-4 p-4">
                         {/* Header Options */}
+                        
                         <div className="flex flex-col gap-2">
                             <Link
                                 href="/"
@@ -72,6 +74,7 @@ const MobileMenu = () => {
 
                         {/* Sidebar Options */}
                         <div className="flex flex-col gap-2">
+                            
                             <Link
                                 href="/category/lingeries"
                                 className="text-primaryDark dark:text-primaryLight text-sm"

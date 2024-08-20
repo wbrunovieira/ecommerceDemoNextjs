@@ -37,10 +37,7 @@ interface Size {
     name: string;
 }
 
-
-
 const Sidebar: React.FC = () => {
-
     const [products, setProducts] = useState<any[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
 
@@ -372,6 +369,11 @@ const Sidebar: React.FC = () => {
                                     src={category.imageUrl}
                                     width={20}
                                     height={20}
+                                    style={{
+                                        width: '20px',
+                                        height: '20px',
+                                        objectFit: 'cover',
+                                    }}
                                     alt={category.name}
                                     className="mr-2"
                                 />
