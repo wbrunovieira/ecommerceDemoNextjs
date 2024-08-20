@@ -1,9 +1,9 @@
 'use client';
-import { useState } from 'react';
-import { motion } from 'framer-motion'; // Para animação suave
-import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai'; // Ícones de menu e fechar
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 import Link from 'next/link';
-import SideBar from './SideBar';
+import SideBarMobile from './SideBarMobile';
 
 const MobileMenu = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,6 +11,18 @@ const MobileMenu = () => {
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
+
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isOpen]);
 
     return (
         <div className="md:hidden">
@@ -46,9 +58,12 @@ const MobileMenu = () => {
                             <AiOutlineClose size={24} />
                         </button>
                     </div>
-                    <nav className="flex flex-col gap-4 p-4">
+                    <nav
+                        className="flex flex-col gap-4 p-4 overflow-y-auto"
+                        style={{ maxHeight: 'calc(100vh - 64px)' }}
+                    >
                         {/* Header Options */}
-                        
+
                         <div className="flex flex-col gap-2">
                             <Link
                                 href="/"
@@ -74,7 +89,11 @@ const MobileMenu = () => {
 
                         {/* Sidebar Options */}
                         <div className="flex flex-col gap-2">
-                            
+                            <h2 className="text-lg font-bold text-primaryDark dark:text-primaryLight">
+                                Filtros
+                            </h2>
+                            <SideBarMobile />
+
                             <Link
                                 href="/category/lingeries"
                                 className="text-primaryDark dark:text-primaryLight text-sm"
