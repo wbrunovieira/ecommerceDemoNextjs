@@ -72,13 +72,9 @@ const getSimilarProducts = async (
 ): Promise<
     { id: string; title: string; image: string; price: number; slug: string }[]
 > => {
-
-
     const currentProductCategoryIds = currentProductCategories.map(
         (cat: Category) => cat.id
     );
-
- 
 
     if (currentProductCategoryIds.length === 0) {
         console.error('No category IDs found');
@@ -88,8 +84,6 @@ const getSimilarProducts = async (
     try {
         const categoryProductsResponse: ProductsByCategorieResponse =
             await getProductsByCategoriesId(currentProductCategoryIds[0]);
-
-   
 
         if (!categoryProductsResponse || !categoryProductsResponse.products) {
             console.error('No products found for the category');
@@ -105,8 +99,6 @@ const getSimilarProducts = async (
                 slug: product.props.slug.value,
             })
         );
-
-   
 
         return allCategoryProducts.slice(0, 4).map((product) => ({
             id: product.id,
@@ -166,20 +158,17 @@ const ProductPage = async ({ params }: ParamsProps) => {
         const hasVariants = productDetails.hasVariants ?? undefined;
         const productIdVariant = productDetails.productIdVariant ?? undefined;
 
-      
         const allProducts = await getProducts();
         const similarProducts = await getSimilarProducts(
             productCategories,
             allProducts as ProductProps[]
         );
 
-   
-
         return (
             <Container>
-                <section className="flex mt-2 gap-8 z-10">
+                <section className="flex mt-2 gap-8 z-10 lg:flex-row lg:gap-8">
                     <div className="flex flex-col">
-                        <Sidebar initialCategories={[]} />
+                        <Sidebar />
                     </div>
 
                     <div className="z-10">

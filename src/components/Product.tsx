@@ -394,25 +394,27 @@ const Product: React.FC<ProductProps> = ({
 
     return (
         <section>
-            <div className="flex flex-col ml-2">
+            <div className="flex flex-col w-full md:ml-2">
                 <div className="w-full border-primary ">
-                    <div className=" border-r-4 border-secondary shadow-2xl p-4 rounded-md text-3xl w-1/2 text-primaryDark dark:text-primaryLight dark:bg-secondary dark:border-primaryLight">
+                    <div className="border-r-4 border-secondary shadow-2xl p-4 rounded-md text-base md:text-3xl w-1/3 md:w-1/2 text-primaryDark dark:text-primaryLight dark:bg-secondary dark:border-primaryLight">
                         {title}
                     </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row mt-4">
                     <div className="flex flex-col">
-                        <div className="flex flex-wrap md:flex-nowrap flex-col h-10">
-                            <Image
-                                src={mainImage}
-                                alt="Main Product Image"
-                                className="mb-4 border rounded-lg"
-                                width={350}
-                                height={350}
-                            />
+                        <div className="flex flex-col md:flex-nowrap  h-10">
+                            <div>
+                                <Image
+                                    src={mainImage}
+                                    alt="Main Product Image"
+                                    className="mb-4 border rounded-lg"
+                                    width={350}
+                                    height={350}
+                                />
+                            </div>
 
-                            <div className="swiper-container md:w-1/2">
+                            <div className="swiper-container w-1/2">
                                 <Swiper
                                     slidesPerView={3}
                                     navigation={true}
@@ -443,8 +445,9 @@ const Product: React.FC<ProductProps> = ({
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-2 p-2 ">
-                        <div className="flex w-96">
+
+                    <div className="flex flex-col gap-2 p-2 mt-4 md:mt-0 md:w-1/2">
+                        <div className="flex w-full md:w-96">
                             <p className=" border-r-4 border-secondary shadow-2xl p-4 rounded-md dark:bg-secondary dark:border-primaryLight">
                                 {description}
                             </p>
@@ -477,7 +480,7 @@ const Product: React.FC<ProductProps> = ({
                                 product={{
                                     slug,
                                     title,
-                                    category: categories[0].name,
+                                    category: categories[0]?.name || '',
                                 }}
                             />
                         </div>
