@@ -1,6 +1,6 @@
-import Logo from '/public/images/LogoStylos.svg';
+import Logo from '/public/images/LogoStylos.png';
 import Home from '/public/icons/home.svg';
-
+import Image from 'next/image';
 import CartButton from './CartButton';
 import SearchBox from './SearchBox';
 
@@ -27,17 +27,30 @@ const Header = () => {
 
             {/* Segunda linha com logo, SearchBox e ícones - Desktop */}
             <div className="hidden md:flex justify-between items-center w-full">
-                {/* Logo */}
-                <Link href="/" passHref>
-                    <Logo className="w-24 md:w-32 cursor-pointer" />
+                <Link
+                    href="/"
+                    passHref
+                    className="flex gap-2 items-center justify-center "
+                >
+                    <Image
+                        src="/images/LogoStylos.png"
+                        width={96}
+                        height={96}
+                        alt="logo"
+                        className="mr-2"
+                    />
+                    <div className="flex gap-2 items-center justify-center rounded-md bg-primaryLight px-2 py-1 hover:scale-110 transition duration-300 ease-in-out ">
+                        <Home width="12" height="12" />
+                        <p className="text-primary2 dark:text-primaryDark  text-[0.6rem] md:text-xs">
+                            Home
+                        </p>
+                    </div>
                 </Link>
 
-                {/* SearchBox centralizado */}
                 <div className="flex flex-1 justify-center">
                     <SearchBox />
                 </div>
 
-                {/* Ícones de controle */}
                 <div className="flex items-center gap-2 md:gap-4">
                     <LogginButton />
                     <ToggleMode />
@@ -50,8 +63,15 @@ const Header = () => {
             <div className="flex md:hidden flex-wrap justify-between items-center w-full">
                 {/* Logo */}
                 <div className="flex items-center justify-between gap-2 md:gap-4 w-full">
-                    <Link href="/" passHref>
-                        <Logo className="w-24 md:w-32 cursor-pointer" />
+                    <Link href="/" passHref className="hover:scale-110">
+                        <Image
+                            src="/images/LogoStylos.png"
+                            width={96}
+                            height={96}
+                            alt="logo"
+                            className="mr-2"
+                        />
+                        {/* <Logo className="w-32 md:w-32 cursor-pointer" /> */}
                     </Link>
                     <MobileMenu />
                 </div>
