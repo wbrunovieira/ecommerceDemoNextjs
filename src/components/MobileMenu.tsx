@@ -59,11 +59,9 @@ const MobileMenu = () => {
                         </button>
                     </div>
                     <nav
-                        className="flex flex-col gap-4 p-4 overflow-y-auto"
+                        className="flex flex-col gap-4 px-4 overflow-y-auto"
                         style={{ maxHeight: 'calc(100vh - 64px)' }}
                     >
-                        {/* Header Options */}
-
                         <div className="flex flex-col gap-2">
                             <Link
                                 href="/"

@@ -57,7 +57,7 @@ const PriceFilter = ({ isHome }: { isHome: boolean }) => {
 
     return (
         <div className="flex flex-col w-48 border border-light p-4 mt-2 rounded bg-primaryLight dark:bg-dark-secondary-gradient">
-            <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-xs md:text-base tracking-wider rounded mb-2">
+            <h2 className=" text-primaryDark font-bold bg-primaryLight dark:bg-dark-secondary-gradient text-xs md:text-base tracking-wider rounded mb-2">
                 Preço
             </h2>
             <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />

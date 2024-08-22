@@ -353,7 +353,7 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ toggleMenu }) => {
             ref={containerRef as React.RefObject<HTMLDivElement>}
         >
             <div className="sidebar-section flex flex-col w-48 border border-light bg-primaryLight dark:bg-dark-secondary-gradient rounded p-4 mt-2 z-10">
-                <h2 className="bg-primaryLight text-xs dark:bg-dark-secondary-gradient text-xstracking-wider mb-2">
+                <h2 className="bg-primaryLight text-xs text-primaryDark font-bold dark:bg-dark-secondary-gradient text-xs tracking-wider mb-2">
                     Categorias
                 </h2>
 
@@ -398,12 +398,20 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ toggleMenu }) => {
                     onClick={() => setShowMoreCategories(!showMoreCategories)}
                 >
                     {showMoreCategories ? 'Ver menos' : 'Ver mais'}
+                    <span
+                        className={`ml-2 ${
+                            showMoreCategories ? 'rotate-180' : ''
+                        } transition-transform duration-300`}
+                    >
+                        ↓
+                    </span>
                 </button>
-                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
+
+                <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
             </div>
 
             <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded z-10">
-                <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 text-xs">
+                <h2 className="bg-primaryLight text-primaryDark font-bold dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 text-xs tracking-wider mb-2">
                     Marcas
                 </h2>
                 <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4 " />
@@ -433,27 +441,33 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ toggleMenu }) => {
                                         objectFit: 'cover',
                                     }}
                                     alt={brand.name}
-                                    className="mr-2 object-contain w-5 h-5"
+                                    className="mr-2 "
                                 />
                                 <div className="text-[0.6rem]">
                                     {capitalizeFirstLetter(brand.name)}
                                 </div>
-                                <button
-                                    className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out text-xs"
-                                    onClick={() =>
-                                        setShowMoreBrands(!showMoreBrands)
-                                    }
-                                >
-                                    {showMoreBrands ? 'Ver menos' : 'Ver mais'}
-                                </button>
                             </div>
                         </div>
                     ))}
                 </div>
+                <button
+                    className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out text-xs"
+                    onClick={() => setShowMoreBrands(!showMoreBrands)}
+                >
+                    {showMoreBrands ? 'Ver menos' : 'Ver mais'}
+                    <span
+                        className={`ml-2 ${
+                            showMoreCategories ? 'rotate-180' : ''
+                        } transition-transform duration-300`}
+                    >
+                        ↓
+                    </span>
+                </button>
+                <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
             </div>
 
             <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
-                <h2 className="text-xs bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
+                <h2 className="bg-primaryLight text-primaryDark font-bold text-xs bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
                     Cores
                 </h2>
                 <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
@@ -478,7 +492,7 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ toggleMenu }) => {
             </div>
 
             <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
-                <h2 className="text-xs bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
+                <h2 className="text-primaryDark font-bold text-xs bg-primaryLight dark:bg-dark-secondary-gradient  tracking-wider rounded mb-2 ">
                     Tamanhos
                 </h2>
                 <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4" />
@@ -506,6 +520,13 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ toggleMenu }) => {
                     onClick={() => setShowMoreSizes(!showMoreSizes)}
                 >
                     {showMoreSizes ? 'Ver menos' : 'Ver mais'}
+                    <span
+                        className={`ml-2 ${
+                            showMoreCategories ? 'rotate-180' : ''
+                        } transition-transform duration-300`}
+                    >
+                        ↓
+                    </span>
                 </button>
                 <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
             </div>
