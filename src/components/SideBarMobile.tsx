@@ -37,7 +37,11 @@ interface Size {
     name: string;
 }
 
-const SidebarMobile: React.FC = () => {
+interface SidebarMobileProps {
+    toggleMenu: () => void;
+}
+
+const SidebarMobile: React.FC<SidebarMobileProps> = ({ toggleMenu }) => {
     const [products, setProducts] = useState<any[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
 
@@ -91,6 +95,7 @@ const SidebarMobile: React.FC = () => {
         isHome = pathname === '/' || pathname.includes('/product/');
         if (isHome) {
             router.push(`/filtered?category=${categoryId}`);
+            toggleMenu();
         } else {
             setSelectedCategory(
                 categoryId === selectedCategory ? null : categoryId
@@ -102,6 +107,7 @@ const SidebarMobile: React.FC = () => {
         isHome = pathname === '/' || pathname.includes('/product/');
         if (isHome) {
             router.push(`/filtered?brand=${brandId}`);
+            toggleMenu();
         } else {
             setSelectedBrand(brandId === selectedBrand ? null : brandId);
         }
@@ -111,6 +117,7 @@ const SidebarMobile: React.FC = () => {
         isHome = pathname === '/' || pathname.includes('/product/');
         if (isHome) {
             router.push(`/filtered?color=${color.id}`);
+            toggleMenu();
         } else {
             setSelectedColor(selectedColor?.id === color.id ? null : color);
         }
@@ -119,6 +126,7 @@ const SidebarMobile: React.FC = () => {
         isHome = pathname === '/' || pathname.includes('/product/');
         if (isHome) {
             router.push(`/filtered?size=${size.id}}`);
+            toggleMenu();
         } else {
             setSelectedSize(selectedSize?.id === size.id ? null : size);
         }

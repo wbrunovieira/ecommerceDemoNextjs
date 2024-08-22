@@ -68,18 +68,21 @@ const MobileMenu = () => {
                             <Link
                                 href="/"
                                 className="text-primaryDark dark:text-primaryLight text-sm"
+                                onClick={toggleMenu}
                             >
                                 Home
                             </Link>
                             <Link
                                 href="/cart"
                                 className="text-primaryDark dark:text-primaryLight text-sm"
+                                onClick={toggleMenu}
                             >
                                 Cart
                             </Link>
                             <Link
                                 href="/login"
                                 className="text-primaryDark dark:text-primaryLight text-sm"
+                                onClick={toggleMenu}
                             >
                                 Login
                             </Link>
@@ -92,7 +95,7 @@ const MobileMenu = () => {
                             <h2 className="text-lg font-bold text-primaryDark dark:text-primaryLight">
                                 Filtros
                             </h2>
-                            <SideBarMobile />
+                            <SideBarMobile toggleMenu={toggleMenu} />
 
                             <Link
                                 href="/category/lingeries"
