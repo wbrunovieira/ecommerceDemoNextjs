@@ -35,8 +35,8 @@ const Login = () => {
     }, [session, router]);
 
     const handleSubmit = async (e: SyntheticEvent) => {
-        setIsButtonInDisabled(true);
         e.preventDefault();
+        setIsButtonInDisabled(true);
 
         const result = await signIn('credentials', {
             email,
@@ -51,6 +51,8 @@ const Login = () => {
         }
 
         router.push('/');
+
+        setIsButtonInDisabled(false);
     };
 
     const handleGoogleSignIn = async () => {
@@ -63,12 +65,11 @@ const Login = () => {
         }
 
         router.push('/');
+        setIsButtonInDisabled(false);
     };
 
     const togglePasswordVisibility = (e: SyntheticEvent) => {
-        e.preventDefault();
-        e.stopPropagation();
-        setShowPassword(!showPassword);
+        setShowPassword((prev) => !prev);
     };
 
     function getMessageForField(field: keyof ErrorMessages): string {
@@ -120,43 +121,30 @@ const Login = () => {
     }
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center">
-            <div className="bg-primaryLight dark:bg-dark-secondary-gradient p-96 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-96 md:p-48 sm:w-full">
-                <div className="absolute inset-0 z-0">
-                    <Image
-                        src="/images/petalas.svg"
-                        fill
-                        style={{ objectFit: 'cover' }}
-                        alt="Stylos Lingerie"
-                        className="opacity-50"
-                    />
-                </div>
-
-                <div className="relative z-10 bg-primary dark:bg-dark-secondary-gradient p-16 border-2 border-y-primaryDark rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-bold text-secondary mb-4 ">
+        <div className="flex items-center justify-center min-h-max py-8">
+            <div className="bg-primaryLight dark:bg-dark-secondary-gradient  rounded-lg shadow-lg z-10 relative overflow-hidden w-full max-w-md lg:max-w-lg ">
+                <div className="relative z-10 bg-primary dark:bg-dark-secondary-gradient px-16 py-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
+                    <h2 className="text-3xl font-bold text-secondary mb-4 ">
                         Login
                     </h2>
-                    <form
-                        onSubmit={handleSubmit}
-                        className="flex flex-col space-y-4"
-                    >
+                    <form onSubmit={handleSubmit} className="flex flex-col ">
                         <label
                             htmlFor="email"
-                            className="text-white-important text-xs"
+                            className="text-white-important text-xs mb-2"
                         >
                             Email
+                            <input
+                                type="email"
+                                name="email"
+                                required
+                                autoComplete="email"
+                                placeholder="Email"
+                                onBlur={() => handleBlur('email', email)}
+                                value={email}
+                                className="text-xs px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full"
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
                         </label>
-                        <input
-                            type="email"
-                            name="email"
-                            required
-                            autoComplete="email"
-                            placeholder="Email"
-                            onBlur={() => handleBlur('email', email)}
-                            value={email}
-                            className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 "
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
                         {errorMessage.email && (
                             <p className="text-redAtention text-xs italic">
                                 {errorMessage.email}
@@ -169,7 +157,7 @@ const Login = () => {
                         >
                             Senha
                         </label>
-                        <div className="relative w-96 md:w-72 sm:w-32">
+                        <div className="relative w-full">
                             <input
                                 type={showPassword ? 'text' : 'password'}
                                 name="password"
@@ -177,7 +165,7 @@ const Login = () => {
                                 autoComplete="password"
                                 value={password}
                                 onBlur={() => handleBlur('password', password)}
-                                className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32"
+                                className="text-xs px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full"
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                             <div>
@@ -189,16 +177,16 @@ const Login = () => {
                                 </Link>
                             </div>
 
-                            <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+                            <span className="absolute top-1/2 transform -translate-y-1/2 right-px flex items-center justify-center pr-3 ">
                                 {showPassword ? (
                                     <FiEyeOff
                                         onClick={togglePasswordVisibility}
-                                        className="cursor-pointer text-gray-500"
+                                        className="cursor-pointer mb-6 text-gray-500"
                                     />
                                 ) : (
                                     <FiEye
                                         onClick={togglePasswordVisibility}
-                                        className="cursor-pointer text-gray-500"
+                                        className="cursor-pointer mb-6 text-gray-500"
                                     />
                                 )}
                             </span>
@@ -208,51 +196,51 @@ const Login = () => {
                                 </p>
                             )}
                         </div>
+                        <div className="flex flex-col gap-4 mt-8">
+                            <button
+                                type="submit"
+                                disabled={isButtonInDisabled}
+                                className="flex items-center justify-center bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-full transition duration-300 hover:scale-105"
+                            >
+                                {isButtonInDisabled ? (
+                                    <svg
+                                        className="animate-spin h-5 w-5 mr-3 border-t-2 border-b-2 border-white rounded-3xl"
+                                        viewBox="0 0 24 24"
+                                    ></svg>
+                                ) : null}
+                                Acessar
+                            </button>
 
-                        <button
-                            type="submit"
-                            disabled={isButtonInDisabled}
-                            className="flex items-center justify-center bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
-                        >
-                            {isButtonInDisabled ? (
-                                <svg
-                                    className="animate-spin h-5 w-5 mr-3 border-t-2 border-b-2 border-white rounded-3xl"
-                                    viewBox="0 0 24 24"
-                                ></svg>
-                            ) : null}
-                            Acessar
-                        </button>
-
-                        <button
-                            type="button"
-                            onClick={handleGoogleSignIn}
-                            disabled={isButtonInDisabled}
-                            className="bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
-                        >
-                            {isButtonInDisabled ? (
-                                <svg
-                                    className="animate-spin h-5 w-5 mr-3 border-t-2 border-b-2 border-white rounded-3xl"
-                                    viewBox="0 0 24 24"
-                                ></svg>
-                            ) : (
-                                <FcGoogle className="mr-2" size={24} />
-                            )}
-                            Login com Google
-                        </button>
-
-                        <Link href="/cadastro">
                             <button
                                 type="button"
-                                className="bg-secondary text-white-important px-2  text-xs py-1 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
+                                onClick={handleGoogleSignIn}
+                                disabled={isButtonInDisabled}
+                                className="bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-full transition duration-300 hover:scale-105"
                             >
-                                Cadastro
+                                {isButtonInDisabled ? (
+                                    <svg
+                                        className="animate-spin h-5 w-5 mr-3 border-t-2 border-b-2 border-white rounded-3xl"
+                                        viewBox="0 0 24 24"
+                                    ></svg>
+                                ) : (
+                                    <FcGoogle className="mr-2" size={24} />
+                                )}
+                                Login com Google
                             </button>
-                        </Link>
 
-                        <Link href="/" legacyBehavior>
-                            <a className="bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-32 md:w-32 sm:w-32 transition duration-300 hover:scale-105 mt-8">
-                                Voltar
-                            </a>
+                            <Link
+                                href="/cadastro"
+                                className="flex items-center justify-center bg-secondary text-white-important px-2  py-1 rounded-lg shadow-md hover:bg-secondary-dark w-full transition duration-300 hover:scale-105 p-4"
+                            >
+                                Cadastrar
+                            </Link>
+                        </div>
+
+                        <Link
+                            href="/"
+                            className="flex items-center justify-center bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-darkw-full transition duration-300 hover:scale-105 mt-8"
+                        >
+                            Voltar
                         </Link>
                     </form>
                 </div>

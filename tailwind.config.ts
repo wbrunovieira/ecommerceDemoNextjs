@@ -32,6 +32,8 @@ const config: Config = {
             },
             backgroundImage: {
                 'header-bg': "url('/images/banner6.svg')",
+                'linear-gradient':
+                    'linear-gradient(135deg,#F0B1CC 2%, #f3d4e0 15%, #ffffff 85%, #f3d4e0 95%, #F0B1CC 100%)',
                 'header-bg-dark': "url('/images/banner6dark.svg')",
                 'dark-secondary-gradient':
                     'linear-gradient(45deg, #7c3d3d, #4b2c2c)',
