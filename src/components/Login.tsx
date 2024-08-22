@@ -46,7 +46,7 @@ const Login = () => {
 
         if (result?.error) {
             setErrorMessage({ email: '', password: 'Credenciais inválidas' });
-
+            setIsButtonInDisabled(false);
             return;
         }
 
@@ -130,7 +130,7 @@ const Login = () => {
                     <form onSubmit={handleSubmit} className="flex flex-col ">
                         <label
                             htmlFor="email"
-                            className="text-white-important text-xs mb-2"
+                            className="text-white-important text-xs mb-"
                         >
                             Email
                             <input
@@ -141,7 +141,7 @@ const Login = () => {
                                 placeholder="Email"
                                 onBlur={() => handleBlur('email', email)}
                                 value={email}
-                                className="text-xs px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full"
+                                className="text-xs text-primaryDark px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full"
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </label>
@@ -165,7 +165,7 @@ const Login = () => {
                                 autoComplete="password"
                                 value={password}
                                 onBlur={() => handleBlur('password', password)}
-                                className="text-xs px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full"
+                                className="text-xs text-primaryDark  px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full"
                                 onChange={(e) => setPassword(e.target.value)}
                             />
                             <div>

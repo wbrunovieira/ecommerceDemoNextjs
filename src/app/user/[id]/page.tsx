@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { format, parseISO, parse } from 'date-fns';
 
 import { useDropzone } from 'react-dropzone';
+import { BiArrowBack } from 'react-icons/bi';
 
 import DefaultIcon from '/public/images/default-icon.svg';
 
@@ -375,18 +376,18 @@ const UserPage: NextPage = () => {
     });
 
     return (
-        <div className="container max-w-4xl mx-auto mt-10 p-8 bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
+        <div className=" max-w-4xl mx-auto mt-10  bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
             <h1 className="text-2xl text-primaryDark dark:text-primary dark:bg-dark-secondary-gradient font-bold text-center mb-4 z-10">
                 Perfil do Usuário
             </h1>
             <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
 
-            <div className="flex justify-between items-center z-10 max-w-4xl">
+            <div className="flex justify-between items-center z-10 ">
                 <Link
                     href="/"
-                    className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105 z-10"
+                    className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105 z-10 whitespace-nowrap"
                 >
-                    Voltar para Home
+                    <BiArrowBack className="mr-2" /> Home
                 </Link>
                 <div
                     {...getRootProps()}
@@ -422,7 +423,7 @@ const UserPage: NextPage = () => {
                     href="/cart"
                     className="text-primaryLight hover:underline
            bg-secondary p-2 rounded
-            transition duration-300 hover:scale-105"
+            transition duration-300 hover:scale-105 whitespace-nowrap"
                 >
                     Ver Carrinho
                 </Link>
