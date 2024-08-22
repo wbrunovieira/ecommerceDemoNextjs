@@ -14,6 +14,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/virtual';
+
 import 'swiper/css/pagination';
 
 import SimilarProducts from './SimilarProducts';
@@ -208,7 +209,7 @@ const Product: React.FC<ProductProps> = ({
 
     const handleAddToCart = () => {
         console.log(
-            'entrou no handleAddToCart olha tudo que achou:',
+            'enttrou no handleAddToCart olha tudo que achou:',
             id,
             quantity,
             title,
@@ -392,107 +393,109 @@ const Product: React.FC<ProductProps> = ({
     };
 
     return (
-        <section className="w-full max-w-screen-sm">
-            <div className="flex flex-col px-4 mb-2 md:ml-2">
-                <div className=" border-primary mr-4 md:my-4">
-                    <div className="border-r-4 border-secondary shadow-2xl p-2 rounded-md text-base md:text-3xl text-primaryDark dark:text-primaryLight dark:bg-secondary dark:border-primaryLight w-full max-w-full ">
+        <section>
+            <div className="flex flex-col w-full md:ml-2">
+                <div className="w-full border-primary ">
+                    <div className="border-r-4 border-secondary shadow-2xl p-4 rounded-md text-base md:text-3xl w-1/3 md:w-1/2 text-primaryDark dark:text-primaryLight dark:bg-secondary dark:border-primaryLight">
                         {title}
                     </div>
                 </div>
 
-                <div className="flex flex-col md:flex-row mt-2">
-                    <div className="w-full mt-2 max-w-full h-auto flex flex-col flex-nowrap items-center ">
-                        <Image
-                            src={mainImage}
-                            alt="Main Product Image"
-                            className="mb-1 border rounded-lg max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg h-auto"
-                            width={350}
-                            height={350}
-                            layout="responsive"
-                        />
+                <div className="flex flex-col md:flex-row mt-4">
+                    <div className="flex flex-col">
+                        <div className="flex flex-col md:flex-nowrap  h-10">
+                            <div>
+                                <Image
+                                    src={mainImage}
+                                    alt="Main Product Image"
+                                    className="mb-4 border rounded-lg"
+                                    width={350}
+                                    height={350}
+                                />
+                            </div>
 
-                        <div className="swiper-container w-full max-w-full">
-                            <Swiper
-                                slidesPerView={3}
-                                navigation={true}
-                                pagination={{ clickable: true }}
-                                spaceBetween={30}
-                                centeredSlides={true}
-                                autoplay
-                                className="h-20 w-80"
-                            >
-                                {images.map((image, index) => (
-                                    <SwiperSlide
-                                        key={index}
-                                        onClick={() => setMainImage(image)}
-                                        className="mt-1 h-30 md:h-60 w-60 cursor-pointer"
-                                    >
-                                        <Image
-                                            src={image}
-                                            alt={`Product Image ${index + 2}`}
-                                            width={200}
-                                            height={200}
-                                            className="cursor-pointer rounded-lg hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
-                                        />
-                                    </SwiperSlide>
-                                ))}
-                            </Swiper>
+                            <div className="swiper-container w-1/2">
+                                <Swiper
+                                    slidesPerView={3}
+                                    navigation={true}
+                                    pagination={{ clickable: true }}
+                                    spaceBetween={30}
+                                    centeredSlides={true}
+                                    autoplay
+                                    className="h-40 w-80"
+                                >
+                                    {images.map((image, index) => (
+                                        <SwiperSlide
+                                            key={index}
+                                            onClick={() => setMainImage(image)}
+                                            className="h-60 w-60 cursor-pointer"
+                                        >
+                                            <Image
+                                                src={image}
+                                                alt={`Product Image ${
+                                                    index + 2
+                                                }`}
+                                                width={200}
+                                                height={200}
+                                                className="cursor-pointer rounded-lg hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
+                                            />
+                                        </SwiperSlide>
+                                    ))}
+                                </Swiper>
+                            </div>
                         </div>
                     </div>
 
-                    <div className="flex flex-col gap-2 md:gap-4 p-4 mt-1 md:mt-0 w-full md:w-1/2">
-                        <p className="border-r-4 border-secondary shadow-2xl p-1 md:p-4 rounded-md dark:bg-secondary dark:border-primaryLight text-base ">
-                            {description}
-                        </p>
-
-                        <button
-                            onClick={handleToggleFavorite}
-                            className="mt-4 flex items-center gap-2 text-base text-primaryDark dark:text-primaryLight font-semibold"
-                            aria-label={
-                                isFavorited
-                                    ? ' Remover dos favoritos'
-                                    : ' Adicionar aos favoritos'
-                            }
-                        >
-                            {isFavorited ? (
-                                <FaHeart size={20} color="red" />
-                            ) : (
-                                <FaRegHeart size={20} />
-                            )}
-                            <span className="text-xs">
-                                {isFavorited
-                                    ? 'Remover dos Favoritos'
-                                    : 'Adicionar aos Favoritos'}
-                            </span>
-                        </button>
-
-                        <ShareButtons
-                            product={{
-                                slug,
-                                title,
-                                category: categories[0]?.name || '',
-                            }}
-                        />
+                    <div className="flex flex-col gap-2 p-2 mt-4 md:mt-0 md:w-1/2">
+                        <div className="flex w-full md:w-96">
+                            <p className=" border-r-4 border-secondary shadow-2xl p-4 rounded-md dark:bg-secondary dark:border-primaryLight">
+                                {description}
+                            </p>
+                        </div>
+                        <div className="flex gap-2 mt-4">
+                            <button
+                                onClick={handleToggleFavorite}
+                                className="flex items-center gap-2 text-base text-primaryDark dark:text-primaryLight font-semibold"
+                                aria-label={
+                                    isFavorited
+                                        ? ' Remover dos favoritos'
+                                        : ' Adicionar aos favoritos'
+                                }
+                            >
+                                {isFavorited ? (
+                                    <FaHeart size={20} color="red" />
+                                ) : (
+                                    <FaRegHeart size={20} />
+                                )}
+                                <span className="text-xs ">
+                                    {isFavorited
+                                        ? 'Remover dos Favoritos'
+                                        : 'Adicionar aos Favoritos'}
+                                </span>
+                            </button>
+                        </div>
+                        <div></div>
+                        <div className="text-left w-full text-primaryDark dark:text-primaryLight border-x-primary mb-4">
+                            <ShareButtons
+                                product={{
+                                    slug,
+                                    title,
+                                    category: categories[0]?.name || '',
+                                }}
+                            />
+                        </div>
 
                         {hasVariants && (
                             <>
-                                <div className="mt-2 rounded px-2 py-2 max-w-full">
-                                    <h3 className="text-base text-primaryDark dark:text-primaryLight font-semibold">
+                                <div className="mt-2 rounded px-2 py-2 max-w-48">
+                                    <h3 className="text-base text-primaryDark dark:text-primaryLight  font-semibold">
                                         Cores
                                     </h3>
-                                    <div
-                                        className="flex gap-2 p-2  overflow-x-auto"
-                                        style={{
-                                            scrollbarWidth: 'thin',
-                                            WebkitOverflowScrolling: 'touch',
-                                            msOverflowStyle: 'none',
-                                            overflowX: 'scroll',
-                                        }}
-                                    >
+                                    <div className="flex gap-2 mt-2">
                                         {colors?.map((color, index) => (
                                             <button
                                                 key={index}
-                                                className={`w-6 h-6 rounded-full border border-secondary ${
+                                                className={`w-4 h-4 rounded-full border border-secondary ${
                                                     selectedColor?.id ===
                                                     color.id
                                                         ? 'ring-2 ring-offset-2 shadow-lg ring-secondary'
@@ -510,19 +513,11 @@ const Product: React.FC<ProductProps> = ({
                                     </div>
                                 </div>
 
-                                <div className="mt-2 rounded px-2 py-2 max-w-full">
-                                    <h3 className="text-base font-semibold text-primaryDark dark:text-primaryLight">
+                                <div className="mt-2 flex-initial rounded px-2 py-2 max-w-64">
+                                    <h3 className="text-base font-semibold text-primaryDark dark:text-primaryLight ">
                                         Tamanhos
                                     </h3>
-                                    <div
-                                        className="flex gap-2 p-2  md:w-1/2overflow-x-auto"
-                                        style={{
-                                            scrollbarWidth: 'thin',
-                                            WebkitOverflowScrolling: 'touch',
-                                            msOverflowStyle: 'none',
-                                            overflowX: 'scroll',
-                                        }}
-                                    >
+                                    <div className="flex gap-2 justify-start p-2 w-60 cursor-pointer">
                                         {sizes?.map((size, index) => (
                                             <div
                                                 key={index}
@@ -543,13 +538,13 @@ const Product: React.FC<ProductProps> = ({
                             </>
                         )}
 
-                        <div className="my-2 px-4 py-2 border-r-4 border-secondary shadow-lg rounded-md bg-primaryLight ">
+                        <div className="my-2 px-4 py-2 border-r-4 border-secondary shadow-lg rounded-md bg-primaryLight w-auto">
                             <p className="text-primaryDark font-semibold text-lg">
                                 {formatPrice(price)}
                             </p>
                         </div>
 
-                        <div className="flex items-center p-2 max-w-md  rounded-md">
+                        <div className="flex items-center p-2 max-w-md rounded-md">
                             <div className="flex items-center mr-4">
                                 <span className="flex justify-center items-center w-8 h-8 bg-primaryDark text-primaryLight font-bold rounded-full border border-primaryDark">
                                     {quantity}
@@ -563,7 +558,7 @@ const Product: React.FC<ProductProps> = ({
                                         -
                                     </button>
                                     <button
-                                        className="w-8 h-8 flex justify-center items-center text-primaryDark dark:text-primaryLight font-semibold border-primaryDark"
+                                        className="w-8 h-8 flex justify-center items-center text-primaryDark dark:text-primaryLight  font-semibold  border-primaryDark"
                                         onClick={incrementQuantity}
                                     >
                                         +
@@ -577,30 +572,37 @@ const Product: React.FC<ProductProps> = ({
                                 </p>
                             )}
                         </div>
-
-                        {!hasVariants || isStockChecked ? (
-                            availableStock > 0 ? (
-                                <Button
-                                    variant="secondary"
-                                    size="large"
-                                    onClick={handleAddToCart}
-                                    disabled={isBuyButtonDisabled}
-                                >
-                                    Comprar
-                                </Button>
+                        <div className="flex w-96 mt-4">
+                            {!hasVariants || isStockChecked ? (
+                                availableStock > 0 ? (
+                                    <Button
+                                        variant="secondary"
+                                        size="large"
+                                        onClick={() => {
+                                            handleAddToCart();
+                                            toast({
+                                                title: 'Item adicionado ao carrinho',
+                                                description:
+                                                    'Seu item foi adicionado ao carrinho com sucesso!',
+                                            });
+                                        }}
+                                        disabled={isBuyButtonDisabled}
+                                    >
+                                        Comprar
+                                    </Button>
+                                ) : (
+                                    <p className="out-of-stock">
+                                        Produto fora de estoque
+                                    </p>
+                                )
                             ) : (
-                                <p className="text-red-500">
-                                    Produto fora de estoque
+                                <p className="text-gray-500">
+                                    Selecione cor e tamanho
                                 </p>
-                            )
-                        ) : (
-                            <p className="text-gray-500">
-                                Selecione cor e tamanho
-                            </p>
-                        )}
-
-                        <div className="flex flex-col mt-4 border border-light rounded px-8 py-2  text-xs text-[#676666]">
-                            <div className="flex gap-2">
+                            )}
+                        </div>
+                        <div className="flex flex-col mt-4 border border-light rounded px-8 py-2 w-96 text-xs text-[#676666] ">
+                            <div className="flex gap-2 ">
                                 <p className="font-semibold">SKU: </p>
                                 <p>{id}</p>
                             </div>
@@ -624,28 +626,23 @@ const Product: React.FC<ProductProps> = ({
                     </div>
                 </div>
             </div>
-
-            <div className="flex flex-col gap-2 w-full max-w-full border-t-2 border-primary mt-4">
-                <div className="w-full flex mt-4">
-                    <h2 className="text-lg text-primaryDark dark:text-primaryLight shadow-lg font-semibold border-r-4 border-secondary rounded  whitespace-nowrap">
+            <div className="flex flex-col gap-2 w-auto border-t-2 border-primary mt-4">
+                <div className="w-full flex mt-4 ">
+                    <h2 className="text-lg text-primaryDark dark:text-primaryLight shadow-lg font-semibold border-r-4 border-secondary rounded p-4 whitespace-nowrap">
                         Produtos Parecidos
                     </h2>
                 </div>
-                <div className="flex  w-full max-w-full ">
+                <div className="flex gap-4 w-[64rem]">
                     <Swiper
-                        slidesPerView={1}
+                        slidesPerView={3}
                         navigation={true}
                         pagination={{ clickable: true }}
                         spaceBetween={20}
                         centeredSlides={true}
-                        className="w-80"
                         autoplay
                     >
                         {similarProducts.map((product, index) => (
-                            <SwiperSlide
-                                key={index}
-                                className="mt-1 h-30 md:h-60 w-120 cursor-pointer"
-                            >
+                            <SwiperSlide key={index}>
                                 <Link href={`/product/${product.slug}`}>
                                     <SimilarProducts
                                         image={product.image}

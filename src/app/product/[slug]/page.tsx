@@ -166,12 +166,12 @@ const ProductPage = async ({ params }: ParamsProps) => {
 
         return (
             <Container>
-                <section className="flex mt-2 gap-8 z-10 lg:flex-row lg:gap-8">
-                    <div className="flex flex-col">
+                <section className="flex w-full max-w-full mt-2 gap-4 lg:gap-8 z-10 lg:flex-row">
+                    <div className="flex flex-col ">
                         <Sidebar />
                     </div>
 
-                    <div className="z-10">
+                    <div className="z-10 w-full max-w-full">
                         <Product
                             id={productId}
                             title={productName}

@@ -15,7 +15,6 @@ import MobileMenu from './MobileMenu';
 const Header = () => {
     return (
         <header className="bg-header-bg dark:bg-header-bg-dark bg-cover py-2 px-4 w-full">
-            {/* Primeira linha com ícones sociais e mensagem */}
             <div className="flex justify-between items-center w-full mb-2 md:mb-4">
                 <div className="flex items-center">
                     <SocialIcons className="flex gap-2 md:gap-3" />
@@ -37,7 +36,7 @@ const Header = () => {
                         width={96}
                         height={96}
                         alt="logo"
-                        className="mr-2"
+                        className="mr-2 max-w-full"
                     />
                     <div className="flex gap-2 items-center justify-center rounded-md bg-primaryLight px-2 py-1 hover:scale-110 transition duration-300 ease-in-out ">
                         <Home width="12" height="12" />
@@ -60,8 +59,7 @@ const Header = () => {
             </div>
 
             {/* Mobile Layout */}
-            <div className="flex md:hidden flex-wrap justify-between items-center w-full">
-                {/* Logo */}
+            <div className="flex  flex-wrap justify-between items-center w-full md:hidden">
                 <div className="flex items-center justify-between gap-2 md:gap-4 w-full">
                     <Link href="/" passHref className="hover:scale-110">
                         <Image
@@ -71,12 +69,10 @@ const Header = () => {
                             alt="logo"
                             className="mr-2"
                         />
-                        {/* <Logo className="w-32 md:w-32 cursor-pointer" /> */}
                     </Link>
                     <MobileMenu />
                 </div>
 
-                {/* Ícones de controle no mobile (à direita) */}
                 <div className="flex items-center justify-between gap-2 md:gap-4 w-full">
                     <div className="flex items-center gap-2">
                         <LogginButton />
@@ -88,12 +84,10 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* SearchBox para mobile */}
             <div className="flex justify-center mt-4 md:hidden">
                 <SearchBox />
             </div>
 
-            {/* Flor animada apenas em desktop */}
             <div className="hidden md:flex justify-center mt-4">
                 <AnimatedFlower />
             </div>

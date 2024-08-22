@@ -131,11 +131,11 @@ body {
     color: var(--primaryDark) !important;
 }
 
-.swiper-container {
+/* .swiper-container {
     width: 250px !important;
 
     height: 350px !important;
-}
+} */
 
 .slider-min,
 .slider-max {
@@ -190,7 +190,4 @@ body {
         margin: 0;
         padding: 0;
     }
-
- 
-
 }
