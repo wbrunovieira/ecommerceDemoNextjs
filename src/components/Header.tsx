@@ -59,7 +59,7 @@ const Header = () => {
             </div>
 
             {/* Mobile Layout */}
-            <div className="flex  flex-wrap justify-between items-center w-full md:hidden">
+            <div className="flex  flex-wrap justify-between items-center w-full max-w-full md:hidden">
                 <div className="flex items-center justify-between gap-2 md:gap-4 w-full">
                     <Link href="/" passHref className="hover:scale-110">
                         <Image

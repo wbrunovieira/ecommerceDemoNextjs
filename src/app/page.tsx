@@ -22,9 +22,9 @@ const Home: NextPage<HomeProps> = () => {
     return (
         <>
             <Container>
-                <div>
+                <div className="w-full max-w-full">
                     <ImagesSlider
-                        className="h-[20rem]"
+                        className="w-full max-w-full h-[20rem]"
                         images={[
                             '/images/foto1banner2.png',
                             '/images/foto2-2.jpg',
@@ -35,16 +35,16 @@ const Home: NextPage<HomeProps> = () => {
                         direction="up"
                     >
                         <div className="z-10  bg-primaryLight/[.7] p-4  rounded-lg">
-                            <h1 className="text-primaryDark text-4xl font-extrabold pb-2">
+                            <h1 className="text-primaryDark text-xl md:text-4xl font-extrabold pb-2">
                                 Agora também <br /> estamos juntas na internet.
                             </h1>
-                            <p className="text-secondary font-bold">
+                            <p className="text-sm md:text-xl text-secondary font-bold">
                                 Faça o seu pedido que entregamos na sua casa.
                             </p>
                         </div>
                     </ImagesSlider>
                 </div>
-                <div className="max-w-7xl mx-auto  mt-4">
+                <div className="max-w-7xl  mt-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
                         <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
                             <div className="flex">
