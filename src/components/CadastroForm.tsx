@@ -128,26 +128,14 @@ const CadastroForm = () => {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center">
-            <div className="bg-primaryLight p-96 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-96 md:p-48 sm:w-full">
-                <div className="absolute inset-0 z-0">
-                    <Image
-                        src="/images/petalas.svg"
-                        fill
-                        style={{ objectFit: 'cover' }}
-                        alt="Stylos Lingerie"
-                        className="opacity-50"
-                    />
-                </div>
+        <div className="flex items-center justify-center min-h-max py-8">
+            <div className="bg-primaryLight  rounded-lg shadow-lg z-10 relative overflow-hidden w-full max-w-md lg:max-w-lg">
                 <div className="relative z-10 bg-primary p-16 border-2 border-y-primaryDark rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-bold text-secondary mb-4">
+                    <h2 className="text-3xl font-bold text-secondary mb-4">
                         Cadastro
                     </h2>
 
-                    <form
-                        onSubmit={handleSubmit}
-                        className="flex flex-col container "
-                    >
+                    <form onSubmit={handleSubmit} className="flex flex-col  ">
                         <label
                             htmlFor="name"
                             className="text-white-important text-xs"
@@ -164,7 +152,7 @@ const CadastroForm = () => {
                             value={name}
                             onBlur={() => handleBlur('name', name)}
                             onChange={(e) => setName(e.target.value)}
-                            className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4 focus:border-primaryDark focus:ring-4 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary required  placeholder-primary  "
+                            className="text-xs px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full mb-4 focus:border-primaryDark focus:ring-4 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary required  placeholder-primary  "
                         />
                         {errorMessage.name && (
                             <p className="text-redAtention text-xs italic">
@@ -188,7 +176,7 @@ const CadastroForm = () => {
                             onBlur={() => handleBlur('email', email)}
                             onChange={(e) => setEmail(e.target.value)}
                             value={email}
-                            className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary invalid:border-red-400 placeholder-primary"
+                            className="text-xs px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full mb-4 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary invalid:border-red-400 placeholder-primary"
                         />
                         {errorMessage.email && (
                             <p className="text-redAtention text-xs italic">
@@ -202,7 +190,7 @@ const CadastroForm = () => {
                         >
                             Senha
                         </label>
-                        <div className="relative w-96 md:w-72 sm:w-32">
+                        <div className="relative w-full">
                             <input
                                 id="password"
                                 type={showPassword ? 'text' : 'password'}
@@ -213,7 +201,7 @@ const CadastroForm = () => {
                                 onBlur={() => handleBlur('password', password)}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full pr-10 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary placeholder-primary"
+                                className="text-xs px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full pr-10 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary placeholder-primary"
                             />
                             <span className="absolute inset-y-0 right-0 flex items-center pr-3">
                                 {showPassword ? (
@@ -235,14 +223,13 @@ const CadastroForm = () => {
                             )}
                         </div>
 
-                        
                         <label
                             htmlFor="email"
-                            className="text-white-important text-xs"
+                            className="text-white-important text-xs mt-4"
                         >
                             Repetir a senha
                         </label>
-                        <div className="relative w-96 md:w-72 sm:w-32">
+                        <div className="relative w-full ">
                             <input
                                 id="repeatPassword"
                                 type={showPassword ? 'text' : 'password'}
@@ -256,7 +243,7 @@ const CadastroForm = () => {
                                 }
                                 required
                                 placeholder="Repetir a senha"
-                                className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 mb-4 focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary placeholder-primary"
+                                className="text-xs px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-full  focus:border-primaryDark focus:ring-2 focus:ring-secondary focus:ring-opacity-50 focus:outline-none caret-secondary placeholder-primary"
                             />
                             <span className="absolute inset-y-0 right-0 flex items-center pr-3">
                                 {showPassword ? (
@@ -278,7 +265,7 @@ const CadastroForm = () => {
                             </p>
                         )}
                         {errorMessage.repeatPassword && (
-                            <p className="text-primaryDark w-48 rounded-md text-xs mb-4 bg-primaryLight p-2">
+                            <p className="text-primaryDark w-full rounded-md text-xs mb-4 bg-primaryLight p-2">
                                 {errorMessage.repeatPassword}
                             </p>
                         )}
@@ -287,7 +274,7 @@ const CadastroForm = () => {
                             type="submit"
                             disabled={isButtonInDisabled}
                             id="submitButton"
-                            className="flex items-center justify-center  bg-secondary mb-4 text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
+                            className="flex items-center justify-center  bg-secondary mb-4 text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-full transition duration-300 hover:scale-105 mt-8"
                         >
                             {isButtonInDisabled ? (
                                 <svg
@@ -301,7 +288,7 @@ const CadastroForm = () => {
                         <button
                             type="button"
                             disabled={isGoogleSignInDisabled}
-                            className="bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
+                            className="bg-secondary text-white-important flex items-center justify-center px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-full transition duration-300 hover:scale-105"
                             onClick={handleGoogleSignInClick}
                         >
                             <div>
