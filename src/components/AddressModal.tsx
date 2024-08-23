@@ -133,12 +133,14 @@ const AddressModal: React.FC<AddressModalProps> = ({
     };
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-6 w-1/3">
-                <h2 className="text-xl font-bold mb-4">Endereço de Entrega</h2>
+        <div className="fixed inset-0 bg-primary bg-opacity-70 flex items-center justify-center z-50 max-w-full w-full ">
+            <div className="md:flex items-center justify-center bg-white rounded-lg p-4 md:p-16 w-full h-full max-w-full m-8 overflow-auto max-w-full md:w-3/5">
+                <h2 className="text-xl text-primary font-bold mb-4 p-4">
+                    Onde vamos entregar?
+                </h2>
                 {isAddingNew ? (
                     <div>
-                        <form className="space-y-4">
+                        <form className="space-y-4 w-full p-8">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
                                     CEP
@@ -253,7 +255,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                         <div className="flex justify-between mt-4">
                             <button
                                 onClick={handleAddNewAddress}
-                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                                className="bg-primaryDark text-white px-4 py-2 rounded"
                             >
                                 Salvar Endereço
                             </button>
@@ -266,17 +268,18 @@ const AddressModal: React.FC<AddressModalProps> = ({
                         </div>
                     </div>
                 ) : (
-                    <div>
+                    <div className="w-full">
                         {addresses.length > 0 ? (
-                            <div>
-                                <p className="mb-4">
+                            <div className="w-full max-w-full">
+                                <p className="mb-4 text-[0.7rem] md:text-base text-primaryDark font-bold whitespace-nowrap">
                                     Selecione um endereço de entrega:
                                 </p>
-                                <ul>
+                                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+                                <ul className="w-full space-y-2">
                                     {addresses.map((address, index) => (
                                         <li
                                             key={index}
-                                            className="mb-2 cursor-pointer hover:bg-gray-100 p-2 rounded"
+                                            className="p-2 rounded border border-primaryDark text-primaryDark hover:bg-primary cursor-pointer transition"
                                             onClick={() => {
                                                 onConfirm(address);
                                                 console.log('Chamando onClose');
@@ -292,32 +295,38 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                         </li>
                                     ))}
                                 </ul>
-                                <div className="flex justify-between mt-4">
+                                <div className="flex flex-col md:flex-row justify-between gap-2 mt-4">
                                     <button
                                         onClick={() => {
                                             setIsAddingNew(true);
                                         }}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded"
+                                        className="bg-primaryDark text-white px-4 py-2 rounded transform hover:scale-105 hover:shadow-lg transition duration-300 ease-in-out whitespace-nowrap"
                                     >
                                         Adicionar Outro Endereço
+                                    </button>
+                                    <button
+                                        onClick={handleCancel}
+                                        className="bg-secondary text-white px-4 py-2 rounded transform hover:scale-105 hover:shadow-lg transition duration-300 ease-in-out"
+                                    >
+                                        Cancelar
                                     </button>
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex gap-4">
+                            <div className="flex  gap-4">
                                 <p className="mb-4">
                                     Você não possui nenhum endereço cadastrado.
                                     Por favor, adicione um novo endereço.
                                 </p>
                                 <button
                                     onClick={() => setIsAddingNew(true)}
-                                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                                    className="bg-primaryDark text-white px-4 py-2 rounded transform hover:scale-105 hover:shadow-lg transition duration-300 ease-in-out"
                                 >
                                     Adicionar Endereço
                                 </button>
                                 <button
                                     onClick={handleCancel}
-                                    className="bg-gray-500 text-white px-4 py-2 rounded"
+                                    className="bg-gray-500 text-white px-4 py-2 rounded transform hover:scale-105 hover:shadow-lg transition duration-300 ease-in-out"
                                 >
                                     Cancelar
                                 </button>
