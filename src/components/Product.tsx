@@ -622,6 +622,11 @@ const Product: React.FC<ProductProps> = ({
                             </div>
                         </div>
                     </div>
+
+
+
+
+                    
                 </div>
             </div>
 

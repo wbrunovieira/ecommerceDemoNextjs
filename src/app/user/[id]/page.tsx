@@ -11,8 +11,9 @@ import Button from '@/components/Button';
 import { useEffect, useState } from 'react';
 import { format, parseISO, parse } from 'date-fns';
 
-import { useDropzone } from 'react-dropzone';
+// import { useDropzone } from 'react-dropzone';
 import { BiArrowBack } from 'react-icons/bi';
+import { BsCart4 } from 'react-icons/bs';
 
 import DefaultIcon from '/public/images/default-icon.svg';
 
@@ -368,15 +369,15 @@ const UserPage: NextPage = () => {
             });
     };
 
-    const { getRootProps, getInputProps } = useDropzone({
-        onDrop: handleDrop,
-        accept: {
-            'image/*': [],
-        },
-    });
+    // const { getRootProps, getInputProps } = useDropzone({
+    //     onDrop: handleDrop,
+    //     accept: {
+    //         'image/*': [],
+    //     },
+    // });
 
     return (
-        <div className=" max-w-4xl mx-auto mt-10  bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
+        <div className=" max-w-4xl mx-auto mt-10 px-4 bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
             <h1 className="text-2xl text-primaryDark dark:text-primary dark:bg-dark-secondary-gradient font-bold text-center mb-4 z-10">
                 Perfil do Usuário
             </h1>
@@ -385,15 +386,15 @@ const UserPage: NextPage = () => {
             <div className="flex justify-between items-center z-10 ">
                 <Link
                     href="/"
-                    className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105 z-10 whitespace-nowrap"
+                    className="flex items-center justify-center text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105 z-10 whitespace-nowrap"
                 >
-                    <BiArrowBack className="mr-2" /> Home
+                    <BiArrowBack className="mr-1.5 " /> Home
                 </Link>
                 <div
-                    {...getRootProps()}
-                    className="relative flex flex-col items-center cursor-pointer z-20  "
+                    // {...getRootProps()}
+                    className="relative flex flex-col items-center justify-center cursor-pointer z-20  "
                 >
-                    <input {...getInputProps()} />
+                    {/* <input {...getInputProps()} /> */}
                     {userDetails.profileImageUrl ? (
                         <Image
                             src={userDetails.profileImageUrl}
@@ -403,33 +404,33 @@ const UserPage: NextPage = () => {
                             className="rounded-full mb-4 transform hover:scale-105 transition duration-300 ease-in-out"
                         />
                     ) : (
-                        <DefaultIcon
-                            width={100}
-                            height={100}
-                            className="rounded-full mb-4 z-20 transform hover:scale-110  transition duration-300 ease-in-out"
-                        />
+                        <div className="relative">
+                            <DefaultIcon
+                                width={100}
+                                height={100}
+                                className="rounded-full mb-4 z-20 transform hover:scale-110 transition duration-300 ease-in-out"
+                            />
+                            <BiEdit
+                                size={24}
+                                className="absolute bottom-2 right-0 top-2 text-primaryDark dark:text-primaryLight transform hover:scale-110 transition duration-300 ease-in-out z-50"
+                            />
+                        </div>
                     )}
-
-                    <BiEdit
-                        size={24}
-                        className="absolute bottom-2 right-2 top-2 text-primaryDark dark:text-primaryLight transform hover:scale-110  transition duration-300 ease-in-out"
-                    />
-                    <p className="text-xs text-primaryDark dark:text-primaryLight ">
-                        Clique para alterar a imagem
-                    </p>
                 </div>
 
                 <Link
                     href="/cart"
-                    className="text-primaryLight hover:underline
-           bg-secondary p-2 rounded
-            transition duration-300 hover:scale-105 whitespace-nowrap"
+                    className="flex items-center justify-center text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105 whitespace-nowrap"
                 >
-                    Ver Carrinho
+                    <BsCart4
+                        size={16}
+                        className="mr-1 text-primaryLight align-baseline"
+                    />
+                    <span className="align-baseline">Carrinho</span>
                 </Link>
             </div>
 
-            <div className="flex gap-4 bg-primaryLight dark:bg-dark-secondary-gradient max-w-4xl z-10 ">
+            <div className="flex flex-col md:flex-row gap-4 bg-primaryLight dark:bg-dark-secondary-gradient max-w-4xl z-10 ">
                 <div className="bg-primaryLight dark:bg-dark-secondary-gradient pt-2 z-10 rounded p-4">
                     <p className="text-primaryDark dark:text-primary pt-2">
                         Favoritos :
