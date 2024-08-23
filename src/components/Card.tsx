@@ -108,7 +108,7 @@ const Card: React.FC<CardProps> = ({
         .join(', ');
 
     return (
-        <div className="max-w-sm rounded-md shadow-lg bg-primaryLight dark:bg-dark-secondary-gradient m-2 h-96 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-400 ease-in-out">
+        <div className="max-w-sm rounded-md shadow-lg bg-white border-2 border-y-primaryDark  dark:bg-dark-secondary-gradient m-2 h-96 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-400 ease-in-out">
             <div className="relative overflow-hidden flex-shrink-0 rounded-md h-[200px]">
                 <Image
                     src={validImageSRC}

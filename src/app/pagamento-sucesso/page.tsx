@@ -46,22 +46,7 @@ const SuccessPage = () => {
     }, [collection_id, cartId]);
 
     return (
-        // <div className="bg-linear-gradient flex items-center justify-center">
-        //     <div className="flex flex-col text-left z-10 bg-white p-8 border-2 border-y-primaryDark rounded-lg shadow-lg m-4">
-        //         <h1 className="text-lg md:text-3xl text-primaryDark font-bold text-center ">
-        //             Pagamento Efetuado com Sucesso !
-        //         </h1>
-        //         <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mt-1 w-full" />
-        //         <p className="text-primaryDark text-xs md:text-sm mt-4 text-left">
-        //             Em breve você irá receber um email de confirmação do seu
-        //             pedido.
-        //         </p>
-        //         <p className="text-primaryDark text-xs md:text-sm text-left mt-1">
-        //             Obrigado por comprar com a gente.
-        //         </p>
-        //         <Fireworks autorun={{ speed: 3, duration: 5 }} />
-        //     </div>
-        // </div>
+
         <div className="bg-linear-gradient flex items-center justify-center ">
             {' '}
             <div className="flex flex-col text-left z-10 bg-white p-8 border-2 border-y-primaryDark rounded-lg shadow-lg m-8 max-w-lg w-full">

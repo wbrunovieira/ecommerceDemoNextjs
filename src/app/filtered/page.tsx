@@ -413,11 +413,11 @@ const FilteredResults: NextPage = () => {
     return (
         <Container>
             <section
-                className="flex mt-2 gap-8"
+                className="flex mt-2"
                 ref={containerRef as React.RefObject<HTMLDivElement>}
             >
                 <div className="flex flex-col">
-                    <Sidebar initialCategories={[]} />
+                    <Sidebar />
                 </div>
                 <div className="flex flex-col "></div>
                 <div className="container mx-auto card">
@@ -428,7 +428,7 @@ const FilteredResults: NextPage = () => {
                                     <CardTitle>
                                         {' '}
                                         Produtos filtrados por :{' '}
-                                        <span className="text-secondary">
+                                        <span className="text-secondary mt-2">
                                             "{filterName}"
                                         </span>{' '}
                                     </CardTitle>
