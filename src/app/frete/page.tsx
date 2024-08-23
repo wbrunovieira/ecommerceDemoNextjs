@@ -215,7 +215,7 @@ const FretePage = () => {
     console.log('frete isLoading', isLoading);
 
     return (
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center ">
             <div className="bg-white p-8 rounded-lg shadow-lg z-10 relative overflow-hidden overflow-auto max-w-full md:w-3/5 md:p-12 sm:w-full ">
                 <div className="relative z-10  p-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
                     <h2 className="text-xs md:text-2xl font-bold text-secondary mb-4 whitespace-nowrap">
