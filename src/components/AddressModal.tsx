@@ -295,7 +295,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                         </li>
                                     ))}
                                 </ul>
-                                <div className="flex flex-col md:flex-row justify-between gap-2 mt-4">
+                                <div className="flex flex-col md:flex-rowjustify-between gap-2 mt-4">
                                     <button
                                         onClick={() => {
                                             setIsAddingNew(true);
