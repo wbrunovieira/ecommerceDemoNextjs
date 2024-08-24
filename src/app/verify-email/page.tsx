@@ -54,7 +54,7 @@ const VerifyEmail = () => {
     }, [token, toast]);
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
+        <div className="flex md:min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 mt-6 p-10 sm:p-6 lg:p-8">
             <div className="bg-white dark:bg-dark-secondary-gradient p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5 text-center">
                 {verificationStatus === 'verifying' && (
                     <p className="text-lg font-semibold text-gray-800 dark:text-white">
