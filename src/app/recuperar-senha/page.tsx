@@ -24,7 +24,7 @@ const RecuperarSenha: React.FC = () => {
     function getMessageForField(field: keyof ErrorMessages): string {
         switch (field) {
             case 'email':
-                return 'Vamos precisar do seu email. :(';
+                return 'Por favor, insira seu e-mail para que possamos ajudá-lo a redefinir sua senha.';
 
             default:
                 return '';
@@ -35,24 +35,32 @@ const RecuperarSenha: React.FC = () => {
         e.preventDefault();
         setIsButtonInDisabled(true);
 
-        const result = await axios.post(
-            `${BASE_URL}/accounts/forgot-password/`,
-            { email: email },
-            {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }
-        );
-        console.log(' result', result);
+        try {
+            const result = await axios.post(
+                `${BASE_URL}/accounts/forgot-password/`,
+                { email: email },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
 
-        if (result.status === 201) {
+            if (result.status === 201) {
+                toast({
+                    title: 'E-mail enviado com sucesso!',
+                    description:
+                        'Verifique sua caixa de entrada para encontrar o link de redefinição de senha. Estamos aqui para ajudar!',
+                });
+                router.push('/login');
+            }
+        } catch (error) {
             toast({
-                title: 'Sucesso',
+                title: 'Ops, algo deu errado!',
                 description:
-                    '`Enviamos um emal com um link para redefinicao da senha`!',
+                    'Não conseguimos enviar o e-mail de redefinição. Por favor, tente novamente mais tarde.',
             });
-            router.push('/login');
+            setIsButtonInDisabled(false);
         }
     };
 
@@ -65,7 +73,8 @@ const RecuperarSenha: React.FC = () => {
                 value &&
                 !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
             ) {
-                errorMessage = 'Por favor, insira um e-mail válido.';
+                errorMessage =
+                    'Por favor, insira um e-mail válido para continuar.';
             }
 
             return {
@@ -76,31 +85,37 @@ const RecuperarSenha: React.FC = () => {
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center">
-            <div className="absolute bg-primaryLight dark:bg-dark-secondary-gradient p-96 rounded-lg shadow-lg z-10 relative overflow-hidden lg:p-96 md:p-48 sm:w-full">
-                <div>Esqueceu a senha?</div>
-                <div>Digite o e-mail cadastrado</div>
+        <div className="flex md:min-h-screen items-center justify-center  bg-linear-gradient  p-4 sm:p-6 lg:p-8">
+            <div className="bg-white dark:bg-dark-secondary-gradient p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5">
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                    Esqueceu a senha?
+                </h2>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
+                    Sem problemas! Digite seu e-mail abaixo e nós vamos ajudar
+                    você a recuperar o acesso.
+                </p>
+
                 <form
                     onSubmit={handleSubmit}
-                    className="flex flex-col space-y-4"
+                    className="flex flex-col space-y-6"
                 >
                     <label
                         htmlFor="email"
-                        className="text-primaryDark dark:text-white-important text-xs"
+                        className="block text-sm font-medium text-primaryDark dark:text-white-important text-xs"
                     >
                         Email
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            autoComplete="email"
+                            placeholder="Email"
+                            onBlur={() => handleBlur('email', email)}
+                            value={email}
+                            className="mt-1 px-4 py-2 rounded-lg border border-gray-300 shadow-sm bg-white bg-opacity-80 dark:border-gray-700 w-full max-w-full focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-gray-300"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
                     </label>
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        autoComplete="email"
-                        placeholder="Email"
-                        onBlur={() => handleBlur('email', email)}
-                        value={email}
-                        className="px-4 py-2 rounded-lg shadow-sm bg-white bg-opacity-80 w-96 md:w-72 sm:w-32 "
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
                     {errorMessage.email && (
                         <p className="text-redAtention text-xs italic">
                             {errorMessage.email}
@@ -110,7 +125,7 @@ const RecuperarSenha: React.FC = () => {
                     <button
                         type="submit"
                         disabled={isButtonInDisabled}
-                        className="flex items-center justify-center bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
+                        className="w-full flex items-center justify-center bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-full max-w-full transition duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-dark"
                     >
                         {isButtonInDisabled ? (
                             <svg
@@ -118,23 +133,24 @@ const RecuperarSenha: React.FC = () => {
                                 viewBox="0 0 24 24"
                             ></svg>
                         ) : null}
-                        Enviar
+                        Enviar link de redefinição
                     </button>
+                    <div className="flex justify-between items-center mt-4 gap-2">
+                        <Link href="/login">
+                            <button
+                                type="button"
+                                className="bg-secondary text-white-important px-4 text-xs py-2 rounded-lg shadow-md hover:bg-secondary-dark w-full max-w-full transition duration-300 hover:scale-105 whitespace-nowrap"
+                            >
+                                Voltar para o Login
+                            </button>
+                        </Link>
 
-                    <Link href="/login">
-                        <button
-                            type="button"
-                            className="bg-secondary text-white-important px-2  text-xs py-1 rounded-lg shadow-md hover:bg-secondary-dark w-96 md:w-72 sm:w-32 transition duration-300 hover:scale-105"
-                        >
-                            Voltar para Login
-                        </button>
-                    </Link>
-
-                    <Link href="/" legacyBehavior>
-                        <a className="bg-secondary text-white-important px-4 py-2 rounded-lg shadow-md hover:bg-secondary-dark w-32 md:w-32 sm:w-32 transition duration-300 hover:scale-105 mt-8">
-                            Home
-                        </a>
-                    </Link>
+                        <Link href="/" legacyBehavior>
+                            <a className="bg-secondary text-center text-white-important px-4 py-2 text-xs rounded-lg shadow-md hover:bg-secondary-dark w-full max-w-full transition duration-300 hover:scale-105 whitespace-nowrap">
+                                Voltar para a Home
+                            </a>
+                        </Link>
+                    </div>
                 </form>
             </div>
         </div>
