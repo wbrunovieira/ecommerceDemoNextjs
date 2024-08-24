@@ -7,47 +7,78 @@ import { useEffect, useState } from 'react';
 const VerifyEmail = () => {
     const searchParams = useSearchParams();
     const token = searchParams.get('token');
-    const [verificationStatus, setVerificationStatus] = useState<boolean>();
-
+    const [verificationStatus, setVerificationStatus] = useState<'verifying' | 'success' | 'failure'>('verifying');
     const { toast } = useToast();
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
-    console.log('verificationStatus', verificationStatus);
-    console.log('token', token);
-
     useEffect(() => {
         if (token) {
-            console.log('entrou no token');
             const url = `${BASE_URL}/accounts/verify/${token}`;
-            console.log('entrou no token,url', url);
             fetch(url)
                 .then((response) => response.json())
                 .then((data) => {
                     if (data.success) {
-                        setVerificationStatus(true);
+                        setVerificationStatus('success');
                         toast({
                             title: 'E-mail verificado com sucesso!',
-                            description: 'verificação do e-mail. sucesso!',
+                            description: 'Obrigado por confirmar seu e-mail.',
                             style: { background: '#006961' },
                         });
                     } else {
-                        setVerificationStatus(false);
+                        setVerificationStatus('failure');
                         toast({
                             title: 'Falha na verificação do e-mail.',
-                            description: 'Falha na verificação do e-mail. ',
+                            description: 'Não conseguimos verificar seu e-mail. Por favor, tente novamente.',
                             style: { background: '#ff6961' },
                         });
                     }
+                })
+                .catch((error) => {
+                    console.error('Erro na verificação do e-mail:', error);
+                    setVerificationStatus('failure');
+                    toast({
+                        title: 'Erro na verificação do e-mail.',
+                        description: 'Ocorreu um erro durante a verificação. Por favor, tente novamente.',
+                        style: { background: '#ff6961' },
+                    });
                 });
+        } else {
+            setVerificationStatus('failure');
+            toast({
+                title: 'Token não encontrado.',
+                description: 'Parece que o link de verificação está incompleto. Por favor, verifique o link e tente novamente.',
+                style: { background: '#ff6961' },
+            });
         }
     }, [token, toast]);
 
     return (
-        <div className="flex justify-center align-center">
-            {verificationStatus === null && 'Verificando seu e-mail...'}
-            {verificationStatus === true && 'E-mail verificado com sucesso!'}
-            {verificationStatus === false && 'Falha na verificação do e-mail.'}
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 lg:p-8">
+            <div className="bg-white dark:bg-dark-secondary-gradient p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5 text-center">
+                {verificationStatus === 'verifying' && (
+                    <p className="text-lg font-semibold text-gray-800 dark:text-white">
+                        Verificando seu e-mail...
+                    </p>
+                )}
+                {verificationStatus === 'success' && (
+                    <p className="text-lg font-semibold text-green-600 dark:text-green-400">
+                        E-mail verificado com sucesso!
+                    </p>
+                )}
+                {verificationStatus === 'failure' && (
+                    <p className="text-lg font-semibold text-red-600 dark:text-red-400">
+                        Falha na verificação do e-mail.
+                    </p>
+                )}
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-4">
+                    {verificationStatus === 'verifying'
+                        ? 'Por favor, aguarde enquanto verificamos seu e-mail...'
+                        : verificationStatus === 'success'
+                        ? 'Sua conta já está pronta para ser utilizada.'
+                        : 'Por favor, verifique o link ou entre em contato com o suporte.'}
+                </p>
+            </div>
         </div>
     );
 };
