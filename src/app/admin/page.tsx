@@ -27,6 +27,7 @@ import {
 import { ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AdminMobileMenu from '@/components/MobileMenuAdm';
 
 interface Color {
     _id: {
@@ -148,6 +149,9 @@ const AdminPage: React.FC = () => {
 
     const [searchId, setSearchId] = useState('');
     const [searchName, setSearchName] = useState('');
+
+    const [currentView, setCurrentView] = useState('products');
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -613,279 +617,296 @@ const AdminPage: React.FC = () => {
     }
 
     return (
-        <div className="flex min-h-screen z-20 divide-x">
-            <div className="w-64 bg-primaryLight dark:bg-primaryDark text-primaryDark dark:text-primaryLight  flex flex-col z-20 ">
+        <div className="flex md:min-h-screen z-20 divide-x">
+            <AdminMobileMenu
+                setCurrentView={setCurrentView}
+                setIsSheetOpen={setIsSheetOpen}
+            />
+            <div className="hidden md:flex w-64 bg-primaryLight dark:bg-primaryDark text-primaryDark dark:text-primaryLight flex-col z-20">
                 <div className="flex items-center justify-center h-16 border-b border-gray-700 z-20 ">
                     <span className="text-xl text-primaryDark dark:text-primaryLight font-semibold z-20">
                         Admin
                     </span>
                 </div>
-                <nav className="flex-1 px-2 space-y-1 z-20">
-                    <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded ">
-                        <Sheet>
-                            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
-                                <SheetTrigger>Produtos</SheetTrigger>
-                            </div>
+                <nav className="w-full px-2 space-y-1 z-20">
+                    <div className="w-full bg-primaryLight dark:bg-primaryDark p-2 rounded ">
+                        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                            <button
+                                onClick={() => {
+                                    setIsSheetOpen(true);
+                                    setCurrentView('products');
+                                    console.log('Products button clicked');
+                                }}
+                                className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight"
+                            >
+                                Produtosb
+                            </button>
 
-                            <SheetContent side="right" size="extraLarge">
-                                <SheetHeader>
-                                    <SheetTitle>Produtos</SheetTitle>
+                            {currentView === 'products' && (
+                                <SheetContent side="special" size="special">
+                                    <SheetHeader >
+                                        <SheetTitle>Produtos</SheetTitle>
 
-                                    <SheetDescription>
-                                        Descrição do produto
-                                    </SheetDescription>
-                                </SheetHeader>
-                                <div className="p-4">
-                                    <div className="flex space-x-4 mb-4">
-                                        <input
-                                            type="text"
-                                            placeholder="Buscar por ID"
-                                            value={searchId}
-                                            onChange={(e) =>
-                                                setSearchId(e.target.value)
-                                            }
-                                            className="px-2 py-1 border border-gray-300 rounded text-primaryLight"
-                                        />
+                                        <SheetDescription>
+                                            Descrição do produto
+                                        </SheetDescription>
+                                    </SheetHeader>
+                                    <div className="w-screen md:p-4">
+                                        <div className="flex flex-col md:flex-row gap-2 mb-6">
+                                            <input
+                                                type="text"
+                                                placeholder="Buscar por ID"
+                                                value={searchId}
+                                                onChange={(e) =>
+                                                    setSearchId(e.target.value)
+                                                }
+                                                className="px-2 py-1 border border-gray-300 rounded text-primaryLight"
+                                            />
+                                            <button
+                                                onClick={fetchProductById}
+                                                className="px-4 py-2 bg-primary text-white rounded"
+                                            >
+                                                Buscar
+                                            </button>
+                                        </div>
+                                        <div className="flex flex-col md:flex-row gap-2 mb-4">
+                                            <input
+                                                type="text"
+                                                placeholder="Buscar por Nome"
+                                                value={searchName}
+                                                onChange={(e) =>
+                                                    setSearchName(
+                                                        e.target.value
+                                                    )
+                                                }
+                                                className="px-2 py-1 border border-gray-300 rounded text-primaryLight"
+                                            />
+                                            <button
+                                                onClick={fetchProductByName}
+                                                className="px-4 py-2 bg-primary text-white rounded"
+                                            >
+                                                Buscar
+                                            </button>
+                                        </div>
                                         <button
-                                            onClick={fetchProductById}
-                                            className="px-4 py-2 bg-primary text-white rounded"
+                                            onClick={fetchAllProducts}
+                                            className="px-4 py-2 bg-secondary text-white rounded mb-4"
                                         >
-                                            Buscar
+                                            Buscar Todos os Produtos
                                         </button>
-                                    </div>
-                                    <div className="flex space-x-4 mb-4">
-                                        <input
-                                            type="text"
-                                            placeholder="Buscar por Nome"
-                                            value={searchName}
-                                            onChange={(e) =>
-                                                setSearchName(e.target.value)
-                                            }
-                                            className="px-2 py-1 border border-gray-300 rounded text-primaryLight"
-                                        />
-                                        <button
-                                            onClick={fetchProductByName}
-                                            className="px-4 py-2 bg-primary text-white rounded"
-                                        >
-                                            Buscar
-                                        </button>
-                                    </div>
-                                    <button
-                                        onClick={fetchAllProducts}
-                                        className="px-4 py-2 bg-secondary text-white rounded mb-4"
-                                    >
-                                        Buscar Todos os Produtos
-                                    </button>
-                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                                            <tr>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Nome
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ERP ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Ações
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                            {products.map((product) => (
-                                                <tr key={product.id}>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {product.id}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {product.name}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {product.erpId}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingProductId ===
-                                                        product.id ? (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleSaveProductClick(
-                                                                        product.id
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-secondary text-white rounded"
-                                                            >
-                                                                Salvar
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleEditProductClick(
-                                                                        product
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-primary text-white rounded"
-                                                            >
-                                                                Editar
-                                                            </button>
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                    {editingProductId && (
-                                        <div className="mt-4">
-                                            <h3 className="text-lg font-medium text-primaryDark dark:text-primaryLight">
-                                                Editar Produto
-                                            </h3>
-                                            <div className="grid grid-cols-2 gap-4 mt-4">
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Nome
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        name="name"
-                                                        value={
-                                                            editProductData.name
-                                                        }
-                                                        onChange={
-                                                            handleProductInputChange
-                                                        }
-                                                        className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Descrição
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        name="description"
-                                                        value={
-                                                            editProductData.description
-                                                        }
-                                                        onChange={
-                                                            handleProductInputChange
-                                                        }
-                                                        className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Preço
-                                                    </label>
-                                                    <input
-                                                        type="number"
-                                                        name="price"
-                                                        value={
-                                                            editProductData.price
-                                                        }
-                                                        onChange={
-                                                            handleProductInputChange
-                                                        }
-                                                        className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Estoque
-                                                    </label>
-                                                    <input
-                                                        type="number"
-                                                        name="stock"
-                                                        value={
-                                                            editProductData.stock
-                                                        }
-                                                        onChange={
-                                                            handleProductInputChange
-                                                        }
-                                                        className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Categoria
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        name="category"
-                                                        value={
-                                                            editProductData.category
-                                                        }
-                                                        onChange={
-                                                            handleProductInputChange
-                                                        }
-                                                        className="px-2 py-1 border border-gray-300 rounded w-full"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Marca
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        name="brand"
-                                                        value={
-                                                            editProductData.brand
-                                                        }
-                                                        onChange={
-                                                            handleProductInputChange
-                                                        }
-                                                        className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Imagem URL
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        name="imageUrl"
-                                                        value={
-                                                            editProductData.imageUrl
-                                                        }
-                                                        onChange={
-                                                            handleProductInputChange
-                                                        }
-                                                        className="px-2 py-1 border border-gray-300 rounded w-full"
-                                                    />
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        ERP ID
-                                                    </label>
-                                                    <input
-                                                        type="text"
-                                                        name="erpId"
-                                                        value={
-                                                            editProductData.erpId
-                                                        }
-                                                        onChange={
-                                                            handleProductInputChange
-                                                        }
-                                                        className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
-                                                    />
+                                        <div className="overflow-x-auto">
+                                            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                                <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                                    <tr>
+                                                        <th
+                                                            scope="col"
+                                                            className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                        >
+                                                            ID
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                        >
+                                                            Nome
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                        >
+                                                            ERP ID
+                                                        </th>
+                                                        <th
+                                                            scope="col"
+                                                            className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                        >
+                                                            Ações
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                                    {products.map((product) => (
+                                                        <tr key={product.id}>
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                                {product.id}
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                                {product.name}
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                                {product.erpId}
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                                {editingProductId ===
+                                                                product.id ? (
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            handleSaveProductClick(
+                                                                                product.id
+                                                                            )
+                                                                        }
+                                                                        className="px-4 py-2 bg-secondary text-white rounded"
+                                                                    >
+                                                                        Salvar
+                                                                    </button>
+                                                                ) : (
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            handleEditProductClick(
+                                                                                product
+                                                                            )
+                                                                        }
+                                                                        className="px-4 py-2 bg-primary text-white rounded"
+                                                                    >
+                                                                        Editar
+                                                                    </button>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        {editingProductId && (
+                                            <div className="mt-4">
+                                                <h3 className="text-lg font-medium text-primaryDark dark:text-primaryLight">
+                                                    Editar Produto
+                                                </h3>
+                                                <div className="grid grid-cols-2 gap-4 mt-4">
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Nome
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="name"
+                                                            value={
+                                                                editProductData.name
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Descrição
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="description"
+                                                            value={
+                                                                editProductData.description
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Preço
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            name="price"
+                                                            value={
+                                                                editProductData.price
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Estoque
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            name="stock"
+                                                            value={
+                                                                editProductData.stock
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Categoria
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="category"
+                                                            value={
+                                                                editProductData.category
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Marca
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="brand"
+                                                            value={
+                                                                editProductData.brand
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Imagem URL
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="imageUrl"
+                                                            value={
+                                                                editProductData.imageUrl
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            ERP ID
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="erpId"
+                                                            value={
+                                                                editProductData.erpId
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                        />
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </SheetContent>
+                                        )}
+                                    </div>
+                                </SheetContent>
+                            )}
                         </Sheet>
                     </div>
 
@@ -901,7 +922,7 @@ const AdminPage: React.FC = () => {
                                         Categoria Descrição
                                     </SheetDescription>
                                 </SheetHeader>
-                                <div className="p-4">
+                                <div className="w-full md:p-4">
                                     <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                         <thead className="bg-primaryLight dark:bg-primaryDark rounded">
                                             <tr>
