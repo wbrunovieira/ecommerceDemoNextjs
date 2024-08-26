@@ -85,11 +85,30 @@ interface Product {
     erpId: string;
 }
 interface Order {
-    id: string;
-    customer: string;
-    date: string;
-    total: number;
-    status: string;
+    _id: {
+        value: string;
+    };
+    props: {
+        userId: string;
+        items: Array<{
+            _id: {
+                value: string;
+            };
+            props: {
+                orderId: string;
+                productId: string;
+                productName: string;
+                imageUrl: string;
+                quantity: number;
+                price: number;
+            };
+        }>;
+        status: string;
+        paymentId: string;
+        paymentStatus: string;
+        paymentMethod: string;
+        paymentDate: string;
+    };
 }
 
 interface Customer {
@@ -265,6 +284,7 @@ const AdminPage = () => {
         fetchCategories();
         fetchOrders();
         fetchCustomers();
+        fetchOrders();
     }, []);
 
     const handleEditClick = (color: Color) => {
@@ -562,13 +582,27 @@ const AdminPage = () => {
             console.error('Erro ao salvar o produto: ', error);
         }
     };
+    console.log('orders:', orders);
 
     const orderData = {
-        labels: orders.map((order) => order.date),
+        labels: orders
+            ? orders.map((order) =>
+                  new Date(order.props.paymentDate).toLocaleDateString()
+              )
+            : [],
         datasets: [
             {
                 label: 'Pedidos',
-                data: orders.map((order) => order.total),
+                data: orders
+                    ? orders.map((order) =>
+                          order.props.items.reduce(
+                              (total, item) =>
+                                  total +
+                                  item.props.price * item.props.quantity,
+                              0
+                          )
+                      )
+                    : [],
                 backgroundColor: 'rgba(75, 192, 192, 0.6)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
@@ -1484,11 +1518,13 @@ const AdminPage = () => {
                             Bem vindo a area de Adm do Site Stylos
                         </p>
                     </div>
+
                     <AdminMobileMenu
                         setCurrentView={setCurrentView}
                         setIsSheetOpen={setIsSheetOpen}
                     />
                 </div>
+
                 <div className="">
                     <Tabs defaultValue="vendas" className="w-full">
                         <TabsList>
@@ -1714,26 +1750,45 @@ const AdminPage = () => {
                                             </th>
                                         </tr>
                                     </thead>
+
                                     <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                        {orders.map((order) => (
-                                            <tr key={order.id}>
+                                        {/* {orders.map((order) => (
+                                            <tr key={order._id.value}>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.id}
+                                                    {order._id.value}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.customer}
+                                                    {order.props.userId}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.date}
+                                                    {new Date(
+                                                        order.props.paymentDate
+                                                    ).toLocaleDateString()}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.total}
+                                                    {order.props.items
+                                                        .reduce(
+                                                            (total, item) =>
+                                                                total +
+                                                                item.props
+                                                                    .price *
+                                                                    item.props
+                                                                        .quantity,
+                                                            0
+                                                        )
+                                                        .toLocaleString(
+                                                            'pt-BR',
+                                                            {
+                                                                style: 'currency',
+                                                                currency: 'BRL',
+                                                            }
+                                                        )}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.status}
+                                                    {order.props.status}
                                                 </td>
                                             </tr>
-                                        ))}
+                                        ))} */}
                                     </tbody>
                                 </table>
                             </div>
@@ -1917,25 +1972,63 @@ const AdminPage = () => {
                                         </tr>
                                     </thead>
                                     <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                        {orders.map((order) => (
-                                            <tr key={order.id}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.id}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.customer}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.date}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.total}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.status}
-                                                </td>
-                                            </tr>
-                                        ))}
+                                        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                            {orders && orders.length > 0 ? (
+                                                orders.map((order) => (
+                                                    <tr key={order._id.value}>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {order._id.value}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {order.props.userId}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {new Date(
+                                                                order.props.paymentDate
+                                                            ).toLocaleDateString()}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {order.props.items
+                                                                .reduce(
+                                                                    (
+                                                                        total,
+                                                                        item
+                                                                    ) =>
+                                                                        total +
+                                                                        item
+                                                                            .props
+                                                                            .price *
+                                                                            item
+                                                                                .props
+                                                                                .quantity,
+                                                                    0
+                                                                )
+                                                                .toLocaleString(
+                                                                    'pt-BR',
+                                                                    {
+                                                                        style: 'currency',
+                                                                        currency:
+                                                                            'BRL',
+                                                                    }
+                                                                )}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {order.props.status}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td
+                                                        colSpan={5}
+                                                        className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200"
+                                                    >
+                                                        Nenhum pedido
+                                                        encontrado.
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
                                     </tbody>
                                 </table>
                             </div>

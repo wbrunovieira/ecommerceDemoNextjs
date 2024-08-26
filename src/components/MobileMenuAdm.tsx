@@ -105,11 +105,33 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                                 >
                                     Tamanhos
                                 </button>
-                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"   onClick={() => {
+                                <button
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    onClick={() => {
                                         setIsSheetOpen(true);
                                         setCurrentView('brands');
-                                    }}>
+                                    }}
+                                >
                                     Fabricantes
+                                </button>
+
+                                <button
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    onClick={() => {
+                                        setIsSheetOpen(true);
+                                        setCurrentView('sizes');
+                                    }}
+                                >
+                                    Tamanhos
+                                </button>
+                                <button
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    onClick={() => {
+                                        setIsSheetOpen(true);
+                                        setCurrentView('orders');
+                                    }}
+                                >
+                                    Pedidos
                                 </button>
                             </div>
                         </div>
