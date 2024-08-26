@@ -78,16 +78,37 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                                 >
                                     Produtos
                                 </button>
-                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left">
+                                <button
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    onClick={() => {
+                                        setIsSheetOpen(true);
+                                        setCurrentView('categories');
+                                    }}
+                                >
                                     Categorias
                                 </button>
-                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left">
+                                <button
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    onClick={() => {
+                                        setIsSheetOpen(true);
+                                        setCurrentView('colors');
+                                    }}
+                                >
                                     Cores
                                 </button>
-                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left">
+                                <button
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    onClick={() => {
+                                        setIsSheetOpen(true);
+                                        setCurrentView('sizes');
+                                    }}
+                                >
                                     Tamanhos
                                 </button>
-                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left">
+                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"   onClick={() => {
+                                        setIsSheetOpen(true);
+                                        setCurrentView('brands');
+                                    }}>
                                     Fabricantes
                                 </button>
                             </div>

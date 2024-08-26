@@ -634,7 +634,7 @@ const AdminPage = () => {
                                 }}
                                 className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
                             >
-                                Produtosb
+                                Produtos
                             </button>
 
                             {currentView === 'products' && (
@@ -912,502 +912,563 @@ const AdminPage = () => {
                     </div>
 
                     <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
-                        <Sheet>
-                            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
-                                <SheetTrigger>Categorias</SheetTrigger>
-                            </div>
-                            <SheetContent side="right" size="extraLarge">
-                                <SheetHeader>
-                                    <SheetTitle>Categorias</SheetTitle>
-                                    <SheetDescription>
-                                        Categoria Descrição
-                                    </SheetDescription>
-                                </SheetHeader>
-                                <div className="w-full md:p-4">
-                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                                            <tr>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Nome
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    imagem
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ERP ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Ações
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                            {categories.map((category) => (
-                                                <tr key={category._id.value}>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {category._id.value}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingCategoryId ===
-                                                        category._id.value ? (
-                                                            <input
-                                                                type="text"
-                                                                name="name"
-                                                                value={
-                                                                    editCategoryData.name
-                                                                }
-                                                                onChange={
-                                                                    handleCategoryInputChange
-                                                                }
-                                                                className="px-2 py-1 border border-gray-300 rounded"
-                                                            />
-                                                        ) : (
-                                                            category.props.name
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingCategoryId ===
-                                                        category._id.value ? (
-                                                            <input
-                                                                type="text"
-                                                                name="description"
-                                                                value={
-                                                                    editCategoryData.imageUrl
-                                                                }
-                                                                onChange={
-                                                                    handleCategoryInputChange
-                                                                }
-                                                                className="px-2 py-1 border border-gray-300 rounded"
-                                                            />
-                                                        ) : (
-                                                            category.props
-                                                                .imageUrl
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {category.props.erpId}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingCategoryId ===
-                                                        category._id.value ? (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleSaveCategoryClick(
-                                                                        category
-                                                                            ._id
-                                                                            .value
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-secondary text-white rounded"
-                                                            >
-                                                                Salvar
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleEditCategoryClick(
-                                                                        category
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-primary text-white rounded"
-                                                            >
-                                                                Editar
-                                                            </button>
-                                                        )}
-                                                    </td>
+                        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                            <button
+                                onClick={() => {
+                                    setIsSheetOpen(true);
+                                    setCurrentView('categories');
+                                }}
+                                className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                            >
+                                Categorias
+                            </button>
+
+                            {currentView === 'categories' && (
+                                <SheetContent
+                                    side="special"
+                                    size="special"
+                                    className="min-w-full "
+                                >
+                                    <SheetHeader>
+                                        <SheetTitle>Categorias</SheetTitle>
+                                        <SheetDescription>
+                                            Descrição da categoria
+                                        </SheetDescription>
+                                    </SheetHeader>
+                                    <div className="w-full md:p-4">
+                                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                            <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                                <tr>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        ID
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Nome
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        imagem
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        ERP ID
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Ações
+                                                    </th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </SheetContent>
+                                            </thead>
+                                            <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                                {categories.map((category) => (
+                                                    <tr
+                                                        key={category._id.value}
+                                                    >
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {category._id.value}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingCategoryId ===
+                                                            category._id
+                                                                .value ? (
+                                                                <input
+                                                                    type="text"
+                                                                    name="name"
+                                                                    value={
+                                                                        editCategoryData.name
+                                                                    }
+                                                                    onChange={
+                                                                        handleCategoryInputChange
+                                                                    }
+                                                                    className="px-2 py-1 border border-gray-300 rounded"
+                                                                />
+                                                            ) : (
+                                                                category.props
+                                                                    .name
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingCategoryId ===
+                                                            category._id
+                                                                .value ? (
+                                                                <input
+                                                                    type="text"
+                                                                    name="description"
+                                                                    value={
+                                                                        editCategoryData.imageUrl
+                                                                    }
+                                                                    onChange={
+                                                                        handleCategoryInputChange
+                                                                    }
+                                                                    className="px-2 py-1 border border-gray-300 rounded"
+                                                                />
+                                                            ) : (
+                                                                category.props
+                                                                    .imageUrl
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {
+                                                                category.props
+                                                                    .erpId
+                                                            }
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingCategoryId ===
+                                                            category._id
+                                                                .value ? (
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleSaveCategoryClick(
+                                                                            category
+                                                                                ._id
+                                                                                .value
+                                                                        )
+                                                                    }
+                                                                    className="px-4 py-2 bg-secondary text-white rounded"
+                                                                >
+                                                                    Salvar
+                                                                </button>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleEditCategoryClick(
+                                                                            category
+                                                                        )
+                                                                    }
+                                                                    className="px-4 py-2 bg-primary text-white rounded"
+                                                                >
+                                                                    Editar
+                                                                </button>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </SheetContent>
+                            )}
                         </Sheet>
                     </div>
 
                     <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
-                        <Sheet>
-                            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
-                                <SheetTrigger>Cores</SheetTrigger>
-                            </div>
-                            <SheetContent side="right" size="extraLarge">
-                                <SheetHeader>
-                                    <SheetTitle>Cores</SheetTitle>
-                                    <SheetDescription>
-                                        Cores Descrição
-                                    </SheetDescription>
-                                </SheetHeader>
-                                <div className="p-4">
-                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                                            <tr>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Nome
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Hex
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ERP ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Ações
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                            {colors.map((color) => (
-                                                <tr key={color._id.value}>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {color._id.value}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingColorId ===
-                                                        color._id.value ? (
-                                                            <input
-                                                                type="text"
-                                                                name="name"
-                                                                value={
-                                                                    editColorData.name
-                                                                }
-                                                                onChange={
-                                                                    handleInputChange
-                                                                }
-                                                                className="px-2 py-1 border border-gray-300 rounded"
-                                                            />
-                                                        ) : (
-                                                            color.props.name
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingColorId ===
-                                                        color._id.value ? (
-                                                            <input
-                                                                type="text"
-                                                                name="hex"
-                                                                value={
-                                                                    editColorData.hex
-                                                                }
-                                                                onChange={
-                                                                    handleInputChange
-                                                                }
-                                                                className="px-2 py-1 border border-gray-300 rounded"
-                                                            />
-                                                        ) : (
-                                                            color.props.hex
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {color.props.erpId}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingColorId ===
-                                                        color._id.value ? (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleSaveClick(
-                                                                        color
-                                                                            ._id
-                                                                            .value
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-secondary dark:bg-primarytext-white rounded"
-                                                            >
-                                                                Salvar
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleEditClick(
-                                                                        color
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-primary dark:bg-primary text-white rounded"
-                                                            >
-                                                                Editar
-                                                            </button>
-                                                        )}
-                                                    </td>
+                        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                            <button
+                                onClick={() => {
+                                    setIsSheetOpen(true);
+                                    setCurrentView('colors');
+                                }}
+                                className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                            >
+                                Cores
+                            </button>
+                            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2"></div>
+                            {currentView === 'colors' && (
+                                <SheetContent
+                                    side="special"
+                                    size="special"
+                                    className="min-w-full "
+                                >
+                                    <SheetHeader>
+                                        <SheetTitle>Cores</SheetTitle>
+                                        <SheetDescription>
+                                            Descrição das cores
+                                        </SheetDescription>
+                                    </SheetHeader>
+                                    <div className="w-full md:p-4">
+                                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                            <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                                <tr>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        ID
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Nome
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Hex
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        ERP ID
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Ações
+                                                    </th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </SheetContent>
+                                            </thead>
+                                            <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                                {colors.map((color) => (
+                                                    <tr key={color._id.value}>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {color._id.value}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingColorId ===
+                                                            color._id.value ? (
+                                                                <input
+                                                                    type="text"
+                                                                    name="name"
+                                                                    value={
+                                                                        editColorData.name
+                                                                    }
+                                                                    onChange={
+                                                                        handleInputChange
+                                                                    }
+                                                                    className="px-2 py-1 border border-gray-300 rounded"
+                                                                />
+                                                            ) : (
+                                                                color.props.name
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingColorId ===
+                                                            color._id.value ? (
+                                                                <input
+                                                                    type="text"
+                                                                    name="hex"
+                                                                    value={
+                                                                        editColorData.hex
+                                                                    }
+                                                                    onChange={
+                                                                        handleInputChange
+                                                                    }
+                                                                    className="px-2 py-1 border border-gray-300 rounded"
+                                                                />
+                                                            ) : (
+                                                                color.props.hex
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {color.props.erpId}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingColorId ===
+                                                            color._id.value ? (
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleSaveClick(
+                                                                            color
+                                                                                ._id
+                                                                                .value
+                                                                        )
+                                                                    }
+                                                                    className="px-4 py-2 bg-secondary dark:bg-primarytext-white rounded"
+                                                                >
+                                                                    Salvar
+                                                                </button>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleEditClick(
+                                                                            color
+                                                                        )
+                                                                    }
+                                                                    className="px-4 py-2 bg-primary dark:bg-primary text-white rounded"
+                                                                >
+                                                                    Editar
+                                                                </button>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </SheetContent>
+                            )}
                         </Sheet>
                     </div>
 
                     <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
-                        <Sheet>
-                            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
-                                <SheetTrigger>Tamanhos</SheetTrigger>
-                            </div>
+                        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                            <button
+                                onClick={() => {
+                                    setIsSheetOpen(true);
+                                    setCurrentView('sizes');
+                                }}
+                                className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                            >
+                                Tamanhos
+                            </button>
 
-                            <SheetContent side="right" size="extraLarge">
-                                <SheetHeader>
-                                    <SheetTitle>Tamanhos</SheetTitle>
-                                </SheetHeader>
-                                <div className="p-4">
-                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                                            <tr>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Nome
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                ></th>
+                            {currentView === 'sizes' && (
+                                <SheetContent
+                                    side="special"
+                                    size="special"
+                                    className="min-w-full "
+                                >
+                                    <SheetHeader>
+                                        <SheetTitle>Tamanhos</SheetTitle>
+                                    </SheetHeader>
+                                    <div className="p-4">
+                                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                            <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                                <tr>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        ID
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Nome
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    ></th>
 
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ERP ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Ações
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                            {sizes.map((size) => (
-                                                <tr key={size._id.value}>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {size._id.value}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingSizeId ===
-                                                        size._id.value ? (
-                                                            <input
-                                                                type="text"
-                                                                name="name"
-                                                                value={
-                                                                    editSizeData.name
-                                                                }
-                                                                onChange={
-                                                                    handleSizeInputChange
-                                                                }
-                                                                className="px-2 py-1 border border-gray-300 rounded"
-                                                            />
-                                                        ) : (
-                                                            size.props.name
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200"></td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {size.props.erpId}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingSizeId ===
-                                                        size._id.value ? (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleSaveSizeClick(
-                                                                        size._id
-                                                                            .value
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-primary text-white rounded"
-                                                            >
-                                                                Salvar
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleEditSizeClick(
-                                                                        size
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-secondary text-white rounded"
-                                                            >
-                                                                Editar
-                                                            </button>
-                                                        )}
-                                                    </td>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        ERP ID
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Ações
+                                                    </th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </SheetContent>
+                                            </thead>
+                                            <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                                {sizes.map((size) => (
+                                                    <tr key={size._id.value}>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {size._id.value}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingSizeId ===
+                                                            size._id.value ? (
+                                                                <input
+                                                                    type="text"
+                                                                    name="name"
+                                                                    value={
+                                                                        editSizeData.name
+                                                                    }
+                                                                    onChange={
+                                                                        handleSizeInputChange
+                                                                    }
+                                                                    className="px-2 py-1 border border-gray-300 rounded"
+                                                                />
+                                                            ) : (
+                                                                size.props.name
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200"></td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {size.props.erpId}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingSizeId ===
+                                                            size._id.value ? (
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleSaveSizeClick(
+                                                                            size
+                                                                                ._id
+                                                                                .value
+                                                                        )
+                                                                    }
+                                                                    className="px-4 py-2 bg-primary text-white rounded"
+                                                                >
+                                                                    Salvar
+                                                                </button>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleEditSizeClick(
+                                                                            size
+                                                                        )
+                                                                    }
+                                                                    className="px-4 py-2 bg-secondary text-white rounded"
+                                                                >
+                                                                    Editar
+                                                                </button>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </SheetContent>
+                            )}
                         </Sheet>
                     </div>
 
                     <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
-                        <Sheet>
-                            <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2">
-                                <SheetTrigger>Fabricantes</SheetTrigger>
-                            </div>
-                            <SheetContent side="right" size="extraLarge">
-                                <SheetHeader>
-                                    <SheetTitle>Fabricantes</SheetTitle>
-                                    <SheetDescription>
-                                        Fabricante Descrição
-                                    </SheetDescription>
-                                </SheetHeader>
-                                <div className="p-4">
-                                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                        <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                                            <tr>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Nome
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Imagem
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    ERP ID
-                                                </th>
-                                                <th
-                                                    scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                                >
-                                                    Ações
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                            {brands.map((brand) => (
-                                                <tr key={brand._id.value}>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {brand._id.value}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingBrandId ===
-                                                        brand._id.value ? (
-                                                            <input
-                                                                type="text"
-                                                                name="name"
-                                                                value={
-                                                                    editBrandData.name
-                                                                }
-                                                                onChange={
-                                                                    handleBrandInputChange
-                                                                }
-                                                                className="px-2 py-1 border border-gray-300 rounded"
-                                                            />
-                                                        ) : (
-                                                            brand.props.name
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingBrandId ===
-                                                        brand._id.value ? (
-                                                            <input
-                                                                type="text"
-                                                                name="imageUrl"
-                                                                value={
-                                                                    editBrandData.imageUrl
-                                                                }
-                                                                onChange={
-                                                                    handleBrandInputChange
-                                                                }
-                                                                className="px-2 py-1 border border-gray-300 rounded"
-                                                            />
-                                                        ) : (
-                                                            brand.props.imageUrl
-                                                        )}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {brand.props.erpId}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {editingBrandId ===
-                                                        brand._id.value ? (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleSaveBrandClick(
-                                                                        brand
-                                                                            ._id
-                                                                            .value
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-primary text-white rounded"
-                                                            >
-                                                                Salvar
-                                                            </button>
-                                                        ) : (
-                                                            <button
-                                                                onClick={() =>
-                                                                    handleEditBrandClick(
-                                                                        brand
-                                                                    )
-                                                                }
-                                                                className="px-4 py-2 bg-secondary text-white rounded"
-                                                            >
-                                                                Editar
-                                                            </button>
-                                                        )}
-                                                    </td>
+                        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                            <button
+                                onClick={() => {
+                                    setIsSheetOpen(true);
+                                    setCurrentView('brands');
+                                }}
+                                className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                            >
+                                Marcas
+                            </button>
+                            {currentView === 'brands' && (
+                                <SheetContent
+                                    side="special"
+                                    size="special"
+                                    className="min-w-full "
+                                >
+                                    <SheetHeader>
+                                        <SheetTitle>Fabricantes</SheetTitle>
+                                        <SheetDescription>
+                                            Fabricante Descrição
+                                        </SheetDescription>
+                                    </SheetHeader>
+                                    <div className="p-4">
+                                        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                            <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                                <tr>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        ID
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Nome
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Imagem
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        ERP ID
+                                                    </th>
+                                                    <th
+                                                        scope="col"
+                                                        className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    >
+                                                        Ações
+                                                    </th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </SheetContent>
+                                            </thead>
+                                            <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                                {brands.map((brand) => (
+                                                    <tr key={brand._id.value}>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {brand._id.value}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingBrandId ===
+                                                            brand._id.value ? (
+                                                                <input
+                                                                    type="text"
+                                                                    name="name"
+                                                                    value={
+                                                                        editBrandData.name
+                                                                    }
+                                                                    onChange={
+                                                                        handleBrandInputChange
+                                                                    }
+                                                                    className="px-2 py-1 border border-gray-300 rounded"
+                                                                />
+                                                            ) : (
+                                                                brand.props.name
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingBrandId ===
+                                                            brand._id.value ? (
+                                                                <input
+                                                                    type="text"
+                                                                    name="imageUrl"
+                                                                    value={
+                                                                        editBrandData.imageUrl
+                                                                    }
+                                                                    onChange={
+                                                                        handleBrandInputChange
+                                                                    }
+                                                                    className="px-2 py-1 border border-gray-300 rounded"
+                                                                />
+                                                            ) : (
+                                                                brand.props
+                                                                    .imageUrl
+                                                            )}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {brand.props.erpId}
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                            {editingBrandId ===
+                                                            brand._id.value ? (
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleSaveBrandClick(
+                                                                            brand
+                                                                                ._id
+                                                                                .value
+                                                                        )
+                                                                    }
+                                                                    className="px-4 py-2 bg-primary text-white rounded"
+                                                                >
+                                                                    Salvar
+                                                                </button>
+                                                            ) : (
+                                                                <button
+                                                                    onClick={() =>
+                                                                        handleEditBrandClick(
+                                                                            brand
+                                                                        )
+                                                                    }
+                                                                    className="px-4 py-2 bg-secondary text-white rounded"
+                                                                >
+                                                                    Editar
+                                                                </button>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </SheetContent>
+                            )}
                         </Sheet>
                     </div>
                 </nav>
