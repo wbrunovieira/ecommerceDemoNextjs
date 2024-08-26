@@ -42,7 +42,7 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                     animate={{ x: 0 }}
                     exit={{ x: '100%' }}
                     transition={{ duration: 0.3 }}
-                    className="fixed top-0 right-0 h-full w-2/3 bg-primaryLight dark:bg-primaryDark z-50 shadow-lg"
+                    className=" fixed top-0 right-0 h-full w-full bg-primaryLight dark:bg-primaryDark z-50 shadow-lg"
                 >
                     <div className="flex justify-between items-center p-4">
                         <h2 className="text-lg font-bold text-primaryDark dark:text-primaryLight">
@@ -57,17 +57,17 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                         </button>
                     </div>
                     <nav
-                        className="flex flex-col gap-4 px-4 overflow-y-auto"
+                        className="flex flex-col gap-4 px-4 "
                         style={{ maxHeight: 'calc(100vh - 64px)' }}
                     >
                         {/* Sidebar Options */}
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2 w-full">
                             <h2 className="text-lg font-bold text-primaryDark dark:text-primaryLight">
                                 Admin
                             </h2>
-                            <div className="flex flex-col gap-2">
+                            <div className="flex  flex-col gap-2 text-left">
                                 <button
-                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight"
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
                                     onClick={() => {
                                         setIsSheetOpen(true);
                                         setCurrentView('products');
@@ -78,16 +78,16 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                                 >
                                     Produtos
                                 </button>
-                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight">
+                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left">
                                     Categorias
                                 </button>
-                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight">
+                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left">
                                     Cores
                                 </button>
-                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight">
+                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left">
                                     Tamanhos
                                 </button>
-                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight">
+                                <button className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left">
                                     Fabricantes
                                 </button>
                             </div>

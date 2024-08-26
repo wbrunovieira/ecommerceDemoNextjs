@@ -21,7 +21,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <SheetPrimitive.Overlay
         className={cn(
-            'fixed inset-0 z-50 bg-primaryLight dark:bg-primaryDark data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+            'w-full fixed inset-0 z-50 bg-primaryLight dark:bg-primaryDark data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
             className
         )}
         {...props}
@@ -31,12 +31,12 @@ const SheetOverlay = React.forwardRef<
 SheetOverlay.displayName = SheetPrimitive.Overlay.displayName;
 
 const sheetVariants = cva(
-    'fixed w-screen left-0 z-50 gap-4 p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500',
+    'fixed w-screen left-0 z-50 gap-4 p-6 shadow-lg transition ease-in-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:duration-500 ',
     {
         variants: {
             side: {
                 special:
-                    'inset-x-0 top-0 border-b h-screen w-screen  data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top aaa md:inset-y-0 md:right-0 md:h-full md:border-l md:data-[state=closed]:slide-out-to-right md:data-[state=open]:slide-in-from-right  ',
+                    'top-0 border-b h-screen w-full data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top aaa md:inset-y-0 md:right-0 md:h-full md:border-l md:data-[state=closed]:slide-out-to-right md:data-[state=open]:slide-in-from-right ',
                 top: 'inset-x-0 top-0 border-b h-screen  data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top',
                 bottom: 'inset-x-0 bottom-0 border-t data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom',
                 left: 'inset-y-0 left-0 h-full border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left ',
@@ -109,7 +109,7 @@ const SheetHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
     <div
         className={cn(
-            'flex flex-col space-y-2 text-center sm:text-left',
+            'flex  flex-col space-y-2 text-center sm:text-left',
             className
         )}
         {...props}
@@ -153,7 +153,7 @@ const SheetDescription = React.forwardRef<
     <SheetPrimitive.Description
         ref={ref}
         className={cn(
-            'text-sm  text-primaryDark dark:text-primary-light ',
+            'text-sm   text-primaryDark dark:text-primary-light ',
             className
         )}
         {...props}

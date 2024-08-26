@@ -100,7 +100,7 @@ interface Customer {
     totalSpent: number;
 }
 
-const AdminPage: React.FC = () => {
+const AdminPage = () => {
     const router = useRouter();
 
     const { data: session, status } = useSession();
@@ -617,42 +617,41 @@ const AdminPage: React.FC = () => {
     }
 
     return (
-        <div className="flex md:min-h-screen z-20 divide-x">
-            <AdminMobileMenu
-                setCurrentView={setCurrentView}
-                setIsSheetOpen={setIsSheetOpen}
-            />
-            <div className="hidden md:flex w-64 bg-primaryLight dark:bg-primaryDark text-primaryDark dark:text-primaryLight flex-col z-20">
+        <div className="flex flex-col md:flex-row md:min-h-screen z-20 divide-x w-full overflow-hidden">
+            <div className="hidden md:flex  bg-primaryLight dark:bg-primaryDark text-primaryDark dark:text-primaryLight flex-col z-20">
                 <div className="flex items-center justify-center h-16 border-b border-gray-700 z-20 ">
                     <span className="text-xl text-primaryDark dark:text-primaryLight font-semibold z-20">
                         Admin
                     </span>
                 </div>
-                <nav className="w-full px-2 space-y-1 z-20">
-                    <div className="w-full bg-primaryLight dark:bg-primaryDark p-2 rounded ">
+                <nav className=" w-full px-2 space-y-1 z-20">
+                    <div className="min-w-full bg-primaryLight dark:bg-primaryDark rounded overflow-hidden">
                         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                             <button
                                 onClick={() => {
                                     setIsSheetOpen(true);
                                     setCurrentView('products');
-                                    console.log('Products button clicked');
                                 }}
-                                className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight"
+                                className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
                             >
                                 Produtosb
                             </button>
 
                             {currentView === 'products' && (
-                                <SheetContent side="special" size="special">
-                                    <SheetHeader >
+                                <SheetContent
+                                    side="special"
+                                    size="special"
+                                    className="min-w-full "
+                                >
+                                    <SheetHeader>
                                         <SheetTitle>Produtos</SheetTitle>
 
                                         <SheetDescription>
                                             Descrição do produto
                                         </SheetDescription>
                                     </SheetHeader>
-                                    <div className="w-screen md:p-4">
-                                        <div className="flex flex-col md:flex-row gap-2 mb-6">
+                                    <div className="w-screen flex flex-col align-center justify-center p-2 md:p-4 ">
+                                        <div className="flex flex-col md:flex-row gap-2 mb-4 w-5/6 md:w-3/5">
                                             <input
                                                 type="text"
                                                 placeholder="Buscar por ID"
@@ -660,16 +659,17 @@ const AdminPage: React.FC = () => {
                                                 onChange={(e) =>
                                                     setSearchId(e.target.value)
                                                 }
-                                                className="px-2 py-1 border border-gray-300 rounded text-primaryLight"
+                                                className="px-2 py-1 border border-gray-300 rounded text-primaryDark w-5/6 md:w-3/5"
                                             />
                                             <button
                                                 onClick={fetchProductById}
-                                                className="px-4 py-2 bg-primary text-white rounded"
+                                                className="px-4 py-2 bg-primary text-white rounded w-5/6 md:w-auto hover:scale-105 transition duration-300 ease-in-out"
                                             >
                                                 Buscar
                                             </button>
                                         </div>
-                                        <div className="flex flex-col md:flex-row gap-2 mb-4">
+
+                                        <div className="flex flex-col md:flex-row gap-2 mb-4 w-5/6 md:w-3/5">
                                             <input
                                                 type="text"
                                                 placeholder="Buscar por Nome"
@@ -679,23 +679,24 @@ const AdminPage: React.FC = () => {
                                                         e.target.value
                                                     )
                                                 }
-                                                className="px-2 py-1 border border-gray-300 rounded text-primaryLight"
+                                                className="px-2 py-1 border border-gray-300 rounded text-primaryDark w-5/6 md:w-3/5"
                                             />
                                             <button
                                                 onClick={fetchProductByName}
-                                                className="px-4 py-2 bg-primary text-white rounded"
+                                                className="px-4 py-2 bg-primary text-white rounded w-5/6 md:md:w-auto hover:scale-105 transition duration-300 ease-in-out"
                                             >
                                                 Buscar
                                             </button>
                                         </div>
                                         <button
                                             onClick={fetchAllProducts}
-                                            className="px-4 py-2 bg-secondary text-white rounded mb-4"
+                                            className="px-4 py-2 bg-primary text-white rounded mb-2 md:mb-6 w-3/5 md:w-1/3 hover:scale-105 transition duration-300 ease-in-out whitespace-nowrap"
                                         >
                                             Buscar Todos os Produtos
                                         </button>
-                                        <div className="overflow-x-auto">
-                                            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+
+                                        <div className="overflow-x-auto ">
+                                            <table className=" divide-y divide-gray-200 dark:divide-gray-700 w-auto">
                                                 <thead className="bg-primaryLight dark:bg-primaryDark rounded">
                                                     <tr>
                                                         <th
@@ -1412,14 +1413,21 @@ const AdminPage: React.FC = () => {
                 </nav>
             </div>
 
-            <main className="flex-1 p-8 bg-primaryLight dark:bg-primaryDark z-20  ">
-                <h1 className="text-2xl text-primaryDark dark:text-primaryLight font-semibold text-gray-900">
-                    Admin Dashboard
-                </h1>
-                <p className="mt-4 text-primaryDark dark:text-primaryLight mb-4">
-                    Bem vindo a area de Adm do Site Stylos
-                </p>
-
+            <main className=" p-8 bg-primaryLight dark:bg-primaryDark z-20  ">
+                <div className="flex gap-2">
+                    <div className="flex flex-col gap-2">
+                        <h1 className="text-2xl text-primaryDark dark:text-primaryLight font-semibold text-gray-900">
+                            Admin Dashboard
+                        </h1>
+                        <p className="mt-4 text-primaryDark dark:text-primaryLight mb-4">
+                            Bem vindo a area de Adm do Site Stylos
+                        </p>
+                    </div>
+                    <AdminMobileMenu
+                        setCurrentView={setCurrentView}
+                        setIsSheetOpen={setIsSheetOpen}
+                    />
+                </div>
                 <div className="">
                     <Tabs defaultValue="vendas" className="w-full">
                         <TabsList>
