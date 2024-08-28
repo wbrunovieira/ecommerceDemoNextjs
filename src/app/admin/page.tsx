@@ -77,13 +77,44 @@ interface Product {
     id: string;
     name: string;
     description: string;
+    productColors: string[]; // Adicione o tipo apropriado se `ProductColor` for um tipo específico
+    productSizes: string[]; // Adicione o tipo apropriado se `ProductSize` for um tipo específico
+    productCategories: string[]; // Adicione o tipo apropriado se `ProductCategory` for um tipo específico
+    productIdVariant?: string;
+    slug: string;
+    brandId: string;
+    brand?: string; // Ou o tipo apropriado se for um objeto `Brand`
+    discount: number;
     price: number;
+    finalPrice?: number;
+    height: number;
+    width: number;
+    length: number;
+    weight: number;
+    erpId?: string;
+    sku?: string;
+    upc?: string;
+    tags: string[];
+    seoTitle?: string;
+    seoDescription?: string;
+    seoKeywords?: string;
+    visibility: boolean;
+    status: 'ACTIVE' | 'INACTIVE'; // Defina os estados possíveis conforme necessário
+    productVariants: string[]; // Adicione o tipo apropriado se `ProductVariant` for um tipo específico
+    hasVariants: boolean;
+    showInSite: boolean;
+    cartItems: string[]; // Adicione o tipo apropriado se `CartItem` for um tipo específico
+    orderItems: string[]; // Adicione o tipo apropriado se `OrderItem` for um tipo específico
+    onSale: boolean;
+    isNew: boolean;
+    isFeatured: boolean;
+    images: string[];
     stock: number;
-    category: string;
-    brand: string;
-    imageUrl: string;
-    erpId: string;
+    createdAt: Date;
+    updatedAt?: Date | null;
+    deletedAt?: Date | null;
 }
+
 interface Order {
     _id: {
         value: string;
@@ -154,16 +185,47 @@ const AdminPage = () => {
     const [editingProductId, setEditingProductId] = useState<string | null>(
         null
     );
+
     const [editProductData, setEditProductData] = useState<Product>({
         id: '',
         name: '',
         description: '',
-        price: 0,
-        stock: 0,
-        category: '',
+        productColors: [],
+        productSizes: [],
+        productCategories: [],
+        productIdVariant: '',
+        slug: '',
+        brandId: '',
         brand: '',
-        imageUrl: '',
+        discount: 0,
+        price: 0,
+        finalPrice: 0,
+        height: 0,
+        width: 0,
+        length: 0,
+        weight: 0,
         erpId: '',
+        sku: '',
+        upc: '',
+        tags: [],
+        seoTitle: '',
+        seoDescription: '',
+        seoKeywords: '',
+        visibility: true,
+        status: 'ACTIVE',
+        productVariants: [],
+        hasVariants: false,
+        showInSite: true,
+        cartItems: [],
+        orderItems: [],
+        onSale: false,
+        isNew: false,
+        isFeatured: false,
+        images: [],
+        stock: 0,
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
     });
 
     const [searchId, setSearchId] = useState('');
@@ -286,6 +348,84 @@ const AdminPage = () => {
         fetchCustomers();
         fetchOrders();
     }, []);
+
+    const handleEditProductClick = async (product) => {
+        try {
+            const productData = await fetchProductById(product.id);
+
+            if (productData) {
+                setEditProductData({
+                    id: productData.id,
+                    name: productData.name,
+                    description: productData.description,
+                    productColors: productData.productColors || [],
+                    productSizes: productData.productSizes || [],
+                    productCategories: productData.productCategories || [],
+                    productIdVariant: productData.productIdVariant || '',
+                    slug: productData.slug || '',
+                    brandId: productData.brandId || '',
+                    brand: productData.brand || '',
+                    discount: productData.discount || 0,
+                    price: productData.price || 0,
+                    finalPrice: productData.finalPrice || 0,
+                    height: productData.height || 0,
+                    width: productData.width || 0,
+                    length: productData.length || 0,
+                    weight: productData.weight || 0,
+                    erpId: productData.erpId || '',
+                    sku: productData.sku || '',
+                    upc: productData.upc || '',
+                    tags: productData.tags || [],
+                    seoTitle: productData.seoTitle || '',
+                    seoDescription: productData.seoDescription || '',
+                    seoKeywords: productData.seoKeywords || '',
+                    visibility:
+                        productData.visibility !== undefined
+                            ? productData.visibility
+                            : true,
+                    status: productData.status || 'ACTIVE',
+                    productVariants: productData.productVariants || [],
+                    hasVariants: productData.hasVariants || false,
+                    showInSite:
+                        productData.showInSite !== undefined
+                            ? productData.showInSite
+                            : true,
+                    cartItems: productData.cartItems || [],
+                    orderItems: productData.orderItems || [],
+                    onSale:
+                        productData.onSale !== undefined
+                            ? productData.onSale
+                            : false,
+                    isNew:
+                        productData.isNew !== undefined
+                            ? productData.isNew
+                            : false,
+                    isFeatured:
+                        productData.isFeatured !== undefined
+                            ? productData.isFeatured
+                            : false,
+                    images: productData.images || [],
+                    stock: productData.stock || 0,
+                    createdAt: productData.createdAt
+                        ? new Date(productData.createdAt)
+                        : new Date(),
+                    updatedAt: productData.updatedAt
+                        ? new Date(productData.updatedAt)
+                        : null,
+                    deletedAt: productData.deletedAt
+                        ? new Date(productData.deletedAt)
+                        : null,
+                });
+                setEditingProductId(productData.id);
+                // Abra o formulário de edição
+                // setIsSheetOpen(true);
+            } else {
+                console.error('Produto não encontrado');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar o produto:', error);
+        }
+    };
 
     const handleEditClick = (color: Color) => {
         setEditingColorId(color._id.value);
@@ -452,33 +592,69 @@ const AdminPage = () => {
 
     const normalizeProduct = (data: any): Product | null => {
         if (data.props) {
-            if (data.props.product) {
-                return {
-                    id: data.props.product._id.value,
-                    name: data.props.product.props.name,
-                    description: data.props.product.props.description,
-                    price: data.props.product.props.price,
-                    stock: data.props.product.props.stock,
-                    category:
-                        data.props.product.props.productCategories?.[0]?.name ||
-                        '',
-                    brand: data.props.product.props.brandName,
-                    imageUrl: data.props.product.props.images?.[0] || '',
-                    erpId: data.props.product.props.sku,
-                };
-            } else {
-                return {
-                    id: data._id.value,
-                    name: data.props.name,
-                    description: data.props.description,
-                    price: data.props.price,
-                    stock: data.props.stock,
-                    category: data.props.productCategories?.[0]?.name || '',
-                    brand: data.props.brandName,
-                    imageUrl: data.props.images?.[0] || '',
-                    erpId: data.props.sku,
-                };
-            }
+            const product = data.props.product || data;
+            return {
+                id: product._id?.value || '',
+                name: product.props.name || '',
+                description: product.props.description || '',
+                productColors: product.props.productColors || [],
+                productSizes: product.props.productSizes || [],
+                productCategories: product.props.productCategories || [],
+                productIdVariant: product.props.productIdVariant || '',
+                slug: product.props.slug || '',
+                brandId: product.props.brandId || '',
+                brand: product.props.brandName || '',
+                discount: product.props.discount || 0,
+                price: product.props.price || 0,
+                finalPrice: product.props.finalPrice || 0,
+                height: product.props.height || 0,
+                width: product.props.width || 0,
+                length: product.props.length || 0,
+                weight: product.props.weight || 0,
+                erpId: product.props.sku || '',
+                sku: product.props.sku || '',
+                upc: product.props.upc || '',
+                tags: product.props.tags || [],
+                seoTitle: product.props.seoTitle || '',
+                seoDescription: product.props.seoDescription || '',
+                seoKeywords: product.props.seoKeywords || '',
+                visibility:
+                    product.props.visibility !== undefined
+                        ? product.props.visibility
+                        : true,
+                status: product.props.status || 'ACTIVE',
+                productVariants: product.props.productVariants || [],
+                hasVariants: product.props.hasVariants || false,
+                showInSite:
+                    product.props.showInSite !== undefined
+                        ? product.props.showInSite
+                        : true,
+                cartItems: product.props.cartItems || [],
+                orderItems: product.props.orderItems || [],
+                onSale:
+                    product.props.onSale !== undefined
+                        ? product.props.onSale
+                        : false,
+                isNew:
+                    product.props.isNew !== undefined
+                        ? product.props.isNew
+                        : false,
+                isFeatured:
+                    product.props.isFeatured !== undefined
+                        ? product.props.isFeatured
+                        : false,
+                images: product.props.images || [],
+                stock: product.props.stock || 0,
+                createdAt: product.props.createdAt
+                    ? new Date(product.props.createdAt)
+                    : new Date(),
+                updatedAt: product.props.updatedAt
+                    ? new Date(product.props.updatedAt)
+                    : null,
+                deletedAt: product.props.deletedAt
+                    ? new Date(product.props.deletedAt)
+                    : null,
+            };
         } else if (data.id) {
             return data as Product;
         }
@@ -498,7 +674,7 @@ const AdminPage = () => {
         }
     };
 
-    const fetchProductById = async () => {
+    const fetchProductById = async (searchId) => {
         try {
             const response = await axios.get(
                 `${BASE_URL}/products/${searchId}`,
@@ -513,6 +689,7 @@ const AdminPage = () => {
                 setProducts([product]);
             }
             setSearchId('');
+            return product ? product : null;
         } catch (error) {
             console.error('Erro ao buscar produto por ID: ', error);
         }
@@ -544,11 +721,6 @@ const AdminPage = () => {
         } catch (error) {
             console.error('Erro ao buscar produto por nome: ', error);
         }
-    };
-
-    const handleEditProductClick = (product: Product) => {
-        setEditingProductId(product.id);
-        setEditProductData({ ...product });
     };
 
     const handleProductInputChange = (
@@ -730,7 +902,7 @@ const AdminPage = () => {
                                         </button>
 
                                         <div className="overflow-x-auto ">
-                                            <table className=" divide-y divide-gray-200 dark:divide-gray-700 w-auto">
+                                            <table className=" divide-y divide-gray-200 dark:divide-gray-700 ">
                                                 <thead className="bg-primaryLight dark:bg-primaryDark rounded">
                                                     <tr>
                                                         <th
@@ -803,11 +975,11 @@ const AdminPage = () => {
                                             </table>
                                         </div>
                                         {editingProductId && (
-                                            <div className="mt-4">
+                                            <div className="mt-4 min-w-full overflow-x-hidden">
                                                 <h3 className="text-lg font-medium text-primaryDark dark:text-primaryLight">
                                                     Editar Produto
                                                 </h3>
-                                                <div className="grid grid-cols-2 gap-4 mt-4">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 overflow-x-hidden">
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                             Nome
@@ -821,7 +993,7 @@ const AdminPage = () => {
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
-                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                            className="text-primaryDark px-4 py-1 border border-gray-300 rounded w-4/5"
                                                         />
                                                     </div>
                                                     <div>
@@ -837,7 +1009,7 @@ const AdminPage = () => {
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
-                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                            className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
                                                     </div>
                                                     <div>
@@ -853,7 +1025,7 @@ const AdminPage = () => {
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
-                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                            className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
                                                     </div>
                                                     <div>
@@ -869,7 +1041,7 @@ const AdminPage = () => {
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
-                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                            className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
                                                     </div>
                                                     <div>
@@ -879,13 +1051,13 @@ const AdminPage = () => {
                                                         <input
                                                             type="text"
                                                             name="category"
-                                                            value={
-                                                                editProductData.category
-                                                            }
+                                                            value={editProductData.productCategories.join(
+                                                                ', '
+                                                            )} // Para exibir como uma string separada por vírgulas
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
-                                                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                                                            className="px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
                                                     </div>
                                                     <div>
@@ -901,7 +1073,7 @@ const AdminPage = () => {
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
-                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                            className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
                                                     </div>
                                                     <div>
@@ -912,12 +1084,14 @@ const AdminPage = () => {
                                                             type="text"
                                                             name="imageUrl"
                                                             value={
-                                                                editProductData.imageUrl
-                                                            }
+                                                                editProductData
+                                                                    .images[0] ||
+                                                                ''
+                                                            } // Garante que não seja `undefined`
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
-                                                            className="px-2 py-1 border border-gray-300 rounded w-full"
+                                                            className="px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
                                                     </div>
                                                     <div>
@@ -933,8 +1107,270 @@ const AdminPage = () => {
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
-                                                            className="text-primaryLight px-2 py-1 border border-gray-300 rounded w-full"
+                                                            className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
+                                                    </div>
+                                                    {/* Campos adicionais */}
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            ID Variante
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="productIdVariant"
+                                                            value={
+                                                                editProductData.productIdVariant
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Tags
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="tags"
+                                                            value={editProductData.tags.join(
+                                                                ', '
+                                                            )} // Exibido como uma string separada por vírgulas
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Título SEO
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="seoTitle"
+                                                            value={
+                                                                editProductData.seoTitle
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Descrição SEO
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="seoDescription"
+                                                            value={
+                                                                editProductData.seoDescription
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Palavras-chave SEO
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            name="seoKeywords"
+                                                            value={
+                                                                editProductData.seoKeywords
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Altura
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            name="height"
+                                                            value={
+                                                                editProductData.height
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Largura
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            name="width"
+                                                            value={
+                                                                editProductData.width
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Comprimento
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            name="length"
+                                                            value={
+                                                                editProductData.length
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Peso
+                                                        </label>
+                                                        <input
+                                                            type="number"
+                                                            name="weight"
+                                                            value={
+                                                                editProductData.weight
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Status
+                                                        </label>
+                                                        <select
+                                                            name="status"
+                                                            value={
+                                                                editProductData.status
+                                                            }
+                                                            // onChange={
+                                                            //     handleProductInputChange
+                                                            // }
+                                                            className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                        >
+                                                            <option value="ACTIVE">
+                                                                Ativo
+                                                            </option>
+                                                            <option value="INACTIVE">
+                                                                Inativo
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Visibilidade
+                                                        </label>
+                                                        <input
+                                                            type="checkbox"
+                                                            name="visibility"
+                                                            checked={
+                                                                editProductData.visibility
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="h-4 w-4"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Em Promoção
+                                                        </label>
+                                                        <input
+                                                            type="checkbox"
+                                                            name="onSale"
+                                                            checked={
+                                                                editProductData.onSale
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="h-4 w-4"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Novo
+                                                        </label>
+                                                        <input
+                                                            type="checkbox"
+                                                            name="isNew"
+                                                            checked={
+                                                                editProductData.isNew
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="h-4 w-4"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Destaque
+                                                        </label>
+                                                        <input
+                                                            type="checkbox"
+                                                            name="isFeatured"
+                                                            checked={
+                                                                editProductData.isFeatured
+                                                            }
+                                                            onChange={
+                                                                handleProductInputChange
+                                                            }
+                                                            className="h-4 w-4"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                            Imagens
+                                                        </label>
+                                                        {editProductData.images.map(
+                                                            (image, index) => (
+                                                                <input
+                                                                    key={index}
+                                                                    type="text"
+                                                                    name={`imageUrl${index}`}
+                                                                    value={
+                                                                        image
+                                                                    }
+                                                                    onChange={
+                                                                        handleProductInputChange
+                                                                    }
+                                                                    className="px-2 py-1 border border-gray-300 rounded w-4/5 mb-2"
+                                                                />
+                                                            )
+                                                        )}
+                                                        <button
+                                                            type="button"
+                                                            // onClick={
+                                                            //     addImageField
+                                                            // }
+                                                            // Função para adicionar um novo campo de imagem
+                                                            className="text-primaryDark  bg-gray-200 px-2 py-1 rounded"
+                                                        >
+                                                            Adicionar Imagem
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
