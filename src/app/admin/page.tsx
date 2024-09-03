@@ -77,13 +77,13 @@ interface Product {
     id: string;
     name: string;
     description: string;
-    productColors: string[]; 
-    productSizes: string[]; 
-    productCategories: string[]; 
+    productColors: string[];
+    productSizes: string[];
+    productCategories: string[];
     productIdVariant?: string;
     slug: string;
     brandId: string;
-    brand?: string; 
+    brand?: string;
     discount: number;
     price: number;
     finalPrice?: number;
@@ -100,11 +100,11 @@ interface Product {
     seoKeywords?: string;
     visibility: boolean;
     status: 'ACTIVE' | 'INACTIVE';
-    productVariants: string[]; 
+    productVariants: string[];
     hasVariants: boolean;
     showInSite: boolean;
-    cartItems: string[]; 
-    orderItems: string[]; 
+    cartItems: string[];
+    orderItems: string[];
     onSale: boolean;
     isNew: boolean;
     isFeatured: boolean;
@@ -417,7 +417,7 @@ const AdminPage = () => {
                         : null,
                 });
                 setEditingProductId(productData.id);
-               
+
                 // setIsSheetOpen(true);
             } else {
                 console.error('Produto não encontrado');
@@ -669,7 +669,7 @@ const AdminPage = () => {
                 },
             });
             console.log('adm page fetchAllProducts response', response);
-            setProducts(response.data);
+            setProducts(response.data.products);
         } catch (error) {
             console.error('Erro ao buscar todos os produtos: ', error);
         }
@@ -734,7 +734,7 @@ const AdminPage = () => {
     const handleSaveProductClick = async (productId: string) => {
         try {
             await axios.put(
-                `${BASE_URL}/products/${productId}`,
+                `${BASE_URL}/products/save/${productId}`,
                 { ...editProductData },
                 {
                     headers: {
@@ -755,6 +755,53 @@ const AdminPage = () => {
             console.error('Erro ao salvar o produto: ', error);
         }
     };
+
+    const handleCancelEdit = () => {
+        setEditProductData({
+            id: '',
+            name: '',
+            description: '',
+            productColors: [],
+            productSizes: [],
+            productCategories: [],
+            productIdVariant: '',
+            slug: '',
+            brandId: '',
+            brand: '',
+            discount: 0,
+            price: 0,
+            finalPrice: 0,
+            height: 0,
+            width: 0,
+            length: 0,
+            weight: 0,
+            erpId: '',
+            sku: '',
+            upc: '',
+            tags: [],
+            seoTitle: '',
+            seoDescription: '',
+            seoKeywords: '',
+            visibility: true,
+            status: 'ACTIVE',
+            productVariants: [],
+            hasVariants: false,
+            showInSite: true,
+            cartItems: [],
+            orderItems: [],
+            onSale: false,
+            isNew: false,
+            isFeatured: false,
+            images: [],
+            stock: 0,
+            createdAt: new Date(),
+            updatedAt: null,
+            deletedAt: null,
+        });
+
+        setEditingProductId(null);
+    };
+
     console.log('orders:', orders);
 
     const orderData = {
@@ -947,16 +994,28 @@ const AdminPage = () => {
                                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                                                 {editingProductId ===
                                                                 product.id ? (
-                                                                    <button
-                                                                        onClick={() =>
-                                                                            handleSaveProductClick(
-                                                                                product.id
-                                                                            )
-                                                                        }
-                                                                        className="px-4 py-2 bg-secondary text-white rounded"
-                                                                    >
-                                                                        Salvar
-                                                                    </button>
+                                                                    <>
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                handleSaveProductClick(
+                                                                                    product.id
+                                                                                )
+                                                                            }
+                                                                            className="px-4 py-2 bg-secondary text-white rounded"
+                                                                        >
+                                                                            Salvar
+                                                                        </button>
+                                                                        <button
+                                                                            onClick={
+                                                                                handleCancelEdit
+                                                                            }
+                                                                            className=" ml-2 px-4 py-2 bg-red-500 text-white rounded"
+                                                                        >
+                                                                            Sair
+                                                                            da
+                                                                            Edição
+                                                                        </button>
+                                                                    </>
                                                                 ) : (
                                                                     <button
                                                                         onClick={() =>
@@ -1054,7 +1113,7 @@ const AdminPage = () => {
                                                             name="category"
                                                             value={editProductData.productCategories.join(
                                                                 ', '
-                                                            )} 
+                                                            )}
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
@@ -1137,7 +1196,7 @@ const AdminPage = () => {
                                                             name="tags"
                                                             value={editProductData.tags.join(
                                                                 ', '
-                                                            )} 
+                                                            )}
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
@@ -1367,7 +1426,7 @@ const AdminPage = () => {
                                                             // onClick={
                                                             //     addImageField
                                                             // }
-                                                         
+
                                                             className="text-primaryDark  bg-gray-200 px-2 py-1 rounded"
                                                         >
                                                             Adicionar Imagem
