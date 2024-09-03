@@ -5,7 +5,7 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 import { useRef, useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
-import { CardS, CardHeader, CardTitle } from '@/components/ui/card';
+
 
 register();
 

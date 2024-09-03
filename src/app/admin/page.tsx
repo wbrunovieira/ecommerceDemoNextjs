@@ -28,6 +28,7 @@ import { ChartLegend, ChartLegendContent } from '@/components/ui/chart';
 import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminMobileMenu from '@/components/MobileMenuAdm';
+import CustomNotification from '@/components/CustomNotification';
 
 interface Color {
     _id: {
@@ -149,7 +150,10 @@ interface Customer {
     orders: number;
     totalSpent: number;
 }
-
+interface NotificationState {
+    message: string;
+    type: 'success' | 'error';
+}
 const AdminPage = () => {
     const router = useRouter();
 
@@ -233,6 +237,10 @@ const AdminPage = () => {
 
     const [currentView, setCurrentView] = useState('products');
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+
+    const [notification, setNotification] = useState<NotificationState | null>(
+        null
+    );
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -743,6 +751,7 @@ const AdminPage = () => {
                     },
                 }
             );
+
             setProducts((prevProducts) =>
                 prevProducts.map((product) =>
                     product.id === productId
@@ -751,8 +760,16 @@ const AdminPage = () => {
                 )
             );
             setEditingProductId(null);
+            setNotification({
+                message: 'Produto alterado com sucesso!',
+                type: 'success',
+            });
         } catch (error) {
             console.error('Erro ao salvar o produto: ', error);
+            setNotification({
+                message: 'Erro ao salvar o produto',
+                type: 'error',
+            });
         }
     };
 
@@ -800,6 +817,7 @@ const AdminPage = () => {
         });
 
         setEditingProductId(null);
+        setProducts([]);
     };
 
     console.log('orders:', orders);
@@ -979,6 +997,19 @@ const AdminPage = () => {
                                                         </th>
                                                     </tr>
                                                 </thead>
+                                                {notification && (
+                                                    <CustomNotification
+                                                        message={
+                                                            notification.message
+                                                        }
+                                                        type={notification.type}
+                                                        onClose={() =>
+                                                            setNotification(
+                                                                null
+                                                            )
+                                                        }
+                                                    />
+                                                )}
                                                 <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
                                                     {products.map((product) => (
                                                         <tr key={product.id}>
@@ -1005,6 +1036,7 @@ const AdminPage = () => {
                                                                         >
                                                                             Salvar
                                                                         </button>
+
                                                                         <button
                                                                             onClick={
                                                                                 handleCancelEdit
@@ -1034,6 +1066,7 @@ const AdminPage = () => {
                                                 </tbody>
                                             </table>
                                         </div>
+
                                         {editingProductId && (
                                             <div className="mt-4 min-w-full overflow-x-hidden">
                                                 <h3 className="text-lg font-medium text-primaryDark dark:text-primaryLight">
@@ -1170,7 +1203,7 @@ const AdminPage = () => {
                                                             className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
                                                     </div>
-                                                    {/* Campos adicionais */}
+
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                             ID Variante
