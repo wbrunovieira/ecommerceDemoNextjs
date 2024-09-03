@@ -13,6 +13,7 @@ import {
 
 export async function generateStaticParams() {
     const products = await getProducts();
+    console.log('async function generateStaticParams products', products);
 
     return products.map((product) => ({
         slug: product.slug,
@@ -159,6 +160,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
         const productIdVariant = productDetails.productIdVariant ?? undefined;
 
         const allProducts = await getProducts();
+        console.log('product page allProducts ', allProducts);
         const similarProducts = await getSimilarProducts(
             productCategories,
             allProducts as ProductProps[]

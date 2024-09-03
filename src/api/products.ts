@@ -36,7 +36,9 @@ export type ProductProps = {
 
 interface ProductCategory {
     category: {
+        id: string;
         name: string;
+        imageUrl?: string;
     };
 }
 
@@ -68,6 +70,7 @@ export type ProductType = {
     _id: { value: string };
     props: ProductProps;
 };
+
 interface ProductsResponseFeatured {
     products: Produto[];
 }
@@ -245,8 +248,10 @@ export async function getProductsFeatures(): Promise<Produto[]> {
 
         const data: ProductsResponseFeatured = await response.json();
         console.log('data: getProductsFeatures', data);
+        console.log('data: getProductsFeatures ', data.products);
 
         return data.products;
+        
     } catch (error) {
         console.error('Erro ao buscar produtos: ', error);
         throw error;

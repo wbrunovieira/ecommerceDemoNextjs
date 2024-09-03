@@ -77,13 +77,13 @@ interface Product {
     id: string;
     name: string;
     description: string;
-    productColors: string[]; // Adicione o tipo apropriado se `ProductColor` for um tipo específico
-    productSizes: string[]; // Adicione o tipo apropriado se `ProductSize` for um tipo específico
-    productCategories: string[]; // Adicione o tipo apropriado se `ProductCategory` for um tipo específico
+    productColors: string[]; 
+    productSizes: string[]; 
+    productCategories: string[]; 
     productIdVariant?: string;
     slug: string;
     brandId: string;
-    brand?: string; // Ou o tipo apropriado se for um objeto `Brand`
+    brand?: string; 
     discount: number;
     price: number;
     finalPrice?: number;
@@ -99,12 +99,12 @@ interface Product {
     seoDescription?: string;
     seoKeywords?: string;
     visibility: boolean;
-    status: 'ACTIVE' | 'INACTIVE'; // Defina os estados possíveis conforme necessário
-    productVariants: string[]; // Adicione o tipo apropriado se `ProductVariant` for um tipo específico
+    status: 'ACTIVE' | 'INACTIVE';
+    productVariants: string[]; 
     hasVariants: boolean;
     showInSite: boolean;
-    cartItems: string[]; // Adicione o tipo apropriado se `CartItem` for um tipo específico
-    orderItems: string[]; // Adicione o tipo apropriado se `OrderItem` for um tipo específico
+    cartItems: string[]; 
+    orderItems: string[]; 
     onSale: boolean;
     isNew: boolean;
     isFeatured: boolean;
@@ -417,7 +417,7 @@ const AdminPage = () => {
                         : null,
                 });
                 setEditingProductId(productData.id);
-                // Abra o formulário de edição
+               
                 // setIsSheetOpen(true);
             } else {
                 console.error('Produto não encontrado');
@@ -668,7 +668,8 @@ const AdminPage = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            setProducts(response.data.products);
+            console.log('adm page fetchAllProducts response', response);
+            setProducts(response.data);
         } catch (error) {
             console.error('Erro ao buscar todos os produtos: ', error);
         }
@@ -1053,7 +1054,7 @@ const AdminPage = () => {
                                                             name="category"
                                                             value={editProductData.productCategories.join(
                                                                 ', '
-                                                            )} // Para exibir como uma string separada por vírgulas
+                                                            )} 
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
@@ -1087,7 +1088,7 @@ const AdminPage = () => {
                                                                 editProductData
                                                                     .images[0] ||
                                                                 ''
-                                                            } // Garante que não seja `undefined`
+                                                            }
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
@@ -1136,7 +1137,7 @@ const AdminPage = () => {
                                                             name="tags"
                                                             value={editProductData.tags.join(
                                                                 ', '
-                                                            )} // Exibido como uma string separada por vírgulas
+                                                            )} 
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
@@ -1366,7 +1367,7 @@ const AdminPage = () => {
                                                             // onClick={
                                                             //     addImageField
                                                             // }
-                                                            // Função para adicionar um novo campo de imagem
+                                                         
                                                             className="text-primaryDark  bg-gray-200 px-2 py-1 rounded"
                                                         >
                                                             Adicionar Imagem
