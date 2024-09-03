@@ -1128,6 +1128,7 @@ const AdminPage = () => {
                                                         <input
                                                             type="number"
                                                             name="stock"
+                                                            disabled
                                                             value={
                                                                 editProductData.stock
                                                             }
@@ -1144,15 +1145,21 @@ const AdminPage = () => {
                                                         <input
                                                             type="text"
                                                             name="category"
-                                                            value={editProductData.productCategories.join(
-                                                                ', '
-                                                            )}
+                                                            value={editProductData.productCategories
+                                                                .map(
+                                                                    (
+                                                                        category
+                                                                    ) =>
+                                                                        category.name
+                                                                )
+                                                                .join(', ')}
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
                                                             className="px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
                                                     </div>
+
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                             Marca
@@ -1160,6 +1167,7 @@ const AdminPage = () => {
                                                         <input
                                                             type="text"
                                                             name="brand"
+                                                            disabled
                                                             value={
                                                                 editProductData.brand
                                                             }
@@ -1171,22 +1179,33 @@ const AdminPage = () => {
                                                     </div>
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                            Imagem URL
+                                                            Imagens
                                                         </label>
-                                                        <input
-                                                            type="text"
-                                                            name="imageUrl"
-                                                            value={
-                                                                editProductData
-                                                                    .images[0] ||
-                                                                ''
-                                                            }
-                                                            onChange={
-                                                                handleProductInputChange
-                                                            }
-                                                            className="px-2 py-1 border border-gray-300 rounded w-4/5"
-                                                        />
+
+                                                        <div className="flex space-x-2 mt-2">
+                                                            {editProductData.images.map(
+                                                                (
+                                                                    imageUrl,
+                                                                    index
+                                                                ) => (
+                                                                    <img
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        src={
+                                                                            imageUrl
+                                                                        }
+                                                                        alt={`Produto imagem ${
+                                                                            index +
+                                                                            1
+                                                                        }`}
+                                                                        className="w-16 h-16 object-cover border border-gray-300 rounded"
+                                                                    />
+                                                                )
+                                                            )}
+                                                        </div>
                                                     </div>
+
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                             ERP ID
@@ -1197,6 +1216,7 @@ const AdminPage = () => {
                                                             value={
                                                                 editProductData.erpId
                                                             }
+                                                            disabled
                                                             onChange={
                                                                 handleProductInputChange
                                                             }
@@ -1204,22 +1224,6 @@ const AdminPage = () => {
                                                         />
                                                     </div>
 
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                            ID Variante
-                                                        </label>
-                                                        <input
-                                                            type="text"
-                                                            name="productIdVariant"
-                                                            value={
-                                                                editProductData.productIdVariant
-                                                            }
-                                                            onChange={
-                                                                handleProductInputChange
-                                                            }
-                                                            className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
-                                                        />
-                                                    </div>
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                             Tags
@@ -1409,6 +1413,7 @@ const AdminPage = () => {
                                                         <input
                                                             type="checkbox"
                                                             name="isNew"
+                                                            disabled
                                                             checked={
                                                                 editProductData.isNew
                                                             }
@@ -1433,37 +1438,6 @@ const AdminPage = () => {
                                                             }
                                                             className="h-4 w-4"
                                                         />
-                                                    </div>
-                                                    <div>
-                                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                            Imagens
-                                                        </label>
-                                                        {editProductData.images.map(
-                                                            (image, index) => (
-                                                                <input
-                                                                    key={index}
-                                                                    type="text"
-                                                                    name={`imageUrl${index}`}
-                                                                    value={
-                                                                        image
-                                                                    }
-                                                                    onChange={
-                                                                        handleProductInputChange
-                                                                    }
-                                                                    className="px-2 py-1 border border-gray-300 rounded w-4/5 mb-2"
-                                                                />
-                                                            )
-                                                        )}
-                                                        <button
-                                                            type="button"
-                                                            // onClick={
-                                                            //     addImageField
-                                                            // }
-
-                                                            className="text-primaryDark  bg-gray-200 px-2 py-1 rounded"
-                                                        >
-                                                            Adicionar Imagem
-                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
