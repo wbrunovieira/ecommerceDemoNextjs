@@ -161,6 +161,8 @@ const AdminPage = () => {
     const [colors, setColors] = useState<Color[]>([]);
     const [sizes, setSizes] = useState<Size[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [selectedCategoryId, setSelectedCategoryId] = useState('');
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
 
@@ -820,7 +822,54 @@ const AdminPage = () => {
         setProducts([]);
     };
 
-    console.log('orders:', orders);
+    const handleAddCategoryToProduct = async (productId: string) => {
+        try {
+            if (selectedCategories.length === 0) {
+                alert('Selecione ao menos uma categoria para adicionar!');
+                return;
+            }
+            console.log(
+                'handleAddCategoryToProduct selectedCategories',
+                selectedCategories
+            );
+            console.log('handleAddCategoryToProduct productId', productId);
+
+            const response = await axios.post(
+                `${BASE_URL}/products/add-categories/${productId}`,
+
+                { categories: [selectedCategories] },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer {{AUTH_TOKEN}}`,
+                    },
+                }
+            );
+
+            console.log('handleAddCategoryToProduct response', response);
+            if (response.status === 201) {
+                alert('Categoria adicionada com sucesso!');
+            } else {
+                alert('Falha ao adicionar categoria.');
+            }
+        } catch (error) {
+            console.error('Error adding category to product:', error);
+            alert('Erro ao adicionar categoria.');
+        }
+    };
+
+    const handleCategorySelection = (e, categoryId) => {
+        if (e.target.checked) {
+            setSelectedCategories((prevSelected) => [
+                ...prevSelected,
+                categoryId,
+            ]);
+        } else {
+            setSelectedCategories((prevSelected) =>
+                prevSelected.filter((id) => id !== categoryId)
+            );
+        }
+    };
 
     const orderData = {
         labels: orders
@@ -1158,7 +1207,75 @@ const AdminPage = () => {
                                                             }
                                                             className="px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         />
+                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                                            {categories.map(
+                                                                (category) => (
+                                                                    <div
+                                                                        key={
+                                                                            category
+                                                                                ._id
+                                                                                .value
+                                                                        }
+                                                                        className="flex items-center"
+                                                                    >
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            id={
+                                                                                category
+                                                                                    ._id
+                                                                                    .value
+                                                                            }
+                                                                            value={
+                                                                                category
+                                                                                    ._id
+                                                                                    .value
+                                                                            }
+                                                                            checked={selectedCategories.includes(
+                                                                                category
+                                                                                    ._id
+                                                                                    .value
+                                                                            )}
+                                                                            onChange={(
+                                                                                e
+                                                                            ) =>
+                                                                                handleCategorySelection(
+                                                                                    e,
+                                                                                    category
+                                                                                        ._id
+                                                                                        .value
+                                                                                )
+                                                                            }
+                                                                            className="mr-2"
+                                                                        />
+                                                                        <label
+                                                                            htmlFor={
+                                                                                category
+                                                                                    ._id
+                                                                                    .value
+                                                                            }
+                                                                            className="text-primaryDark dark:text-primaryLight"
+                                                                        >
+                                                                            {
+                                                                                category
+                                                                                    .props
+                                                                                    .name
+                                                                            }
+                                                                        </label>
+                                                                    </div>
+                                                                )
+                                                            )}
+                                                        </div>
                                                     </div>
+                                                    <button
+                                                        className="bg-secondary hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                                                        onClick={() =>
+                                                            handleAddCategoryToProduct(
+                                                                editingProductId
+                                                            )
+                                                        }
+                                                    >
+                                                        Adcionar Categoria
+                                                    </button>
 
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
