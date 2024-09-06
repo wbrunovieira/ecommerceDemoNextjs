@@ -109,6 +109,7 @@ interface Product {
     onSale: boolean;
     isNew: boolean;
     isFeatured: boolean;
+
     images: string[];
     stock: number;
     createdAt: Date;
@@ -692,6 +693,7 @@ const AdminPage = () => {
                 {
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session?.accessToken}`,
                     },
                 }
             );
@@ -737,8 +739,10 @@ const AdminPage = () => {
     const handleProductInputChange = (
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
-        const { name, value } = e.target;
-        setEditProductData((prevState) => ({ ...prevState, [name]: value }));
+        const { name, type, checked, value } = e.target;
+        const newValue = type === 'checkbox' ? checked : value;
+
+        setEditProductData((prevState) => ({ ...prevState, [name]: newValue }));
     };
 
     const handleSaveProductClick = async (productId: string) => {
@@ -1265,17 +1269,17 @@ const AdminPage = () => {
                                                                 )
                                                             )}
                                                         </div>
+                                                        <button
+                                                            className="bg-secondary hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                                                            onClick={() =>
+                                                                handleAddCategoryToProduct(
+                                                                    editingProductId
+                                                                )
+                                                            }
+                                                        >
+                                                            Adcionar Categoria
+                                                        </button>
                                                     </div>
-                                                    <button
-                                                        className="bg-secondary hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
-                                                        onClick={() =>
-                                                            handleAddCategoryToProduct(
-                                                                editingProductId
-                                                            )
-                                                        }
-                                                    >
-                                                        Adcionar Categoria
-                                                    </button>
 
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -1493,13 +1497,13 @@ const AdminPage = () => {
                                                     </div>
                                                     <div>
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                            Visibilidade
+                                                            Dísponivel no Site
                                                         </label>
                                                         <input
                                                             type="checkbox"
-                                                            name="visibility"
+                                                            name="showInSite"
                                                             checked={
-                                                                editProductData.visibility
+                                                                editProductData.showInSite
                                                             }
                                                             onChange={
                                                                 handleProductInputChange

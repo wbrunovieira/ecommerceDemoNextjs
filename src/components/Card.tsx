@@ -104,7 +104,7 @@ const Card: React.FC<CardProps> = ({
 
     const validImageSRC = imageSRC || '/images/foto1.jpg';
     const formattedCategories = categories
-        .map((cat) => cat.category.name)
+        .map((cat) => cat?.category?.name || '')
         .join(', ');
 
     return (

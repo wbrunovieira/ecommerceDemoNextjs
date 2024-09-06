@@ -43,6 +43,21 @@ const ProductList = () => {
         router.push(`/product/${slug}`);
     };
 
+    const getSlug = (slug: any): string => {
+        if (typeof slug === 'object' && slug !== null && 'value' in slug) {
+            console.log('Slug is an object with value:', slug.value);
+            return slug.value;
+        }
+
+        if (typeof slug === 'string') {
+            console.log('Slug is a string:', slug);
+            return slug; 
+        }
+
+        console.error('Slug is in an unexpected format:', slug);
+        return ''; 
+    };
+
     useEffect(() => {
         const fetchProdutos = async () => {
             try {
@@ -77,7 +92,8 @@ const ProductList = () => {
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
             {produtos.map((produto) => {
-                const productLink = `/product/${produto.slug}`;
+                const slug = getSlug(produto.slug);
+                const productLink = `/product/${slug}`;
                 console.log('Link generated:', productLink);
                 return (
                     <Link

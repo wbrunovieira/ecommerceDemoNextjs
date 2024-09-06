@@ -98,6 +98,7 @@ const getSimilarProducts = async (
                 price: product.props.price,
                 images: product.props.images,
                 slug: product.props.slug.value,
+                
             })
         );
 
@@ -147,7 +148,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
         const productBrand = brandName ?? 'N/A';
         const productFinalPrice = productDetails?.finalPrice ?? 0;
         const productImages = productDetails?.images ?? [];
-        const productSlug = productDetails?.slug ?? 'No slug available';
+       
         const productColors = colors ?? [];
         const productSizes = sizes ?? [];
         const productCategories = categories ?? [];
