@@ -29,6 +29,7 @@ import { useSession } from 'next-auth/react';
 import ShareButtons from './ShareButtons';
 
 import { useToast } from '@/components/ui/use-toast';
+import ExpandableText from './ExpandleText';
 
 interface ProductCart {
     id: string;
@@ -440,9 +441,11 @@ const Product: React.FC<ProductProps> = ({
                     </div>
 
                     <div className="flex flex-col gap-2 md:gap-4 p-4 mt-1 md:mt-0 w-full md:w-1/2">
-                        <p className="border-r-4 border-secondary shadow-2xl p-1 md:p-4 rounded-md dark:bg-secondary dark:border-primaryLight text-base ">
+                        <ExpandableText description={description} />
+
+                        {/* <p className="border-r-4 border-secondary shadow-2xl p-1 md:p-4 rounded-md dark:bg-secondary dark:border-primaryLight text-base ">
                             {description}
-                        </p>
+                        </p> */}
 
                         <button
                             onClick={handleToggleFavorite}
