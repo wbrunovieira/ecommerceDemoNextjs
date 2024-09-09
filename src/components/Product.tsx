@@ -6,7 +6,6 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useRef, useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
 
-
 register();
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -627,24 +626,24 @@ const Product: React.FC<ProductProps> = ({
 
             <div className="flex flex-col gap-2 w-full max-w-full border-t-2 border-primary mt-4">
                 <div className="w-full flex mt-4">
-                    <h2 className="text-lg text-primaryDark dark:text-primaryLight shadow-lg font-semibold border-r-4 border-secondary rounded  whitespace-nowrap">
+                    <h2 className="text-lg px-2 py-1 text-primaryDark dark:text-primaryLight shadow-lg font-semibold border-r-4 border-secondary rounded  whitespace-nowrap">
                         Produtos Parecidos
                     </h2>
                 </div>
-                <div className="flex  w-full max-w-full ">
+                <div className="flex justify-start ">
                     <Swiper
                         slidesPerView={1}
                         navigation={true}
                         pagination={{ clickable: true }}
                         spaceBetween={20}
-                        centeredSlides={true}
-                        className="w-80"
+                        centeredSlides={false}
+                        className="w-full"
                         autoplay
                     >
                         {similarProducts.map((product, index) => (
                             <SwiperSlide
                                 key={index}
-                                className="mt-1 h-30 md:h-60 w-120 cursor-pointer"
+                                className="mt-1 h-30 md:h-60 w-120 cursor-pointer hover:scale-105 transition duration-300 ease-in-out"
                             >
                                 <Link href={`/product/${product.slug}`}>
                                     <SimilarProducts
