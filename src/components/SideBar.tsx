@@ -127,7 +127,7 @@ const Sidebar: React.FC = () => {
         const fetchCategories = async () => {
             try {
                 const res = await fetch(
-                    `${BASE_URL}/category/all?page=1&pageSize=50`,
+                    `${BASE_URL}/category/all-withProducts?page=1&pageSize=50`,
                     {
                         headers: {
                             'Content-Type': 'application/json',
