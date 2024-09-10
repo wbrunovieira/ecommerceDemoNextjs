@@ -119,30 +119,33 @@ interface Product {
 
 interface Order {
     _id: {
-        value: string;
+      value: string;
     };
     props: {
-        userId: string;
-        items: Array<{
-            _id: {
-                value: string;
-            };
-            props: {
-                orderId: string;
-                productId: string;
-                productName: string;
-                imageUrl: string;
-                quantity: number;
-                price: number;
-            };
-        }>;
-        status: string;
-        paymentId: string;
-        paymentStatus: string;
-        paymentMethod: string;
-        paymentDate: string;
+      userId: string;
+      items: Item[];
+      status: string;
+      paymentId: string;
+      paymentStatus: string;
+      paymentMethod: string;
+      paymentDate: string;
     };
-}
+  }
+
+  interface Item {
+    _id: {
+      value: string;
+    };
+    props: {
+      orderId: string;
+      productId: string;
+      productName: string;
+      imageUrl: string;
+      quantity: number;
+      price: number;
+    };
+  }
+  
 
 interface Customer {
     id: string;
@@ -359,6 +362,25 @@ const AdminPage = () => {
         fetchCustomers();
         fetchOrders();
     }, []);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+          try {
+            
+            const response = await axios.get(`${BASE_URL}/orders/all`, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            });
+            setOrders(response.data);
+          } catch (err) {
+            console.error("Erro ao buscar pedidos:", err);
+            
+          } 
+        };
+    
+        fetchOrders();
+      }, []);
 
     const handleEditProductClick = async (product) => {
         try {
@@ -2376,6 +2398,47 @@ const AdminPage = () => {
                                     </thead>
 
                                     <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                    {orders.length > 0 ? (
+              orders.map((order) => (
+                <tr key={order._id.value}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                    {order._id.value}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                    {order.props.userId}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                    {new Date(order.props.paymentDate).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                    {order.props.items
+                      .reduce(
+                        (total, item) =>
+                          total +
+                          item.props.price * item.props.quantity,
+                        0
+                      )
+                      .toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                    {order.props.status}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={5}
+                  className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200"
+                >
+                  Nenhum pedido encontrado.
+                </td>
+              </tr>
+            )}
+
                                         {/* {orders.map((order) => (
                                             <tr key={order._id.value}>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
