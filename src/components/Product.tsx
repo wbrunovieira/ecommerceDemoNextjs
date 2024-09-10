@@ -443,9 +443,7 @@ const Product: React.FC<ProductProps> = ({
                     <div className="flex flex-col gap-2 md:gap-4 p-4 mt-1 md:mt-0 w-full md:w-1/2">
                         <ExpandableText description={description} />
 
-                        {/* <p className="border-r-4 border-secondary shadow-2xl p-1 md:p-4 rounded-md dark:bg-secondary dark:border-primaryLight text-base ">
-                            {description}
-                        </p> */}
+                     
 
                         <button
                             onClick={handleToggleFavorite}
