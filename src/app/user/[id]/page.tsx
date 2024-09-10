@@ -107,6 +107,7 @@ const UserPage: NextPage = () => {
     const [isCreatingNewAddress, setIsCreatingNewAddress] = useState(false);
     const [newAddress, setNewAddress] = useState<Partial<Address['props']>>({});
     const [orders, setOrders] = useState<Order[]>([]);
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     const favorited = useFavoritesStore((state: any) => state.favorites);
     const cartFavorited = useFavoritesStore(
@@ -126,6 +127,21 @@ const UserPage: NextPage = () => {
             fetchOrders();
         }
     }, [session?.user?.id]);
+
+    const validatePhoneNumber = (phone: string) => {
+        const phoneRegex = /^(?:\+55\s?)?\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
+        return phoneRegex.test(phone);
+    };
+
+    const handleBlur = (value: string) => {
+        if (!validatePhoneNumber(value)) {
+            setErrorMessage(
+                'Por favor, insira um número de telefone válido com DDD.'
+            );
+        } else {
+            setErrorMessage('');
+        }
+    };
 
     const handleEditAddress = (addressId: string) => {
         setEditingAddressId(addressId);
@@ -623,6 +639,9 @@ const UserPage: NextPage = () => {
                                         id="phone"
                                         type="text"
                                         value={userDetails.phone}
+                                        onBlur={(e) =>
+                                            handleBlur(e.target.value)
+                                        }
                                         onChange={(e) =>
                                             setUserDetails({
                                                 ...userDetails,
@@ -631,6 +650,11 @@ const UserPage: NextPage = () => {
                                         }
                                         className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
                                     />
+                                    {errorMessage && (
+                                        <p className="text-redAtention text-xs italic">
+                                            {errorMessage}
+                                        </p>
+                                    )}
                                 </div>
 
                                 <div>

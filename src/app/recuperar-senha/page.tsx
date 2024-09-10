@@ -15,6 +15,7 @@ const RecuperarSenha: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState<ErrorMessages>({
         email: '',
     });
+    
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
     const { toast } = useToast();
