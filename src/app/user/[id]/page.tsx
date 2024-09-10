@@ -54,6 +54,35 @@ interface Address {
     };
 }
 
+interface Order {
+    _id: {
+        value: string;
+    };
+    props: {
+        userId: string;
+        items: Item[];
+        status: string;
+        paymentId: string;
+        paymentStatus: string;
+        paymentMethod: string;
+        paymentDate: string;
+    };
+}
+
+interface Item {
+    _id: {
+        value: string;
+    };
+    props: {
+        orderId: string;
+        productId: string;
+        productName: string;
+        imageUrl: string;
+        quantity: number;
+        price: number;
+    };
+}
+
 const UserPage: NextPage = () => {
     const router = useRouter();
 
@@ -77,6 +106,7 @@ const UserPage: NextPage = () => {
     );
     const [isCreatingNewAddress, setIsCreatingNewAddress] = useState(false);
     const [newAddress, setNewAddress] = useState<Partial<Address['props']>>({});
+    const [orders, setOrders] = useState<Order[]>([]);
 
     const favorited = useFavoritesStore((state: any) => state.favorites);
     const cartFavorited = useFavoritesStore(
@@ -89,8 +119,40 @@ const UserPage: NextPage = () => {
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
+    useEffect(() => {
+        if (session?.user?.id) {
+            fetchUserDetails();
+            fetchAddresses();
+            fetchOrders();
+        }
+    }, [session?.user?.id]);
+
     const handleEditAddress = (addressId: string) => {
         setEditingAddressId(addressId);
+    };
+
+    const fetchOrders = async () => {
+        try {
+            const response = await fetch(
+                `${BASE_URL}/orders/user/${session?.user?.id}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session?.accessToken}`,
+                    },
+                }
+            );
+
+            if (response.ok) {
+                const data = await response.json();
+                setOrders(data);
+            } else {
+                console.error('Failed to fetch orders');
+            }
+        } catch (error) {
+            console.error('Error fetching orders', error);
+        }
     };
 
     const handleSaveAddress = async (address: Address) => {
@@ -329,13 +391,6 @@ const UserPage: NextPage = () => {
         }
     };
 
-    useEffect(() => {
-        if (session?.user?.id) {
-            fetchUserDetails();
-            fetchAddresses();
-        }
-    }, [session?.user?.id]);
-
     if (status === 'loading') {
         return <p>Carregando...</p>;
     }
@@ -378,7 +433,7 @@ const UserPage: NextPage = () => {
 
     return (
         <div className=" max-w-4xl mx-auto mt-10 px-4 bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
-            <h1 className="text-2xl text-primaryDark dark:text-primary dark:bg-dark-secondary-gradient font-bold text-center mb-4 z-10">
+            <h1 className="text-2xl pt-4 text-primaryDark dark:text-primary dark:bg-dark-secondary-gradient font-bold text-center mb-4 z-10">
                 Perfil do Usuário
             </h1>
             <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
@@ -670,536 +725,649 @@ const UserPage: NextPage = () => {
                     )}
                 </div>
             </div>
-            <div className="mt-10">
-                <h2 className="text-xl font-bold text-primaryDark dark:text-primary">
-                    Endereços:
-                </h2>
 
-                <div>
-                    {isCreatingNewAddress ? (
-                        <form
-                            className="mt-6 space-y-4 border border-primary p-4 bg-primaryLight "
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                handleCreateAddress();
-                            }}
-                        >
-                            <h2 className="text-primaryLight bg-secondary p-2  space-y-4w-48 rounded whitespace-nowrap">
-                                Novo Endereço
-                            </h2>
-                            <div className="grid grid-cols-4 text-primaryDark gap-2">
-                                <div className="col-span-3">
-                                    <label
-                                        htmlFor="new-street"
-                                        className="block text-sm font-medium text-primaryDark"
-                                    >
-                                        Rua
-                                    </label>
-                                    <input
-                                        id="new-street"
-                                        type="text"
-                                        value={newAddress.street || ''}
-                                        onChange={(e) =>
-                                            setNewAddress({
-                                                ...newAddress,
-                                                street: e.target.value,
-                                            })
-                                        }
-                                        className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                    />
+            <div className="flex justify-between ">
+                <div className="mt-10">
+                    <h2 className="text-xl font-bold text-primaryDark dark:text-primary">
+                        Endereços:
+                    </h2>
+
+                    <div>
+                        {isCreatingNewAddress ? (
+                            <form
+                                className="mt-6 space-y-4 border border-primary p-4 bg-primaryLight "
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    handleCreateAddress();
+                                }}
+                            >
+                                <h2 className="text-primaryLight bg-secondary p-2  space-y-4w-48 rounded whitespace-nowrap">
+                                    Novo Endereço
+                                </h2>
+                                <div className="grid grid-cols-4 text-primaryDark gap-2">
+                                    <div className="col-span-3">
+                                        <label
+                                            htmlFor="new-street"
+                                            className="block text-sm font-medium text-primaryDark"
+                                        >
+                                            Rua
+                                        </label>
+                                        <input
+                                            id="new-street"
+                                            type="text"
+                                            value={newAddress.street || ''}
+                                            onChange={(e) =>
+                                                setNewAddress({
+                                                    ...newAddress,
+                                                    street: e.target.value,
+                                                })
+                                            }
+                                            className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            htmlFor="new-number"
+                                            className="block text-sm font-medium text-primaryDark"
+                                        >
+                                            Número
+                                        </label>
+                                        <input
+                                            id="new-number"
+                                            type="number"
+                                            value={newAddress.number || ''}
+                                            onChange={(e) =>
+                                                setNewAddress({
+                                                    ...newAddress,
+                                                    number: parseInt(
+                                                        e.target.value
+                                                    ),
+                                                })
+                                            }
+                                            className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                        />
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <label
-                                        htmlFor="new-number"
-                                        className="block text-sm font-medium text-primaryDark"
-                                    >
-                                        Número
-                                    </label>
-                                    <input
-                                        id="new-number"
-                                        type="number"
-                                        value={newAddress.number || ''}
-                                        onChange={(e) =>
-                                            setNewAddress({
-                                                ...newAddress,
-                                                number: parseInt(
-                                                    e.target.value
-                                                ),
-                                            })
-                                        }
-                                        className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                    />
-                                </div>
-                            </div>
+                                <div className="grid grid-cols-3  text-primaryDark gap-2">
+                                    <div className="col-span-2">
+                                        <label
+                                            htmlFor="new-complement"
+                                            className="block text-sm font-medium text-primaryDark"
+                                        >
+                                            Complemento
+                                        </label>
+                                        <input
+                                            id="new-complement"
+                                            type="text"
+                                            value={newAddress.complement || ''}
+                                            onChange={(e) =>
+                                                setNewAddress({
+                                                    ...newAddress,
+                                                    complement: e.target.value,
+                                                })
+                                            }
+                                            className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                        />
+                                    </div>
 
-                            <div className="grid grid-cols-3  text-primaryDark gap-2">
-                                <div className="col-span-2">
-                                    <label
-                                        htmlFor="new-complement"
-                                        className="block text-sm font-medium text-primaryDark"
-                                    >
-                                        Complemento
-                                    </label>
-                                    <input
-                                        id="new-complement"
-                                        type="text"
-                                        value={newAddress.complement || ''}
-                                        onChange={(e) =>
-                                            setNewAddress({
-                                                ...newAddress,
-                                                complement: e.target.value,
-                                            })
-                                        }
-                                        className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                    />
+                                    <div>
+                                        <label
+                                            htmlFor="new-zipCode"
+                                            className="block text-sm font-medium text-primaryDark"
+                                        >
+                                            CEP
+                                        </label>
+                                        <input
+                                            id="new-zipCode"
+                                            type="text"
+                                            value={newAddress.zipCode || ''}
+                                            onChange={(e) =>
+                                                setNewAddress({
+                                                    ...newAddress,
+                                                    zipCode: e.target.value,
+                                                })
+                                            }
+                                            className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                        />
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <label
-                                        htmlFor="new-zipCode"
-                                        className="block text-sm font-medium text-primaryDark"
-                                    >
-                                        CEP
-                                    </label>
-                                    <input
-                                        id="new-zipCode"
-                                        type="text"
-                                        value={newAddress.zipCode || ''}
-                                        onChange={(e) =>
-                                            setNewAddress({
-                                                ...newAddress,
-                                                zipCode: e.target.value,
-                                            })
-                                        }
-                                        className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                    />
-                                </div>
-                            </div>
+                                <div className="grid grid-cols-3 text-primaryDark gap-2">
+                                    <div>
+                                        <label
+                                            htmlFor="new-city"
+                                            className="block text-sm font-medium text-primaryDark"
+                                        >
+                                            Cidade
+                                        </label>
+                                        <input
+                                            id="new-city"
+                                            type="text"
+                                            value={newAddress.city || ''}
+                                            onChange={(e) =>
+                                                setNewAddress({
+                                                    ...newAddress,
+                                                    city: e.target.value,
+                                                })
+                                            }
+                                            className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                        />
+                                    </div>
 
-                            <div className="grid grid-cols-3 text-primaryDark gap-2">
-                                <div>
-                                    <label
-                                        htmlFor="new-city"
-                                        className="block text-sm font-medium text-primaryDark"
-                                    >
-                                        Cidade
-                                    </label>
-                                    <input
-                                        id="new-city"
-                                        type="text"
-                                        value={newAddress.city || ''}
-                                        onChange={(e) =>
-                                            setNewAddress({
-                                                ...newAddress,
-                                                city: e.target.value,
-                                            })
-                                        }
-                                        className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                    />
+                                    <div>
+                                        <label
+                                            htmlFor="new-state"
+                                            className="block text-sm font-medium text-primaryDark"
+                                        >
+                                            Estado
+                                        </label>
+                                        <input
+                                            id="new-state"
+                                            type="text"
+                                            value={newAddress.state || ''}
+                                            onChange={(e) =>
+                                                setNewAddress({
+                                                    ...newAddress,
+                                                    state: e.target.value,
+                                                })
+                                            }
+                                            className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            htmlFor="new-country"
+                                            className="block text-sm font-medium text-primaryDark"
+                                        >
+                                            País
+                                        </label>
+                                        <input
+                                            id="new-country"
+                                            type="text"
+                                            value={newAddress.country || ''}
+                                            onChange={(e) =>
+                                                setNewAddress({
+                                                    ...newAddress,
+                                                    country: e.target.value,
+                                                })
+                                            }
+                                            className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                        />
+                                    </div>
                                 </div>
 
-                                <div>
-                                    <label
-                                        htmlFor="new-state"
-                                        className="block text-sm font-medium text-primaryDark"
+                                <div className="mt-8 flex justify-end">
+                                    <button
+                                        type="submit"
+                                        className="bg-secondary text-primaryLight font-bold py-2 px-4 rounded shadow-lg 
+                    transition duration-300 hover:scale-105"
                                     >
-                                        Estado
-                                    </label>
-                                    <input
-                                        id="new-state"
-                                        type="text"
-                                        value={newAddress.state || ''}
-                                        onChange={(e) =>
-                                            setNewAddress({
-                                                ...newAddress,
-                                                state: e.target.value,
-                                            })
-                                        }
-                                        className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                    />
+                                        Salvar Endereço
+                                    </button>
                                 </div>
+                            </form>
+                        ) : (
+                            <button
+                                onClick={() => setIsCreatingNewAddress(true)}
+                                className="mt-6 bg-secondary text-primaryLight transition duration-300 hover:scale-105 font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
+                            >
+                                Adicionar Novo Endereço
+                            </button>
+                        )}
+                    </div>
 
-                                <div>
-                                    <label
-                                        htmlFor="new-country"
-                                        className="block text-sm font-medium text-primaryDark"
-                                    >
-                                        País
-                                    </label>
-                                    <input
-                                        id="new-country"
-                                        type="text"
-                                        value={newAddress.country || ''}
-                                        onChange={(e) =>
-                                            setNewAddress({
-                                                ...newAddress,
-                                                country: e.target.value,
-                                            })
-                                        }
-                                        className="mt-1 text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="mt-8 flex justify-end">
-                                <button
-                                    type="submit"
-                                    className="bg-secondary text-primaryLight font-bold py-2 px-4 rounded shadow-lg 
-                  transition duration-300 hover:scale-105"
+                    {addresses.length > 0 ? (
+                        <ul className="mt-4 space-y-4">
+                            {addresses.map((address, index) => (
+                                <li
+                                    key={index}
+                                    className="border border-secondary p-4 rounded-md"
                                 >
-                                    Salvar Endereço
-                                </button>
-                            </div>
-                        </form>
+                                    {editingAddressId === address._id.value ? (
+                                        <form
+                                            onSubmit={() =>
+                                                handleSaveAddress(address)
+                                            }
+                                            className="space-y-4"
+                                        >
+                                            <div className="grid grid-cols-2 text-primaryDark  ">
+                                                <label
+                                                    htmlFor="edit-street"
+                                                    className="block text-sm font-medium text-primaryDark"
+                                                >
+                                                    Rua
+                                                </label>
+                                                <input
+                                                    id="edit-street"
+                                                    type="text"
+                                                    value={address.props.street}
+                                                    onChange={(e) =>
+                                                        setAddresses(
+                                                            (prevAddresses) =>
+                                                                prevAddresses.map(
+                                                                    (a) =>
+                                                                        a._id
+                                                                            .value ===
+                                                                        address
+                                                                            ._id
+                                                                            .value
+                                                                            ? {
+                                                                                  ...a,
+                                                                                  props: {
+                                                                                      ...a.props,
+                                                                                      street: e
+                                                                                          .target
+                                                                                          .value,
+                                                                                  },
+                                                                              }
+                                                                            : a
+                                                                )
+                                                        )
+                                                    }
+                                                    className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                                />
+                                            </div>
+
+                                            <div className="flex justify-between gap-2 ">
+                                                <div>
+                                                    <label
+                                                        htmlFor="edit-number"
+                                                        className="block text-sm font-medium text-primaryDark"
+                                                    >
+                                                        Número
+                                                    </label>
+                                                    <input
+                                                        id="edit-number"
+                                                        type="number"
+                                                        value={
+                                                            address.props.number
+                                                        }
+                                                        onChange={(e) =>
+                                                            setAddresses(
+                                                                (
+                                                                    prevAddresses
+                                                                ) =>
+                                                                    prevAddresses.map(
+                                                                        (a) =>
+                                                                            a
+                                                                                ._id
+                                                                                .value ===
+                                                                            address
+                                                                                ._id
+                                                                                .value
+                                                                                ? {
+                                                                                      ...a,
+                                                                                      props: {
+                                                                                          ...a.props,
+                                                                                          number: parseInt(
+                                                                                              e
+                                                                                                  .target
+                                                                                                  .value
+                                                                                          ),
+                                                                                      },
+                                                                                  }
+                                                                                : a
+                                                                    )
+                                                            )
+                                                        }
+                                                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label
+                                                        htmlFor="edit-complement"
+                                                        className="block text-sm font-medium text-primaryDark"
+                                                    >
+                                                        Complemento
+                                                    </label>
+                                                    <input
+                                                        id="edit-complement"
+                                                        type="text"
+                                                        value={
+                                                            address.props
+                                                                .complement ||
+                                                            ''
+                                                        }
+                                                        onChange={(e) =>
+                                                            setAddresses(
+                                                                (
+                                                                    prevAddresses
+                                                                ) =>
+                                                                    prevAddresses.map(
+                                                                        (a) =>
+                                                                            a
+                                                                                ._id
+                                                                                .value ===
+                                                                            address
+                                                                                ._id
+                                                                                .value
+                                                                                ? {
+                                                                                      ...a,
+                                                                                      props: {
+                                                                                          ...a.props,
+                                                                                          complement:
+                                                                                              e
+                                                                                                  .target
+                                                                                                  .value,
+                                                                                      },
+                                                                                  }
+                                                                                : a
+                                                                    )
+                                                            )
+                                                        }
+                                                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label
+                                                        htmlFor="edit-city"
+                                                        className="block text-sm font-medium text-primaryDark"
+                                                    >
+                                                        Cidade
+                                                    </label>
+                                                    <input
+                                                        id="edit-city"
+                                                        type="text"
+                                                        value={
+                                                            address.props.city
+                                                        }
+                                                        onChange={(e) =>
+                                                            setAddresses(
+                                                                (
+                                                                    prevAddresses
+                                                                ) =>
+                                                                    prevAddresses.map(
+                                                                        (a) =>
+                                                                            a
+                                                                                ._id
+                                                                                .value ===
+                                                                            address
+                                                                                ._id
+                                                                                .value
+                                                                                ? {
+                                                                                      ...a,
+                                                                                      props: {
+                                                                                          ...a.props,
+                                                                                          city: e
+                                                                                              .target
+                                                                                              .value,
+                                                                                      },
+                                                                                  }
+                                                                                : a
+                                                                    )
+                                                            )
+                                                        }
+                                                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="flex justify-between gap-2 ">
+                                                <div>
+                                                    <label
+                                                        htmlFor="edit-state"
+                                                        className="block text-sm font-medium text-primaryDark"
+                                                    >
+                                                        Estado
+                                                    </label>
+                                                    <input
+                                                        id="edit-state"
+                                                        type="text"
+                                                        value={
+                                                            address.props.state
+                                                        }
+                                                        onChange={(e) =>
+                                                            setAddresses(
+                                                                (
+                                                                    prevAddresses
+                                                                ) =>
+                                                                    prevAddresses.map(
+                                                                        (a) =>
+                                                                            a
+                                                                                ._id
+                                                                                .value ===
+                                                                            address
+                                                                                ._id
+                                                                                .value
+                                                                                ? {
+                                                                                      ...a,
+                                                                                      props: {
+                                                                                          ...a.props,
+                                                                                          state: e
+                                                                                              .target
+                                                                                              .value,
+                                                                                      },
+                                                                                  }
+                                                                                : a
+                                                                    )
+                                                            )
+                                                        }
+                                                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label
+                                                        htmlFor="edit-zipCode"
+                                                        className="block text-sm font-medium text-primaryDark"
+                                                    >
+                                                        CEP
+                                                    </label>
+                                                    <input
+                                                        id="edit-zipCode"
+                                                        type="text"
+                                                        value={
+                                                            address.props
+                                                                .zipCode
+                                                        }
+                                                        onChange={(e) =>
+                                                            setAddresses(
+                                                                (
+                                                                    prevAddresses
+                                                                ) =>
+                                                                    prevAddresses.map(
+                                                                        (a) =>
+                                                                            a
+                                                                                ._id
+                                                                                .value ===
+                                                                            address
+                                                                                ._id
+                                                                                .value
+                                                                                ? {
+                                                                                      ...a,
+                                                                                      props: {
+                                                                                          ...a.props,
+                                                                                          zipCode:
+                                                                                              e
+                                                                                                  .target
+                                                                                                  .value,
+                                                                                      },
+                                                                                  }
+                                                                                : a
+                                                                    )
+                                                            )
+                                                        }
+                                                        className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                                    />
+                                                </div>
+
+                                                <div className="mt-8 flex justify-start mb-6">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() =>
+                                                            handleSaveAddress(
+                                                                address
+                                                            )
+                                                        }
+                                                        className="bg-secondary text-primaryLight 
+                        font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-300 hover:scale-105"
+                                                    >
+                                                        Salvar Endereço
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    ) : (
+                                        <>
+                                            <div className=" grid grid-cols-2 text-primaryDark ">
+                                                <p>
+                                                    <strong>Rua:</strong>{' '}
+                                                    {address.props.street},{' '}
+                                                    {address.props.number}
+                                                </p>
+                                                <p className="mr-4">
+                                                    <strong>
+                                                        Complemento:
+                                                    </strong>{' '}
+                                                    {address.props.complement}
+                                                    {'   '}
+                                                </p>
+                                            </div>
+
+                                            <div className=" grid grid-cols-4 text-primaryDark ">
+                                                <p>
+                                                    <strong>Cidade:</strong>{' '}
+                                                    {address.props.city}
+                                                </p>
+                                                <p>
+                                                    <strong>Estado:</strong>{' '}
+                                                    {address.props.state}
+                                                </p>
+                                                <p>
+                                                    <strong>País:</strong>{' '}
+                                                    {address.props.country}
+                                                </p>
+                                                <p>
+                                                    <strong>CEP:</strong>{' '}
+                                                    {address.props.zipCode}
+                                                </p>
+                                            </div>
+
+                                            <div className="flex justify-between items-center">
+                                                <button
+                                                    onClick={() =>
+                                                        handleEditAddress(
+                                                            address._id.value
+                                                        )
+                                                    }
+                                                    className="mt-2  bg-secondary text-primaryLight
+                            
+                            font-bold py-1 px-2 rounded shadow-lg transition duration-300 hover:scale-105"
+                                                >
+                                                    Editar
+                                                </button>
+                                                <button
+                                                    onClick={() =>
+                                                        handleDeleteAddress(
+                                                            address._id.value
+                                                        )
+                                                    }
+                                                    className="text-primaryDark cursor-pointer transition duration-300 hover:text-primary hover:scale-105"
+                                                >
+                                                    <BsTrash size={24} />
+                                                </button>
+                                            </div>
+                                        </>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
                     ) : (
-                        <button
-                            onClick={() => setIsCreatingNewAddress(true)}
-                            className="mt-6 bg-secondary text-primaryLight transition duration-300 hover:scale-105 font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-200"
-                        >
-                            Adicionar Novo Endereço
-                        </button>
+                        <p className="mt-6">Nenhum endereço encontrado.</p>
                     )}
                 </div>
 
-                {addresses.length > 0 ? (
-                    <ul className="mt-4 space-y-4">
-                        {addresses.map((address, index) => (
-                            <li
-                                key={index}
-                                className="border border-secondary p-4 rounded-md"
-                            >
-                                {editingAddressId === address._id.value ? (
-                                    <form
-                                        onSubmit={() =>
-                                            handleSaveAddress(address)
-                                        }
-                                        className="space-y-4"
-                                    >
-                                        <div className="grid grid-cols-2 text-primaryDark  ">
-                                            <label
-                                                htmlFor="edit-street"
-                                                className="block text-sm font-medium text-primaryDark"
-                                            >
-                                                Rua
-                                            </label>
-                                            <input
-                                                id="edit-street"
-                                                type="text"
-                                                value={address.props.street}
-                                                onChange={(e) =>
-                                                    setAddresses(
-                                                        (prevAddresses) =>
-                                                            prevAddresses.map(
-                                                                (a) =>
-                                                                    a._id
-                                                                        .value ===
-                                                                    address._id
-                                                                        .value
-                                                                        ? {
-                                                                              ...a,
-                                                                              props: {
-                                                                                  ...a.props,
-                                                                                  street: e
-                                                                                      .target
-                                                                                      .value,
-                                                                              },
-                                                                          }
-                                                                        : a
-                                                            )
-                                                    )
-                                                }
-                                                className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                            />
-                                        </div>
+                <div className="mt-10">
+                    <h2 className="text-xl font-bold text-primaryDark dark:text-primary">
+                        Pedidos:
+                    </h2>
 
-                                        <div className="flex justify-between gap-2 ">
-                                            <div>
-                                                <label
-                                                    htmlFor="edit-number"
-                                                    className="block text-sm font-medium text-primaryDark"
-                                                >
-                                                    Número
-                                                </label>
-                                                <input
-                                                    id="edit-number"
-                                                    type="number"
-                                                    value={address.props.number}
-                                                    onChange={(e) =>
-                                                        setAddresses(
-                                                            (prevAddresses) =>
-                                                                prevAddresses.map(
-                                                                    (a) =>
-                                                                        a._id
-                                                                            .value ===
-                                                                        address
-                                                                            ._id
-                                                                            .value
-                                                                            ? {
-                                                                                  ...a,
-                                                                                  props: {
-                                                                                      ...a.props,
-                                                                                      number: parseInt(
-                                                                                          e
-                                                                                              .target
-                                                                                              .value
-                                                                                      ),
-                                                                                  },
-                                                                              }
-                                                                            : a
-                                                                )
-                                                        )
-                                                    }
-                                                    className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label
-                                                    htmlFor="edit-complement"
-                                                    className="block text-sm font-medium text-primaryDark"
-                                                >
-                                                    Complemento
-                                                </label>
-                                                <input
-                                                    id="edit-complement"
-                                                    type="text"
-                                                    value={
-                                                        address.props
-                                                            .complement || ''
-                                                    }
-                                                    onChange={(e) =>
-                                                        setAddresses(
-                                                            (prevAddresses) =>
-                                                                prevAddresses.map(
-                                                                    (a) =>
-                                                                        a._id
-                                                                            .value ===
-                                                                        address
-                                                                            ._id
-                                                                            .value
-                                                                            ? {
-                                                                                  ...a,
-                                                                                  props: {
-                                                                                      ...a.props,
-                                                                                      complement:
-                                                                                          e
-                                                                                              .target
-                                                                                              .value,
-                                                                                  },
-                                                                              }
-                                                                            : a
-                                                                )
-                                                        )
-                                                    }
-                                                    className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label
-                                                    htmlFor="edit-city"
-                                                    className="block text-sm font-medium text-primaryDark"
-                                                >
-                                                    Cidade
-                                                </label>
-                                                <input
-                                                    id="edit-city"
-                                                    type="text"
-                                                    value={address.props.city}
-                                                    onChange={(e) =>
-                                                        setAddresses(
-                                                            (prevAddresses) =>
-                                                                prevAddresses.map(
-                                                                    (a) =>
-                                                                        a._id
-                                                                            .value ===
-                                                                        address
-                                                                            ._id
-                                                                            .value
-                                                                            ? {
-                                                                                  ...a,
-                                                                                  props: {
-                                                                                      ...a.props,
-                                                                                      city: e
-                                                                                          .target
-                                                                                          .value,
-                                                                                  },
-                                                                              }
-                                                                            : a
-                                                                )
-                                                        )
-                                                    }
-                                                    className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="flex justify-between gap-2 ">
-                                            <div>
-                                                <label
-                                                    htmlFor="edit-state"
-                                                    className="block text-sm font-medium text-primaryDark"
-                                                >
-                                                    Estado
-                                                </label>
-                                                <input
-                                                    id="edit-state"
-                                                    type="text"
-                                                    value={address.props.state}
-                                                    onChange={(e) =>
-                                                        setAddresses(
-                                                            (prevAddresses) =>
-                                                                prevAddresses.map(
-                                                                    (a) =>
-                                                                        a._id
-                                                                            .value ===
-                                                                        address
-                                                                            ._id
-                                                                            .value
-                                                                            ? {
-                                                                                  ...a,
-                                                                                  props: {
-                                                                                      ...a.props,
-                                                                                      state: e
-                                                                                          .target
-                                                                                          .value,
-                                                                                  },
-                                                                              }
-                                                                            : a
-                                                                )
-                                                        )
-                                                    }
-                                                    className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label
-                                                    htmlFor="edit-zipCode"
-                                                    className="block text-sm font-medium text-primaryDark"
-                                                >
-                                                    CEP
-                                                </label>
-                                                <input
-                                                    id="edit-zipCode"
-                                                    type="text"
-                                                    value={
-                                                        address.props.zipCode
-                                                    }
-                                                    onChange={(e) =>
-                                                        setAddresses(
-                                                            (prevAddresses) =>
-                                                                prevAddresses.map(
-                                                                    (a) =>
-                                                                        a._id
-                                                                            .value ===
-                                                                        address
-                                                                            ._id
-                                                                            .value
-                                                                            ? {
-                                                                                  ...a,
-                                                                                  props: {
-                                                                                      ...a.props,
-                                                                                      zipCode:
-                                                                                          e
-                                                                                              .target
-                                                                                              .value,
-                                                                                  },
-                                                                              }
-                                                                            : a
-                                                                )
-                                                        )
-                                                    }
-                                                    className="mt-1 text-primaryDark  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
-                                                />
-                                            </div>
-
-                                            <div className="mt-8 flex justify-start mb-6">
-                                                <button
-                                                    type="button"
-                                                    onClick={() =>
-                                                        handleSaveAddress(
-                                                            address
-                                                        )
-                                                    }
-                                                    className="bg-secondary text-primaryLight 
-                       font-bold py-2 px-4 rounded shadow-lg hover:shadow-xl transition duration-300 hover:scale-105"
-                                                >
-                                                    Salvar Endereço
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                ) : (
-                                    <>
-                                        <div className=" grid grid-cols-2 text-primaryDark ">
-                                            <p>
-                                                <strong>Rua:</strong>{' '}
-                                                {address.props.street},{' '}
-                                                {address.props.number}
-                                            </p>
-                                            <p className="mr-4">
-                                                <strong>Complemento:</strong>{' '}
-                                                {address.props.complement}
-                                                {'   '}
-                                            </p>
-                                        </div>
-
-                                        <div className=" grid grid-cols-4 text-primaryDark ">
-                                            <p>
-                                                <strong>Cidade:</strong>{' '}
-                                                {address.props.city}
-                                            </p>
-                                            <p>
-                                                <strong>Estado:</strong>{' '}
-                                                {address.props.state}
-                                            </p>
-                                            <p>
-                                                <strong>País:</strong>{' '}
-                                                {address.props.country}
-                                            </p>
-                                            <p>
-                                                <strong>CEP:</strong>{' '}
-                                                {address.props.zipCode}
-                                            </p>
-                                        </div>
-
-                                        <div className="flex justify-between items-center">
-                                            <button
-                                                onClick={() =>
-                                                    handleEditAddress(
-                                                        address._id.value
-                                                    )
-                                                }
-                                                className="mt-2  bg-secondary text-primaryLight
-                         
-                         font-bold py-1 px-2 rounded shadow-lg transition duration-300 hover:scale-105"
-                                            >
-                                                Editar
-                                            </button>
-                                            <button
-                                                onClick={() =>
-                                                    handleDeleteAddress(
-                                                        address._id.value
-                                                    )
-                                                }
-                                                className="text-primaryDark cursor-pointer transition duration-300 hover:text-primary hover:scale-105"
-                                            >
-                                                <BsTrash size={24} />
-                                            </button>
-                                        </div>
-                                    </>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="mt-6">Nenhum endereço encontrado.</p>
-                )}
+                    {orders.length > 0 ? (
+                        <ul className="mt-4 space-y-4">
+                            {orders.map((order, index) => (
+                                <li
+                                    key={index}
+                                    className="border border-secondary p-4 rounded-md"
+                                >
+                                    <p>
+                                        <strong>Pedido ID:</strong>{' '}
+                                        {order._id.value}
+                                    </p>
+                                    <p>
+                                        <strong>Status:</strong>{' '}
+                                        {order.props.status}
+                                    </p>
+                                    <p>
+                                        <strong>Data do Pagamento:</strong>{' '}
+                                        {format(
+                                            parseISO(order.props.paymentDate),
+                                            'dd/MM/yyyy HH:mm'
+                                        )}
+                                    </p>
+                                    <p>
+                                        <strong>Método de Pagamento:</strong>{' '}
+                                        {order.props.paymentMethod}
+                                    </p>
+                                    <p>
+                                        <strong>Status do Pagamento:</strong>{' '}
+                                        {order.props.paymentStatus}
+                                    </p>
+                                    <div className="mt-4">
+                                        <h3 className="text-lg font-semibold">
+                                            Itens:
+                                        </h3>
+                                        <ul className="ml-4 list-disc">
+                                            {order.props.items.map(
+                                                (item, i) => (
+                                                    <li
+                                                        key={i}
+                                                        className="flex items-center"
+                                                    >
+                                                        <Image
+                                                            src={
+                                                                item.props
+                                                                    .imageUrl
+                                                            }
+                                                            alt={
+                                                                item.props
+                                                                    .productName
+                                                            }
+                                                            width={50}
+                                                            height={50}
+                                                            className="mr-4"
+                                                        />
+                                                        <span>
+                                                            {
+                                                                item.props
+                                                                    .productName
+                                                            }{' '}
+                                                            -{' '}
+                                                            {
+                                                                item.props
+                                                                    .quantity
+                                                            }
+                                                            x - R$
+                                                            {item.props.price}
+                                                        </span>
+                                                    </li>
+                                                )
+                                            )}
+                                        </ul>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="mt-6">Nenhum pedido encontrado.</p>
+                    )}
+                </div>
             </div>
-
-            <div className="mt-10 flex justify-between">
+            <div className="mt-10 flex justify-between pb-4">
                 <Link
                     href="/"
                     className="text-primaryLight hover:underline bg-secondary p-2 rounded transition duration-300 hover:scale-105"
