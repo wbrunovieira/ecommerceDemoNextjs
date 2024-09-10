@@ -5,6 +5,15 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
 import {
+    differenceInDays,
+    isSameWeek,
+    isSameMonth,
+    subDays,
+    subWeeks,
+    subMonths,
+} from 'date-fns';
+
+import {
     Sheet,
     SheetContent,
     SheetDescription,
@@ -119,33 +128,32 @@ interface Product {
 
 interface Order {
     _id: {
-      value: string;
+        value: string;
     };
     props: {
-      userId: string;
-      items: Item[];
-      status: string;
-      paymentId: string;
-      paymentStatus: string;
-      paymentMethod: string;
-      paymentDate: string;
+        userId: string;
+        items: Item[];
+        status: string;
+        paymentId: string;
+        paymentStatus: string;
+        paymentMethod: string;
+        paymentDate: string;
     };
-  }
+}
 
-  interface Item {
+interface Item {
     _id: {
-      value: string;
+        value: string;
     };
     props: {
-      orderId: string;
-      productId: string;
-      productName: string;
-      imageUrl: string;
-      quantity: number;
-      price: number;
+        orderId: string;
+        productId: string;
+        productName: string;
+        imageUrl: string;
+        quantity: number;
+        price: number;
     };
-  }
-  
+}
 
 interface Customer {
     id: string;
@@ -162,6 +170,14 @@ const AdminPage = () => {
     const router = useRouter();
 
     const { data: session, status } = useSession();
+
+    const [dailySales, setDailySales] = useState(0);
+    const [yesterdaySales, setYesterdaySales] = useState(0);
+    const [weeklySales, setWeeklySales] = useState(0);
+    const [lastWeekSales, setLastWeekSales] = useState(0);
+    const [monthlySales, setMonthlySales] = useState(0);
+    const [lastMonthSales, setLastMonthSales] = useState(0);
+
     const [colors, setColors] = useState<Color[]>([]);
     const [sizes, setSizes] = useState<Size[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
@@ -328,19 +344,6 @@ const AdminPage = () => {
             }
         };
 
-        const fetchOrders = async () => {
-            try {
-                const response = await axios.get(`${BASE_URL}/orders/all`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                setOrders(response.data.orders);
-            } catch (error) {
-                console.error('Erro ao buscar os pedidos: ', error);
-            }
-        };
-
         const fetchCustomers = async () => {
             try {
                 const response = await axios.get(`${BASE_URL}/customers/all`, {
@@ -358,29 +361,88 @@ const AdminPage = () => {
         fetchColors();
         fetchSizes();
         fetchCategories();
-        fetchOrders();
+
         fetchCustomers();
-        fetchOrders();
     }, []);
 
     useEffect(() => {
         const fetchOrders = async () => {
-          try {
-            
-            const response = await axios.get(`${BASE_URL}/orders/all`, {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            });
-            setOrders(response.data);
-          } catch (err) {
-            console.error("Erro ao buscar pedidos:", err);
-            
-          } 
+            try {
+                const response = await axios.get(`${BASE_URL}/orders/all`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const fetchedOrders = response.data;
+                setOrders(fetchedOrders);
+
+                calculateSales(fetchedOrders);
+            } catch (err) {
+                console.error('Erro ao buscar pedidos:', err);
+            }
         };
-    
+
         fetchOrders();
-      }, []);
+    }, []);
+
+    const calculateSales = (orders: Order[]) => {
+        const today = new Date();
+        let dayTotal = 0;
+        let yesterdayTotal = 0;
+        let weekTotal = 0;
+        let lastWeekTotal = 0;
+        let monthTotal = 0;
+        let lastMonthTotal = 0;
+
+        const yesterday = subDays(today, 1);
+        const lastWeek = subWeeks(today, 1);
+        const lastMonth = subMonths(today, 1);
+
+        orders.forEach((order) => {
+            const paymentDate = new Date(order.props.paymentDate);
+            const orderTotal = order.props.items.reduce(
+                (total, item) => total + item.props.price * item.props.quantity,
+                0
+            );
+
+            if (differenceInDays(today, paymentDate) === 0) {
+                dayTotal += orderTotal;
+            }
+
+            if (differenceInDays(yesterday, paymentDate) === 0) {
+                yesterdayTotal += orderTotal;
+            }
+
+            if (isSameWeek(today, paymentDate)) {
+                weekTotal += orderTotal;
+            }
+
+            if (isSameWeek(lastWeek, paymentDate)) {
+                lastWeekTotal += orderTotal;
+            }
+
+            if (isSameMonth(today, paymentDate)) {
+                monthTotal += orderTotal;
+            }
+
+            if (isSameMonth(lastMonth, paymentDate)) {
+                lastMonthTotal += orderTotal;
+            }
+        });
+
+        setDailySales(dayTotal);
+        setYesterdaySales(yesterdayTotal);
+        setWeeklySales(weekTotal);
+        setLastWeekSales(lastWeekTotal);
+        setMonthlySales(monthTotal);
+        setLastMonthSales(lastMonthTotal);
+    };
+
+    const calculatePercentageChange = (current: number, previous: number) => {
+        if (previous === 0) return 'Nenhuma venda nesse periodo';
+        const change = ((current - previous) / previous) * 100;
+        return change.toFixed(2) + '%';
+    };
 
     const handleEditProductClick = async (product) => {
         try {
@@ -2186,10 +2248,25 @@ const AdminPage = () => {
                                         <CardTitle>Vendas hoje</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p>R$ 1.100,00</p>
+                                        {dailySales.toLocaleString('pt-BR', {
+                                            style: 'currency',
+                                            currency: 'BRL',
+                                        })}
                                     </CardContent>
                                     <CardFooter>
-                                        <p>+ 10% que ontem</p>
+                                        {calculatePercentageChange(
+                                            dailySales,
+                                            yesterdaySales
+                                        )}{' '}
+                                        {dailySales > 0 && (
+                                            <p>
+                                                {calculatePercentageChange(
+                                                    dailySales,
+                                                    yesterdaySales
+                                                )}{' '}
+                                                que ontem
+                                            </p>
+                                        )}
                                     </CardFooter>
                                 </CardS>
                                 <CardS>
@@ -2199,10 +2276,27 @@ const AdminPage = () => {
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p>R$ 5.600,00</p>
+                                        <p>
+                                            {' '}
+                                            {weeklySales.toLocaleString(
+                                                'pt-BR',
+                                                {
+                                                    style: 'currency',
+                                                    currency: 'BRL',
+                                                }
+                                            )}
+                                        </p>
                                     </CardContent>
                                     <CardFooter>
-                                        <p>+ 20% que a semana anterior</p>
+                                        {weeklySales > 0 && (
+                                            <p>
+                                                {calculatePercentageChange(
+                                                    weeklySales,
+                                                    lastWeekSales
+                                                )}{' '}
+                                                que semana passada
+                                            </p>
+                                        )}
                                     </CardFooter>
                                 </CardS>
 
@@ -2211,10 +2305,26 @@ const AdminPage = () => {
                                         <CardTitle>Vendas esse mes </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <p>R$ 42.100,00</p>
+                                        <p>
+                                            {monthlySales.toLocaleString(
+                                                'pt-BR',
+                                                {
+                                                    style: 'currency',
+                                                    currency: 'BRL',
+                                                }
+                                            )}
+                                        </p>
                                     </CardContent>
                                     <CardFooter>
-                                        <p>+ 32% que o mes anterior</p>
+                                        {monthlySales > 0 && (
+                                            <p>
+                                                {calculatePercentageChange(
+                                                    monthlySales,
+                                                    lastMonthSales
+                                                )}{' '}
+                                                que mês passado
+                                            </p>
+                                        )}
                                     </CardFooter>
                                 </CardS>
                             </div>
@@ -2398,46 +2508,56 @@ const AdminPage = () => {
                                     </thead>
 
                                     <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                    {orders.length > 0 ? (
-              orders.map((order) => (
-                <tr key={order._id.value}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                    {order._id.value}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                    {order.props.userId}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                    {new Date(order.props.paymentDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                    {order.props.items
-                      .reduce(
-                        (total, item) =>
-                          total +
-                          item.props.price * item.props.quantity,
-                        0
-                      )
-                      .toLocaleString("pt-BR", {
-                        style: "currency",
-                        currency: "BRL",
-                      })}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                    {order.props.status}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200"
-                >
-                  Nenhum pedido encontrado.
-                </td>
-              </tr>
-            )}
+                                        {orders.length > 0 ? (
+                                            orders.map((order) => (
+                                                <tr key={order._id.value}>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                        {order._id.value}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                        {order.props.userId}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                        {new Date(
+                                                            order.props.paymentDate
+                                                        ).toLocaleDateString()}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                        {order.props.items
+                                                            .reduce(
+                                                                (total, item) =>
+                                                                    total +
+                                                                    item.props
+                                                                        .price *
+                                                                        item
+                                                                            .props
+                                                                            .quantity,
+                                                                0
+                                                            )
+                                                            .toLocaleString(
+                                                                'pt-BR',
+                                                                {
+                                                                    style: 'currency',
+                                                                    currency:
+                                                                        'BRL',
+                                                                }
+                                                            )}
+                                                    </td>
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                        {order.props.status}
+                                                    </td>
+                                                </tr>
+                                            ))
+                                        ) : (
+                                            <tr>
+                                                <td
+                                                    colSpan={5}
+                                                    className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200"
+                                                >
+                                                    Nenhum pedido encontrado.
+                                                </td>
+                                            </tr>
+                                        )}
 
                                         {/* {orders.map((order) => (
                                             <tr key={order._id.value}>
