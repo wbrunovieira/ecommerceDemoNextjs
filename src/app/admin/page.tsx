@@ -187,6 +187,7 @@ const AdminPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
 
     const [orders, setOrders] = useState<Order[]>([]);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [customers, setCustomers] = useState<Customer[]>([]);
 
     const [editingColorId, setEditingColorId] = useState<string | null>(null);
@@ -436,6 +437,22 @@ const AdminPage = () => {
         setLastWeekSales(lastWeekTotal);
         setMonthlySales(monthTotal);
         setLastMonthSales(lastMonthTotal);
+    };
+
+    const fetchOrderById = async (orderId: string) => {
+        try {
+            const response = await axios.get(
+                `${BASE_URL}/orders/order/${orderId}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            setSelectedOrder(response.data);
+        } catch (err) {
+            console.error('Erro ao buscar detalhes do pedido:', err);
+        }
     };
 
     const calculatePercentageChange = (current: number, previous: number) => {
@@ -2510,7 +2527,15 @@ const AdminPage = () => {
                                     <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
                                         {orders.length > 0 ? (
                                             orders.map((order) => (
-                                                <tr key={order._id.value}>
+                                                <tr
+                                                    key={order._id.value}
+                                                    className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
+                                                    onClick={() =>
+                                                        fetchOrderById(
+                                                            order._id.value
+                                                        )
+                                                    }
+                                                >
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                                         {order._id.value}
                                                     </td>
@@ -2558,7 +2583,86 @@ const AdminPage = () => {
                                                 </td>
                                             </tr>
                                         )}
+                                        {selectedOrder && (
+                                            <div className="mt-8">
+                                                <h2 className="text-xl font-semibold">
+                                                    Detalhes do Pedido
+                                                </h2>
+                                                <p>
+                                                    ID:{' '}
+                                                    {selectedOrder._id.value}
+                                                </p>
+                                                <p>
+                                                    Cliente:{' '}
+                                                    {selectedOrder.props.userId}
+                                                </p>
+                                                <p>
+                                                    Data:{' '}
+                                                    {new Date(
+                                                        selectedOrder.props.paymentDate
+                                                    ).toLocaleDateString()}
+                                                </p>
+                                                <p>
+                                                    Status:{' '}
+                                                    {selectedOrder.props.status}
+                                                </p>
+                                                <p>
+                                                    Total:{' '}
+                                                    {selectedOrder.props.items
+                                                        .reduce(
+                                                            (total, item) =>
+                                                                total +
+                                                                item.props
+                                                                    .price *
+                                                                    item.props
+                                                                        .quantity,
+                                                            0
+                                                        )
+                                                        .toLocaleString(
+                                                            'pt-BR',
+                                                            {
+                                                                style: 'currency',
+                                                                currency: 'BRL',
+                                                            }
+                                                        )}
+                                                </p>
 
+                                                <h3 className="text-lg font-semibold mt-4">
+                                                    Itens
+                                                </h3>
+                                                <ul>
+                                                    {selectedOrder.props.items.map(
+                                                        (item) => (
+                                                            <li
+                                                                key={
+                                                                    item._id
+                                                                        .value
+                                                                }
+                                                            >
+                                                                {
+                                                                    item.props
+                                                                        .productName
+                                                                }{' '}
+                                                                -{' '}
+                                                                {
+                                                                    item.props
+                                                                        .quantity
+                                                                }
+                                                                x{' '}
+                                                                {item.props.price.toLocaleString(
+                                                                    'pt-BR',
+                                                                    {
+                                                                        style: 'currency',
+                                                                        currency:
+                                                                            'BRL',
+                                                                    }
+                                                                )}
+                                                            </li>
+                                                        )
+                                                    )}
+                                                </ul>
+                                            </div>
+                                        )}
                                         {/* {orders.map((order) => (
                                             <tr key={order._id.value}>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
