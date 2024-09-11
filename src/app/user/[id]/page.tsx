@@ -11,11 +11,11 @@ import Button from '@/components/Button';
 import { useEffect, useState } from 'react';
 import { format, parseISO, parse } from 'date-fns';
 
-// import { useDropzone } from 'react-dropzone';
 import { BiArrowBack } from 'react-icons/bi';
 import { BsCart4 } from 'react-icons/bs';
 
 import DefaultIcon from '/public/images/default-icon.svg';
+import { FileUpload } from '@/components/ui/file-upload';
 
 export interface User {
     name: string;
@@ -330,6 +330,31 @@ const UserPage: NextPage = () => {
         }
     };
 
+    const handleImageUpload = (newFiles) => {
+        if (newFiles.length > 0) {
+            const file = newFiles[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setUserDetails((prevDetails) => ({
+                        ...prevDetails,
+                        profileImageUrl: data.imageUrl,
+                    }));
+
+                    handleSaveUser();
+                })
+                .catch((error) => {
+                    console.error('Erro ao fazer upload da imagem:', error);
+                });
+        }
+    };
+
     const handleCreateAddress = async () => {
         try {
             const url = `${BASE_URL}/adress/${session?.user?.id}/addresses`;
@@ -416,37 +441,6 @@ const UserPage: NextPage = () => {
         return null;
     }
 
-    const handleDrop = (acceptedFiles: File[]) => {
-        const file = acceptedFiles[0];
-        const formData = new FormData();
-        formData.append('file', file);
-
-        fetch(`${BASE_URL}/accounts/upload/${session?.user?.id}`, {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${session?.accessToken}`,
-            },
-            body: formData,
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setUserDetails((prevDetails) => ({
-                    ...prevDetails,
-                    profileImageUrl: data.profileImageUrl,
-                }));
-            })
-            .catch((error) => {
-                console.error('Error uploading file:', error);
-            });
-    };
-
-    // const { getRootProps, getInputProps } = useDropzone({
-    //     onDrop: handleDrop,
-    //     accept: {
-    //         'image/*': [],
-    //     },
-    // });
-
     return (
         <div className=" max-w-4xl mx-auto mt-10 px-4 bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
             <h1 className="text-2xl pt-4 text-primaryDark dark:text-primary dark:bg-dark-secondary-gradient font-bold text-center mb-4 z-10">
@@ -461,11 +455,7 @@ const UserPage: NextPage = () => {
                 >
                     <BiArrowBack className="mr-1.5 " /> Home
                 </Link>
-                <div
-                    // {...getRootProps()}
-                    className="relative flex flex-col items-center justify-center cursor-pointer z-20  "
-                >
-                    {/* <input {...getInputProps()} /> */}
+                <div className="relative flex flex-col items-center justify-center cursor-pointer z-20  ">
                     {userDetails.profileImageUrl ? (
                         <Image
                             src={userDetails.profileImageUrl}
@@ -487,6 +477,11 @@ const UserPage: NextPage = () => {
                             />
                         </div>
                     )}
+                    <div className="absolute bottom-2 right-0 text-primaryDark dark:text-primaryLight transform hover:scale-110 transition duration-300 ease-in-out z-50">
+                        <FileUpload onChange={handleImageUpload} />
+
+                        <BiEdit size={24} />
+                    </div>
                 </div>
 
                 <Link
