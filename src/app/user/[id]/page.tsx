@@ -455,33 +455,27 @@ const UserPage: NextPage = () => {
                 >
                     <BiArrowBack className="mr-1.5 " /> Home
                 </Link>
-                <div className="relative flex flex-col items-center justify-center cursor-pointer z-20  ">
+
+                <div className="flex flex-col items-center justify-center z-20  ">
+                    <FileUpload onChange={handleImageUpload} />
+
                     {userDetails.profileImageUrl ? (
                         <Image
                             src={userDetails.profileImageUrl}
                             alt="Imagem do usuário"
                             width={100}
                             height={100}
-                            className="rounded-full mb-4 transform hover:scale-105 transition duration-300 ease-in-out"
+                            className="rounded-full mb-4 "
                         />
                     ) : (
-                        <div className="relative">
+                        <div className="flex items-center justify-start p-0 m-0">
                             <DefaultIcon
                                 width={100}
+                                className="rounded-full mb-4 z-20"
                                 height={100}
-                                className="rounded-full mb-4 z-20 transform hover:scale-110 transition duration-300 ease-in-out"
-                            />
-                            <BiEdit
-                                size={24}
-                                className="absolute bottom-2 right-0 top-2 text-primaryDark dark:text-primaryLight transform hover:scale-110 transition duration-300 ease-in-out z-50"
                             />
                         </div>
                     )}
-                    <div className="absolute bottom-2 right-0 text-primaryDark dark:text-primaryLight transform hover:scale-110 transition duration-300 ease-in-out z-50">
-                        <FileUpload onChange={handleImageUpload} />
-
-                        <BiEdit size={24} />
-                    </div>
                 </div>
 
                 <Link

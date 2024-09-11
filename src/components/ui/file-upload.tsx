@@ -42,9 +42,10 @@ export const FileUpload = ({
         fileInputRef.current?.click();
     };
 
-    const { getRootProps, isDragActive } = useDropzone({
+    const { getRootProps, isDragActive,getInputProps } = useDropzone({
         multiple: false,
         noClick: true,
+        
         onDrop: handleFileChange,
         onDropRejected: (error) => {
             console.log(error);
@@ -56,7 +57,7 @@ export const FileUpload = ({
             <motion.div
                 onClick={handleClick}
                 whileHover="animate"
-                className="p-10 group/file block rounded-lg cursor-pointer w-full relative overflow-hidden"
+                className="p-2 group/file block rounded-lg cursor-pointer w-full max-w-[300px] relative overflow-hidden"
             >
                 <input
                     ref={fileInputRef}
@@ -71,13 +72,7 @@ export const FileUpload = ({
                     <GridPattern />
                 </div>
                 <div className="flex flex-col items-center justify-center">
-                    <p className="relative z-20 font-sans font-bold text-neutral-700 dark:text-neutral-300 text-base">
-                        Upload file
-                    </p>
-                    <p className="relative z-20 font-sans font-normal text-neutral-400 dark:text-neutral-400 text-base mt-2">
-                        Arraste a nova foto aqui
-                    </p>
-                    <div className="relative w-full mt-10 max-w-xl mx-auto">
+                    <div className="relative w-full  max-w-xl mx-auto">
                         {files.length > 0 &&
                             files.map((file, idx) => (
                                 <motion.div
@@ -88,11 +83,11 @@ export const FileUpload = ({
                                             : 'file-upload-' + idx
                                     }
                                     className={cn(
-                                        'relative overflow-hidden z-40 bg-white dark:bg-neutral-900 flex flex-col items-start justify-start md:h-24 p-4 mt-4 w-full mx-auto rounded-md',
+                                        'relative overflow-hidden z-40 bg-white dark:bg-neutral-900 flex flex-col items-start justify-start md:h-12 p-4 mt-4 w-full mx-auto rounded-md',
                                         'shadow-sm'
                                     )}
                                 >
-                                    <div className="flex justify-between w-full items-center gap-4">
+                                    <div className="flex justify-between w-full items-center gap-2">
                                         <motion.p
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
@@ -148,7 +143,7 @@ export const FileUpload = ({
                                     damping: 20,
                                 }}
                                 className={cn(
-                                    'relative group-hover/file:shadow-2xl z-40 bg-white dark:bg-neutral-900 flex items-center justify-center h-32 mt-4 w-full max-w-[8rem] mx-auto rounded-md',
+                                    'relative group-hover/file:shadow-2xl z-40 bg-white dark:bg-neutral-900 flex items-center justify-center h-6 mt-2 w-full max-w-[8rem] mx-auto rounded-md',
                                     'shadow-[0px_10px_50px_rgba(0,0,0,0.1)]'
                                 )}
                             >
@@ -158,7 +153,7 @@ export const FileUpload = ({
                                         animate={{ opacity: 1 }}
                                         className="text-neutral-600 flex flex-col items-center"
                                     >
-                                        Drop it
+                                        Pode soltar
                                         <IconUpload className="h-4 w-4 text-neutral-600 dark:text-neutral-400" />
                                     </motion.p>
                                 ) : (
@@ -170,7 +165,7 @@ export const FileUpload = ({
                         {!files.length && (
                             <motion.div
                                 variants={secondaryVariant}
-                                className="absolute opacity-0 border border-dashed border-sky-400 inset-0 z-30 bg-transparent flex items-center justify-center h-32 mt-4 w-full max-w-[8rem] mx-auto rounded-md"
+                                className="absolute opacity-0 border border-dashed border-primaryDark inset-0 z-30 bg-transparent flex items-center justify-center h-6 mt-4 w-full max-w-[8rem] mx-auto rounded-md"
                             ></motion.div>
                         )}
                     </div>
