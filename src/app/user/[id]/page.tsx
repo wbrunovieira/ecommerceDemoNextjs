@@ -280,6 +280,54 @@ const UserPage: NextPage = () => {
         setUserDetails(originalUserDetails);
         setIsEditingUser(false);
     };
+    const handleSaveUserPhoto = async (newProfileImageUrl?: string) => {
+        console.log(
+            'entrou na handleSaveUserPhoto newProfileImageUrl',
+            newProfileImageUrl
+        );
+        const removeEmptyFields = (obj: any) => {
+            return Object.fromEntries(
+                Object.entries(obj).filter(([_, v]) => v != null && v !== '')
+            );
+        };
+
+        const cleanedUserDetails = removeEmptyFields({
+            ...userDetails,
+            profileImageUrl: newProfileImageUrl,
+        });
+        console.log(
+            'entrou na handleSaveUserPhoto cleanedUserDetails',
+            cleanedUserDetails
+        );
+     
+
+        try {
+            console.log('entrou na handleSaveUserPhoto try');
+            const response = await fetch(
+                `${BASE_URL}/accounts/edit/${session?.user?.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session?.accessToken}`,
+                    },
+                    body: JSON.stringify(cleanedUserDetails),
+                }
+            );
+            console.log('entrou na handleSaveUserPhoto response', response);
+
+            if (response.ok) {
+                setIsEditingUser(false);
+            } else {
+                console.error(
+                    'Falha ao atualizar o usuário:',
+                    response.statusText
+                );
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar o usuário:', error);
+        }
+    };
 
     const handleSaveUser = async () => {
         const removeEmptyFields = (obj: any) => {
@@ -330,30 +378,63 @@ const UserPage: NextPage = () => {
         }
     };
 
-    const handleImageUpload = (newFiles) => {
+    const handleImageUpload = async (newFiles: File[]) => {
         if (newFiles.length > 0) {
             const file = newFiles[0];
             const formData = new FormData();
             formData.append('file', file);
 
-            fetch('/api/upload', {
-                method: 'POST',
-                body: formData,
-            })
-                .then((response) => response.json())
-                .then((data) => {
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
                     setUserDetails((prevDetails) => ({
                         ...prevDetails,
                         profileImageUrl: data.imageUrl,
                     }));
 
-                    handleSaveUser();
-                })
-                .catch((error) => {
-                    console.error('Erro ao fazer upload da imagem:', error);
-                });
+                    await handleSaveUserPhoto(data.imageUrl);
+                } else {
+                    console.error(
+                        'Erro ao fazer upload da imagem:',
+                        response.statusText
+                    );
+                }
+            } catch (error) {
+                console.error('Erro ao fazer upload da imagem:', error);
+            }
         }
     };
+
+    // const handleImageUpload = async (newFiles: File[]) => {
+    //     if (newFiles.length > 0) {
+    //         const file = newFiles[0];
+    //         const formData = new FormData();
+    //         formData.append('file', file);
+
+    //         fetch('/api/upload', {
+    //             method: 'POST',
+    //             body: formData,
+    //         })
+    //             .then((response) => response.json())
+    //             .then((data) => {
+    //                 setUserDetails((prevDetails) => ({
+    //                     ...prevDetails,
+    //                     profileImageUrl: data.imageUrl,
+    //                 }));
+
+    //                 handleSaveUser();
+    //             })
+    //             .catch((error) => {
+    //                 console.error('Erro ao fazer upload da imagem:', error);
+    //             });
+    //     }
+    // };
 
     const handleCreateAddress = async () => {
         try {

@@ -31,11 +31,18 @@ export const FileUpload = ({
     onChange?: (files: File[]) => void;
 }) => {
     const [files, setFiles] = useState<File[]>([]);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (newFiles: File[]) => {
         setFiles((prevFiles) => [...prevFiles, ...newFiles]);
         onChange && onChange(newFiles);
+
+        const file = newFiles[0];
+        const objectUrl = URL.createObjectURL(file);
+        setPreviewUrl(objectUrl);
+
+        
     };
 
     const handleClick = () => {
