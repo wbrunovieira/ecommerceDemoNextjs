@@ -141,9 +141,15 @@ const Card: React.FC<CardProps> = ({
                     <h3 className="font-regular text-xs text-primary">
                         {formattedCategories}
                     </h3>
-                    <h2 className="semibold text-xl mb-2 text-fontColor dark:text-darkFontColor">
-                        {title}
-                    </h2>
+                    <div className="relative group">
+                        <h2 className="text-xl font-semibold mb-2 text-fontColor dark:text-darkFontColor truncate">
+                            {title}
+                        </h2>
+                        <div className="absolute hidden group-hover:block bg-primaryDark text-white text-[10px] rounded-lg py-1 px-2 z-10 -top-6 left-1/2 transform -translate-x-1/2 transition-opacity duration-600 ease-in-out opacity-0 group-hover:opacity-100">
+                            {title}
+                        </div>
+                    </div>
+
                     <p className="text-gray-700 text-sm font-bold text-fontColor dark:text-dark ">
                         {precoAntigo && (
                             <span className="line-through mr-2 font-extralight">
