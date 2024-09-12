@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "restart": "kill $(lsof -t -i:3000) && npm run dev",
     "lint": "next lint"
   },
   "dependencies": {
