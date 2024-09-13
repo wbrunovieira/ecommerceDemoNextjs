@@ -5,6 +5,8 @@ import Card from './Card';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+import LoadingSpinner from './LoadingSpinner';
+
 interface ProductCategory {
     category: {
         name: string;
@@ -36,11 +38,21 @@ interface Produto {
 
 const ProductList = () => {
     const [produtos, setProdutos] = useState<Produto[]>([]);
+    const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    const handleButtonClick = (slug: string) => {
+    const handleButtonClick = (
+        e: React.MouseEvent<HTMLButtonElement>,
+        slug: string
+    ) => {
+        const button = e.currentTarget;
+
+        button.classList.add('loading');
+        button.setAttribute('disabled', 'true');
         console.log('Navigating to product:', slug);
         router.push(`/product/${slug}`);
+        button.classList.remove('loading');
+        button.removeAttribute('disabled');
     };
 
     const getSlug = (slug: any): string => {
@@ -51,15 +63,16 @@ const ProductList = () => {
 
         if (typeof slug === 'string') {
             console.log('Slug is a string:', slug);
-            return slug; 
+            return slug;
         }
 
         console.error('Slug is in an unexpected format:', slug);
-        return ''; 
+        return '';
     };
 
     useEffect(() => {
         const fetchProdutos = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get(
                     `${process.env.NEXT_PUBLIC_BASE_URL_BACKEND}/products/featured-products`,
@@ -83,11 +96,21 @@ const ProductList = () => {
                 }
             } catch (error) {
                 console.error('Erro ao buscar produtos:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchProdutos();
     }, []);
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-64">
+                <LoadingSpinner size="10" color="border-primary" />
+            </div>
+        );
+    }
 
     return (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4">
@@ -123,8 +146,8 @@ const ProductList = () => {
                                 width={produto.width}
                                 length={produto.length}
                                 weight={produto.weight}
-                                onButtonClick={() =>
-                                    handleButtonClick(produto.slug)
+                                onButtonClick={(e) =>
+                                    handleButtonClick(e, produto.slug)
                                 }
                             />
                         </a>

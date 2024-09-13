@@ -18,13 +18,24 @@
         --chart-4: 280 65% 60%;
         --chart-5: 340 75% 55%;
     }
-}
 
-@layer base {
     img {
         width: auto;
         height: auto;
     }
+}
+
+button.loading .button-text {
+    display: none; 
+}
+
+button.loading .loading-spinner {
+    display: flex; 
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed; 
 }
 
 img,
