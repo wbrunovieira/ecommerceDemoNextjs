@@ -1583,9 +1583,7 @@ const AdminPage = () => {
                                                             value={
                                                                 editProductData.status
                                                             }
-                                                            // onChange={
-                                                            //     handleProductInputChange
-                                                            // }
+                                                         
                                                             className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         >
                                                             <option value="ACTIVE">
