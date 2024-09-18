@@ -3,12 +3,6 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { promises as fs } from 'fs';
 
-export const config = {
-    api: {
-        bodyParser: false,
-    },
-};
-
 const saveFile = async (file: File): Promise<string> => {
     const data = Buffer.from(await file.arrayBuffer());
     const fileName = `${Date.now()}_${file.name}`;

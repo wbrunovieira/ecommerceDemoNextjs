@@ -48,7 +48,6 @@ export const ImagesSlider = ({
 
         window.addEventListener('keydown', handleKeyDown);
 
-      
         let interval: any;
         if (autoplay) {
             interval = setInterval(() => {
@@ -61,6 +60,15 @@ export const ImagesSlider = ({
             clearInterval(interval);
         };
     }, [autoplay, handleNext, handlePrevious]);
+
+    useEffect(() => {
+        if (!imageLoaded[currentIndex]) {
+            setImageLoaded((prev) => ({
+                ...prev,
+                [currentIndex]: false,
+            }));
+        }
+    }, [currentIndex, imageLoaded]);
 
     const slideVariants = {
         initial: {
@@ -108,7 +116,7 @@ export const ImagesSlider = ({
             {overlay && (
                 <div
                     className={cn(
-                        'absolute inset-0 bg-primaryDark/20 z-40',
+                        'absolute inset-0 bg-black/20 z-40',
                         overlayClassName
                     )}
                 />

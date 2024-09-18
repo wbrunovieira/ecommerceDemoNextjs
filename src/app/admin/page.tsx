@@ -384,7 +384,7 @@ const AdminPage = () => {
         };
 
         fetchOrders();
-    }, []);
+    }, [BASE_URL]);
 
     const calculateSales = (orders: Order[]) => {
         const today = new Date();
@@ -1296,7 +1296,7 @@ const AdminPage = () => {
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                             Categoria
                                                         </label>
-                                                        <input
+                                                        {/* <input
                                                             type="text"
                                                             name="category"
                                                             value={editProductData.productCategories
@@ -1311,7 +1311,7 @@ const AdminPage = () => {
                                                                 handleProductInputChange
                                                             }
                                                             className="px-2 py-1 border border-gray-300 rounded w-4/5"
-                                                        />
+                                                        /> */}
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                                             {categories.map(
                                                                 (category) => (
@@ -1583,7 +1583,6 @@ const AdminPage = () => {
                                                             value={
                                                                 editProductData.status
                                                             }
-                                                         
                                                             className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
                                                         >
                                                             <option value="ACTIVE">

@@ -294,7 +294,7 @@ const Sidebar: React.FC = () => {
         fetchBrands();
         fetchColors();
         fetchSizes();
-    }, []);
+    }, [BASE_URL]);
 
     useEffect(() => {
         if (pathname === '/' || pathname.includes('/product/')) {
