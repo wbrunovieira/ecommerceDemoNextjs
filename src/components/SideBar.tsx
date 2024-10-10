@@ -313,6 +313,7 @@ const Sidebar: React.FC = () => {
         setSelectedSize,
         setSelectedMinPrice,
         setSelectedMaxPrice,
+        setSelectedColor
     ]);
 
     const containerRef = useRef<HTMLElement>(null);

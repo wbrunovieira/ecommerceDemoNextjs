@@ -4,6 +4,15 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/utils/cn';
 
+interface PixelData {
+    x: number;
+    y: number;
+    r: number;
+    color: string;
+}
+
+const newDataRef = useRef<PixelData[]>([]);
+
 export function PlaceholdersAndVanishInput({
     placeholders,
     onChange,
@@ -29,21 +38,6 @@ export function PlaceholdersAndVanishInput({
             startAnimation(); // Restart the interval when the tab becomes visible
         }
     };
-
-    useEffect(() => {
-        startAnimation();
-        document.addEventListener('visibilitychange', handleVisibilityChange);
-
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-            document.removeEventListener(
-                'visibilitychange',
-                handleVisibilityChange
-            );
-        };
-    }, [placeholders]);
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const newDataRef = useRef<any[]>([]);
@@ -112,7 +106,7 @@ export function PlaceholdersAndVanishInput({
     const animate = (start: number) => {
         const animateFrame = (pos: number = 0) => {
             requestAnimationFrame(() => {
-                const newArr = [];
+                const newArr: PixelData[] = [];
                 for (let i = 0; i < newDataRef.current.length; i++) {
                     const current = newDataRef.current[i];
                     if (current.x < pos) {
@@ -179,6 +173,21 @@ export function PlaceholdersAndVanishInput({
         vanishAndSubmit();
         onSubmit && onSubmit(e);
     };
+
+    useEffect(() => {
+        startAnimation();
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+            document.removeEventListener(
+                'visibilitychange',
+                handleVisibilityChange
+            );
+        };
+    }, [placeholders, handleVisibilityChange, startAnimation]);
     return (
         <form
             className={cn(

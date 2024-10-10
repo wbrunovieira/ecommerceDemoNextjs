@@ -69,11 +69,7 @@ const MelhorEnvioCallback = () => {
         initializeUserCart();
     }, [session, setUser, initializeCart]);
 
-    useEffect(() => {
-        if (isCartInitialized) {
-            fetchAccessToken();
-        }
-    }, [isCartInitialized, fetchAccessToken]); 
+
 
     const fetchAccessToken = async () => {
         const code = searchParams.get('code');
@@ -243,6 +239,12 @@ const MelhorEnvioCallback = () => {
 
         
     };
+
+    useEffect(() => {
+        if (isCartInitialized) {
+            fetchAccessToken();
+        }
+    }, [isCartInitialized, fetchAccessToken]); 
 
     const calculateShipment = async (token: string) => {
         console.log('entrou calculateShipment', token);

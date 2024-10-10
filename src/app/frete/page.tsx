@@ -72,11 +72,7 @@ const FretePage = () => {
         initializeUserCart();
     }, [session, setUser, initializeCart]);
 
-    useEffect(() => {
-        if (isCartInitialized) {
-            calculateShipment();
-        }
-    }, [isCartInitialized]);
+
 
     const calculateShipment = async () => {
         const result = await calculateShipmentApi();
@@ -86,6 +82,12 @@ const FretePage = () => {
             setLoadingin(false);
         }
     };
+
+    useEffect(() => {
+        if (isCartInitialized) {
+            calculateShipment();
+        }
+    }, [isCartInitialized, calculateShipment]);
 
     const calculateShipmentApi = async () => {
         console.log('entrou calculateShipment cartItems', cartItems);

@@ -120,7 +120,7 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
 
             fetchProducts();
         }
-    }, [query]);
+    }, [query,BASE_URL]);
 
     const containerRef = useRef<HTMLElement>(null);
 

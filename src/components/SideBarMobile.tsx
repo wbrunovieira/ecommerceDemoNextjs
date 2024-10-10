@@ -303,7 +303,7 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ toggleMenu }) => {
         fetchBrands();
         fetchColors();
         fetchSizes();
-    }, []);
+    }, [BASE_URL]);
 
     useEffect(() => {
         if (pathname === '/' || pathname.includes('/product/')) {
@@ -322,6 +322,7 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ toggleMenu }) => {
         setSelectedSize,
         setSelectedMinPrice,
         setSelectedMaxPrice,
+        setSelectedColor
     ]);
 
     const containerRef = useRef<HTMLElement>(null);

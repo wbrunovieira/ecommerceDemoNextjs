@@ -295,7 +295,6 @@ const FilteredResults: NextPage = () => {
             fetchProducts(
                 `${BASE_URL}/products/category/${encodeURIComponent(category)}`
             );
-
             setSelectedCategory(category);
         } else if (brand) {
             fetchProducts(
@@ -316,8 +315,21 @@ const FilteredResults: NextPage = () => {
             setSelectedMinPrice(Number(minPrice));
             setSelectedMaxPrice(Number(maxPrice));
         }
-    }, [category, brand, size, minPrice, maxPrice]);
-
+    }, [
+        category, 
+        brand, 
+        size, 
+        minPrice, 
+        maxPrice, 
+        BASE_URL, 
+        fetchProducts, 
+        setSelectedCategory, 
+        setSelectedBrand, 
+        setSelectedSize, 
+        setSelectedMinPrice, 
+        setSelectedMaxPrice
+    ]);
+    
     useEffect(() => {
         if (color) {
             fetchProducts(
@@ -325,7 +337,8 @@ const FilteredResults: NextPage = () => {
             );
             setSelectedColor({ id: color, name: color, hex: color });
         }
-    }, [color]);
+    }, [color, BASE_URL, fetchProducts, setSelectedColor]);
+    
 
     useEffect(() => {
         if (!initialLoad) {
@@ -424,15 +437,14 @@ const FilteredResults: NextPage = () => {
                     <h1 className="text-2xl font-bold mb-4">
                         {filterName && (
                             <CardS className="text-primaryDark">
-                                <CardHeader>
-                                    <CardTitle>
-                                        {' '}
-                                        Produtos filtrados por :{' '}
-                                        <span className="text-secondary mt-2">
-                                            "{filterName}"
-                                        </span>{' '}
-                                    </CardTitle>
-                                </CardHeader>
+                              <CardHeader>
+                                <CardTitle>
+                                    Produtos filtrados por :
+                                    <span className="text-secondary mt-2">
+                                        &quot;{filterName}&quot;
+                                    </span>
+                                </CardTitle>
+                            </CardHeader>
                             </CardS>
                         )}
                     </h1>

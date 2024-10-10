@@ -35,7 +35,7 @@ const Cart = () => {
       setUser(session.user.id);
     }
 
-  }, [session, setUser]);
+  }, [session, setUser,cartItems,initializeCart]);
 
  
   const increaseQuantity = (id: string) => {

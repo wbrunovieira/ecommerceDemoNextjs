@@ -120,13 +120,6 @@ const UserPage: NextPage = () => {
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
-    useEffect(() => {
-        if (session?.user?.id) {
-            fetchUserDetails();
-            fetchAddresses();
-            fetchOrders();
-        }
-    }, [session?.user?.id]);
 
     const validatePhoneNumber = (phone: string) => {
         const phoneRegex = /^(?:\+55\s?)?\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
@@ -472,6 +465,15 @@ const UserPage: NextPage = () => {
             console.error('Error fetching user details', error);
         }
     };
+
+
+    useEffect(() => {
+        if (session?.user?.id) {
+            fetchUserDetails();
+            fetchAddresses();
+            fetchOrders();
+        }
+    }, [session?.user?.id,fetchAddresses,fetchOrders,fetchUserDetails]);
 
     if (status === 'loading') {
         return <p>Carregando...</p>;

@@ -51,7 +51,7 @@ const VerifyEmail = () => {
                 style: { background: '#ff6961' },
             });
         }
-    }, [token, toast]);
+    }, [token, toast,BASE_URL]);
 
     return (
         <div className="flex md:min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 mt-6 p-10 sm:p-6 lg:p-8">
