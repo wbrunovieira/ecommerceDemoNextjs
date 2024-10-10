@@ -74,7 +74,7 @@ const FretePage = () => {
 
 
 
-    const calculateShipmentApi = async () => {
+    const calculateShipmentApi = useCallback(async () => {
         console.log('entrou calculateShipment cartItems', cartItems);
 
         let { address } = useCartStore
@@ -128,7 +128,7 @@ const FretePage = () => {
             console.error('Error calculating shipment:', error);
             throw error;
         }
-    };
+    }, [cartItems,BASE_URL]);
 
     const calculateShipment = useCallback(async () => {
         const result = await calculateShipmentApi();

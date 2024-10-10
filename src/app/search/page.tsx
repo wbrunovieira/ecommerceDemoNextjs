@@ -43,11 +43,8 @@ interface Product {
 interface SidebarData {
     categories: { slug: string; name: string }[];
 }
-interface SearchResultsProps {
-    categories: SidebarData;
-}
 
-const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
+const SearchResults: NextPage = () => {
     const searchParams = useSearchParams();
     const query = searchParams.get('query');
     const [products, setProducts] = useState<Product[]>([]);
@@ -120,7 +117,7 @@ const SearchResults: NextPage<SearchResultsProps> = ({ categories }) => {
 
             fetchProducts();
         }
-    }, [query,BASE_URL]);
+    }, [query, BASE_URL]);
 
     const containerRef = useRef<HTMLElement>(null);
 

@@ -11,7 +11,7 @@ interface PixelData {
     color: string;
 }
 
-const newDataRef = useRef<PixelData[]>([]);
+
 
 export function PlaceholdersAndVanishInput({
     placeholders,
@@ -25,6 +25,7 @@ export function PlaceholdersAndVanishInput({
     const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
 
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    
     const startAnimation = useCallback(() => {
         intervalRef.current = setInterval(() => {
             setCurrentPlaceholder((prev) => (prev + 1) % placeholders.length);

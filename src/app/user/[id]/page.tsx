@@ -162,7 +162,7 @@ const UserPage: NextPage = () => {
         } catch (error) {
             console.error('Error fetching orders', error);
         }
-    }, [session?.user?.id, session?.accessToken]);
+    }, [session?.user?.id, session?.accessToken,BASE_URL]);
 
     const handleSaveAddress = async (address: Address) => {
         const removeEmptyFields = (obj: any) => {
@@ -239,7 +239,7 @@ const UserPage: NextPage = () => {
         } catch (error) {
             console.error('Error fetching addresses', error);
         }
-    }, [session?.user?.id, session?.accessToken]);
+    }, [session?.user?.id, session?.accessToken,BASE_URL]);
 
     const handleDeleteAddress = async (addressId: string) => {
         try {
@@ -464,7 +464,7 @@ const UserPage: NextPage = () => {
         } catch (error) {
             console.error('Error fetching user details', error);
         }
-    }, [session?.user?.id, session?.accessToken]);
+    }, [session?.user?.id, session?.accessToken,BASE_URL]);
 
 
     useEffect(() => {

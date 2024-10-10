@@ -128,7 +128,34 @@ const FilteredResults: NextPage = () => {
         router.push(`/product/${slug}`);
     };
 
+  
     const fetchProducts = useCallback(async (url: string) => {
+        const getFilterName = (products: Product[]) => {
+            if (category) {
+                const selectedCategoryObj = products.flatMap((product) =>
+                    product.productCategories.filter(
+                        (cat) => cat.category.id.value === category
+                    )
+                )[0];
+                return selectedCategoryObj
+                    ? selectedCategoryObj.category.name
+                    : category;
+            } else if (brand) {
+                const selectedBrandObj = products.find(
+                    (product) => product.brandId === brand
+                );
+                return selectedBrandObj ? selectedBrandObj.brandName : brand;
+            } else if (color) {
+                const selectedColorObj = products.flatMap((product) =>
+                    product.productColors.filter(
+                        (col) => col.color.id.value === color
+                    )
+                )[0];
+                return selectedColorObj ? selectedColorObj.color.name : color;
+            }
+            return '';
+        };
+    
         try {
             const response = await fetch(url, {
                 method: 'GET',
@@ -136,12 +163,12 @@ const FilteredResults: NextPage = () => {
                     'Content-Type': 'application/json',
                 },
             });
-
+    
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-
+    
             const mappedProducts = data.map((product: any) => ({
                 id: product._id?.value,
                 name: product.props.name,
@@ -169,11 +196,10 @@ const FilteredResults: NextPage = () => {
                     name: size.name,
                 })),
                 brandId: product.props.brandId.value,
-
                 brandName: product.props.brandName,
                 brandUrl: product.props.brandUrl,
             }));
-
+    
             setAllProducts(mappedProducts);
             setProducts(mappedProducts);
             setInitialLoad(false);
@@ -181,33 +207,10 @@ const FilteredResults: NextPage = () => {
         } catch (error) {
             console.error('Error fetching search results:', error);
         }
-    }, [setAllProducts, setProducts, setInitialLoad, setFilterName]);
+    }, [setAllProducts, setProducts, setInitialLoad, setFilterName,brand,category,color]);
+    
 
-    const getFilterName = (products: Product[]) => {
-        if (category) {
-            const selectedCategoryObj = products.flatMap((product) =>
-                product.productCategories.filter(
-                    (cat) => cat.category.id.value === category
-                )
-            )[0];
-            return selectedCategoryObj
-                ? selectedCategoryObj.category.name
-                : category;
-        } else if (brand) {
-            const selectedBrandObj = products.find(
-                (product) => product.brandId === brand
-            );
-            return selectedBrandObj ? selectedBrandObj.brandName : brand;
-        } else if (color) {
-            const selectedColorObj = products.flatMap((product) =>
-                product.productColors.filter(
-                    (col) => col.color.id.value === color
-                )
-            )[0];
-            return selectedColorObj ? selectedColorObj.color.name : color;
-        }
-        return '';
-    };
+  
 
     const sortProducts = (products: Product[], type: string) => {
         switch (type) {

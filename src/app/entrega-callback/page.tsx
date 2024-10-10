@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -73,6 +73,67 @@ const MelhorEnvioCallback = () => {
 
 
    
+
+
+    const calculateShipment = useCallback(async (token: string) => {
+        console.log('entrou calculateShipment', token);
+
+        console.log('entrou calculateShipment cartItems', cartItems);
+
+        let { address } = useCartStore
+            .getState()
+            .getCartItemsAndAddressForShipping();
+
+        console.log('entrou calculateShipment address', address);
+
+        if (!cartItems.length || !address) {
+            console.error('Cart items or selected address is missing');
+            return;
+        }
+
+        const products = cartItems.map((item) => ({
+            id: item.id,
+            width: item.width,
+            height: item.height,
+            length: item.length,
+            weight: item.weight,
+            insurance_value: item.price * item.quantity,
+            quantity: item.quantity,
+        }));
+        console.log('calculateShipment products', products);
+
+        try {
+            console.log('calculateShipment agora vamos mandar tudo', {
+                cartItems: products,
+                selectedAddress: address.zipCode,
+                token,
+            });
+            const session = await getSession();
+            const authToken = session?.accessToken;
+            const response = await axios.post(
+                `${BASE_URL}/cart/calculate-shipment`,
+                { cartItems: products, selectedAddress: address, token },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${authToken}`,
+                        Accept: 'application/json',
+                    },
+                }
+            );
+            console.log('Shipment calculation result:', response);
+
+            if (!response) {
+                throw new Error('Failed to calculate shipment');
+            }
+
+            return response;
+        } catch (error) {
+            console.error('Error calculating shipment:', error);
+            throw error;
+        }
+    }, [cartItems, BASE_URL]);
+
 
     useEffect(() => {
         const fetchAccessToken = async () => {
@@ -246,66 +307,7 @@ const MelhorEnvioCallback = () => {
         if (isCartInitialized) {
             fetchAccessToken();
         }
-    }, [isCartInitialized]); 
-
-    const calculateShipment = async (token: string) => {
-        console.log('entrou calculateShipment', token);
-
-        console.log('entrou calculateShipment cartItems', cartItems);
-
-        let { address } = useCartStore
-            .getState()
-            .getCartItemsAndAddressForShipping();
-
-        console.log('entrou calculateShipment address', address);
-
-        if (!cartItems.length || !address) {
-            console.error('Cart items or selected address is missing');
-            return;
-        }
-
-        const products = cartItems.map((item) => ({
-            id: item.id,
-            width: item.width,
-            height: item.height,
-            length: item.length,
-            weight: item.weight,
-            insurance_value: item.price * item.quantity,
-            quantity: item.quantity,
-        }));
-        console.log('calculateShipment products', products);
-
-        try {
-            console.log('calculateShipment agora vamos mandar tudo', {
-                cartItems: products,
-                selectedAddress: address.zipCode,
-                token,
-            });
-            const session = await getSession();
-            const authToken = session?.accessToken;
-            const response = await axios.post(
-                `${BASE_URL}/cart/calculate-shipment`,
-                { cartItems: products, selectedAddress: address, token },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${authToken}`,
-                        Accept: 'application/json',
-                    },
-                }
-            );
-            console.log('Shipment calculation result:', response);
-
-            if (!response) {
-                throw new Error('Failed to calculate shipment');
-            }
-
-            return response;
-        } catch (error) {
-            console.error('Error calculating shipment:', error);
-            throw error;
-        }
-    };
+    }, [isCartInitialized,BASE_URL,calculateShipment,searchParams]); 
 
     const isTokenValid = () => {
         const cookies = parseCookies();

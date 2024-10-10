@@ -14,11 +14,7 @@ interface Category {
     imageUrl: string;
 }
 
-interface HomeProps {
-    initialCategories: Category[];
-}
-
-const Home: NextPage<HomeProps> = () => {
+const Home: NextPage = () => {
     return (
         <>
             <Container>
