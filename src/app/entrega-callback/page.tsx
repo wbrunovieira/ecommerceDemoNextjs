@@ -73,7 +73,7 @@ const MelhorEnvioCallback = () => {
         if (isCartInitialized) {
             fetchAccessToken();
         }
-    }, [isCartInitialized]);
+    }, [isCartInitialized, fetchAccessToken]); 
 
     const fetchAccessToken = async () => {
         const code = searchParams.get('code');

@@ -2,7 +2,8 @@
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import Image from 'next/image'
 
 import {
     differenceInDays,
@@ -276,95 +277,80 @@ const AdminPage = () => {
         }
     }, [session, status, router]);
 
+    const fetchColors = useCallback(async () => {
+        try {
+            const response = await axios.get(`${BASE_URL}/colors/all?page=1&pageSize=10`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                },
+            });
+            setColors(response.data.colors);
+        } catch (error) {
+            console.error('Erro ao buscar as cores: ', error);
+        }
+    }, [BASE_URL]);
+    
+    const fetchSizes = useCallback(async () => {
+        try {
+            const response = await axios.get(`${BASE_URL}/size/all?page=1&pageSize=20`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            setSizes(response.data.size);
+        } catch (error) {
+            console.error('Erro ao buscar os tamanhos: ', error);
+        }
+    }, [BASE_URL]);
+    
+    const fetchCategories = useCallback(async () => {
+        try {
+            const response = await axios.get(`${BASE_URL}/category/all?page=1&pageSize=50`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            setCategories(response.data.categories);
+        } catch (error) {
+            console.error('Erro ao buscar as categorias: ', error);
+        }
+    }, [BASE_URL]);
+    
+    const fetchBrands = useCallback(async () => {
+        try {
+            const response = await axios.get(`${BASE_URL}/brands/all?page=1&pageSize=10`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            setBrands(response.data.brands);
+        } catch (error) {
+            console.error('Erro ao buscar os fabricantes: ', error);
+        }
+    }, [BASE_URL]);
+    
+    const fetchCustomers = useCallback(async () => {
+        try {
+            const response = await axios.get(`${BASE_URL}/customers/all`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            setCustomers(response.data.customers);
+        } catch (error) {
+            console.error('Erro ao buscar os clientes: ', error);
+        }
+    }, [BASE_URL]);
+
     useEffect(() => {
-        const fetchColors = async () => {
-            try {
-                const response = await axios.get(
-                    `${BASE_URL}/colors/all?page=1&pageSize=10`,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Accept: 'application/json',
-                        },
-                    }
-                );
-
-                setColors(response.data.colors);
-            } catch (error) {
-                console.error('Erro ao buscar as cores: ', error);
-            }
-        };
-
-        const fetchSizes = async () => {
-            try {
-                const response = await axios.get(
-                    `${BASE_URL}/size/all?page=1&pageSize=20`,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
-
-                setSizes(response.data.size);
-            } catch (error) {
-                console.error('Erro ao buscar os tamanhos: ', error);
-            }
-        };
-
-        const fetchCategories = async () => {
-            try {
-                const response = await axios.get(
-                    `${BASE_URL}/category/all?page=1&pageSize=50`,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
-
-                setCategories(response.data.categories);
-            } catch (error) {
-                console.error('Erro ao buscar as categorias: ', error);
-            }
-        };
-
-        const fetchBrands = async () => {
-            try {
-                const response = await axios.get(
-                    `${BASE_URL}/brands/all?page=1&pageSize=10`,
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
-                setBrands(response.data.brands);
-            } catch (error) {
-                console.error('Erro ao buscar os fabricantes: ', error);
-            }
-        };
-
-        const fetchCustomers = async () => {
-            try {
-                const response = await axios.get(`${BASE_URL}/customers/all`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                setCustomers(response.data.customers);
-            } catch (error) {
-                console.error('Erro ao buscar os clientes: ', error);
-            }
-        };
-
         fetchBrands();
         fetchColors();
         fetchSizes();
         fetchCategories();
-
         fetchCustomers();
-    }, []);
+    }, [fetchBrands, fetchColors, fetchSizes, fetchCategories, fetchCustomers]);
+    
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -1296,22 +1282,7 @@ const AdminPage = () => {
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                             Categoria
                                                         </label>
-                                                        {/* <input
-                                                            type="text"
-                                                            name="category"
-                                                            value={editProductData.productCategories
-                                                                .map(
-                                                                    (
-                                                                        category
-                                                                    ) =>
-                                                                        category.name
-                                                                )
-                                                                .join(', ')}
-                                                            onChange={
-                                                                handleProductInputChange
-                                                            }
-                                                            className="px-2 py-1 border border-gray-300 rounded w-4/5"
-                                                        /> */}
+                                                      
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                                             {categories.map(
                                                                 (category) => (
@@ -1405,26 +1376,16 @@ const AdminPage = () => {
                                                         </label>
 
                                                         <div className="flex space-x-2 mt-2">
-                                                            {editProductData.images.map(
-                                                                (
-                                                                    imageUrl,
-                                                                    index
-                                                                ) => (
-                                                                    <img
-                                                                        key={
-                                                                            index
-                                                                        }
-                                                                        src={
-                                                                            imageUrl
-                                                                        }
-                                                                        alt={`Produto imagem ${
-                                                                            index +
-                                                                            1
-                                                                        }`}
-                                                                        className="w-16 h-16 object-cover border border-gray-300 rounded"
-                                                                    />
-                                                                )
-                                                            )}
+                                                        {editProductData.images.map((imageUrl, index) => (
+                                                                <Image
+                                                                    key={index}
+                                                                    src={imageUrl}
+                                                                    alt={`Produto imagem ${index + 1}`}
+                                                                    width={64} // Largura da imagem (em pixels)
+                                                                    height={64} // Altura da imagem (em pixels)
+                                                                    className="object-cover border border-gray-300 rounded"
+                                                                />
+                                                            ))}
                                                         </div>
                                                     </div>
 
