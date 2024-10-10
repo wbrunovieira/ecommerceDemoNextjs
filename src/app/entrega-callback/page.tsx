@@ -59,6 +59,7 @@ const MelhorEnvioCallback = () => {
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     useEffect(() => {
+        
         const initializeUserCart = async () => {
             if (session?.user?.id) {
                 setUser(session.user.id);
@@ -71,138 +72,71 @@ const MelhorEnvioCallback = () => {
 
 
 
-    const fetchAccessToken = async () => {
-        const code = searchParams.get('code');
-        const cookies = parseCookies();
-        const existingToken = cookies.melhorenvio_token;
-        const refreshToken = cookies.melhorenvio_refresh_token;
-        const tokenIsValid = isTokenValid();
+   
 
-        console.log('code ', code);
-        console.log('existingToken ', existingToken);
-        console.log('refreshToken ', refreshToken);
-
-        if (existingToken && tokenIsValid) {
-            try {
-                console.log(
-                    'entrou no ele existe existingToken e ta bao',
-                    existingToken
-                );
-                const result = await calculateShipment(existingToken);
-                console.log(
-                    'entrou no ele existe existingToken result',
-                    result
-                );
-                if (result && result.data) {
-                    setShippingOptions(result.data);
-                }
-                setLoading(false);
-
-                return;
-            } catch (error) {
-                console.error(
-                    'Existing token failed, attempting to refresh...'
-                );
-            }
-        }
-
-        if (existingToken && !tokenIsValid && refreshToken) {
-            try {
-                const response = await axios.post(
-                    `${BASE_URL}/auth/refresh-token`,
-                    { refresh_token: refreshToken }
-                );
-                const {
-                    access_token: newAccessToken,
-                    refresh_token: newRefreshToken,
-                    expires_in,
-                } = response.data;
-                const expiryDate = new Date(
-                    new Date().getTime() + expires_in * 1000
-                );
-
-                setCookie(null, 'melhorenvio_token', newAccessToken, {
-                    maxAge: expires_in,
-                    path: '/',
-                    sameSite: 'strict',
-                });
-
-                setCookie(null, 'melhorenvio_refresh_token', newRefreshToken, {
-                    maxAge: 30 * 24 * 60 * 60, // 30 days
-                    path: '/',
-                    sameSite: 'strict',
-                });
-
-                setCookie(
-                    null,
-                    'melhorenvio_token_expiry',
-                    expiryDate.toISOString(),
-                    {
-                        maxAge: expires_in,
-                        path: '/',
-                        sameSite: 'strict',
+    useEffect(() => {
+        const fetchAccessToken = async () => {
+            const code = searchParams.get('code');
+            const cookies = parseCookies();
+            const existingToken = cookies.melhorenvio_token;
+            const refreshToken = cookies.melhorenvio_refresh_token;
+            const tokenIsValid = isTokenValid();
+    
+            console.log('code ', code);
+            console.log('existingToken ', existingToken);
+            console.log('refreshToken ', refreshToken);
+    
+            if (existingToken && tokenIsValid) {
+                try {
+                    console.log(
+                        'entrou no ele existe existingToken e ta bao',
+                        existingToken
+                    );
+                    const result = await calculateShipment(existingToken);
+                    console.log(
+                        'entrou no ele existe existingToken result',
+                        result
+                    );
+                    if (result && result.data) {
+                        setShippingOptions(result.data);
                     }
-                );
-
-                const result = await calculateShipment(newAccessToken);
-                console.log('entrou no  refreshToken result', result);
-                if (result && result.data) {
-                    setShippingOptions(result.data);
+                    setLoading(false);
+    
+                    return;
+                } catch (error) {
+                    console.error(
+                        'Existing token failed, attempting to refresh...'
+                    );
                 }
-                setLoading(false);
-                return;
-            } catch (error) {
-                console.error('Refreshing token failed:', error);
             }
-        }
-
-        if (!existingToken && code) {
-            try {
-                console.log('code entrou fo if code ', code);
-                const response = await axios.post(
-                    `${BASE_URL}/sessions/request-token`,
-                    { code },
-                    {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Accept: 'application/json',
-                        },
-                    }
-                );
-
-                console.log('response if code ', response.status);
-                if (response.status === 201 || response.status === 200) {
+    
+            if (existingToken && !tokenIsValid && refreshToken) {
+                try {
+                    const response = await axios.post(
+                        `${BASE_URL}/auth/refresh-token`,
+                        { refresh_token: refreshToken }
+                    );
                     const {
-                        access_token,
+                        access_token: newAccessToken,
                         refresh_token: newRefreshToken,
                         expires_in,
                     } = response.data;
-
                     const expiryDate = new Date(
                         new Date().getTime() + expires_in * 1000
                     );
-
-                    console.log('newRefreshToken', newRefreshToken);
-                    console.log('access_token', access_token);
-                    console.log('expires_in', expires_in);
-
-                    setCookie(null, 'melhorenvio_token', access_token, {
+    
+                    setCookie(null, 'melhorenvio_token', newAccessToken, {
                         maxAge: expires_in,
                         path: '/',
                         sameSite: 'strict',
                     });
-
-                    setCookie(
-                        null,
-                        'melhorenvio_refresh_token',
-                        newRefreshToken,
-                        {
-                            maxAge: 30 * 24 * 60 * 60, // 30 days
-                            path: '/',
-                            sameSite: 'strict',
-                        }
-                    );
-
+    
+                    setCookie(null, 'melhorenvio_refresh_token', newRefreshToken, {
+                        maxAge: 30 * 24 * 60 * 60, // 30 days
+                        path: '/',
+                        sameSite: 'strict',
+                    });
+    
                     setCookie(
                         null,
                         'melhorenvio_token_expiry',
@@ -213,38 +147,106 @@ const MelhorEnvioCallback = () => {
                             sameSite: 'strict',
                         }
                     );
-
-                    console.log(
-                        'quase calculateShipment access_token',
-                        access_token
-                    );
-                    const result = await calculateShipment(access_token);
-                    console.log('result calculateShipment ', result);
+    
+                    const result = await calculateShipment(newAccessToken);
+                    console.log('entrou no  refreshToken result', result);
                     if (result && result.data) {
                         setShippingOptions(result.data);
                     }
                     setLoading(false);
+                    return;
+                } catch (error) {
+                    console.error('Refreshing token failed:', error);
                 }
-            } catch (err) {
-                setError('Erro ao tentar obter o token de acesso.');
             }
-        } else {
-            setError('Authorization code is missing.');
-        }
-        // if (!existingToken && !code) {
-        //     setError('Authorization code is missing.');
-        //     // You may want to redirect the user to the authorization page
-        //     router.replace('/path-to-authorization');
-        // }
-
-        
-    };
-
-    useEffect(() => {
+    
+            if (!existingToken && code) {
+                try {
+                    console.log('code entrou fo if code ', code);
+                    const response = await axios.post(
+                        `${BASE_URL}/sessions/request-token`,
+                        { code },
+                        {
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Accept: 'application/json',
+                            },
+                        }
+                    );
+    
+                    console.log('response if code ', response.status);
+                    if (response.status === 201 || response.status === 200) {
+                        const {
+                            access_token,
+                            refresh_token: newRefreshToken,
+                            expires_in,
+                        } = response.data;
+    
+                        const expiryDate = new Date(
+                            new Date().getTime() + expires_in * 1000
+                        );
+    
+                        console.log('newRefreshToken', newRefreshToken);
+                        console.log('access_token', access_token);
+                        console.log('expires_in', expires_in);
+    
+                        setCookie(null, 'melhorenvio_token', access_token, {
+                            maxAge: expires_in,
+                            path: '/',
+                            sameSite: 'strict',
+                        });
+    
+                        setCookie(
+                            null,
+                            'melhorenvio_refresh_token',
+                            newRefreshToken,
+                            {
+                                maxAge: 30 * 24 * 60 * 60, // 30 days
+                                path: '/',
+                                sameSite: 'strict',
+                            }
+                        );
+    
+                        setCookie(
+                            null,
+                            'melhorenvio_token_expiry',
+                            expiryDate.toISOString(),
+                            {
+                                maxAge: expires_in,
+                                path: '/',
+                                sameSite: 'strict',
+                            }
+                        );
+    
+                        console.log(
+                            'quase calculateShipment access_token',
+                            access_token
+                        );
+                        const result = await calculateShipment(access_token);
+                        console.log('result calculateShipment ', result);
+                        if (result && result.data) {
+                            setShippingOptions(result.data);
+                        }
+                        setLoading(false);
+                    }
+                } catch (err) {
+                    setError('Erro ao tentar obter o token de acesso.');
+                }
+            } else {
+                setError('Authorization code is missing.');
+            }
+            // if (!existingToken && !code) {
+            //     setError('Authorization code is missing.');
+            //     // You may want to redirect the user to the authorization page
+            //     router.replace('/path-to-authorization');
+            // }
+    
+            
+        };
         if (isCartInitialized) {
             fetchAccessToken();
         }
-    }, [isCartInitialized, fetchAccessToken]); 
+    }, [isCartInitialized]); 
 
     const calculateShipment = async (token: string) => {
         console.log('entrou calculateShipment', token);

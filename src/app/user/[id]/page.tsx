@@ -8,7 +8,7 @@ import { useCartStore, useFavoritesStore } from '@/context/store';
 import { BiEdit } from 'react-icons/bi';
 import { BsTrash } from 'react-icons/bs';
 import Button from '@/components/Button';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { format, parseISO, parse } from 'date-fns';
 
 import { BiArrowBack } from 'react-icons/bi';
@@ -140,7 +140,7 @@ const UserPage: NextPage = () => {
         setEditingAddressId(addressId);
     };
 
-    const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
         try {
             const response = await fetch(
                 `${BASE_URL}/orders/user/${session?.user?.id}`,
@@ -162,7 +162,7 @@ const UserPage: NextPage = () => {
         } catch (error) {
             console.error('Error fetching orders', error);
         }
-    };
+    }, [session?.user?.id, session?.accessToken]);
 
     const handleSaveAddress = async (address: Address) => {
         const removeEmptyFields = (obj: any) => {
@@ -206,7 +206,7 @@ const UserPage: NextPage = () => {
         }
     };
 
-    const fetchAddresses = async () => {
+    const fetchAddresses = useCallback(async () => {
         try {
             const response = await fetch(
                 `${BASE_URL}/adress/by-user-id?userId=${session?.user?.id}`,
@@ -239,7 +239,7 @@ const UserPage: NextPage = () => {
         } catch (error) {
             console.error('Error fetching addresses', error);
         }
-    };
+    }, [session?.user?.id, session?.accessToken]);
 
     const handleDeleteAddress = async (addressId: string) => {
         try {
@@ -433,7 +433,7 @@ const UserPage: NextPage = () => {
         }
     };
 
-    const fetchUserDetails = async () => {
+    const fetchUserDetails = useCallback(async () => {
         try {
             const response = await fetch(
                 `${BASE_URL}/accounts${session?.user?.id}`,
@@ -464,7 +464,7 @@ const UserPage: NextPage = () => {
         } catch (error) {
             console.error('Error fetching user details', error);
         }
-    };
+    }, [session?.user?.id, session?.accessToken]);
 
 
     useEffect(() => {

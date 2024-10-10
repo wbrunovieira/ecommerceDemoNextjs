@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -74,21 +74,6 @@ const FretePage = () => {
 
 
 
-    const calculateShipment = async () => {
-        const result = await calculateShipmentApi();
-        setLoading(false);
-        if (result && result.data) {
-            setShippingOptions(result.data);
-            setLoadingin(false);
-        }
-    };
-
-    useEffect(() => {
-        if (isCartInitialized) {
-            calculateShipment();
-        }
-    }, [isCartInitialized, calculateShipment]);
-
     const calculateShipmentApi = async () => {
         console.log('entrou calculateShipment cartItems', cartItems);
 
@@ -144,6 +129,24 @@ const FretePage = () => {
             throw error;
         }
     };
+
+    const calculateShipment = useCallback(async () => {
+        const result = await calculateShipmentApi();
+        setLoading(false);
+        if (result && result.data) {
+            setShippingOptions(result.data);
+            setLoadingin(false);
+        }
+    }, [calculateShipmentApi, setLoading, setShippingOptions, setLoadingin]);
+
+
+  
+
+    useEffect(() => {
+        if (isCartInitialized) {
+            calculateShipment();
+        }
+    }, [isCartInitialized, calculateShipment]);
 
     const handleSelectShippingOption = async (option) => {
         console.log('handleSelectShippingOption', option);

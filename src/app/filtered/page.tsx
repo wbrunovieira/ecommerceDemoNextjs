@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
@@ -128,7 +128,7 @@ const FilteredResults: NextPage = () => {
         router.push(`/product/${slug}`);
     };
 
-    const fetchProducts = async (url: string) => {
+    const fetchProducts = useCallback(async (url: string) => {
         try {
             const response = await fetch(url, {
                 method: 'GET',
@@ -181,7 +181,7 @@ const FilteredResults: NextPage = () => {
         } catch (error) {
             console.error('Error fetching search results:', error);
         }
-    };
+    }, [setAllProducts, setProducts, setInitialLoad, setFilterName]);
 
     const getFilterName = (products: Product[]) => {
         if (category) {
@@ -290,6 +290,7 @@ const FilteredResults: NextPage = () => {
         selectedMaxPrice,
         sortType,
     ]);
+
     useEffect(() => {
         if (category) {
             fetchProducts(
