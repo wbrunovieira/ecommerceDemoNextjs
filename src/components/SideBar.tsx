@@ -14,6 +14,7 @@ import {
 
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import SuspenseWrapper from './SuspenseWrapper';
 
 interface Category {
     id: string;
@@ -340,152 +341,155 @@ const Sidebar: React.FC = () => {
     );
 
     return (
-        <nav
-            className="hidden md:flex flex-col gap-2 mr-4 rounded"
-            ref={containerRef as React.RefObject<HTMLDivElement>}
-        >
-            <div className="sidebar-section flex flex-col w-48 border border-light bg-primaryLight dark:bg-dark-secondary-gradient rounded p-4 mt-2 z-10">
-                <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider mb-2">
-                    Categorias
-                </h2>
+        <SuspenseWrapper>
+        
+            <nav
+                className="hidden md:flex flex-col gap-2 mr-4 rounded"
+                ref={containerRef as React.RefObject<HTMLDivElement>}
+            >
+                <div className="sidebar-section flex flex-col w-48 border border-light bg-primaryLight dark:bg-dark-secondary-gradient rounded p-4 mt-2 z-10">
+                    <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider mb-2">
+                        Categorias
+                    </h2>
 
-                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-                <div
-                    className={`overflow-hidden ${
-                        showMoreCategories ? '' : 'h-48'
-                    } transition-height duration-300 ease-in-out`}
-                >
-                    {categories.map((category, index) => (
+                    <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+                    <div
+                        className={`overflow-hidden ${
+                            showMoreCategories ? '' : 'h-48'
+                        } transition-height duration-300 ease-in-out`}
+                    >
+                        {categories.map((category, index) => (
+                            <div
+                                key={category.id}
+                                className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out  ${
+                                    selectedCategory === category.id
+                                        ? 'bg-primaryDark text-primaryLight font-bold tracking-wider antialiased border rounded p-4 '
+                                        : ''
+                                }`}
+                                onClick={() => handleCategoryClick(category.id)}
+                            >
+                                <div className="flex items-center py-2 space-x-2">
+                                    <Image
+                                        src={category.imageUrl}
+                                        width={20}
+                                        height={20}
+                                        style={{
+                                            width: '20px',
+                                            height: '20px',
+                                            objectFit: 'cover',
+                                        }}
+                                        alt={category.name}
+                                        className="mr-2"
+                                    />
+                                    <div className="text-xs">
+                                        {capitalizeFirstLetter(category.name)}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <button
+                        className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out"
+                        onClick={() => setShowMoreCategories(!showMoreCategories)}
+                    >
+                        {showMoreCategories ? 'Ver menos' : 'Ver mais'}
+                    </button>
+                    <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
+                </div>
+
+                <div className=" sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded z-10">
+                    <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
+                        Marcas
+                    </h2>
+                    <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 " />
+                    {brands.map((brand) => (
                         <div
-                            key={category.id}
-                            className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out  ${
-                                selectedCategory === category.id
-                                    ? 'bg-primaryDark text-primaryLight font-bold tracking-wider antialiased border rounded p-4 '
+                            key={brand.id}
+                            className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out ${
+                                selectedBrand === brand.id
+                                    ? 'bg-primaryDark text-primaryLight border font-bold tracking-wider rounded p-4'
                                     : ''
                             }`}
-                            onClick={() => handleCategoryClick(category.id)}
+                            onClick={() => handleBrandClick(brand.id)}
                         >
                             <div className="flex items-center py-2 space-x-2">
                                 <Image
-                                    src={category.imageUrl}
+                                    src={brand.imageUrl}
                                     width={20}
                                     height={20}
-                                    style={{
-                                        width: '20px',
-                                        height: '20px',
-                                        objectFit: 'cover',
-                                    }}
-                                    alt={category.name}
-                                    className="mr-2"
+                                    alt={brand.name}
+                                    style={{ objectFit: 'cover' }}
+                                    className="mr-2 object-contain w-5 h-5"
                                 />
                                 <div className="text-xs">
-                                    {capitalizeFirstLetter(category.name)}
+                                    {capitalizeFirstLetter(brand.name)}
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
-                <button
-                    className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out"
-                    onClick={() => setShowMoreCategories(!showMoreCategories)}
-                >
-                    {showMoreCategories ? 'Ver menos' : 'Ver mais'}
-                </button>
-                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
-            </div>
 
-            <div className=" sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded z-10">
-                <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
-                    Marcas
-                </h2>
-                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 " />
-                {brands.map((brand) => (
-                    <div
-                        key={brand.id}
-                        className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out ${
-                            selectedBrand === brand.id
-                                ? 'bg-primaryDark text-primaryLight border font-bold tracking-wider rounded p-4'
-                                : ''
-                        }`}
-                        onClick={() => handleBrandClick(brand.id)}
-                    >
-                        <div className="flex items-center py-2 space-x-2">
-                            <Image
-                                src={brand.imageUrl}
-                                width={20}
-                                height={20}
-                                alt={brand.name}
-                                style={{ objectFit: 'cover' }}
-                                className="mr-2 object-contain w-5 h-5"
-                            />
-                            <div className="text-xs">
-                                {capitalizeFirstLetter(brand.name)}
-                            </div>
-                        </div>
+                <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
+                    <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
+                        Cores
+                    </h2>
+                    <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+                    <div className="flex gap-2 flex-wrap">
+                        {colors.map((color) => (
+                            <div
+                                key={color.id}
+                                className={`w-6 h-6 rounded-full cursor-pointer p-2 transform hover:scale-110 hover:shadow-lg transition duration-300 ease-in-out ${
+                                    selectedColor?.id === color.id
+                                        ? ' border rounded p-4 w-8 h-8 '
+                                        : ''
+                                }`}
+                                style={{
+                                    backgroundColor: color.hex,
+                                    border: '1px solid #ddd',
+                                }}
+                                onClick={() => handleColorClick(color)}
+                                title={color.name}
+                            ></div>
+                        ))}
                     </div>
-                ))}
-            </div>
-
-            <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
-                <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
-                    Cores
-                </h2>
-                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-                <div className="flex gap-2 flex-wrap">
-                    {colors.map((color) => (
-                        <div
-                            key={color.id}
-                            className={`w-6 h-6 rounded-full cursor-pointer p-2 transform hover:scale-110 hover:shadow-lg transition duration-300 ease-in-out ${
-                                selectedColor?.id === color.id
-                                    ? ' border rounded p-4 w-8 h-8 '
-                                    : ''
-                            }`}
-                            style={{
-                                backgroundColor: color.hex,
-                                border: '1px solid #ddd',
-                            }}
-                            onClick={() => handleColorClick(color)}
-                            title={color.name}
-                        ></div>
-                    ))}
                 </div>
-            </div>
 
-            <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
-                <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
-                    Tamanhos
-                </h2>
-                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-                <div
-                    className={`overflow-hidden ${
-                        showMoreSizes ? '' : 'h-48'
-                    } transition-height duration-300 ease-in-out`}
-                >
-                    {sizes.map((size, index) => (
-                        <div
-                            key={size.id}
-                            className={`border border-light rounded p-1 text-center text-xs cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out mt-2 ${
-                                selectedSize?.id === size.id
-                                    ? 'bg-primaryDark text-primaryLight font-bold tracking-wider border'
-                                    : ''
-                            }`}
-                            onClick={() => handleSizeClick(size)}
-                        >
-                            {capitalizeFirstLetter(size.name)}
-                        </div>
-                    ))}
+                <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
+                    <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
+                        Tamanhos
+                    </h2>
+                    <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+                    <div
+                        className={`overflow-hidden ${
+                            showMoreSizes ? '' : 'h-48'
+                        } transition-height duration-300 ease-in-out`}
+                    >
+                        {sizes.map((size, index) => (
+                            <div
+                                key={size.id}
+                                className={`border border-light rounded p-1 text-center text-xs cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out mt-2 ${
+                                    selectedSize?.id === size.id
+                                        ? 'bg-primaryDark text-primaryLight font-bold tracking-wider border'
+                                        : ''
+                                }`}
+                                onClick={() => handleSizeClick(size)}
+                            >
+                                {capitalizeFirstLetter(size.name)}
+                            </div>
+                        ))}
+                    </div>
+                    <button
+                        className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out"
+                        onClick={() => setShowMoreSizes(!showMoreSizes)}
+                    >
+                        {showMoreSizes ? 'Ver menos' : 'Ver mais'}
+                    </button>
+                    <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
                 </div>
-                <button
-                    className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out"
-                    onClick={() => setShowMoreSizes(!showMoreSizes)}
-                >
-                    {showMoreSizes ? 'Ver menos' : 'Ver mais'}
-                </button>
-                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
-            </div>
 
-            <PriceFilter isHome={isHome} />
-        </nav>
+                <PriceFilter isHome={isHome} />
+            </nav>
+        </SuspenseWrapper>
     );
 };
 

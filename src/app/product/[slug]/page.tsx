@@ -10,14 +10,20 @@ import {
     getProductsByCategoriesId,
     ProductsByCategorieResponse,
 } from '@/api/products';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 
 export async function generateStaticParams() {
-    const products = await getProducts();
-    console.log('async function generateStaticParams products', products);
+    try {
+        const products = await getProducts();
+        console.log('async function generateStaticParams products', products);
 
-    return products.map((product) => ({
-        slug: product.slug,
-    }));
+        return products.map((product) => ({
+            slug: product.slug,
+        }));
+    } catch (error) {
+        console.error('Error fetching data', error);
+        return [];
+    }
 }
 
 interface ParamsProps {
@@ -98,7 +104,6 @@ const getSimilarProducts = async (
                 price: product.props.price,
                 images: product.props.images,
                 slug: product.props.slug.value,
-                
             })
         );
 
@@ -117,92 +122,86 @@ const getSimilarProducts = async (
 
 const ProductPage = async ({ params }: ParamsProps) => {
     try {
-        const {
-            product,
-            materialName,
-            brandName,
-            colors,
-            sizes,
-            categories,
-            variants,
-        } = (await getProductBySlug(params.slug)) as any;
+        const productDetails = await getProductBySlug(params.slug);
 
-        if (!product) {
-            console.error('Product not found');
-            return <div>Product not found</div>;
+        if (!productDetails) {
+            return <div>Desculpe, não encontramos a página do produto.</div>;
         }
 
-        const productId = product._id?.value;
+        const productId = productDetails.id;
 
         if (!productId) {
             console.error('Product ID not found');
             return <div>Product ID not found</div>;
         }
 
-        const productDetails = product.props;
-
-        const productName = productDetails?.name ?? 'No name available';
-        const productDescription =
-            productDetails?.description ?? 'No description available';
-        const productMaterial = materialName ?? 'N/A';
-        const productBrand = brandName ?? 'N/A';
-        const productFinalPrice = productDetails?.finalPrice ?? 0;
-        const productImages = productDetails?.images ?? [];
-       
-        const productColors = colors ?? [];
-        const productSizes = sizes ?? [];
-        const productCategories = categories ?? [];
-        const height = productDetails.height ?? undefined;
-        const width = productDetails.width ?? undefined;
-        const length = productDetails.length ?? undefined;
-        const weight = productDetails.weight ?? undefined;
-        const slug = productDetails.slug ?? undefined;
-        const hasVariants = productDetails.hasVariants ?? undefined;
-        const productIdVariant = productDetails.productIdVariant ?? undefined;
-
         const allProducts = await getProducts();
         console.log('product page allProducts ', allProducts);
         const similarProducts = await getSimilarProducts(
-            productCategories,
+            productDetails.productCategories,
             allProducts as ProductProps[]
         );
 
         return (
-            <Container>
-                <section className="flex w-full max-w-full mt-2 gap-4 lg:gap-8 z-10 lg:flex-row">
-                    <div className="flex flex-col ">
-                        <Sidebar />
-                    </div>
+            <SuspenseWrapper>
+                <Container>
+                    <section className="flex w-full max-w-full mt-2 gap-4 lg:gap-8 z-10 lg:flex-row">
+                        <div className="flex flex-col ">
+                            <Sidebar />
+                        </div>
 
-                    <div className="z-10 w-full max-w-full">
-                        <Product
-                            id={productId}
-                            title={productName}
-                            material={productMaterial ?? 'N/A'}
-                            categories={productCategories}
-                            fabricante={productBrand ?? 'N/A'}
-                            price={productFinalPrice ?? 0}
-                            colors={productColors}
-                            sizes={productSizes}
-                            images={productImages}
-                            description={
-                                productDescription ??
-                                'No description available.'
-                            }
-                            stock={productDetails.stock}
-                            variants={variants}
-                            similarProducts={similarProducts}
-                            width={width}
-                            height={height}
-                            length={length}
-                            weight={weight}
-                            slug={slug}
-                            hasVariants={hasVariants}
-                            productIdVariant={productIdVariant}
-                        />
-                    </div>
-                </section>
-            </Container>
+                        <div className="z-10 w-full max-w-full">
+                            <Product
+                                id={productDetails.id}
+                                title={productDetails.name}
+                                description={productDetails.description}
+                                material="N/A" // Replace this with the correct value if available
+                                fabricante={productDetails.brandName} // Now using brandName from productDetails
+                                price={productDetails.finalPrice}
+                                colors={[]} // Colors are empty in the given API response example
+                                sizes={productDetails.productSizes}
+                                categories={productDetails.productCategories}
+                                images={productDetails.images}
+                                stock={productDetails.stock}
+                                hasVariants={productDetails.hasVariants}
+                                productIdVariant={productDetails.id}
+                                variants={productDetails.productVariants}
+                                similarProducts={similarProducts}
+                                width={productDetails.width}
+                                height={productDetails.height}
+                                length={productDetails.length}
+                                weight={productDetails.weight}
+                                slug={productDetails.slug}
+                            />
+                            {/* <Product
+                                id={productId}
+                                title={productName}
+                                
+                                categories={productCategories}
+                                fabricante={productBrand ?? 'N/A'}
+                                price={productFinalPrice ?? 0}
+                                colors={productColors}
+                                sizes={productSizes}
+                                images={productImages}
+                                description={
+                                    productDescription ??
+                                    'No description available.'
+                                }
+                                stock={productDetails.stock}
+                                variants={productDetails.productVariants}
+                                similarProducts={similarProducts}
+                                width={width}
+                                height={height}
+                                length={length}
+                                weight={weight}
+                                slug={slug}
+                                hasVariants={hasVariants}
+                                productIdVariant={productIdVariant}
+                            /> */}
+                        </div>
+                    </section>
+                </Container>
+            </SuspenseWrapper>
         );
     } catch (error) {
         console.error('Error fetching product:', error);

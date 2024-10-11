@@ -14,6 +14,7 @@ import {
 
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import SuspenseWrapper from './SuspenseWrapper';
 
 interface Category {
     id: string;
@@ -349,191 +350,194 @@ const SidebarMobile: React.FC<SidebarMobileProps> = ({ toggleMenu }) => {
     );
 
     return (
-        <nav
-            className="flex flex-col gap-2 mr-4 rounded"
-            ref={containerRef as React.RefObject<HTMLDivElement>}
-        >
-            <div className="sidebar-section flex flex-col w-48 border border-light bg-primaryLight dark:bg-dark-secondary-gradient rounded p-4 mt-2 z-10">
-                <h2 className="bg-primaryLight text-xs text-primaryDark font-bold dark:bg-dark-secondary-gradient text-xs tracking-wider mb-2">
-                    Categorias
-                </h2>
+        <SuspenseWrapper>
+        
+            <nav
+                className="flex flex-col gap-2 mr-4 rounded"
+                ref={containerRef as React.RefObject<HTMLDivElement>}
+            >
+                <div className="sidebar-section flex flex-col w-48 border border-light bg-primaryLight dark:bg-dark-secondary-gradient rounded p-4 mt-2 z-10">
+                    <h2 className="bg-primaryLight text-xs text-primaryDark font-bold dark:bg-dark-secondary-gradient text-xs tracking-wider mb-2">
+                        Categorias
+                    </h2>
 
-                <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-                <div
-                    className={`overflow-hidden ${
-                        showMoreCategories ? '' : 'h-24'
-                    } transition-height duration-300 ease-in-out`}
-                >
-                    {categories.map((category, index) => (
-                        <div
-                            key={category.id}
-                            className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out  ${
-                                selectedCategory === category.id
-                                    ? 'bg-primaryDark text-primaryLight font-bold tracking-wider antialiased border rounded p-4 '
-                                    : ''
-                            }`}
-                            onClick={() => handleCategoryClick(category.id)}
-                        >
-                            <div className="flex items-center py-2 space-x-2">
-                                <Image
-                                    src={category.imageUrl}
-                                    width={10}
-                                    height={10}
-                                    style={{
-                                        width: '10px',
-                                        height: '10px',
-                                        objectFit: 'cover',
-                                    }}
-                                    alt={category.name}
-                                    className="mr-2"
-                                />
-                                <div className="text-[0.6rem]">
-                                    {capitalizeFirstLetter(category.name)}
+                    <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+                    <div
+                        className={`overflow-hidden ${
+                            showMoreCategories ? '' : 'h-24'
+                        } transition-height duration-300 ease-in-out`}
+                    >
+                        {categories.map((category, index) => (
+                            <div
+                                key={category.id}
+                                className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out  ${
+                                    selectedCategory === category.id
+                                        ? 'bg-primaryDark text-primaryLight font-bold tracking-wider antialiased border rounded p-4 '
+                                        : ''
+                                }`}
+                                onClick={() => handleCategoryClick(category.id)}
+                            >
+                                <div className="flex items-center py-2 space-x-2">
+                                    <Image
+                                        src={category.imageUrl}
+                                        width={10}
+                                        height={10}
+                                        style={{
+                                            width: '10px',
+                                            height: '10px',
+                                            objectFit: 'cover',
+                                        }}
+                                        alt={category.name}
+                                        className="mr-2"
+                                    />
+                                    <div className="text-[0.6rem]">
+                                        {capitalizeFirstLetter(category.name)}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-                <button
-                    className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out text-xs"
-                    onClick={() => setShowMoreCategories(!showMoreCategories)}
-                >
-                    {showMoreCategories ? 'Ver menos' : 'Ver mais'}
-                    <span
-                        className={`ml-2 ${
-                            showMoreCategories ? 'rotate-180' : ''
-                        } transition-transform duration-300`}
+                        ))}
+                    </div>
+                    <button
+                        className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out text-xs"
+                        onClick={() => setShowMoreCategories(!showMoreCategories)}
                     >
-                        ↓
-                    </span>
-                </button>
-
-                <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
-            </div>
-
-            <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded z-10">
-                <h2 className="bg-primaryLight text-primaryDark font-bold dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 text-xs tracking-wider mb-2">
-                    Marcas
-                </h2>
-                <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4 " />
-                <div
-                    className={`overflow-hidden ${
-                        showMoreCategories ? '' : 'h-24'
-                    } transition-height duration-300 ease-in-out`}
-                >
-                    {brands.map((brand) => (
-                        <div
-                            key={brand.id}
-                            className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out ${
-                                selectedBrand === brand.id
-                                    ? 'bg-primaryDark text-primaryLight border font-bold tracking-wider rounded p-4'
-                                    : ''
-                            }`}
-                            onClick={() => handleBrandClick(brand.id)}
+                        {showMoreCategories ? 'Ver menos' : 'Ver mais'}
+                        <span
+                            className={`ml-2 ${
+                                showMoreCategories ? 'rotate-180' : ''
+                            } transition-transform duration-300`}
                         >
-                            <div className="flex items-center py-2 space-x-2">
-                                <Image
-                                    src={brand.imageUrl}
-                                    width={10}
-                                    height={10}
-                                    style={{
-                                        width: '10px',
-                                        height: '10px',
-                                        objectFit: 'cover',
-                                    }}
-                                    alt={brand.name}
-                                    className="mr-2 "
-                                />
-                                <div className="text-[0.6rem]">
-                                    {capitalizeFirstLetter(brand.name)}
+                            ↓
+                        </span>
+                    </button>
+
+                    <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
+                </div>
+
+                <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded z-10">
+                    <h2 className="bg-primaryLight text-primaryDark font-bold dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 text-xs tracking-wider mb-2">
+                        Marcas
+                    </h2>
+                    <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4 " />
+                    <div
+                        className={`overflow-hidden ${
+                            showMoreCategories ? '' : 'h-24'
+                        } transition-height duration-300 ease-in-out`}
+                    >
+                        {brands.map((brand) => (
+                            <div
+                                key={brand.id}
+                                className={`flex items-center py-1 border-b border-light cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out ${
+                                    selectedBrand === brand.id
+                                        ? 'bg-primaryDark text-primaryLight border font-bold tracking-wider rounded p-4'
+                                        : ''
+                                }`}
+                                onClick={() => handleBrandClick(brand.id)}
+                            >
+                                <div className="flex items-center py-2 space-x-2">
+                                    <Image
+                                        src={brand.imageUrl}
+                                        width={10}
+                                        height={10}
+                                        style={{
+                                            width: '10px',
+                                            height: '10px',
+                                            objectFit: 'cover',
+                                        }}
+                                        alt={brand.name}
+                                        className="mr-2 "
+                                    />
+                                    <div className="text-[0.6rem]">
+                                        {capitalizeFirstLetter(brand.name)}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
-                <button
-                    className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out text-xs"
-                    onClick={() => setShowMoreBrands(!showMoreBrands)}
-                >
-                    {showMoreBrands ? 'Ver menos' : 'Ver mais'}
-                    <span
-                        className={`ml-2 ${
-                            showMoreCategories ? 'rotate-180' : ''
-                        } transition-transform duration-300`}
+                        ))}
+                    </div>
+                    <button
+                        className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out text-xs"
+                        onClick={() => setShowMoreBrands(!showMoreBrands)}
                     >
-                        ↓
-                    </span>
-                </button>
-                <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
-            </div>
-
-            <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
-                <h2 className="bg-primaryLight text-primaryDark font-bold text-xs bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
-                    Cores
-                </h2>
-                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-                <div className="flex gap-2 flex-wrap">
-                    {colors.map((color) => (
-                        <div
-                            key={color.id}
-                            className={`w-3 h-3 rounded-full cursor-pointer p-2 transform hover:scale-110 hover:shadow-lg transition duration-300 ease-in-out ${
-                                selectedColor?.id === color.id
-                                    ? ' border rounded p-4 w-8 h-8 '
-                                    : ''
-                            }`}
-                            style={{
-                                backgroundColor: color.hex,
-                                border: '1px solid #ddd',
-                            }}
-                            onClick={() => handleColorClick(color)}
-                            title={color.name}
-                        ></div>
-                    ))}
-                </div>
-            </div>
-
-            <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
-                <h2 className="text-primaryDark font-bold text-xs bg-primaryLight dark:bg-dark-secondary-gradient  tracking-wider rounded mb-2 ">
-                    Tamanhos
-                </h2>
-                <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4" />
-                <div
-                    className={`overflow-hidden ${
-                        showMoreSizes ? '' : 'h-24'
-                    } transition-height duration-300 ease-in-out`}
-                >
-                    {sizes.map((size, index) => (
-                        <div
-                            key={size.id}
-                            className={`border border-light rounded p-1 text-center text-xs cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out mt-2 ${
-                                selectedSize?.id === size.id
-                                    ? 'bg-primaryDark text-primaryLight font-bold tracking-wider border'
-                                    : ''
-                            }`}
-                            onClick={() => handleSizeClick(size)}
+                        {showMoreBrands ? 'Ver menos' : 'Ver mais'}
+                        <span
+                            className={`ml-2 ${
+                                showMoreCategories ? 'rotate-180' : ''
+                            } transition-transform duration-300`}
                         >
-                            {capitalizeFirstLetter(size.name)}
-                        </div>
-                    ))}
+                            ↓
+                        </span>
+                    </button>
+                    <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
                 </div>
-                <button
-                    className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out text-xs"
-                    onClick={() => setShowMoreSizes(!showMoreSizes)}
-                >
-                    {showMoreSizes ? 'Ver menos' : 'Ver mais'}
-                    <span
-                        className={`ml-2 ${
-                            showMoreCategories ? 'rotate-180' : ''
-                        } transition-transform duration-300`}
-                    >
-                        ↓
-                    </span>
-                </button>
-                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
-            </div>
 
-            <PriceFilter isHome={isHome} />
-        </nav>
+                <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
+                    <h2 className="bg-primaryLight text-primaryDark font-bold text-xs bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
+                        Cores
+                    </h2>
+                    <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+                    <div className="flex gap-2 flex-wrap">
+                        {colors.map((color) => (
+                            <div
+                                key={color.id}
+                                className={`w-3 h-3 rounded-full cursor-pointer p-2 transform hover:scale-110 hover:shadow-lg transition duration-300 ease-in-out ${
+                                    selectedColor?.id === color.id
+                                        ? ' border rounded p-4 w-8 h-8 '
+                                        : ''
+                                }`}
+                                style={{
+                                    backgroundColor: color.hex,
+                                    border: '1px solid #ddd',
+                                }}
+                                onClick={() => handleColorClick(color)}
+                                title={color.name}
+                            ></div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
+                    <h2 className="text-primaryDark font-bold text-xs bg-primaryLight dark:bg-dark-secondary-gradient  tracking-wider rounded mb-2 ">
+                        Tamanhos
+                    </h2>
+                    <hr className="border-0 h-[1px] bg-gradient-to-r from-primary to-primary-light mb-4" />
+                    <div
+                        className={`overflow-hidden ${
+                            showMoreSizes ? '' : 'h-24'
+                        } transition-height duration-300 ease-in-out`}
+                    >
+                        {sizes.map((size, index) => (
+                            <div
+                                key={size.id}
+                                className={`border border-light rounded p-1 text-center text-xs cursor-pointer rounded p-2 hover:bg-primary transition duration-300 ease-in-out mt-2 ${
+                                    selectedSize?.id === size.id
+                                        ? 'bg-primaryDark text-primaryLight font-bold tracking-wider border'
+                                        : ''
+                                }`}
+                                onClick={() => handleSizeClick(size)}
+                            >
+                                {capitalizeFirstLetter(size.name)}
+                            </div>
+                        ))}
+                    </div>
+                    <button
+                        className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out text-xs"
+                        onClick={() => setShowMoreSizes(!showMoreSizes)}
+                    >
+                        {showMoreSizes ? 'Ver menos' : 'Ver mais'}
+                        <span
+                            className={`ml-2 ${
+                                showMoreCategories ? 'rotate-180' : ''
+                            } transition-transform duration-300`}
+                        >
+                            ↓
+                        </span>
+                    </button>
+                    <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
+                </div>
+
+                <PriceFilter isHome={isHome} />
+            </nav>
+        </SuspenseWrapper>
     );
 };
 

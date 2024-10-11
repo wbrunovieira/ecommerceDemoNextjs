@@ -21,6 +21,7 @@ import { useColorStore, useSelectionStore } from '@/context/store';
 
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 
 interface ProductCategory {
     category: {
@@ -428,100 +429,105 @@ const FilteredResults: NextPage = () => {
     );
 
     return (
-        <Container>
-            <section
-                className="flex mt-2"
-                ref={containerRef as React.RefObject<HTMLDivElement>}
-            >
-                <div className="flex flex-col">
-                    <Sidebar />
-                </div>
-                <div className="flex flex-col "></div>
-                <div className="container mx-auto card">
-                    <h1 className="text-2xl font-bold mb-4">
-                        {filterName && (
-                            <CardS className="text-primaryDark">
-                              <CardHeader>
-                                <CardTitle>
-                                    Produtos filtrados por :
-                                    <span className="text-secondary mt-2">
-                                        &quot;{filterName}&quot;
-                                    </span>
-                                </CardTitle>
-                            </CardHeader>
-                            </CardS>
-                        )}
-                    </h1>
-                    <div>
-                        <Select value={sortType} onValueChange={setSortType}>
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Ordenar por" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="alphabetical">
-                                    Ordem Alfabética
-                                </SelectItem>
-                                <SelectItem value="dark">
-                                    Menor Preço
-                                </SelectItem>
-                                <SelectItem value="priceDesc">
-                                    Maior Preço
-                                </SelectItem>
-                            </SelectContent>
-                        </Select>
-                        {products.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
-                                {products.map((product) => (
-                                    <Link
-                                        key={product.id}
-                                        className="card"
-                                        href={`/product/${product.slug}`}
-                                        passHref
-                                    >
-                                        <Card
-                                            id={product.id}
-                                            title={product.name}
-                                            categories={
-                                                product.productCategories
-                                            }
-                                            precoAntigo={
-                                                product.onSale
-                                                    ? product.price
-                                                    : undefined
-                                            }
-                                            precoNovo={
-                                                product.finalPrice ||
-                                                product.price
-                                            }
-                                            emPromocao={product.onSale}
-                                            desconto={product.discount}
-                                            imageSRC={product.images[0]}
-                                            eNovidade={product.isNew}
-                                            brandName={product.brandName}
-                                            brandLogo={product.brandUrl}
-                                            hasVariants={product.hasVariants}
-                                            slug={product.slug}
-                                            height={product.height}
-                                            width={product.width}
-                                            length={product.length}
-                                            weight={product.weight}
-                                            onButtonClick={() =>
-                                                handleButtonClick(product.slug)
-                                            }
-                                        />
-                                    </Link>
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="text-lg text-center mt-4">
-                                Não há produtos disponíveis com os filtros
-                                selecionados.
-                            </p>
-                        )}
+
+        <SuspenseWrapper>
+
+            
+            <Container>
+                <section
+                    className="flex mt-2"
+                    ref={containerRef as React.RefObject<HTMLDivElement>}
+                >
+                    <div className="flex flex-col">
+                        <Sidebar />
                     </div>
-                </div>
-            </section>
-        </Container>
+                    <div className="flex flex-col "></div>
+                    <div className="container mx-auto card">
+                        <h1 className="text-2xl font-bold mb-4">
+                            {filterName && (
+                                <CardS className="text-primaryDark">
+                                <CardHeader>
+                                    <CardTitle>
+                                        Produtos filtrados por :
+                                        <span className="text-secondary mt-2">
+                                            &quot;{filterName}&quot;
+                                        </span>
+                                    </CardTitle>
+                                </CardHeader>
+                                </CardS>
+                            )}
+                        </h1>
+                        <div>
+                            <Select value={sortType} onValueChange={setSortType}>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Ordenar por" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="alphabetical">
+                                        Ordem Alfabética
+                                    </SelectItem>
+                                    <SelectItem value="dark">
+                                        Menor Preço
+                                    </SelectItem>
+                                    <SelectItem value="priceDesc">
+                                        Maior Preço
+                                    </SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {products.length > 0 ? (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
+                                    {products.map((product) => (
+                                        <Link
+                                            key={product.id}
+                                            className="card"
+                                            href={`/product/${product.slug}`}
+                                            passHref
+                                        >
+                                            <Card
+                                                id={product.id}
+                                                title={product.name}
+                                                categories={
+                                                    product.productCategories
+                                                }
+                                                precoAntigo={
+                                                    product.onSale
+                                                        ? product.price
+                                                        : undefined
+                                                }
+                                                precoNovo={
+                                                    product.finalPrice ||
+                                                    product.price
+                                                }
+                                                emPromocao={product.onSale}
+                                                desconto={product.discount}
+                                                imageSRC={product.images[0]}
+                                                eNovidade={product.isNew}
+                                                brandName={product.brandName}
+                                                brandLogo={product.brandUrl}
+                                                hasVariants={product.hasVariants}
+                                                slug={product.slug}
+                                                height={product.height}
+                                                width={product.width}
+                                                length={product.length}
+                                                weight={product.weight}
+                                                onButtonClick={() =>
+                                                    handleButtonClick(product.slug)
+                                                }
+                                            />
+                                        </Link>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-lg text-center mt-4">
+                                    Não há produtos disponíveis com os filtros
+                                    selecionados.
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </section>
+            </Container>
+        </SuspenseWrapper>
     );
 };
 

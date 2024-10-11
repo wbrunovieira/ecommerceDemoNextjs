@@ -9,6 +9,7 @@ import axios from 'axios';
 
 import { useCartStore, useLoadingStore } from '@/context/store';
 import LoadingHandler from '@/components/LoadingHandler';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 
 interface Address {
     _id: {
@@ -220,70 +221,74 @@ const FretePage = () => {
     console.log('frete isLoading', isLoading);
 
     return (
-        <div className="flex items-center justify-center ">
-            <div className="bg-white p-8 rounded-lg shadow-lg z-10 relative overflow-hidden overflow-auto max-w-full md:w-3/5 md:p-12 sm:w-full ">
-                <div className="relative z-10  p-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
-                    <h2 className="text-xs md:text-2xl font-bold text-secondary mb-4 whitespace-nowrap">
-                        vamos escolher uma opção de frete:
-                    </h2>
-                    {loadingin ? (
-                        <p className="text-primaryDark mb-4">Carregando...</p>
-                    ) : error ? (
-                        <p className="text-red-500 text-xs italic mb-4">
-                            {error}
-                        </p>
-                    ) : (
-                        <ul className="flex flex-col text-primaryDark w-full max-w-full">
-                            {shippingOptions
-                                .filter(
-                                    (option) =>
-                                        option.price && option.delivery_time
-                                )
-                                .map((option, index) => (
-                                    <li
-                                        key={index}
-                                        onClick={() =>
-                                            handleSelectShippingOption(option)
-                                        }
-                                        className="mb-2 p-2 border border-secondary rounded cursor-pointer hover:scale-105 hover:shadow-lg transition duration-300 ease-in-out whitespace-nowrap flex w-full"
-                                    >
-                                        <div className="flex-grow flex flex-col  ">
-                                            <div className="">
-                                                <span className="font-semibold text-xl">
-                                                    {option.name}
-                                                </span>
-                                            </div>
-                                            <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light" />
-                                            <div className="flex mt-1 text-[0.7rem] md:text-xs">
-                                                <span className="font-semibold">
-                                                    Prazo:
-                                                    <span className="ml-2 font-normal">
-                                                        {option.delivery_time}{' '}
-                                                    </span>
-                                                    <span className="font-normal">
-                                                        dias
-                                                    </span>
-                                                </span>
-                                            </div>
 
-                                            <div className="flex mt-1 text-[0.7rem] md:text-xs">
-                                                <span className="font-bold">
-                                                    Preço:
-                                                    <span className="ml-2 font-normal">
-                                                        {option.currency}{' '}
-                                                        {option.price}
+        <SuspenseWrapper>
+             
+            <div className="flex items-center justify-center ">
+                <div className="bg-white p-8 rounded-lg shadow-lg z-10 relative overflow-hidden overflow-auto max-w-full md:w-3/5 md:p-12 sm:w-full ">
+                    <div className="relative z-10  p-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
+                        <h2 className="text-xs md:text-2xl font-bold text-secondary mb-4 whitespace-nowrap">
+                            vamos escolher uma opção de frete:
+                        </h2>
+                        {loadingin ? (
+                            <p className="text-primaryDark mb-4">Carregando...</p>
+                        ) : error ? (
+                            <p className="text-red-500 text-xs italic mb-4">
+                                {error}
+                            </p>
+                        ) : (
+                            <ul className="flex flex-col text-primaryDark w-full max-w-full">
+                                {shippingOptions
+                                    .filter(
+                                        (option) =>
+                                            option.price && option.delivery_time
+                                    )
+                                    .map((option, index) => (
+                                        <li
+                                            key={index}
+                                            onClick={() =>
+                                                handleSelectShippingOption(option)
+                                            }
+                                            className="mb-2 p-2 border border-secondary rounded cursor-pointer hover:scale-105 hover:shadow-lg transition duration-300 ease-in-out whitespace-nowrap flex w-full"
+                                        >
+                                            <div className="flex-grow flex flex-col  ">
+                                                <div className="">
+                                                    <span className="font-semibold text-xl">
+                                                        {option.name}
                                                     </span>
-                                                </span>
+                                                </div>
+                                                <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light" />
+                                                <div className="flex mt-1 text-[0.7rem] md:text-xs">
+                                                    <span className="font-semibold">
+                                                        Prazo:
+                                                        <span className="ml-2 font-normal">
+                                                            {option.delivery_time}{' '}
+                                                        </span>
+                                                        <span className="font-normal">
+                                                            dias
+                                                        </span>
+                                                    </span>
+                                                </div>
+
+                                                <div className="flex mt-1 text-[0.7rem] md:text-xs">
+                                                    <span className="font-bold">
+                                                        Preço:
+                                                        <span className="ml-2 font-normal">
+                                                            {option.currency}{' '}
+                                                            {option.price}
+                                                        </span>
+                                                    </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </li>
-                                ))}
-                        </ul>
-                    )}
+                                        </li>
+                                    ))}
+                            </ul>
+                        )}
+                    </div>
+                    <LoadingHandler />
                 </div>
-                <LoadingHandler />
             </div>
-        </div>
+        </SuspenseWrapper>
     );
 };
 

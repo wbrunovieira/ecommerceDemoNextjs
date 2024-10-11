@@ -98,6 +98,36 @@ interface ProductSlugResponse {
     }[];
 }
 
+interface ProductDetails {
+    id: string;
+    name: string;
+    description: string;
+    finalPrice: number;
+    stock: number;
+    sku: string;
+    height: number;
+    width: number;
+    length: number;
+    weight: number;
+    onSale: boolean;
+    isFeatured: boolean;
+    hasVariants: boolean;
+    brandName: string;
+    isNew: boolean;
+    images: string[];
+    slug: string;
+    productSizes: { id: string; name: string }[];
+    productCategories: { id: string; name: string; imageUrl: string }[];
+    productVariants: {
+        id: string;
+        sizeId: string;
+        stock: number;
+        price: number;
+        images: string[];
+        sku: string;
+    }[];
+}
+
 interface CategoriesResponse {
     categories: {
         _id: {
@@ -222,13 +252,111 @@ export async function getProduct(id: string) {
     return (await response.json()) as ProductType;
 }
 
+// export async function getProductBySlug(
+//     slug: string
+// ): Promise<ProductSlugResponse> {
+//     const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
+//     const data: ProductSlugResponse = await response.json();
+
+//     return data;
+// }
+
 export async function getProductBySlug(
     slug: string
-): Promise<ProductSlugResponse> {
-    const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
-    const data: ProductSlugResponse = await response.json();
+): Promise<ProductDetails | null> {
+    try {
+        const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
 
-    return data;
+        // Check if the response is successful
+        if (!response.ok) {
+            throw new Error(
+                `Failed to fetch product. Status: ${response.status}`
+            );
+        }
+
+        const data = await response.json();
+
+        console.log('Raw Product Data:', JSON.stringify(data, null, 2));
+
+        // Basic validation to ensure expected properties exist
+        if (!data || !data.product) {
+            throw new Error('Invalid product data received');
+        }
+
+        const product = data.product;
+        console.log(
+            'Raw Product Categories:',
+            JSON.stringify(product.props?.productCategories, null, 2)
+        );
+
+        // Extract and transform the product details
+        const productDetails: ProductDetails = {
+            id: product._id?.value ?? '',
+            name: product.props?.name ?? 'No name available',
+            description:
+                product.props?.description ?? 'No description available',
+            finalPrice: product.props?.finalPrice ?? 0,
+            stock: product.props?.stock ?? 0,
+            sku: product.props?.sku ?? 'No SKU',
+            height: product.props?.height ?? 0,
+            width: product.props?.width ?? 0,
+            length: product.props?.length ?? 0,
+            weight: product.props?.weight ?? 0,
+            onSale: product.props?.onSale ?? false,
+            isFeatured: product.props?.isFeatured ?? false,
+            hasVariants: product.props?.hasVariants ?? false,
+            isNew: product.props?.isNew ?? false,
+            images: product.props?.images ?? [],
+            slug: data.slug?.value ?? '',
+            brandName: data.brandName ?? 'N/A',
+
+            // Transform product sizes into a simpler structure
+            productSizes:
+                data.sizes?.map((size: any) => ({
+                    id: size.id ?? '',
+                    name: size.name ?? 'Unknown',
+                })) ?? [],
+
+            // Transform product categories into a simpler structure
+            productCategories: (product.props?.productCategories ?? []).map((category: any) => {
+                if (category && typeof category === 'object') {
+                    return {
+                        id: category.id?.value ?? '',
+                        name: category.name ?? 'Unknown',
+                        imageUrl: category.imageUrl ?? '',
+                    };
+                } else {
+                    console.warn('Unexpected category format:', category);
+                    return {
+                        id: '',
+                        name: 'Unknown',
+                        imageUrl: '',
+                    };
+                }
+            }),
+            
+
+            // Transform product variants into a simpler structure
+            productVariants:
+                data.variants?.map((variant: any) => ({
+                    id: variant.id ?? '',
+                    sizeId: variant.sizeId ?? '',
+                    stock: variant.stock ?? 0,
+                    price: variant.price ?? 0,
+                    images: variant.images ?? [],
+                    sku: variant.sku ?? 'No SKU',
+                })) ?? [],
+        };
+        console.log(
+            'Transformed Product Categories:',
+            JSON.stringify(productDetails.productCategories, null, 2)
+        );
+
+        return productDetails;
+    } catch (error) {
+        console.error('Error fetching product by slug:', error);
+        return null; // Return null in case of an error
+    }
 }
 
 export async function getProductsFeatures(): Promise<Produto[]> {
@@ -251,7 +379,6 @@ export async function getProductsFeatures(): Promise<Produto[]> {
         console.log('data: getProductsFeatures ', data.products);
 
         return data.products;
-        
     } catch (error) {
         console.error('Erro ao buscar produtos: ', error);
         throw error;

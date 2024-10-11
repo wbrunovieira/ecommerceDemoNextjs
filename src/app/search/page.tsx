@@ -10,6 +10,7 @@ import { useSelectionStore } from '@/context/store';
 import { useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 
 interface ProductCategory {
     id: {
@@ -143,61 +144,65 @@ const SearchResults: NextPage = () => {
     );
 
     return (
-        <Container>
-            <section
-                className="flex mt-2 gap-8"
-                ref={containerRef as React.RefObject<HTMLDivElement>}
-            >
-                <div className="flex flex-col card"></div>
-                <div className="container mx-auto card">
-                    <h1 className="text-2xl font-bold mb-4">
-                        Resultados da pesquisa para {query}
-                    </h1>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {products.map((product) => (
-                            <Link
-                                key={product.id}
-                                href={`/product/${product.slug}`}
-                                passHref
-                            >
-                                <Card
-                                    id={product.id}
-                                    title={product.name}
-                                    categories={product.productCategories.map(
-                                        (category) => ({
-                                            category: { name: category.name },
-                                        })
-                                    )}
-                                    precoAntigo={
-                                        product.onSale
-                                            ? product.price
-                                            : undefined
-                                    }
-                                    precoNovo={
-                                        product.FinalPrice || product.price
-                                    }
-                                    emPromocao={product.onSale}
-                                    desconto={product.discount}
-                                    imageSRC={product.images[0]}
-                                    eNovidade={product.isNew}
-                                    brandName={product.brandName}
-                                    brandLogo={product.brandLogo}
-                                    slug={product.slug}
-                                    hasVariants={product.hasVariants}
-                                    height={product.height}
-                                    width={product.width}
-                                    length={product.length}
-                                    weight={product.weight}
-                                    onButtonClick={() =>
-                                        handleButtonClick(product.slug)
-                                    }
-                                />
-                            </Link>
-                        ))}
+
+        <SuspenseWrapper>
+        
+            <Container>
+                <section
+                    className="flex mt-2 gap-8"
+                    ref={containerRef as React.RefObject<HTMLDivElement>}
+                >
+                    <div className="flex flex-col card"></div>
+                    <div className="container mx-auto card">
+                        <h1 className="text-2xl font-bold mb-4">
+                            Resultados da pesquisa para {query}
+                        </h1>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                            {products.map((product) => (
+                                <Link
+                                    key={product.id}
+                                    href={`/product/${product.slug}`}
+                                    passHref
+                                >
+                                    <Card
+                                        id={product.id}
+                                        title={product.name}
+                                        categories={product.productCategories.map(
+                                            (category) => ({
+                                                category: { name: category.name },
+                                            })
+                                        )}
+                                        precoAntigo={
+                                            product.onSale
+                                                ? product.price
+                                                : undefined
+                                        }
+                                        precoNovo={
+                                            product.FinalPrice || product.price
+                                        }
+                                        emPromocao={product.onSale}
+                                        desconto={product.discount}
+                                        imageSRC={product.images[0]}
+                                        eNovidade={product.isNew}
+                                        brandName={product.brandName}
+                                        brandLogo={product.brandLogo}
+                                        slug={product.slug}
+                                        hasVariants={product.hasVariants}
+                                        height={product.height}
+                                        width={product.width}
+                                        length={product.length}
+                                        weight={product.weight}
+                                        onButtonClick={() =>
+                                            handleButtonClick(product.slug)
+                                        }
+                                    />
+                                </Link>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
-        </Container>
+                </section>
+            </Container>
+        </SuspenseWrapper>
     );
 };
 

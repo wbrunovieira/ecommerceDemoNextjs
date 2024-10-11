@@ -1,4 +1,5 @@
 'use client';
+import SuspenseWrapper from '@/components/SuspenseWrapper';
 import { useToast } from '@/components/ui/use-toast';
 import { useSearchParams } from 'next/navigation';
 
@@ -54,32 +55,36 @@ const VerifyEmail = () => {
     }, [token, toast,BASE_URL]);
 
     return (
-        <div className="flex md:min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 mt-6 p-10 sm:p-6 lg:p-8">
-            <div className="bg-white dark:bg-dark-secondary-gradient p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5 text-center">
-                {verificationStatus === 'verifying' && (
-                    <p className="text-lg font-semibold text-gray-800 dark:text-white">
-                        Verificando seu e-mail...
+        <SuspenseWrapper>
+        
+
+            <div className="flex md:min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 mt-6 p-10 sm:p-6 lg:p-8">
+                <div className="bg-white dark:bg-dark-secondary-gradient p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5 text-center">
+                    {verificationStatus === 'verifying' && (
+                        <p className="text-lg font-semibold text-gray-800 dark:text-white">
+                            Verificando seu e-mail...
+                        </p>
+                    )}
+                    {verificationStatus === 'success' && (
+                        <p className="text-lg font-semibold text-green-600 dark:text-green-400">
+                            E-mail verificado com sucesso!
+                        </p>
+                    )}
+                    {verificationStatus === 'failure' && (
+                        <p className="text-lg font-semibold text-red-600 dark:text-red-400">
+                            Falha na verificação do e-mail.
+                        </p>
+                    )}
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-4">
+                        {verificationStatus === 'verifying'
+                            ? 'Por favor, aguarde enquanto verificamos seu e-mail...'
+                            : verificationStatus === 'success'
+                            ? 'Sua conta já está pronta para ser utilizada.'
+                            : 'Por favor, verifique o link ou entre em contato com o suporte.'}
                     </p>
-                )}
-                {verificationStatus === 'success' && (
-                    <p className="text-lg font-semibold text-green-600 dark:text-green-400">
-                        E-mail verificado com sucesso!
-                    </p>
-                )}
-                {verificationStatus === 'failure' && (
-                    <p className="text-lg font-semibold text-red-600 dark:text-red-400">
-                        Falha na verificação do e-mail.
-                    </p>
-                )}
-                <p className="text-sm text-gray-600 dark:text-gray-300 mt-4">
-                    {verificationStatus === 'verifying'
-                        ? 'Por favor, aguarde enquanto verificamos seu e-mail...'
-                        : verificationStatus === 'success'
-                        ? 'Sua conta já está pronta para ser utilizada.'
-                        : 'Por favor, verifique o link ou entre em contato com o suporte.'}
-                </p>
+                </div>
             </div>
-        </div>
+        </SuspenseWrapper>
     );
 };
 
