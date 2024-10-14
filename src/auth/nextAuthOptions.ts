@@ -18,47 +18,74 @@ export const nextAuthOptions: NextAuthOptions = {
                 email: { label: 'email', type: 'text' },
                 password: { label: 'password', type: 'password' },
             },
-            async authorize(credentials, req) {
+            async authorize(credentials) {
                 if (!credentials) {
                     return null;
                 }
 
-                console.log('credentials.email ', credentials.email);
-                const responseCheck = await fetch(
-                    `${BASE_URL}/accounts/check'`,
-                    {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: credentials.email }),
+                try {
+
+                    console.log('credentials.email ', credentials.email);
+
+                    const responseCheck = await fetch(
+                        `${BASE_URL}/accounts/check`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: credentials.email }),
+                        }
+                    );
+                    console.log('responseCheck', responseCheck);
+
+                    const data = await responseCheck.json();
+                    const userExists = data.found;
+    
+                    console.log('userExists', userExists);
+
+                    if (!userExists && credentials.name) {
+                        console.log('userExists nao existe vamos criar');
+                        const responseCreate = await fetch(`${BASE_URL}/accounts`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                name: credentials.name,
+                                email: credentials.email,
+                                password: credentials.password,
+                                role: 'user',
+                            }),
+                        });
+                        console.log('criado responseCreate', responseCreate);
+    
+                        if (!responseCreate.ok) {
+                            return null;
+                        }
+    
+                        const user = await responseCreate.json();
+                        console.log('criado user', user);
+    
+                        return {
+                            user: {
+                                id: user.user.id,
+                                name: user.user.name,
+                                email: user.user.email,
+                            },
+                            accessToken: user.access_token,
+                            id: user.user.id,
+                            name: user.user.name,
+                        };
                     }
-                );
-                console.log('responseCheck', responseCheck);
 
-                const data = await responseCheck.json();
-                const userExists = data.found;
-
-                console.log('userExists', userExists);
-
-                if (!userExists && credentials.name) {
-                    console.log('userExists nao existe vamos criar');
-                    const responseCreate = await fetch(`${BASE_URL}/accounts`, {
+                    const response = await fetch(`${BASE_URL}/sessions`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            name: credentials.name,
-                            email: credentials.email,
-                            password: credentials.password,
-                            role: 'user',
-                        }),
+                        body: JSON.stringify(credentials),
                     });
-                    console.log('criado responseCreate', responseCreate);
-
-                    if (!responseCreate.ok) {
+    
+                    if (!response.ok) {
                         return null;
                     }
-
-                    const user = await responseCreate.json();
-                    console.log('criado user', user);
+    
+                    const user = await response.json();
 
                     return {
                         user: {
@@ -69,32 +96,17 @@ export const nextAuthOptions: NextAuthOptions = {
                         accessToken: user.access_token,
                         id: user.user.id,
                         name: user.user.name,
-                    };
-                }
-
-                const response = await fetch(`${BASE_URL}/sessions`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(credentials),
-                });
-
-                if (!response.ok) {
-                    return null;
-                }
-
-                const user = await response.json();
-
-                return {
-                    user: {
-                        id: user.user.id,
-                        name: user.user.name,
                         email: user.user.email,
-                    },
-                    accessToken: user.access_token,
-                    id: user.user.id,
-                    name: user.user.name,
-                    email: user.user.email,
-                };
+                    };
+                    
+                } catch (error) {
+
+                    console.error('Authorize error:', error);
+                    return null;
+                    
+                }
+
+           
             },
         }),
         GoogleProvider({
@@ -118,68 +130,69 @@ export const nextAuthOptions: NextAuthOptions = {
             user,
             account,
             profile,
-        }: {
+          }: {
             user: any;
             account: any;
             profile?: ExtendedProfile;
-        }) {
-            if (account?.provider === 'google') {
+          }): Promise<boolean | string> {
+            try {
+              if (account?.provider === 'google') {
                 const endpointCheck = `${BASE_URL}/accounts/check`;
                 const endpointCreate = `${BASE_URL}/accounts/google`;
-
+          
                 const payload = {
-                    name: profile?.name,
-                    email: profile?.email,
-                    googleUserId: profile?.sub,
-                    profileImageUrl: profile?.picture || '',
+                  name: profile?.name,
+                  email: profile?.email,
+                  googleUserId: profile?.sub,
+                  profileImageUrl: profile?.picture || '',
                 };
-
+          
                 const responseCheck = await fetch(endpointCheck, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ email: profile?.email }),
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ email: profile?.email }),
                 });
-
+          
                 const responseText = await responseCheck.text();
                 const response = JSON.parse(responseText);
                 const { found, user: existingUser } = response;
-
+          
                 if (responseCheck.ok && found) {
-                    user.id = existingUser.id;
-
-                    user.email = existingUser.email;
-                    user.name = existingUser.name;
-                    return true;
+                  user.id = existingUser.id;
+                  user.email = existingUser.email;
+                  user.name = existingUser.name;
+                  return true; 
                 } else if (responseCheck.ok && !found) {
-                    const responseCreate = await fetch(endpointCreate, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(payload),
-                    });
-
-                    if (!responseCreate.ok) {
-                        console.error('Failed to create user');
-                        return false;
-                    }
-
-                    const createdUser = await responseCreate.json();
-
-                    user.id = createdUser.user._id.value;
-
-                    return true;
+                  const responseCreate = await fetch(endpointCreate, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload),
+                  });
+          
+                  if (!responseCreate.ok) {
+                    console.error('Failed to create user');
+                    return false; 
+                  }
+          
+                  const createdUser = await responseCreate.json();
+                  user.id = createdUser.user._id.value;
+                  return true; 
                 }
+              }
+          
+              
+              return account.provider === 'credentials' ? !!user : true;
+            } catch (error) {
+              console.error('Sign-in error:', error);
+              return false; 
             }
+          }
+          ,
 
-            if (account?.provider === 'credentials') {
-                return !!user;
-            }
-
-            return true;
-        },
         async jwt({
             token,
             user,

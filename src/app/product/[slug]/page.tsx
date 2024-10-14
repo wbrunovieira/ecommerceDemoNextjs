@@ -128,6 +128,8 @@ const ProductPage = async ({ params }: ParamsProps) => {
             return <div>Desculpe, não encontramos a página do produto.</div>;
         }
 
+        console.log('productDetails veio do getProductBySlug',productDetails)
+
         const productId = productDetails.id;
 
         if (!productId) {
@@ -155,10 +157,10 @@ const ProductPage = async ({ params }: ParamsProps) => {
                                 id={productDetails.id}
                                 title={productDetails.name}
                                 description={productDetails.description}
-                                material="N/A" // Replace this with the correct value if available
-                                fabricante={productDetails.brandName} // Now using brandName from productDetails
+                                material="N/A" 
+                                fabricante={productDetails.brandName} 
                                 price={productDetails.finalPrice}
-                                colors={[]} // Colors are empty in the given API response example
+                                colors={productDetails.productColors ?? []} 
                                 sizes={productDetails.productSizes}
                                 categories={productDetails.productCategories}
                                 images={productDetails.images}
@@ -173,31 +175,7 @@ const ProductPage = async ({ params }: ParamsProps) => {
                                 weight={productDetails.weight}
                                 slug={productDetails.slug}
                             />
-                            {/* <Product
-                                id={productId}
-                                title={productName}
-                                
-                                categories={productCategories}
-                                fabricante={productBrand ?? 'N/A'}
-                                price={productFinalPrice ?? 0}
-                                colors={productColors}
-                                sizes={productSizes}
-                                images={productImages}
-                                description={
-                                    productDescription ??
-                                    'No description available.'
-                                }
-                                stock={productDetails.stock}
-                                variants={productDetails.productVariants}
-                                similarProducts={similarProducts}
-                                width={width}
-                                height={height}
-                                length={length}
-                                weight={weight}
-                                slug={slug}
-                                hasVariants={hasVariants}
-                                productIdVariant={productIdVariant}
-                            /> */}
+                         
                         </div>
                     </section>
                 </Container>

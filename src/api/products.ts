@@ -117,6 +117,7 @@ interface ProductDetails {
     images: string[];
     slug: string;
     productSizes: { id: string; name: string }[];
+    productColors: { id: string; name: string; hex: string }[];
     productCategories: { id: string; name: string; imageUrl: string }[];
     productVariants: {
         id: string;
@@ -252,22 +253,12 @@ export async function getProduct(id: string) {
     return (await response.json()) as ProductType;
 }
 
-// export async function getProductBySlug(
-//     slug: string
-// ): Promise<ProductSlugResponse> {
-//     const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
-//     const data: ProductSlugResponse = await response.json();
-
-//     return data;
-// }
-
 export async function getProductBySlug(
     slug: string
 ): Promise<ProductDetails | null> {
     try {
         const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
 
-        // Check if the response is successful
         if (!response.ok) {
             throw new Error(
                 `Failed to fetch product. Status: ${response.status}`
@@ -278,7 +269,6 @@ export async function getProductBySlug(
 
         console.log('Raw Product Data:', JSON.stringify(data, null, 2));
 
-        // Basic validation to ensure expected properties exist
         if (!data || !data.product) {
             throw new Error('Invalid product data received');
         }
@@ -289,7 +279,13 @@ export async function getProductBySlug(
             JSON.stringify(product.props?.productCategories, null, 2)
         );
 
-        // Extract and transform the product details
+        const productColors =
+            product.props?.productColors?.map((color: any) => ({
+                id: color.id?.value ?? '',
+                name: color.name ?? 'Unknown',
+                hex: color.hex ?? '#000000',
+            })) ?? [];
+
         const productDetails: ProductDetails = {
             id: product._id?.value ?? '',
             name: product.props?.name ?? 'No name available',
@@ -310,33 +306,31 @@ export async function getProductBySlug(
             slug: data.slug?.value ?? '',
             brandName: data.brandName ?? 'N/A',
 
-            // Transform product sizes into a simpler structure
             productSizes:
                 data.sizes?.map((size: any) => ({
                     id: size.id ?? '',
                     name: size.name ?? 'Unknown',
                 })) ?? [],
 
-            // Transform product categories into a simpler structure
-            productCategories: (product.props?.productCategories ?? []).map((category: any) => {
-                if (category && typeof category === 'object') {
-                    return {
-                        id: category.id?.value ?? '',
-                        name: category.name ?? 'Unknown',
-                        imageUrl: category.imageUrl ?? '',
-                    };
-                } else {
-                    console.warn('Unexpected category format:', category);
-                    return {
-                        id: '',
-                        name: 'Unknown',
-                        imageUrl: '',
-                    };
+            productCategories: (product.props?.productCategories ?? []).map(
+                (category: any) => {
+                    if (category && typeof category === 'object') {
+                        return {
+                            id: category.id?.value ?? '',
+                            name: category.name ?? 'Unknown',
+                            imageUrl: category.imageUrl ?? '',
+                        };
+                    } else {
+                        console.warn('Unexpected category format:', category);
+                        return {
+                            id: '',
+                            name: 'Unknown',
+                            imageUrl: '',
+                        };
+                    }
                 }
-            }),
-            
+            ),
 
-            // Transform product variants into a simpler structure
             productVariants:
                 data.variants?.map((variant: any) => ({
                     id: variant.id ?? '',
@@ -346,6 +340,8 @@ export async function getProductBySlug(
                     images: variant.images ?? [],
                     sku: variant.sku ?? 'No SKU',
                 })) ?? [],
+
+            productColors: productColors,
         };
         console.log(
             'Transformed Product Categories:',
@@ -355,7 +351,7 @@ export async function getProductBySlug(
         return productDetails;
     } catch (error) {
         console.error('Error fetching product by slug:', error);
-        return null; // Return null in case of an error
+        return null;
     }
 }
 
