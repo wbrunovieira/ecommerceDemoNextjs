@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import Image from 'next/image'
+import Image from 'next/image';
 
 import {
     differenceInDays,
@@ -258,6 +258,7 @@ const AdminPage = () => {
 
     const [searchId, setSearchId] = useState('');
     const [searchName, setSearchName] = useState('');
+    
 
     const [currentView, setCurrentView] = useState('products');
     const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -279,57 +280,69 @@ const AdminPage = () => {
 
     const fetchColors = useCallback(async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/colors/all?page=1&pageSize=10`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Accept: 'application/json',
-                },
-            });
+            const response = await axios.get(
+                `${BASE_URL}/colors/all?page=1&pageSize=10`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Accept: 'application/json',
+                    },
+                }
+            );
             setColors(response.data.colors);
         } catch (error) {
             console.error('Erro ao buscar as cores: ', error);
         }
     }, [BASE_URL]);
-    
+
     const fetchSizes = useCallback(async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/size/all?page=1&pageSize=20`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axios.get(
+                `${BASE_URL}/size/all?page=1&pageSize=20`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
             setSizes(response.data.size);
         } catch (error) {
             console.error('Erro ao buscar os tamanhos: ', error);
         }
     }, [BASE_URL]);
-    
+
     const fetchCategories = useCallback(async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/category/all?page=1&pageSize=50`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axios.get(
+                `${BASE_URL}/category/all?page=1&pageSize=50`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
             setCategories(response.data.categories);
         } catch (error) {
             console.error('Erro ao buscar as categorias: ', error);
         }
     }, [BASE_URL]);
-    
+
     const fetchBrands = useCallback(async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/brands/all?page=1&pageSize=10`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await axios.get(
+                `${BASE_URL}/brands/all?page=1&pageSize=10`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
             setBrands(response.data.brands);
         } catch (error) {
             console.error('Erro ao buscar os fabricantes: ', error);
         }
     }, [BASE_URL]);
-    
+
     const fetchCustomers = useCallback(async () => {
         try {
             const response = await axios.get(`${BASE_URL}/customers/all`, {
@@ -337,11 +350,16 @@ const AdminPage = () => {
                     'Content-Type': 'application/json',
                 },
             });
-            setCustomers(response.data.customers);
+            if (response.data && Array.isArray(response.data.customers)) {
+                setCustomers(response.data.customers);
+            } else {
+                console.error('Dados inesperados da API', response.data);
+            }
         } catch (error) {
             console.error('Erro ao buscar os clientes: ', error);
         }
     }, [BASE_URL]);
+    
 
     useEffect(() => {
         fetchBrands();
@@ -350,7 +368,6 @@ const AdminPage = () => {
         fetchCategories();
         fetchCustomers();
     }, [fetchBrands, fetchColors, fetchSizes, fetchCategories, fetchCustomers]);
-    
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -999,18 +1016,24 @@ const AdminPage = () => {
         },
     } satisfies ChartConfig;
 
+    const chartConfigCustomer = {
+        axisLine: false,
+        tickMargin: 10,
+    } satisfies ChartConfig;
+
     const customerData = {
-        labels: customers.map((customer) => customer.name),
+        labels: customers && Array.isArray(customers) ? customers.map((customer) => customer.name) : [],
         datasets: [
             {
                 label: 'Clientes',
-                data: customers.map((customer) => customer.totalSpent),
+                data: customers && Array.isArray(customers) ? customers.map((customer) => customer.totalSpent) : [],
                 backgroundColor: 'rgba(200, 10, 255, 1)',
                 borderColor: 'rgba(153, 102, 255, 1)',
                 borderWidth: 1,
             },
         ],
     };
+
     const chartData = [
         { month: 'January', desktop: 186, mobile: 80 },
         { month: 'February', desktop: 305, mobile: 200 },
@@ -1282,7 +1305,7 @@ const AdminPage = () => {
                                                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                             Categoria
                                                         </label>
-                                                      
+
                                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                                                             {categories.map(
                                                                 (category) => (
@@ -1376,16 +1399,32 @@ const AdminPage = () => {
                                                         </label>
 
                                                         <div className="flex space-x-2 mt-2">
-                                                        {editProductData.images.map((imageUrl, index) => (
-                                                                <Image
-                                                                    key={index}
-                                                                    src={imageUrl}
-                                                                    alt={`Produto imagem ${index + 1}`}
-                                                                    width={64} // Largura da imagem (em pixels)
-                                                                    height={64} // Altura da imagem (em pixels)
-                                                                    className="object-cover border border-gray-300 rounded"
-                                                                />
-                                                            ))}
+                                                            {editProductData.images.map(
+                                                                (
+                                                                    imageUrl,
+                                                                    index
+                                                                ) => (
+                                                                    <Image
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        src={
+                                                                            imageUrl
+                                                                        }
+                                                                        alt={`Produto imagem ${
+                                                                            index +
+                                                                            1
+                                                                        }`}
+                                                                        width={
+                                                                            64
+                                                                        } 
+                                                                        height={
+                                                                            64
+                                                                        } 
+                                                                        className="object-cover border border-gray-300 rounded"
+                                                                    />
+                                                                )
+                                                            )}
                                                         </div>
                                                     </div>
 
@@ -2440,6 +2479,27 @@ const AdminPage = () => {
                                         </BarChart>
                                     </ChartContainer>
                                 </div>
+
+                                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+            <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                Gastos por Cliente
+            </h2>
+
+            <ChartContainer config={chartConfig} className="min-h-[50px] w-full">
+                <BarChart data={chartData}>
+                    <XAxis
+                        dataKey="name"
+                        tickLine={false}
+                        tickFormatter={(value) => value.slice(0, 3)}
+                    />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="totalSpent" fill="rgba(200, 10, 255, 1)" radius={4} />
+                </BarChart>
+            </ChartContainer>
+        </div>
+
+
                             </div>
 
                             <div className="mt-8">
