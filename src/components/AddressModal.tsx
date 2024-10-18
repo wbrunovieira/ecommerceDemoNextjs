@@ -32,6 +32,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
 }) => {
     const [isAddingNew, setIsAddingNew] = useState(addresses.length === 0);
     const [newAddress, setNewAddress] = useState<Partial<Address['props']>>({});
+    const [cepError, setCepError] = useState<string | null>(null);
 
     const { data: session } = useSession();
 
@@ -94,6 +95,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
     };
 
     console.log('viacep out newAddress', newAddress);
+
     const handleCepChange = async (cep: string) => {
         console.log('entrou handleCepChange');
         const cleanedCep = cep.replace(/\D/g, '');
@@ -102,6 +104,9 @@ const AddressModal: React.FC<AddressModalProps> = ({
             ...prevAddress,
             zipCode: cleanedCep,
         }));
+
+        setCepError(null);
+
         if (cleanedCep.length === 8) {
             try {
                 const response = await fetch(
@@ -119,10 +124,15 @@ const AddressModal: React.FC<AddressModalProps> = ({
                         country: 'Brasil',
                     }));
                 } else {
-                    // Handle CEP not found
+                    setCepError(
+                        'CEP não encontrado. Por favor, verifique o número e tente novamente.'
+                    );
                 }
             } catch (error) {
                 console.error('Error fetching address from CEP:', error);
+                setCepError(
+                    'Erro ao buscar o endereço. Tente novamente mais tarde.'
+                );
             }
         }
     };
@@ -153,6 +163,11 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                         handleCepChange(e.target.value)
                                     }
                                 />
+                                {cepError && (
+                                    <p className="text-sm text-red-500 mt-1">
+                                        {cepError}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
