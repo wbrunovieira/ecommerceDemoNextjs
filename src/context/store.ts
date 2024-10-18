@@ -565,6 +565,9 @@ export const useCartStore = create<CartState>(
                     const session = await getSession();
                     const authToken = session?.accessToken;
 
+                    console.log('authToken no saveCartToBackend', authToken);
+                    console.log('session no saveCartToBackend', session);
+
                     const existsResponse = await axios.get(
                         `${BASE_URL}/cart/${userId}/exists`,
                         {

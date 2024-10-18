@@ -2,14 +2,17 @@ import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider from 'next-auth/providers/google';
 import { Profile } from 'next-auth';
+import { Session, User } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
 
 interface ExtendedProfile extends Profile {
-    picture?: string;
+    picture?: string | null;
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
 export const nextAuthOptions: NextAuthOptions = {
+    debug: true,
     providers: [
         CredentialsProvider({
             name: 'credentials',
@@ -19,9 +22,7 @@ export const nextAuthOptions: NextAuthOptions = {
                 password: { label: 'password', type: 'password' },
             },
             async authorize(credentials) {
-                if (!credentials) {
-                    return null; 
-                }
+                if (!credentials) return null;
 
                 try {
                     console.log('Tentando logar com:', credentials.email);
@@ -36,61 +37,85 @@ export const nextAuthOptions: NextAuthOptions = {
                     );
 
                     if (!responseCheck.ok) {
-                        return null; 
+                        console.error('Erro ao verificar usuário');
+                        return null;
                     }
 
                     const data = await responseCheck.json();
-                    const userExists = data.found;
 
-                    if (!userExists && credentials.name) {
-                        console.log('Criando novo usuário...');
+                    if (data.found) {
+                        console.log('Usuário encontrado, retornando dados...');
 
-                        const responseCreate = await fetch(
-                            `${BASE_URL}/accounts`,
+                        console.log('credentials.email', credentials.email);
+                        console.log(
+                            'credentials.password',
+                            credentials.password
+                        );
+
+                        const responseLogin = await fetch(
+                            `${BASE_URL}/sessions`,
                             {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({
-                                    name: credentials.name,
                                     email: credentials.email,
                                     password: credentials.password,
-                                    role: 'user',
                                 }),
                             }
                         );
 
-                        if (!responseCreate.ok) {
-                            return null; 
+                        console.log('responseLogin', responseLogin);
+
+                        if (!responseLogin.ok) {
+                            console.error('Erro ao fazer login');
+                            return null;
                         }
 
-                        const user = await responseCreate.json();
+                        const loginData = await responseLogin.json();
+
                         return {
-                            id: user.user.id,
-                            name: user.user.name,
-                            email: user.user.email,
-                        }; 
+                            id: data.user.id,
+                            name: data.user.name,
+                            email: data.user.email,
+                            role: data.user.role,
+                            accessToken: loginData.access_token,
+                        };
                     }
 
-                    const response = await fetch(`${BASE_URL}/sessions`, {
+                    console.log(
+                        'Usuário não encontrado, criando novo usuário...'
+                    );
+
+                    const responseCreate = await fetch(`${BASE_URL}/accounts`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(credentials),
+                        body: JSON.stringify({
+                            name: credentials.name,
+                            email: credentials.email,
+                            password: credentials.password,
+                            role: 'user',
+                        }),
                     });
 
-                    if (!response.ok) {
+                    if (responseCreate.status !== 201) {
+                        console.error('Erro ao criar usuário');
                         return null;
                     }
 
-                    const user = await response.json();
+                    const newUser = await responseCreate.json();
+
+                    console.log('Novo usuário criado, retornando dados...');
 
                     return {
-                        id: user.user.id,
-                        name: user.user.name,
-                        email: user.user.email,
-                    }; 
+                        id: newUser.user.id,
+                        name: newUser.user.name,
+                        email: newUser.user.email,
+                        role: newUser.user.role,
+                        accessToken: credentials.password,
+                    };
                 } catch (error) {
                     console.error('Erro na autorização:', error);
-                    return null; 
+                    return null;
                 }
             },
         }),
@@ -145,7 +170,6 @@ export const nextAuthOptions: NextAuthOptions = {
 
                 if (responseCheck.ok && found) {
                     user.id = existingUser.id;
-
                     user.email = existingUser.email;
                     user.name = existingUser.name;
                     return true;
@@ -164,9 +188,7 @@ export const nextAuthOptions: NextAuthOptions = {
                     }
 
                     const createdUser = await responseCreate.json();
-
                     user.id = createdUser.user._id.value;
-
                     return true;
                 }
             }
@@ -181,56 +203,46 @@ export const nextAuthOptions: NextAuthOptions = {
             token,
             user,
             account,
-            profile,
         }: {
-            token: any;
-            user: any;
-            account: any;
-            profile?: ExtendedProfile;
-        }) {
-            if (account) {
-                token.accessToken = account.access_token;
+            token: JWT;
+            user?: User;
+            account?: any;
+        }): Promise<JWT> {
+            console.log('JWT Callback - Start', { token, user, account });
 
-                if (account.provider === 'google' && profile) {
-                    token.id = user.id;
-                    token.picture = profile.picture;
-                    token.email = profile.email;
-                    token.name = profile.name;
-                }
-            }
-
-            if (user) {
+            if (account && user) {
+                token.accessToken = account.access_token || user.accessToken;
                 token.id = user.id;
                 token.name = user.name;
                 token.email = user.email;
-                token.picture = user.image;
-                token.accessToken =
-                    account?.provider === 'google'
-                        ? account.access_token
-                        : user.accessToken;
+                token.picture = user.picture;
+                token.role = user.role || 'user';
             }
 
+            console.log('JWT Callback - Final', token);
             return token;
         },
+        async session({
+            session,
+            token,
+        }: {
+            session: Session;
+            token: JWT;
+        }): Promise<Session> {
+            console.log('Session Callback - Start', { session, token });
 
-        async session({ session, token }) {
-            console.log('session', session);
-            console.log('token', token);
-            if (typeof token.id === 'string') {
-                session.user.id = token.id;
-            } else if (typeof token.sub === 'string') {
-                session.user.id = token.sub;
-            } else {
-                session.user.id = 'default_id';
-            }
-
-            session.user.name = token.name || null;
-            session.user.email = token.email || null;
-            session.user.image = token.picture || null;
+            session.user = {
+                id: typeof token.id === 'string' ? token.id : 'default_id',
+                name: token.name ?? 'Usuário',
+                email: token.email ?? 'email@desconhecido.com',
+                picture: token.picture ?? '',
+                role: typeof token.role === 'string' ? token.role : 'user',
+            };
 
             session.accessToken =
                 typeof token.accessToken === 'string' ? token.accessToken : '';
 
+            console.log('Session Callback - Final', session);
             return session;
         },
     },

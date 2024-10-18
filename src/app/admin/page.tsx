@@ -258,7 +258,6 @@ const AdminPage = () => {
 
     const [searchId, setSearchId] = useState('');
     const [searchName, setSearchName] = useState('');
-    
 
     const [currentView, setCurrentView] = useState('products');
     const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -359,7 +358,6 @@ const AdminPage = () => {
             console.error('Erro ao buscar os clientes: ', error);
         }
     }, [BASE_URL]);
-    
 
     useEffect(() => {
         fetchBrands();
@@ -1016,17 +1014,23 @@ const AdminPage = () => {
         },
     } satisfies ChartConfig;
 
-    const chartConfigCustomer = {
-        axisLine: false,
-        tickMargin: 10,
-    } satisfies ChartConfig;
+    // const chartConfigCustomer = {
+    //     axisLine: false,
+    //     tickMargin: 10,
+    // } satisfies ChartConfig;
 
     const customerData = {
-        labels: customers && Array.isArray(customers) ? customers.map((customer) => customer.name) : [],
+        labels:
+            customers && Array.isArray(customers)
+                ? customers.map((customer) => customer.name)
+                : [],
         datasets: [
             {
                 label: 'Clientes',
-                data: customers && Array.isArray(customers) ? customers.map((customer) => customer.totalSpent) : [],
+                data:
+                    customers && Array.isArray(customers)
+                        ? customers.map((customer) => customer.totalSpent)
+                        : [],
                 backgroundColor: 'rgba(200, 10, 255, 1)',
                 borderColor: 'rgba(153, 102, 255, 1)',
                 borderWidth: 1,
@@ -1417,10 +1421,10 @@ const AdminPage = () => {
                                                                         }`}
                                                                         width={
                                                                             64
-                                                                        } 
+                                                                        }
                                                                         height={
                                                                             64
-                                                                        } 
+                                                                        }
                                                                         className="object-cover border border-gray-300 rounded"
                                                                     />
                                                                 )
@@ -2480,26 +2484,33 @@ const AdminPage = () => {
                                     </ChartContainer>
                                 </div>
 
-                                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-            <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                Gastos por Cliente
-            </h2>
+                                {/* <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+                                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                                        Gastos por Cliente
+                                    </h2>
 
-            <ChartContainer config={chartConfig} className="min-h-[50px] w-full">
-                <BarChart data={chartData}>
-                    <XAxis
-                        dataKey="name"
-                        tickLine={false}
-                        tickFormatter={(value) => value.slice(0, 3)}
-                    />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="totalSpent" fill="rgba(200, 10, 255, 1)" radius={4} />
-                </BarChart>
-            </ChartContainer>
-        </div>
-
-
+                                    <ChartContainer
+                                        config={chartConfig}
+                                        className="min-h-[50px] w-full"
+                                    >
+                                        <BarChart data={chartData}>
+                                            <XAxis
+                                                dataKey="name"
+                                                tickLine={false}
+                                                tickFormatter={(value) =>
+                                                    value.slice(0, 3)
+                                                }
+                                            />
+                                            <Tooltip />
+                                            <Legend />
+                                            <Bar
+                                                dataKey="totalSpent"
+                                                fill="rgba(200, 10, 255, 1)"
+                                                radius={4}
+                                            />
+                                        </BarChart>
+                                    </ChartContainer>
+                                </div> */}
                             </div>
 
                             <div className="mt-8">
