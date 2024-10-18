@@ -123,6 +123,14 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     const handleClickOutside = (event: React.MouseEvent) => {
         const modalElement = document.querySelector('.modal-content');
         if (modalElement && !modalElement.contains(event.target as Node)) {
+            if (
+                (event.target as HTMLElement).closest('button') ||
+                (event.target as HTMLElement).closest('input') ||
+                (event.target as HTMLElement).closest('textarea') ||
+                (event.target as HTMLElement).closest('select')
+            ) {
+                return;
+            }
             onClose();
         }
     };

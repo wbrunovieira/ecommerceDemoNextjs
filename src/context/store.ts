@@ -542,7 +542,7 @@ export const useCartStore = create<CartState>(
                 );
                 const item = {
                     productId: product.id,
-                    cartId: 'undefined',
+
                     quantity: product.quantity,
                     price: product.price,
                     colorId: product.colorId,
