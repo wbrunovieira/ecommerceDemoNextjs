@@ -1,4 +1,4 @@
-// next.config.js
+
 const nextConfig = {
     images: {
         domains: ['lh3.googleusercontent.com', 'cdn.connectplug.com.br'],

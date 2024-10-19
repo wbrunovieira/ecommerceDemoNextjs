@@ -105,6 +105,10 @@ export const nextAuthOptions: NextAuthOptions = {
                     const newUser = await responseCreate.json();
 
                     console.log('Novo usuário criado, retornando dados...');
+                    console.log(
+                        'Novo usuário criado, retornando dados...responseCreate',
+                        newUser
+                    );
 
                     return {
                         id: newUser.user.id,

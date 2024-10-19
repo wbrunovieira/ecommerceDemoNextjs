@@ -144,20 +144,23 @@ const AddressModal: React.FC<AddressModalProps> = ({
 
     return (
         <div className="fixed inset-0 bg-primary bg-opacity-70 flex items-center justify-center z-50 max-w-full w-full ">
-            <div className="md:flex items-center justify-center bg-white rounded-lg p-4 md:p-16 w-full h-full max-w-full m-8 overflow-auto max-w-full md:w-3/5">
+            <div className="md:flex items-center justify-center bg-white rounded-lg p-2 md:p-16 w-full h-full max-w-full m-4 overflow-auto max-w-full md:w-3/5">
                 <h2 className="text-xl text-primary font-bold mb-4 p-4">
                     Onde vamos entregar?
                 </h2>
                 {isAddingNew ? (
                     <div>
-                        <form className="space-y-4 w-full p-8">
+                        <form
+                            className="space-y-2 w-full p-2"
+                            onSubmit={(e) => e.preventDefault()}
+                        >
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
                                     CEP
                                 </label>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary px-1 py-2"
                                     value={newAddress.zipCode || ''}
                                     onChange={(e) =>
                                         handleCepChange(e.target.value)
@@ -176,7 +179,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                 </label>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary px-1 py-2"
                                     value={newAddress.street || ''}
                                     onChange={(e) =>
                                         setNewAddress({
@@ -192,7 +195,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                 </label>
                                 <input
                                     type="number"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary px-1 py-2"
                                     value={newAddress.number || ''}
                                     onChange={(e) =>
                                         setNewAddress({
@@ -208,7 +211,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                 </label>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary px-1 py-2"
                                     value={newAddress.complement || ''}
                                     onChange={(e) =>
                                         setNewAddress({
@@ -224,7 +227,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                 </label>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary px-1 py-2"
                                     value={newAddress.city || ''}
                                     onChange={(e) =>
                                         setNewAddress({
@@ -240,7 +243,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                 </label>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary px-1 py-2"
                                     value={newAddress.state || ''}
                                     onChange={(e) =>
                                         setNewAddress({
@@ -256,7 +259,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                 </label>
                                 <input
                                     type="text"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary"
+                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary px-1 py-2"
                                     value={newAddress.country || 'Brasil'}
                                     onChange={(e) =>
                                         setNewAddress({
@@ -267,7 +270,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                 />
                             </div>
                         </form>
-                        <div className="flex justify-between mt-4">
+                        <div className="flex justify-between mt-4 gap-2">
                             <button
                                 onClick={handleAddNewAddress}
                                 className="bg-primaryDark text-white px-4 py-2 rounded"
