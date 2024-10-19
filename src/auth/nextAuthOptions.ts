@@ -110,12 +110,24 @@ export const nextAuthOptions: NextAuthOptions = {
                         newUser
                     );
 
+                    const responseLogin = await fetch(`${BASE_URL}/sessions`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: credentials.email,
+                            password: credentials.password,
+                        }),
+                    });
+
+                    const loginData = await responseLogin.json();
+
                     return {
                         id: newUser.user.id,
                         name: newUser.user.name,
                         email: newUser.user.email,
                         role: newUser.user.role,
-                        accessToken: credentials.password,
+                        verificationToken: newUser.user.verificationToken,
+                        accessToken: loginData.access_token,
                     };
                 } catch (error) {
                     console.error('Erro na autorização:', error);
