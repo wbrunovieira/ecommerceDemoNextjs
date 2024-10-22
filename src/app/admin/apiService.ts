@@ -72,3 +72,16 @@ export const fetchCustomersApi = async () => {
         throw error;
     }
 };
+export const fetchOrdersApi = async () => {
+    try {
+        const response = await axios.get(`${BASE_URL}/orders/all`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao buscar os clientes: ', error);
+        throw error;
+    }
+};

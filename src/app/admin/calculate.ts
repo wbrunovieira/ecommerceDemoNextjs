@@ -1,6 +1,107 @@
-import { differenceInDays, isSameMonth, isSameWeek, subDays, subMonths, subWeeks } from "date-fns";
-import { Order } from "./interfaces";
+import {
+    differenceInDays,
+    format,
+    isSameDay,
+    isSameMonth,
+    isSameWeek,
+    subDays,
+    subMonths,
+    subWeeks,
+} from 'date-fns';
+import {
+    DaySalesData,
+    Order,
+    WeekSalesData,
+    MonthSalesData,
+} from './interfaces';
 
+export const prepareLast7DaysData = (orders: Order[]) => {
+    const today = new Date();
+    const data: DaySalesData[] = [];
+
+    for (let i = 0; i < 7; i++) {
+        const targetDate = subDays(today, i);
+        let totalSalesForDay = 0;
+
+        orders.forEach((order) => {
+            const paymentDate = new Date(order.props.paymentDate);
+            const orderTotal = order.props.items.reduce(
+                (total, item) => total + item.props.price * item.props.quantity,
+                0
+            );
+
+            if (isSameDay(paymentDate, targetDate)) {
+                totalSalesForDay += orderTotal;
+            }
+        });
+
+        data.push({
+            day: format(targetDate, 'dd/MM'),
+            sales: totalSalesForDay,
+        });
+    }
+
+    return data.reverse(); // Para mostrar os dias de forma crescente (do mais antigo ao mais recente)
+};
+
+export const prepareLast7WeeksData = (orders: Order[]) => {
+    const today = new Date();
+
+    const data: WeekSalesData[] = [];
+
+    for (let i = 0; i < 7; i++) {
+        const startOfWeek = subWeeks(today, i);
+        let totalSalesForWeek = 0;
+
+        orders.forEach((order) => {
+            const paymentDate = new Date(order.props.paymentDate);
+            const orderTotal = order.props.items.reduce(
+                (total, item) => total + item.props.price * item.props.quantity,
+                0
+            );
+
+            if (isSameWeek(paymentDate, startOfWeek)) {
+                totalSalesForWeek += orderTotal;
+            }
+        });
+
+        data.push({
+            week: `Semana ${i + 1}`,
+            sales: totalSalesForWeek,
+        });
+    }
+
+    return data.reverse();
+};
+
+export const prepareLast7MonthsData = (orders: Order[]) => {
+    const today = new Date();
+    const data: MonthSalesData[] = [];
+
+    for (let i = 0; i < 7; i++) {
+        const targetMonth = subMonths(today, i);
+        let totalSalesForMonth = 0;
+
+        orders.forEach((order) => {
+            const paymentDate = new Date(order.props.paymentDate);
+            const orderTotal = order.props.items.reduce(
+                (total, item) => total + item.props.price * item.props.quantity,
+                0
+            );
+
+            if (isSameMonth(paymentDate, targetMonth)) {
+                totalSalesForMonth += orderTotal;
+            }
+        });
+
+        data.push({
+            month: format(targetMonth, 'MM/yyyy'), // Exibe o mês no formato MM/AAAA
+            sales: totalSalesForMonth,
+        });
+    }
+
+    return data.reverse();
+};
 
 export const calculateSales = (orders: Order[]) => {
     const today = new Date();
@@ -21,6 +122,7 @@ export const calculateSales = (orders: Order[]) => {
             (total, item) => total + item.props.price * item.props.quantity,
             0
         );
+        console.log('orderTotal', orderTotal);
 
         if (differenceInDays(today, paymentDate) === 0) {
             dayTotal += orderTotal;
@@ -47,12 +149,21 @@ export const calculateSales = (orders: Order[]) => {
         }
     });
 
-    return { dayTotal, yesterdayTotal, weekTotal, lastWeekTotal, monthTotal, lastMonthTotal };
+    return {
+        dayTotal,
+        yesterdayTotal,
+        weekTotal,
+        lastWeekTotal,
+        monthTotal,
+        lastMonthTotal,
+    };
 };
 
-export const calculatePercentageChange = (current: number, previous: number) => {
+export const calculatePercentageChange = (
+    current: number,
+    previous: number
+) => {
     if (previous === 0) return 'Nenhuma venda nesse periodo';
     const change = ((current - previous) / previous) * 100;
     return change.toFixed(2) + '%';
 };
-

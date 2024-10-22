@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --color-sales: theme(colors.primary);
+    --color-sales-dark: theme(colors.primaryDark);
+  }
+
 @layer base {
     :root {
         --chart-1: 12 76% 61%;

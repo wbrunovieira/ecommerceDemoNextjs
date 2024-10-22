@@ -1,9 +1,25 @@
 import React from 'react';
-import { CardS, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { BarChart, XAxis, CartesianGrid, Bar, Tooltip as ChartTooltip, Legend } from 'recharts';
+import {
+    CardS,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    CardFooter,
+} from '@/components/ui/card';
+import {
+    BarChart,
+    XAxis,
+    CartesianGrid,
+    Bar,
+    Tooltip as ChartTooltip,
+    Legend,
+} from 'recharts';
+import { SalesTabProps } from '../interfaces';
 
-const SalesTab = ({
+const SalesTab: React.FC<SalesTabProps> = ({
     dailySales,
+    orders,
+
     yesterdaySales,
     weeklySales,
     lastWeekSales,
@@ -11,10 +27,10 @@ const SalesTab = ({
     lastMonthSales,
     calculatePercentageChange,
     chartData,
-    chartConfig,
-    orders,
+    weeklyChartData,
+
+    monthlyChartData,
     fetchOrderById,
-    selectedOrder,
 }) => {
     return (
         <div>
@@ -32,7 +48,8 @@ const SalesTab = ({
                         })}
                     </CardContent>
                     <CardFooter>
-                        {calculatePercentageChange(dailySales, yesterdaySales)} que ontem
+                        {calculatePercentageChange(dailySales, yesterdaySales)}{' '}
+                        que ontem
                     </CardFooter>
                 </CardS>
 
@@ -42,10 +59,14 @@ const SalesTab = ({
                         <CardTitle>Vendas essa semana</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {weeklySales.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        {weeklySales.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                        })}
                     </CardContent>
                     <CardFooter>
-                        {calculatePercentageChange(weeklySales, lastWeekSales)} que semana passada
+                        {calculatePercentageChange(weeklySales, lastWeekSales)}{' '}
+                        que semana passada
                     </CardFooter>
                 </CardS>
 
@@ -55,50 +76,93 @@ const SalesTab = ({
                         <CardTitle>Vendas esse mês</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {monthlySales.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                        {monthlySales.toLocaleString('pt-BR', {
+                            style: 'currency',
+                            currency: 'BRL',
+                        })}
                     </CardContent>
                     <CardFooter>
-                        {calculatePercentageChange(monthlySales, lastMonthSales)} que mês passado
+                        {calculatePercentageChange(
+                            monthlySales,
+                            lastMonthSales
+                        )}{' '}
+                        que mês passado
                     </CardFooter>
                 </CardS>
             </div>
 
-            {/* Gráficos por categoria, cores e visitas */}
+            {/* Gráficos por períodos (últimos 7 dias, semanas e meses) */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                {/* Clientes por dispositivo */}
+                {/* Vendas dos últimos 7 dias */}
                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
                     <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                        Clientes
+                        Vendas dos últimos 7 dias
                     </h2>
-                    <BarChart width={600} height={300} data={chartData}>
+                    <BarChart width={300} height={300} data={chartData}>
                         <CartesianGrid vertical={false} />
-                        <XAxis dataKey="month" tickLine={false} tickFormatter={(value) => value.slice(0, 3)} />
+                        <XAxis
+                            dataKey="day"
+                            tickLine={false}
+                            tick={{ fontSize: 8, fill: '#FFFFFF' }}
+                            tickFormatter={(value) => `Dia ${value}`}
+                        />
                         <ChartTooltip />
-                        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-                        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                        <Bar
+                            dataKey="sales"
+                            fill="var(--color-sales)"
+                            radius={4}
+                        />
                         <Legend />
                     </BarChart>
                 </div>
 
-                {/* Visitas no site */}
+                {/* Vendas das últimas 7 semanas */}
                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
                     <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                        Visitas no site
+                        Vendas das últimas 7 semanas
                     </h2>
-                    <BarChart width={600} height={300} data={chartData}>
+                    <BarChart width={300} height={300} data={weeklyChartData}>
                         <CartesianGrid vertical={false} />
-                        <XAxis dataKey="month" tickLine={false} tickFormatter={(value) => value.slice(0, 3)} />
+                        <XAxis
+                            dataKey="week"
+                            tickLine={false}
+                            tick={{ fontSize: 8, fill: '#FFFFFF' }}
+                            tickFormatter={(value) => `${value}`}
+                        />
                         <ChartTooltip />
-                        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-                        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                        <Bar
+                            dataKey="sales"
+                            fill="var(--color-sales)"
+                            radius={4}
+                        />
                         <Legend />
                     </BarChart>
                 </div>
 
-                {/* Mais gráficos podem ser adicionados aqui */}
+                {/* Vendas dos últimos 7 meses */}
+                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                        Vendas dos últimos 7 meses
+                    </h2>
+                    <BarChart width={300} height={300} data={monthlyChartData}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                            dataKey="month"
+                            tickLine={false}
+                            tick={{ fontSize: 8, fill: '#FFFFFF' }}
+                            tickFormatter={(value) => `${value}`}
+                        />
+                        <ChartTooltip />
+                        <Bar
+                            dataKey="sales"
+                            fill="var(--color-sales)"
+                            radius={4}
+                        />
+                        <Legend />
+                    </BarChart>
+                </div>
             </div>
 
-            {/* Últimos Pedidos */}
             <div className="mt-8">
                 <h2 className="text-xl font-semibold">Últimos Pedidos</h2>
                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
@@ -122,12 +186,14 @@ const SalesTab = ({
                         </tr>
                     </thead>
                     <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                        {orders.length > 0 ? (
+                        {orders && orders.length > 0 ? (
                             orders.map((order) => (
                                 <tr
                                     key={order._id.value}
                                     className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
-                                    onClick={() => fetchOrderById(order._id.value)}
+                                    onClick={() =>
+                                        fetchOrderById(order._id.value)
+                                    }
                                 >
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                         {order._id.value}
@@ -136,16 +202,23 @@ const SalesTab = ({
                                         {order.props.userId}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {new Date(order.props.paymentDate).toLocaleDateString()}
+                                        {new Date(
+                                            order.props.paymentDate
+                                        ).toLocaleDateString()}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                         {order.props.items
                                             .reduce(
                                                 (total, item) =>
-                                                    total + item.props.price * item.props.quantity,
+                                                    total +
+                                                    item.props.price *
+                                                        item.props.quantity,
                                                 0
                                             )
-                                            .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                            .toLocaleString('pt-BR', {
+                                                style: 'currency',
+                                                currency: 'BRL',
+                                            })}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                         {order.props.status}
@@ -154,40 +227,16 @@ const SalesTab = ({
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={5} className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200">
+                                <td
+                                    colSpan={5}
+                                    className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200"
+                                >
                                     Nenhum pedido encontrado.
                                 </td>
                             </tr>
                         )}
                     </tbody>
                 </table>
-
-                {/* Detalhes do Pedido Selecionado */}
-                {selectedOrder && (
-                    <div className="mt-8">
-                        <h2 className="text-xl font-semibold">Detalhes do Pedido</h2>
-                        <p>ID: {selectedOrder._id.value}</p>
-                        <p>Cliente: {selectedOrder.props.userId}</p>
-                        <p>Data: {new Date(selectedOrder.props.paymentDate).toLocaleDateString()}</p>
-                        <p>Status: {selectedOrder.props.status}</p>
-                        <p>
-                            Total:{' '}
-                            {selectedOrder.props.items
-                                .reduce((total, item) => total + item.props.price * item.props.quantity, 0)
-                                .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                        </p>
-
-                        <h3 className="text-lg font-semibold mt-4">Itens</h3>
-                        <ul>
-                            {selectedOrder.props.items.map((item) => (
-                                <li key={item._id.value}>
-                                    {item.props.productName} - {item.props.quantity}x{' '}
-                                    {item.props.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                )}
             </div>
         </div>
     );

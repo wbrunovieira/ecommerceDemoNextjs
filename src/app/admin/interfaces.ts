@@ -177,4 +177,72 @@ export interface AdminPanelProps {
     handleBrandInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSaveBrandClick: (brandId: string) => void;
     handleEditBrandClick: (brand: any) => void;
+
+    orders: Order[];
+    fetchOrderById: (orderId: string) => Promise<void>;
+}
+
+export interface SalesTabProps {
+    dailySales: number;
+    yesterdaySales: number;
+    weeklySales: number;
+    lastWeekSales: number;
+    monthlySales: number;
+    lastMonthSales: number;
+    calculatePercentageChange: (current: number, previous: number) => string;
+    chartData: any[]; 
+    weeklyChartData: any[]; 
+    monthlyChartData: any[]; 
+    orders: Order[];
+    fetchOrderById: (orderId: string) => Promise<void>; 
+}
+
+export interface OrderItemProps {
+    orderId: string;
+    productId: string;
+    productName: string;
+    imageUrl: string;
+    quantity: number;
+    price: number;
+}
+
+export interface OrderItem {
+    _id: {
+        value: string;
+    };
+    props: OrderItemProps;
+}
+
+export interface OrderProps {
+    userId: string;
+    items: OrderItem[];
+    status: string;
+    paymentId: string;
+    paymentStatus: string;
+    paymentMethod: string;
+    paymentDate: string; 
+}
+
+export interface OrderApi {
+    _id: {
+        value: string;
+    };
+
+    props: OrderProps;
+}
+
+
+export interface DaySalesData {
+    day: string;
+    sales: number;
+}
+
+export interface WeekSalesData {
+    week: string;
+    sales: number;
+}
+
+export interface MonthSalesData {
+    month: string;
+    sales: number;
 }

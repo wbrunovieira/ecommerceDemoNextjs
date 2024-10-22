@@ -1946,3 +1946,37 @@ handleEditBrandClick={handleEditBrandClick}
 </TabsContent>
 
 </Tabs>
+
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+                {/* Clientes por dispositivo */}
+                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                        Clientes
+                    </h2>
+                    <BarChart width={600} height={300} data={chartData}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis dataKey="month" tickLine={false} tickFormatter={(value) => value.slice(0, 3)} />
+                        <ChartTooltip />
+                        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                        <Legend />
+                    </BarChart>
+                </div>
+
+                {/* Visitas no site */}
+                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                        Visitas no site
+                    </h2>
+                    <BarChart width={600} height={300} data={chartData}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis dataKey="month" tickLine={false} tickFormatter={(value) => value.slice(0, 3)} />
+                        <ChartTooltip />
+                        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+                        <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+                        <Legend />
+                    </BarChart>
+                </div>
+
+                {/* Mais gráficos podem ser adicionados aqui */}
+            </div>

@@ -4,7 +4,7 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { ChartConfig} from '@/components/ui/chart';
+import { ChartConfig } from '@/components/ui/chart';
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminMobileMenu from '@/components/MobileMenuAdm';
@@ -16,15 +16,29 @@ import {
     Customer,
     NotificationState,
     Order,
+    OrderApi,
     Product,
     Size,
 } from './interfaces';
-import { calculatePercentageChange, calculateSales } from './calculate';
+import {
+    calculatePercentageChange,
+    calculateSales,
+    prepareLast7DaysData,
+    prepareLast7MonthsData,
+    prepareLast7WeeksData,
+} from './calculate';
 
 import AdminPanel from './components/AdminPanel';
 import SalesTab from './components/SalesTab';
 import ProductTab from './components/ProductTab';
-import { fetchBrandsApi, fetchCategoriesApi, fetchColorsApi, fetchCustomersApi, fetchSizesApi } from './apiService';
+import {
+    fetchBrandsApi,
+    fetchCategoriesApi,
+    fetchColorsApi,
+    fetchCustomersApi,
+    fetchOrdersApi,
+    fetchSizesApi,
+} from './apiService';
 
 const AdminPage = () => {
     const router = useRouter();
@@ -125,6 +139,10 @@ const AdminPage = () => {
         null
     );
 
+    const [chartData, setChartData] = useState<any[]>([]);
+    const [weeklyChartData, setWeeklyChartData] = useState<any[]>([]);
+    const [monthlyChartData, setMonthlyChartData] = useState<any[]>([]);
+
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     useEffect(() => {
@@ -181,6 +199,31 @@ const AdminPage = () => {
         }
     }, []);
 
+    const mapOrdersResponse = (response: any): OrderApi[] => {
+        return response.map((order: any) => ({
+            _id: order._id,
+            props: {
+                userId: order.props.userId,
+                items: order.props.items.map((item: any) => ({
+                    _id: item._id,
+                    props: {
+                        orderId: item.props.orderId,
+                        productId: item.props.productId,
+                        productName: item.props.productName,
+                        imageUrl: item.props.imageUrl,
+                        quantity: item.props.quantity,
+                        price: item.props.price,
+                    },
+                })),
+                status: order.props.status,
+                paymentId: order.props.paymentId,
+                paymentStatus: order.props.paymentStatus,
+                paymentMethod: order.props.paymentMethod,
+                paymentDate: order.props.paymentDate,
+            },
+        }));
+    };
+
     useEffect(() => {
         fetchBrands();
         fetchColors();
@@ -192,15 +235,21 @@ const AdminPage = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(`${BASE_URL}/orders/all`, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-                const fetchedOrders = response.data;
-                setOrders(fetchedOrders);
+                const response = await fetchOrdersApi();
+                const mappedOrders = mapOrdersResponse(response);
 
-                handleSalesCalculation(fetchedOrders);
+                console.log('fetchedOrders', mappedOrders);
+                setOrders(mappedOrders);
+
+                const last7DaysData = prepareLast7DaysData(mappedOrders);
+                const last7WeeksData = prepareLast7WeeksData(mappedOrders);
+                const last7MonthsData = prepareLast7MonthsData(mappedOrders);
+
+                setChartData(last7DaysData);
+                setWeeklyChartData(last7WeeksData);
+                setMonthlyChartData(last7MonthsData);
+
+                handleSalesCalculation(mappedOrders);
             } catch (err) {
                 console.error('Erro ao buscar pedidos:', err);
             }
@@ -819,15 +868,6 @@ const AdminPage = () => {
         ],
     };
 
-    const chartData = [
-        { month: 'January', desktop: 186, mobile: 80 },
-        { month: 'February', desktop: 305, mobile: 200 },
-        { month: 'March', desktop: 237, mobile: 120 },
-        { month: 'April', desktop: 73, mobile: 190 },
-        { month: 'May', desktop: 209, mobile: 130 },
-        { month: 'June', desktop: 214, mobile: 140 },
-    ];
-
     if (status === 'loading') {
         return <div>Carregando...</div>;
     }
@@ -892,6 +932,8 @@ const AdminPage = () => {
                     handleBrandInputChange={() => {}}
                     handleSaveBrandClick={handleSaveBrandClick}
                     handleEditBrandClick={handleEditBrandClick}
+                    orders={orders}
+                    fetchOrderById={fetchOrderById}
                 />
             </div>
 
@@ -932,10 +974,10 @@ const AdminPage = () => {
                                     calculatePercentageChange
                                 }
                                 chartData={chartData}
-                                chartConfig={chartConfig}
+                                weeklyChartData={weeklyChartData}
+                                monthlyChartData={monthlyChartData}
                                 orders={orders}
                                 fetchOrderById={fetchOrderById}
-                                selectedOrder={selectedOrder}
                             />
                         </TabsContent>
                         <TabsContent value="produto">
