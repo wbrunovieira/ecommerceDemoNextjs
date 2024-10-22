@@ -3,21 +3,9 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
-import Image from 'next/image';
 
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { ChartConfig} from '@/components/ui/chart';
 
-import { ChartConfig, ChartContainer } from '@/components/ui/chart';
-import {
-    CardS,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from '@/components/ui/card';
-import { ChartLegend, ChartLegendContent } from '@/components/ui/chart';
-import { ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminMobileMenu from '@/components/MobileMenuAdm';
 
@@ -32,8 +20,11 @@ import {
     Size,
 } from './interfaces';
 import { calculatePercentageChange, calculateSales } from './calculate';
-import { Sheet } from '@/components/ui/sheet';
+
 import AdminPanel from './components/AdminPanel';
+import SalesTab from './components/SalesTab';
+import ProductTab from './components/ProductTab';
+import { fetchBrandsApi, fetchCategoriesApi, fetchColorsApi, fetchCustomersApi, fetchSizesApi } from './apiService';
 
 const AdminPage = () => {
     const router = useRouter();
@@ -147,85 +138,48 @@ const AdminPage = () => {
 
     const fetchColors = useCallback(async () => {
         try {
-            const response = await axios.get(
-                `${BASE_URL}/colors/all?page=1&pageSize=10`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Accept: 'application/json',
-                    },
-                }
-            );
-            setColors(response.data.colors);
+            const fetchedColors = await fetchColorsApi();
+            setColors(fetchedColors);
         } catch (error) {
             console.error('Erro ao buscar as cores: ', error);
         }
-    }, [BASE_URL]);
+    }, []);
 
     const fetchSizes = useCallback(async () => {
         try {
-            const response = await axios.get(
-                `${BASE_URL}/size/all?page=1&pageSize=20`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-            setSizes(response.data.size);
+            const fetchedSizes = await fetchSizesApi();
+            setSizes(fetchedSizes);
         } catch (error) {
-            console.error('Erro ao buscar os tamanhos: ', error);
+            console.error('Erro ao buscar os tamanhos:', error);
         }
-    }, [BASE_URL]);
+    }, []);
 
     const fetchCategories = useCallback(async () => {
         try {
-            const response = await axios.get(
-                `${BASE_URL}/category/all?page=1&pageSize=50`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-            setCategories(response.data.categories);
+            const fetchedCategories = await fetchCategoriesApi();
+            setCategories(fetchedCategories);
         } catch (error) {
-            console.error('Erro ao buscar as categorias: ', error);
+            console.error('Erro ao buscar as categorias:', error);
         }
-    }, [BASE_URL]);
+    }, []);
 
     const fetchBrands = useCallback(async () => {
         try {
-            const response = await axios.get(
-                `${BASE_URL}/brands/all?page=1&pageSize=10`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-            setBrands(response.data.brands);
+            const fetchedBrands = await fetchBrandsApi();
+            setBrands(fetchedBrands);
         } catch (error) {
-            console.error('Erro ao buscar os fabricantes: ', error);
+            console.error('Erro ao buscar os fabricantes:', error);
         }
-    }, [BASE_URL]);
+    }, []);
 
     const fetchCustomers = useCallback(async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/customers/all`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            if (response.data && Array.isArray(response.data.customers)) {
-                setCustomers(response.data.customers);
-            } else {
-                console.error('Dados inesperados da API', response.data);
-            }
+            const fetchedCustomers = await fetchCustomersApi();
+            setCustomers(fetchedCustomers);
         } catch (error) {
-            console.error('Erro ao buscar os clientes: ', error);
+            console.error('Erro ao buscar os clientes:', error);
         }
-    }, [BASE_URL]);
+    }, []);
 
     useEffect(() => {
         fetchBrands();
@@ -272,6 +226,7 @@ const AdminPage = () => {
         setMonthlySales(monthTotal);
         setLastMonthSales(lastMonthTotal);
     };
+
     const fetchOrderById = async (orderId: string) => {
         try {
             const response = await axios.get(
@@ -957,7 +912,7 @@ const AdminPage = () => {
                     />
                 </div>
 
-                <div className="">
+                <div>
                     <Tabs defaultValue="vendas" className="w-full">
                         <TabsList>
                             <TabsTrigger value="vendas">Por Vendas</TabsTrigger>
@@ -966,718 +921,30 @@ const AdminPage = () => {
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value="vendas">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                                <CardS>
-                                    <CardHeader>
-                                        <CardTitle>Vendas hoje</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        {dailySales.toLocaleString('pt-BR', {
-                                            style: 'currency',
-                                            currency: 'BRL',
-                                        })}
-                                    </CardContent>
-                                    <CardFooter>
-                                        {calculatePercentageChange(
-                                            dailySales,
-                                            yesterdaySales
-                                        )}{' '}
-                                        {dailySales > 0 && (
-                                            <p>
-                                                {calculatePercentageChange(
-                                                    dailySales,
-                                                    yesterdaySales
-                                                )}{' '}
-                                                que ontem
-                                            </p>
-                                        )}
-                                    </CardFooter>
-                                </CardS>
-                                <CardS>
-                                    <CardHeader>
-                                        <CardTitle>
-                                            Vendas essa semana
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p>
-                                            {' '}
-                                            {weeklySales.toLocaleString(
-                                                'pt-BR',
-                                                {
-                                                    style: 'currency',
-                                                    currency: 'BRL',
-                                                }
-                                            )}
-                                        </p>
-                                    </CardContent>
-                                    <CardFooter>
-                                        {weeklySales > 0 && (
-                                            <p>
-                                                {calculatePercentageChange(
-                                                    weeklySales,
-                                                    lastWeekSales
-                                                )}{' '}
-                                                que semana passada
-                                            </p>
-                                        )}
-                                    </CardFooter>
-                                </CardS>
-
-                                <CardS>
-                                    <CardHeader>
-                                        <CardTitle>Vendas esse mes </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p>
-                                            {monthlySales.toLocaleString(
-                                                'pt-BR',
-                                                {
-                                                    style: 'currency',
-                                                    currency: 'BRL',
-                                                }
-                                            )}
-                                        </p>
-                                    </CardContent>
-                                    <CardFooter>
-                                        {monthlySales > 0 && (
-                                            <p>
-                                                {calculatePercentageChange(
-                                                    monthlySales,
-                                                    lastMonthSales
-                                                )}{' '}
-                                                que mês passado
-                                            </p>
-                                        )}
-                                    </CardFooter>
-                                </CardS>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                                        Clientes
-                                    </h2>
-
-                                    <ChartContainer
-                                        config={chartConfig}
-                                        className="min-h-[50px] w-full"
-                                    >
-                                        <BarChart
-                                            accessibilityLayer
-                                            data={chartData}
-                                        >
-                                            <CartesianGrid vertical={false} />
-
-                                            <XAxis
-                                                dataKey="month"
-                                                tickLine={false}
-                                                tickMargin={10}
-                                                axisLine={false}
-                                                tickFormatter={(value) =>
-                                                    value.slice(0, 3)
-                                                }
-                                            />
-                                            <ChartTooltip
-                                                content={
-                                                    <ChartTooltipContent />
-                                                }
-                                            />
-                                            <Bar
-                                                dataKey="desktop"
-                                                fill="var(--color-desktop)"
-                                                radius={4}
-                                            />
-                                            <Bar
-                                                dataKey="mobile"
-                                                fill="var(--color-mobile)"
-                                                radius={4}
-                                            />
-                                            <ChartLegend
-                                                content={<ChartLegendContent />}
-                                            />
-                                        </BarChart>
-                                    </ChartContainer>
-                                </div>
-                                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                                        Clientes
-                                    </h2>
-
-                                    <ChartContainer
-                                        config={chartConfig}
-                                        className="min-h-[50px] w-full"
-                                    >
-                                        <BarChart
-                                            accessibilityLayer
-                                            data={chartData}
-                                        >
-                                            <CartesianGrid vertical={false} />
-
-                                            <XAxis
-                                                dataKey="month"
-                                                tickLine={false}
-                                                tickMargin={10}
-                                                axisLine={false}
-                                                tickFormatter={(value) =>
-                                                    value.slice(0, 3)
-                                                }
-                                            />
-                                            <ChartTooltip
-                                                content={
-                                                    <ChartTooltipContent />
-                                                }
-                                            />
-                                            <Bar
-                                                dataKey="desktop"
-                                                fill="var(--color-desktop)"
-                                                radius={4}
-                                            />
-                                            <Bar
-                                                dataKey="mobile"
-                                                fill="var(--color-mobile)"
-                                                radius={4}
-                                            />
-                                            <ChartLegend
-                                                content={<ChartLegendContent />}
-                                            />
-                                        </BarChart>
-                                    </ChartContainer>
-                                </div>
-                                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                                        Visitas no site
-                                    </h2>
-
-                                    <ChartContainer
-                                        config={chartConfig}
-                                        className="min-h-[50px] w-full"
-                                    >
-                                        <BarChart
-                                            accessibilityLayer
-                                            data={chartData}
-                                        >
-                                            <CartesianGrid vertical={false} />
-
-                                            <XAxis
-                                                dataKey="month"
-                                                tickLine={false}
-                                                tickMargin={10}
-                                                axisLine={false}
-                                                tickFormatter={(value) =>
-                                                    value.slice(0, 3)
-                                                }
-                                            />
-                                            <ChartTooltip
-                                                content={
-                                                    <ChartTooltipContent />
-                                                }
-                                            />
-                                            <Bar
-                                                dataKey="desktop"
-                                                fill="var(--color-desktop)"
-                                                radius={4}
-                                            />
-                                            <Bar
-                                                dataKey="mobile"
-                                                fill="var(--color-mobile)"
-                                                radius={4}
-                                            />
-                                            <ChartLegend
-                                                content={<ChartLegendContent />}
-                                            />
-                                        </BarChart>
-                                    </ChartContainer>
-                                </div>
-
-                                {/* <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                                        Gastos por Cliente
-                                    </h2>
-
-                                    <ChartContainer
-                                        config={chartConfig}
-                                        className="min-h-[50px] w-full"
-                                    >
-                                        <BarChart data={chartData}>
-                                            <XAxis
-                                                dataKey="name"
-                                                tickLine={false}
-                                                tickFormatter={(value) =>
-                                                    value.slice(0, 3)
-                                                }
-                                            />
-                                            <Tooltip />
-                                            <Legend />
-                                            <Bar
-                                                dataKey="totalSpent"
-                                                fill="rgba(200, 10, 255, 1)"
-                                                radius={4}
-                                            />
-                                        </BarChart>
-                                    </ChartContainer>
-                                </div> */}
-                            </div>
-
-                            <div className="mt-8">
-                                <h2 className="text-xl font-semibold">
-                                    Últimos Pedidos
-                                </h2>
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
-                                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                                        <tr>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                ID
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                Cliente
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                Data
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                Total
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                Status
-                                            </th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                        {orders.length > 0 ? (
-                                            orders.map((order) => (
-                                                <tr
-                                                    key={order._id.value}
-                                                    className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
-                                                    onClick={() =>
-                                                        fetchOrderById(
-                                                            order._id.value
-                                                        )
-                                                    }
-                                                >
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {order._id.value}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {order.props.userId}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {new Date(
-                                                            order.props.paymentDate
-                                                        ).toLocaleDateString()}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {order.props.items
-                                                            .reduce(
-                                                                (total, item) =>
-                                                                    total +
-                                                                    item.props
-                                                                        .price *
-                                                                        item
-                                                                            .props
-                                                                            .quantity,
-                                                                0
-                                                            )
-                                                            .toLocaleString(
-                                                                'pt-BR',
-                                                                {
-                                                                    style: 'currency',
-                                                                    currency:
-                                                                        'BRL',
-                                                                }
-                                                            )}
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                        {order.props.status}
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td
-                                                    colSpan={5}
-                                                    className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200"
-                                                >
-                                                    Nenhum pedido encontrado.
-                                                </td>
-                                            </tr>
-                                        )}
-                                        {selectedOrder && (
-                                            <div className="mt-8">
-                                                <h2 className="text-xl font-semibold">
-                                                    Detalhes do Pedido
-                                                </h2>
-                                                <p>
-                                                    ID:{' '}
-                                                    {selectedOrder._id.value}
-                                                </p>
-                                                <p>
-                                                    Cliente:{' '}
-                                                    {selectedOrder.props.userId}
-                                                </p>
-                                                <p>
-                                                    Data:{' '}
-                                                    {new Date(
-                                                        selectedOrder.props.paymentDate
-                                                    ).toLocaleDateString()}
-                                                </p>
-                                                <p>
-                                                    Status:{' '}
-                                                    {selectedOrder.props.status}
-                                                </p>
-                                                <p>
-                                                    Total:{' '}
-                                                    {selectedOrder.props.items
-                                                        .reduce(
-                                                            (total, item) =>
-                                                                total +
-                                                                item.props
-                                                                    .price *
-                                                                    item.props
-                                                                        .quantity,
-                                                            0
-                                                        )
-                                                        .toLocaleString(
-                                                            'pt-BR',
-                                                            {
-                                                                style: 'currency',
-                                                                currency: 'BRL',
-                                                            }
-                                                        )}
-                                                </p>
-
-                                                <h3 className="text-lg font-semibold mt-4">
-                                                    Itens
-                                                </h3>
-                                                <ul>
-                                                    {selectedOrder.props.items.map(
-                                                        (item) => (
-                                                            <li
-                                                                key={
-                                                                    item._id
-                                                                        .value
-                                                                }
-                                                            >
-                                                                {
-                                                                    item.props
-                                                                        .productName
-                                                                }{' '}
-                                                                -{' '}
-                                                                {
-                                                                    item.props
-                                                                        .quantity
-                                                                }
-                                                                x{' '}
-                                                                {item.props.price.toLocaleString(
-                                                                    'pt-BR',
-                                                                    {
-                                                                        style: 'currency',
-                                                                        currency:
-                                                                            'BRL',
-                                                                    }
-                                                                )}
-                                                            </li>
-                                                        )
-                                                    )}
-                                                </ul>
-                                            </div>
-                                        )}
-                                        {/* {orders.map((order) => (
-                                            <tr key={order._id.value}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order._id.value}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.props.userId}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {new Date(
-                                                        order.props.paymentDate
-                                                    ).toLocaleDateString()}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.props.items
-                                                        .reduce(
-                                                            (total, item) =>
-                                                                total +
-                                                                item.props
-                                                                    .price *
-                                                                    item.props
-                                                                        .quantity,
-                                                            0
-                                                        )
-                                                        .toLocaleString(
-                                                            'pt-BR',
-                                                            {
-                                                                style: 'currency',
-                                                                currency: 'BRL',
-                                                            }
-                                                        )}
-                                                </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                    {order.props.status}
-                                                </td>
-                                            </tr>
-                                        ))} */}
-                                    </tbody>
-                                </table>
-                            </div>
+                            <SalesTab
+                                dailySales={dailySales}
+                                yesterdaySales={yesterdaySales}
+                                weeklySales={weeklySales}
+                                lastWeekSales={lastWeekSales}
+                                monthlySales={monthlySales}
+                                lastMonthSales={lastMonthSales}
+                                calculatePercentageChange={
+                                    calculatePercentageChange
+                                }
+                                chartData={chartData}
+                                chartConfig={chartConfig}
+                                orders={orders}
+                                fetchOrderById={fetchOrderById}
+                                selectedOrder={selectedOrder}
+                            />
                         </TabsContent>
                         <TabsContent value="produto">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                                        Fabricante
-                                    </h2>
-
-                                    <ChartContainer
-                                        config={chartConfig}
-                                        className="min-h-[50px] w-full"
-                                    >
-                                        <BarChart
-                                            accessibilityLayer
-                                            data={chartData}
-                                        >
-                                            <CartesianGrid vertical={false} />
-
-                                            <XAxis
-                                                dataKey="month"
-                                                tickLine={false}
-                                                tickMargin={10}
-                                                axisLine={false}
-                                                tickFormatter={(value) =>
-                                                    value.slice(0, 3)
-                                                }
-                                            />
-                                            <ChartTooltip
-                                                content={
-                                                    <ChartTooltipContent />
-                                                }
-                                            />
-                                            <Bar
-                                                dataKey="desktop"
-                                                fill="var(--color-desktop)"
-                                                radius={4}
-                                            />
-                                            <Bar
-                                                dataKey="mobile"
-                                                fill="var(--color-mobile)"
-                                                radius={4}
-                                            />
-                                            <ChartLegend
-                                                content={<ChartLegendContent />}
-                                            />
-                                        </BarChart>
-                                    </ChartContainer>
-                                </div>
-                                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                                        Cores
-                                    </h2>
-
-                                    <ChartContainer
-                                        config={chartConfig}
-                                        className="min-h-[50px] w-full"
-                                    >
-                                        <BarChart
-                                            accessibilityLayer
-                                            data={chartData}
-                                        >
-                                            <CartesianGrid vertical={false} />
-
-                                            <XAxis
-                                                dataKey="month"
-                                                tickLine={false}
-                                                tickMargin={10}
-                                                axisLine={false}
-                                                tickFormatter={(value) =>
-                                                    value.slice(0, 3)
-                                                }
-                                            />
-                                            <ChartTooltip
-                                                content={
-                                                    <ChartTooltipContent />
-                                                }
-                                            />
-                                            <Bar
-                                                dataKey="desktop"
-                                                fill="var(--color-desktop)"
-                                                radius={4}
-                                            />
-                                            <Bar
-                                                dataKey="mobile"
-                                                fill="var(--color-mobile)"
-                                                radius={4}
-                                            />
-                                            <ChartLegend
-                                                content={<ChartLegendContent />}
-                                            />
-                                        </BarChart>
-                                    </ChartContainer>
-                                </div>
-                                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
-                                        Por Categoria
-                                    </h2>
-
-                                    <ChartContainer
-                                        config={chartConfig}
-                                        className="min-h-[50px] w-full"
-                                    >
-                                        <BarChart
-                                            accessibilityLayer
-                                            data={chartData}
-                                        >
-                                            <CartesianGrid vertical={false} />
-
-                                            <XAxis
-                                                dataKey="month"
-                                                tickLine={false}
-                                                tickMargin={10}
-                                                axisLine={false}
-                                                tickFormatter={(value) =>
-                                                    value.slice(0, 3)
-                                                }
-                                            />
-                                            <ChartTooltip
-                                                content={
-                                                    <ChartTooltipContent />
-                                                }
-                                            />
-                                            <Bar
-                                                dataKey="desktop"
-                                                fill="var(--color-desktop)"
-                                                radius={4}
-                                            />
-                                            <Bar
-                                                dataKey="mobile"
-                                                fill="var(--color-mobile)"
-                                                radius={4}
-                                            />
-                                            <ChartLegend
-                                                content={<ChartLegendContent />}
-                                            />
-                                        </BarChart>
-                                    </ChartContainer>
-                                </div>
-                            </div>
-
-                            <div className="mt-8">
-                                <h2 className="text-xl font-semibold">
-                                    Últimos Pedidos
-                                </h2>
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
-                                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                                        <tr>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                ID
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                Cliente
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                Data
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                Total
-                                            </th>
-                                            <th
-                                                scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                            >
-                                                Status
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                            {orders && orders.length > 0 ? (
-                                                orders.map((order) => (
-                                                    <tr key={order._id.value}>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                            {order._id.value}
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                            {order.props.userId}
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                            {new Date(
-                                                                order.props.paymentDate
-                                                            ).toLocaleDateString()}
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                            {order.props.items
-                                                                .reduce(
-                                                                    (
-                                                                        total,
-                                                                        item
-                                                                    ) =>
-                                                                        total +
-                                                                        item
-                                                                            .props
-                                                                            .price *
-                                                                            item
-                                                                                .props
-                                                                                .quantity,
-                                                                    0
-                                                                )
-                                                                .toLocaleString(
-                                                                    'pt-BR',
-                                                                    {
-                                                                        style: 'currency',
-                                                                        currency:
-                                                                            'BRL',
-                                                                    }
-                                                                )}
-                                                        </td>
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                            {order.props.status}
-                                                        </td>
-                                                    </tr>
-                                                ))
-                                            ) : (
-                                                <tr>
-                                                    <td
-                                                        colSpan={5}
-                                                        className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200"
-                                                    >
-                                                        Nenhum pedido
-                                                        encontrado.
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <ProductTab
+                                chartData={chartData}
+                                chartConfig={chartConfig}
+                                orders={orders}
+                                fetchOrderById={fetchOrderById}
+                            />
                         </TabsContent>
                     </Tabs>
                 </div>
