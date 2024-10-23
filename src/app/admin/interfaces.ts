@@ -246,3 +246,16 @@ export interface MonthSalesData {
     month: string;
     sales: number;
 }
+
+export interface CategoryData {
+    categoryName: string; 
+    totalValue: number;   
+}
+export interface ProductData {
+    productName: string; 
+    totalValue: number;   
+}
+export interface BrandData {
+    brandName: string; 
+    totalValue: number;   
+}

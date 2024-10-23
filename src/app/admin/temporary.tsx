@@ -1980,3 +1980,45 @@ handleEditBrandClick={handleEditBrandClick}
 
                 {/* Mais gráficos podem ser adicionados aqui */}
             </div>
+
+
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+{/* Fabricante */}
+<div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">Fabricante</h2>
+    <BarChart width={600} height={300} data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="month" />
+        <Bar dataKey="desktop" fill="#8884d8" />
+        <Bar dataKey="mobile" fill="#82ca9d" />
+        <ChartTooltip />
+        <Legend />
+    </BarChart>
+</div>
+
+{/* Cores */}
+<div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">Cores</h2>
+    <BarChart width={600} height={300} data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="month" />
+        <Bar dataKey="desktop" fill="#8884d8" />
+        <Bar dataKey="mobile" fill="#82ca9d" />
+        <ChartTooltip />
+        <Legend />
+    </BarChart>
+</div>
+
+{/* Por Categoria */}
+<div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
+    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">Por Categoria</h2>
+    <BarChart width={600} height={300} data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="month" />
+        <Bar dataKey="desktop" fill="#8884d8" />
+        <Bar dataKey="mobile" fill="#82ca9d" />
+        <ChartTooltip />
+        <Legend />
+    </BarChart>
+</div>
+</div>
