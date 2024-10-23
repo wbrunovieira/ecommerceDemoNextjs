@@ -1,3 +1,22 @@
+export interface ItemTableProps {
+    orderId: string;
+    productId: string;
+    productName: string;
+    imageUrl: string;
+    quantity: number;
+    price: number;
+}
+
+export interface OrderTableProps {
+    id: string;
+    userName: string;
+    paymentDate: string;
+    total: number;
+    status: string;
+    paymentStatus: string;
+    paymentMethod: string;
+}
+
 export interface Color {
     _id: {
         value: string;
@@ -86,18 +105,23 @@ export interface Product {
 }
 
 export interface Order {
-    _id: {
-        value: string;
-    };
-    props: {
-        userId: string;
-        items: Item[];
-        status: string;
-        paymentId: string;
-        paymentStatus: string;
-        paymentMethod: string;
-        paymentDate: string;
-    };
+    id: string;
+    userId: string;
+    userName: string;
+    cartId: string;
+    customerId: string;
+    items: Array<{
+        productId: string;
+        productName: string;
+        imageUrl: string;
+        quantity: number;
+        price: number;
+    }>;
+    status: string;
+    paymentId: string;
+    paymentStatus: string;
+    paymentMethod: string;
+    paymentDate: string;
 }
 
 export interface Item {
@@ -177,24 +201,11 @@ export interface AdminPanelProps {
     handleBrandInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSaveBrandClick: (brandId: string) => void;
     handleEditBrandClick: (brand: any) => void;
-
-    orders: Order[];
-    fetchOrderById: (orderId: string) => Promise<void>;
 }
 
 export interface SalesTabProps {
-    dailySales: number;
-    yesterdaySales: number;
-    weeklySales: number;
-    lastWeekSales: number;
-    monthlySales: number;
-    lastMonthSales: number;
-    calculatePercentageChange: (current: number, previous: number) => string;
-    chartData: any[]; 
-    weeklyChartData: any[]; 
-    monthlyChartData: any[]; 
-    orders: Order[];
-    fetchOrderById: (orderId: string) => Promise<void>; 
+    ordersTable:OrderTableProps
+    fetchOrderById; 
 }
 
 export interface OrderItemProps {
@@ -220,7 +231,7 @@ export interface OrderProps {
     paymentId: string;
     paymentStatus: string;
     paymentMethod: string;
-    paymentDate: string; 
+    paymentDate: string;
 }
 
 export interface OrderApi {
@@ -230,7 +241,6 @@ export interface OrderApi {
 
     props: OrderProps;
 }
-
 
 export interface DaySalesData {
     day: string;
@@ -248,14 +258,14 @@ export interface MonthSalesData {
 }
 
 export interface CategoryData {
-    categoryName: string; 
-    totalValue: number;   
+    categoryName: string;
+    totalValue: number;
 }
 export interface ProductData {
-    productName: string; 
-    totalValue: number;   
+    productName: string;
+    totalValue: number;
 }
 export interface BrandData {
-    brandName: string; 
-    totalValue: number;   
+    brandName: string;
+    totalValue: number;
 }

@@ -20,13 +20,6 @@ import {
     Product,
     Size,
 } from './interfaces';
-import {
-    calculatePercentageChange,
-    calculateSales,
-    prepareLast7DaysData,
-    prepareLast7MonthsData,
-    prepareLast7WeeksData,
-} from './calculate';
 
 import AdminPanel from './components/AdminPanel';
 import SalesTab from './components/SalesTab';
@@ -36,7 +29,7 @@ import {
     fetchCategoriesApi,
     fetchColorsApi,
     fetchCustomersApi,
-    fetchOrdersApi,
+
     fetchSizesApi,
 } from './apiService';
 
@@ -45,23 +38,19 @@ const AdminPage = () => {
 
     const { data: session, status } = useSession();
 
-    const [dailySales, setDailySales] = useState(0);
-    const [yesterdaySales, setYesterdaySales] = useState(0);
-    const [weeklySales, setWeeklySales] = useState(0);
-    const [lastWeekSales, setLastWeekSales] = useState(0);
-    const [monthlySales, setMonthlySales] = useState(0);
-    const [lastMonthSales, setLastMonthSales] = useState(0);
+    
+    
+    const [orders, setOrders] = useState<Order[]>([]);
+    const [ordersTable, setOrdersTable] = useState<OrderTableProps[]>([]);
 
     const [colors, setColors] = useState<Color[]>([]);
     const [sizes, setSizes] = useState<Size[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
-    const [selectedCategoryId, setSelectedCategoryId] = useState('');
+   
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
 
-    const [orders, setOrders] = useState<Order[]>([]);
-    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [customers, setCustomers] = useState<Customer[]>([]);
 
     const [editingColorId, setEditingColorId] = useState<string | null>(null);
@@ -139,10 +128,6 @@ const AdminPage = () => {
         null
     );
 
-    const [chartData, setChartData] = useState<any[]>([]);
-    const [weeklyChartData, setWeeklyChartData] = useState<any[]>([]);
-    const [monthlyChartData, setMonthlyChartData] = useState<any[]>([]);
-
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     useEffect(() => {
@@ -153,6 +138,52 @@ const AdminPage = () => {
             router.push('/');
         }
     }, [session, status, router]);
+
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetchOrdersApi();
+                const mappedOrders = mapOrdersResponse(response);
+
+                console.log('fetchedOrders', mappedOrders);
+                setOrders(mappedOrders);
+
+               
+                const tableOrders = mapOrdersToTableProps(mappedOrders);
+                setOrdersTable(tableOrders); 
+
+                const last7DaysData = prepareLast7DaysData(mappedOrders);
+                const last7WeeksData = prepareLast7WeeksData(mappedOrders);
+                const last7MonthsData = prepareLast7MonthsData(mappedOrders);
+
+                setChartData(last7DaysData);
+                setWeeklyChartData(last7WeeksData);
+                setMonthlyChartData(last7MonthsData);
+
+                handleSalesCalculation(mappedOrders);
+            } catch (err) {
+                console.error('Erro ao buscar pedidos:', err);
+            }
+        };
+
+        fetchOrders();
+    }, [BASE_URL]);
+
+    const fetchOrderById = async (orderId: string) => {
+        try {
+            const response = await axios.get(
+                `${BASE_URL}/orders/order/${orderId}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            setSelectedOrder(response.data);
+        } catch (err) {
+            console.error('Erro ao buscar detalhes do pedido:', err);
+        }
+    };
 
     const fetchColors = useCallback(async () => {
         try {
@@ -199,31 +230,6 @@ const AdminPage = () => {
         }
     }, []);
 
-    const mapOrdersResponse = (response: any): OrderApi[] => {
-        return response.map((order: any) => ({
-            _id: order._id,
-            props: {
-                userId: order.props.userId,
-                items: order.props.items.map((item: any) => ({
-                    _id: item._id,
-                    props: {
-                        orderId: item.props.orderId,
-                        productId: item.props.productId,
-                        productName: item.props.productName,
-                        imageUrl: item.props.imageUrl,
-                        quantity: item.props.quantity,
-                        price: item.props.price,
-                    },
-                })),
-                status: order.props.status,
-                paymentId: order.props.paymentId,
-                paymentStatus: order.props.paymentStatus,
-                paymentMethod: order.props.paymentMethod,
-                paymentDate: order.props.paymentDate,
-            },
-        }));
-    };
-
     useEffect(() => {
         fetchBrands();
         fetchColors();
@@ -231,66 +237,6 @@ const AdminPage = () => {
         fetchCategories();
         fetchCustomers();
     }, [fetchBrands, fetchColors, fetchSizes, fetchCategories, fetchCustomers]);
-
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const response = await fetchOrdersApi();
-                const mappedOrders = mapOrdersResponse(response);
-
-                console.log('fetchedOrders', mappedOrders);
-                setOrders(mappedOrders);
-
-                const last7DaysData = prepareLast7DaysData(mappedOrders);
-                const last7WeeksData = prepareLast7WeeksData(mappedOrders);
-                const last7MonthsData = prepareLast7MonthsData(mappedOrders);
-
-                setChartData(last7DaysData);
-                setWeeklyChartData(last7WeeksData);
-                setMonthlyChartData(last7MonthsData);
-
-                handleSalesCalculation(mappedOrders);
-            } catch (err) {
-                console.error('Erro ao buscar pedidos:', err);
-            }
-        };
-
-        fetchOrders();
-    }, [BASE_URL]);
-
-    const handleSalesCalculation = (orders: Order[]) => {
-        const {
-            dayTotal,
-            yesterdayTotal,
-            weekTotal,
-            lastWeekTotal,
-            monthTotal,
-            lastMonthTotal,
-        } = calculateSales(orders);
-
-        setDailySales(dayTotal);
-        setYesterdaySales(yesterdayTotal);
-        setWeeklySales(weekTotal);
-        setLastWeekSales(lastWeekTotal);
-        setMonthlySales(monthTotal);
-        setLastMonthSales(lastMonthTotal);
-    };
-
-    const fetchOrderById = async (orderId: string) => {
-        try {
-            const response = await axios.get(
-                `${BASE_URL}/orders/order/${orderId}`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-            setSelectedOrder(response.data);
-        } catch (err) {
-            console.error('Erro ao buscar detalhes do pedido:', err);
-        }
-    };
 
     const handleEditProductClick = async (product) => {
         try {
@@ -807,67 +753,6 @@ const AdminPage = () => {
         }
     };
 
-    const orderData = {
-        labels: orders
-            ? orders.map((order) =>
-                  new Date(order.props.paymentDate).toLocaleDateString()
-              )
-            : [],
-        datasets: [
-            {
-                label: 'Pedidos',
-                data: orders
-                    ? orders.map((order) =>
-                          order.props.items.reduce(
-                              (total, item) =>
-                                  total +
-                                  item.props.price * item.props.quantity,
-                              0
-                          )
-                      )
-                    : [],
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1,
-            },
-        ],
-    };
-
-    const chartConfig = {
-        desktop: {
-            label: 'Desktop',
-            color: '#F0B1CC',
-        },
-        mobile: {
-            label: 'Mobile',
-            color: '#D3686C',
-        },
-    } satisfies ChartConfig;
-
-    // const chartConfigCustomer = {
-    //     axisLine: false,
-    //     tickMargin: 10,
-    // } satisfies ChartConfig;
-
-    const customerData = {
-        labels:
-            customers && Array.isArray(customers)
-                ? customers.map((customer) => customer.name)
-                : [],
-        datasets: [
-            {
-                label: 'Clientes',
-                data:
-                    customers && Array.isArray(customers)
-                        ? customers.map((customer) => customer.totalSpent)
-                        : [],
-                backgroundColor: 'rgba(200, 10, 255, 1)',
-                borderColor: 'rgba(153, 102, 255, 1)',
-                borderWidth: 1,
-            },
-        ],
-    };
-
     if (status === 'loading') {
         return <div>Carregando...</div>;
     }
@@ -932,8 +817,6 @@ const AdminPage = () => {
                     handleBrandInputChange={() => {}}
                     handleSaveBrandClick={handleSaveBrandClick}
                     handleEditBrandClick={handleEditBrandClick}
-                    orders={orders}
-                    fetchOrderById={fetchOrderById}
                 />
             </div>
 
@@ -963,30 +846,10 @@ const AdminPage = () => {
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value="vendas">
-                            <SalesTab
-                                dailySales={dailySales}
-                                yesterdaySales={yesterdaySales}
-                                weeklySales={weeklySales}
-                                lastWeekSales={lastWeekSales}
-                                monthlySales={monthlySales}
-                                lastMonthSales={lastMonthSales}
-                                calculatePercentageChange={
-                                    calculatePercentageChange
-                                }
-                                chartData={chartData}
-                                weeklyChartData={weeklyChartData}
-                                monthlyChartData={monthlyChartData}
-                                orders={orders}
-                                fetchOrderById={fetchOrderById}
-                            />
+                            <SalesTab />
                         </TabsContent>
                         <TabsContent value="produto">
-                            <ProductTab
-                                chartData={chartData}
-                                chartConfig={chartConfig}
-                                orders={orders}
-                                fetchOrderById={fetchOrderById}
-                            />
+                            <ProductTab ordersTable={ordersTable}/>
                         </TabsContent>
                     </Tabs>
                 </div>

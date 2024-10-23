@@ -51,6 +51,8 @@ const ProductTab = ({ orders, fetchOrderById }) => {
         0
     );
 
+    
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -211,7 +213,7 @@ const ProductTab = ({ orders, fetchOrderById }) => {
                                     animationDuration={800}
                                     animationBegin={0}
                                     animationEasing="ease-out" 
-                                    
+
                                 >
                                     {productData.map((entry, index) => (
                                         <React.Fragment

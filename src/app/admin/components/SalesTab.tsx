@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     CardS,
     CardHeader,
@@ -14,29 +14,113 @@ import {
     Tooltip as ChartTooltip,
     Legend,
 } from 'recharts';
-import { SalesTabProps } from '../interfaces';
-
-const SalesTab: React.FC<SalesTabProps> = ({
-    dailySales,
-    orders,
-
-    yesterdaySales,
-    weeklySales,
-    lastWeekSales,
-    monthlySales,
-    lastMonthSales,
+import { Order, OrderTableProps, SalesTabProps } from '../interfaces';
+import OrderTable from '@/components/OrderTable';
+import { fetchOrdersApi } from '../apiService';
+import {
     calculatePercentageChange,
-    chartData,
-    weeklyChartData,
+    calculateSales,
+    prepareLast7DaysData,
+    prepareLast7MonthsData,
+    prepareLast7WeeksData,
+} from '../calculate';
+import axios from 'axios';
 
-    monthlyChartData,
-    fetchOrderById,
-}) => {
+const SalesTab: React.FC<SalesTabProps> = ({ordersTable}) => {
+ 
+    const [dailySales, setDailySales] = useState(0);
+    const [yesterdaySales, setYesterdaySales] = useState(0);
+    const [weeklySales, setWeeklySales] = useState(0);
+    const [lastWeekSales, setLastWeekSales] = useState(0);
+    const [monthlySales, setMonthlySales] = useState(0);
+    const [lastMonthSales, setLastMonthSales] = useState(0);
+
+    const [chartData, setChartData] = useState<any[]>([]);
+    const [weeklyChartData, setWeeklyChartData] = useState<any[]>([]);
+    const [monthlyChartData, setMonthlyChartData] = useState<any[]>([]);
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
+    const fetchOrderById = async (orderId: string) => {
+        try {
+            const response = await axios.get(
+                `${BASE_URL}/orders/order/${orderId}`,
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            );
+            setSelectedOrder(response.data);
+        } catch (err) {
+            console.error('Erro ao buscar detalhes do pedido:', err);
+        }
+    };
+
+    const handleSalesCalculation = (orders: Order[]) => {
+        const {
+            dayTotal,
+            yesterdayTotal,
+            weekTotal,
+            lastWeekTotal,
+            monthTotal,
+            lastMonthTotal,
+        } = calculateSales(orders);
+
+        setDailySales(dayTotal);
+        setYesterdaySales(yesterdayTotal);
+        setWeeklySales(weekTotal);
+        setLastWeekSales(lastWeekTotal);
+        setMonthlySales(monthTotal);
+        setLastMonthSales(lastMonthTotal);
+    };
+
+    const mapOrdersToTableProps = (orders: Order[]): OrderTableProps[] => {
+        return orders.map((order) => ({
+            id: order.id,
+            userName: order.userName,
+            paymentDate: new Date(order.paymentDate).toLocaleDateString(),
+            total: order.items.reduce(
+                (sum, item) => sum + item.price * item.quantity,
+                0
+            ),
+            status: order.status,
+            paymentStatus: order.paymentStatus,
+            paymentMethod: order.paymentMethod,
+        }));
+    };
+
+    const mapOrdersResponse = (response: any): Order[] => {
+        return response.map((order: any) => ({
+            _id: order._id,
+            props: {
+                userId: order.props.userId,
+                items: order.props.items.map((item: any) => ({
+                    _id: item._id,
+                    props: {
+                        orderId: item.props.orderId,
+                        productId: item.props.productId,
+                        productName: item.props.productName,
+                        imageUrl: item.props.imageUrl,
+                        quantity: item.props.quantity,
+                        price: item.props.price,
+                    },
+                })),
+                status: order.props.status,
+                paymentId: order.props.paymentId,
+                paymentStatus: order.props.paymentStatus,
+                paymentMethod: order.props.paymentMethod,
+                paymentDate: order.props.paymentDate,
+            },
+        }));
+    };
+
+  
+
     return (
         <div>
-           
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-             
                 <CardS>
                     <CardHeader>
                         <CardTitle>Vendas hoje</CardTitle>
@@ -53,7 +137,6 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </CardFooter>
                 </CardS>
 
-             
                 <CardS>
                     <CardHeader>
                         <CardTitle>Vendas essa semana</CardTitle>
@@ -70,7 +153,6 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </CardFooter>
                 </CardS>
 
-               
                 <CardS>
                     <CardHeader>
                         <CardTitle>Vendas esse mês</CardTitle>
@@ -91,9 +173,7 @@ const SalesTab: React.FC<SalesTabProps> = ({
                 </CardS>
             </div>
 
-           
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-               
                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
                     <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
                         Vendas dos últimos 7 dias
@@ -116,7 +196,6 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </BarChart>
                 </div>
 
-                
                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
                     <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
                         Vendas das últimas 7 semanas
@@ -139,7 +218,6 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </BarChart>
                 </div>
 
-                
                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
                     <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
                         Vendas dos últimos 7 meses
@@ -163,81 +241,7 @@ const SalesTab: React.FC<SalesTabProps> = ({
                 </div>
             </div>
 
-            <div className="mt-8">
-                <h2 className="text-xl font-semibold">Últimos Pedidos</h2>
-                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
-                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
-                                ID
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
-                                Cliente
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
-                                Data
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
-                                Total
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
-                                Status
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                        {orders && orders.length > 0 ? (
-                            orders.map((order) => (
-                                <tr
-                                    key={order._id.value}
-                                    className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
-                                    onClick={() =>
-                                        fetchOrderById(order._id.value)
-                                    }
-                                >
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {order._id.value}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {order.props.userId}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {new Date(
-                                            order.props.paymentDate
-                                        ).toLocaleDateString()}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {order.props.items
-                                            .reduce(
-                                                (total, item) =>
-                                                    total +
-                                                    item.props.price *
-                                                        item.props.quantity,
-                                                0
-                                            )
-                                            .toLocaleString('pt-BR', {
-                                                style: 'currency',
-                                                currency: 'BRL',
-                                            })}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {order.props.status}
-                                    </td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td
-                                    colSpan={5}
-                                    className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200"
-                                >
-                                    Nenhum pedido encontrado.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+            <OrderTable ordersTable={ordersTable} fetchOrderById={fetchOrderById} />
         </div>
     );
 };
