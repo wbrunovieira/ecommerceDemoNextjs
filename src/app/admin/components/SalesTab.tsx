@@ -34,9 +34,9 @@ const SalesTab: React.FC<SalesTabProps> = ({
 }) => {
     return (
         <div>
-            {/* Vendas por períodos */}
+           
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                {/* Vendas de hoje */}
+             
                 <CardS>
                     <CardHeader>
                         <CardTitle>Vendas hoje</CardTitle>
@@ -53,7 +53,7 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </CardFooter>
                 </CardS>
 
-                {/* Vendas da semana */}
+             
                 <CardS>
                     <CardHeader>
                         <CardTitle>Vendas essa semana</CardTitle>
@@ -70,7 +70,7 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </CardFooter>
                 </CardS>
 
-                {/* Vendas do mês */}
+               
                 <CardS>
                     <CardHeader>
                         <CardTitle>Vendas esse mês</CardTitle>
@@ -91,9 +91,9 @@ const SalesTab: React.FC<SalesTabProps> = ({
                 </CardS>
             </div>
 
-            {/* Gráficos por períodos (últimos 7 dias, semanas e meses) */}
+           
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                {/* Vendas dos últimos 7 dias */}
+               
                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
                     <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
                         Vendas dos últimos 7 dias
@@ -116,7 +116,7 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </BarChart>
                 </div>
 
-                {/* Vendas das últimas 7 semanas */}
+                
                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
                     <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
                         Vendas das últimas 7 semanas
@@ -139,7 +139,7 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </BarChart>
                 </div>
 
-                {/* Vendas dos últimos 7 meses */}
+                
                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
                     <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
                         Vendas dos últimos 7 meses

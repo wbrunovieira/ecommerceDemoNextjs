@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import {
     PieChart,
@@ -73,7 +75,6 @@ const ProductTab = ({ orders, fetchOrderById }) => {
 
     return (
         <div>
-            {/* Gráficos de Vendas */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
                 <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
                     <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
@@ -82,6 +83,19 @@ const ProductTab = ({ orders, fetchOrderById }) => {
                     {categoryData.length > 0 ? (
                         <ResponsiveContainer width="100%" height={300}>
                             <PieChart width={400} height={400}>
+                                <ChartTooltip
+                                    formatter={(value, name) => {
+                                        const formattedValue =
+                                            typeof value === 'number'
+                                                ? `R$ ${value.toFixed(2)}`
+                                                : value;
+                                        return [formattedValue, name];
+                                    }}
+                                    itemStyle={{
+                                        color: '#a63955',
+                                        fontSize: '10px',
+                                    }}
+                                />
                                 <Pie
                                     data={categoryData}
                                     cx="50%"
@@ -91,6 +105,10 @@ const ProductTab = ({ orders, fetchOrderById }) => {
                                     fill="#fcf3f7"
                                     dataKey="totalValue"
                                     nameKey="categoryName"
+                                    isAnimationActive={true}
+                                    animationDuration={800}
+                                    animationBegin={0}
+                                    animationEasing="ease-out" 
                                 >
                                     {categoryData.map((entry, index) => (
                                         <Cell
@@ -166,6 +184,20 @@ const ProductTab = ({ orders, fetchOrderById }) => {
                     {productData.length > 0 ? (
                         <ResponsiveContainer width="100%" height={300}>
                             <PieChart width={400} height={400}>
+                                <ChartTooltip
+                                    formatter={(value, name) => {
+                                        const formattedValue =
+                                            typeof value === 'number'
+                                                ? `R$ ${value.toFixed(2)}`
+                                                : value;
+                                        return [formattedValue, name];
+                                    }}
+                                    itemStyle={{
+                                        color: '#a63955',
+                                        fontSize: '10px',
+                                    }}
+                                />
+
                                 <Pie
                                     data={productData}
                                     cx="50%"
@@ -175,6 +207,11 @@ const ProductTab = ({ orders, fetchOrderById }) => {
                                     fill="#fcf3f7"
                                     dataKey="totalValue"
                                     nameKey="productName"
+                                    isAnimationActive={true}
+                                    animationDuration={800}
+                                    animationBegin={0}
+                                    animationEasing="ease-out" 
+                                    
                                 >
                                     {productData.map((entry, index) => (
                                         <React.Fragment
@@ -256,6 +293,19 @@ const ProductTab = ({ orders, fetchOrderById }) => {
                     {brandData.length > 0 ? (
                         <ResponsiveContainer width="100%" height={300}>
                             <PieChart width={400} height={400}>
+                                <ChartTooltip
+                                    formatter={(value, name) => {
+                                        const formattedValue =
+                                            typeof value === 'number'
+                                                ? `R$ ${value.toFixed(2)}`
+                                                : value;
+                                        return [formattedValue, name];
+                                    }}
+                                    itemStyle={{
+                                        color: '#a63955',
+                                        fontSize: '10px',
+                                    }}
+                                />
                                 <Pie
                                     data={brandData}
                                     cx="50%"
@@ -264,7 +314,11 @@ const ProductTab = ({ orders, fetchOrderById }) => {
                                     outerRadius={80}
                                     fill="#fcf3f7"
                                     dataKey="totalValue"
-                                    nameKey="brandData"
+                                    nameKey="brandName"
+                                    isAnimationActive={true}
+                                    animationDuration={800}
+                                    animationBegin={0}
+                                    animationEasing="ease-out" 
                                 >
                                     {brandData.map((entry, index) => (
                                         <React.Fragment
