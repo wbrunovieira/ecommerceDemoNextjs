@@ -1,12 +1,66 @@
-import { OrderTableProps } from '@/app/admin/interfaces';
-import React from 'react';
+import { fetchOrdersApi, fetchOrdersIdApi } from '@/app/admin/apiService';
+import { Order, OrderTableProps } from '@/app/admin/interfaces';
+import React, { useEffect, useState } from 'react';
 
-interface OrdersTableProps {
-    orders: OrderTableProps[];
-    fetchOrderById: (id: string) => void;
-}
+const OrdersTable: React.FC = () => {
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+    const [ordersTable, setOrdersTable] = useState<OrderTableProps[]>([]);
 
-const OrdersTable: React.FC<OrdersTableProps> = ({ ordersTable, fetchOrderById }) => {
+    
+    const mapOrdersToTableProps = (orders: Order[]): OrderTableProps[] => {
+        console.log('mapOrdersToTableProps input:', orders);
+
+        return orders.map((order) => ({
+            id: order.id,
+            userName: order.userName || 'Cliente não identificado',
+            paymentDate: order.paymentDate
+                ? new Date(order.paymentDate).toLocaleDateString()
+                : 'Data indisponível',
+            total: order.items.reduce(
+                (sum, item) => sum + (item.price || 0) * (item.quantity || 0),
+                0
+            ),
+            status: order.status || 'Status desconhecido',
+            paymentStatus: order.paymentStatus || 'Pagamento desconhecido',
+            paymentMethod: order.paymentMethod || 'Método não informado',
+        }));
+    };
+
+    
+    const fetchOrders = async () => {
+        try {
+            const response = await fetchOrdersApi();
+            console.log('fetchOrders response', response);
+            const orders = response || [];
+            console.log('fetchOrders orders', orders);
+            if (!Array.isArray(orders)) {
+                console.error('Erro: A resposta não é um array.');
+                setOrdersTable([]);
+                return;
+            }
+
+            const mappedOrders = mapOrdersToTableProps(orders);
+            console.log('fetchOrders mappedOrders', mappedOrders);
+            setOrdersTable(mappedOrders);
+        } catch (err) {
+            console.error('Erro ao buscar pedidos:', err);
+            setOrdersTable([]); 
+        }
+    };
+
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+
+    const fetchOrderById = async (orderId: string) => {
+        try {
+            const response = await fetchOrdersIdApi(orderId);
+            setSelectedOrder(response?.data || null);
+        } catch (err) {
+            console.error('Erro ao buscar detalhes do pedido:', err);
+        }
+    };
+
     return (
         <div className="mt-8">
             <h2 className="text-xl font-semibold">Últimos Pedidos</h2>
@@ -34,8 +88,8 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ ordersTable, fetchOrderById }
                     </tr>
                 </thead>
                 <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                    {orders && orders.length > 0 ? (
-                        orders.map((order) => (
+                    {ordersTable.length > 0 ? (
+                        ordersTable.map((order) => (
                             <tr
                                 key={order.id}
                                 className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -48,7 +102,7 @@ const OrdersTable: React.FC<OrdersTableProps> = ({ ordersTable, fetchOrderById }
                                     {order.userName}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                    {new Date(order.paymentDate).toLocaleDateString()}
+                                    {order.paymentDate}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                     {order.total.toLocaleString('pt-BR', {

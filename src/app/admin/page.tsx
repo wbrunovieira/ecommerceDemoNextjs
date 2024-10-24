@@ -4,8 +4,6 @@ import { useSession } from 'next-auth/react';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { ChartConfig } from '@/components/ui/chart';
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AdminMobileMenu from '@/components/MobileMenuAdm';
 
@@ -17,6 +15,7 @@ import {
     NotificationState,
     Order,
     OrderApi,
+    OrderTableProps,
     Product,
     Size,
 } from './interfaces';
@@ -29,24 +28,28 @@ import {
     fetchCategoriesApi,
     fetchColorsApi,
     fetchCustomersApi,
-
+    fetchOrdersApi,
     fetchSizesApi,
 } from './apiService';
+import {
+    calculateSales,
+    prepareLast7DaysData,
+    prepareLast7MonthsData,
+    prepareLast7WeeksData,
+} from './calculate';
 
 const AdminPage = () => {
     const router = useRouter();
 
     const { data: session, status } = useSession();
 
-    
-    
     const [orders, setOrders] = useState<Order[]>([]);
-    const [ordersTable, setOrdersTable] = useState<OrderTableProps[]>([]);
+   
 
     const [colors, setColors] = useState<Color[]>([]);
     const [sizes, setSizes] = useState<Size[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
-   
+
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
     const [products, setProducts] = useState<Product[]>([]);
@@ -124,6 +127,17 @@ const AdminPage = () => {
     const [currentView, setCurrentView] = useState('products');
     const [isSheetOpen, setIsSheetOpen] = useState(false);
 
+    const [chartData, setChartData] = useState<any[]>([]);
+    const [weeklyChartData, setWeeklyChartData] = useState<any[]>([]);
+    const [monthlyChartData, setMonthlyChartData] = useState<any[]>([]);
+
+    const [dailySales, setDailySales] = useState(0);
+    const [yesterdaySales, setYesterdaySales] = useState(0);
+    const [weeklySales, setWeeklySales] = useState(0);
+    const [lastWeekSales, setLastWeekSales] = useState(0);
+    const [monthlySales, setMonthlySales] = useState(0);
+    const [lastMonthSales, setLastMonthSales] = useState(0);
+
     const [notification, setNotification] = useState<NotificationState | null>(
         null
     );
@@ -148,9 +162,8 @@ const AdminPage = () => {
                 console.log('fetchedOrders', mappedOrders);
                 setOrders(mappedOrders);
 
-               
-                const tableOrders = mapOrdersToTableProps(mappedOrders);
-                setOrdersTable(tableOrders); 
+                
+                
 
                 const last7DaysData = prepareLast7DaysData(mappedOrders);
                 const last7WeeksData = prepareLast7WeeksData(mappedOrders);
@@ -169,20 +182,49 @@ const AdminPage = () => {
         fetchOrders();
     }, [BASE_URL]);
 
-    const fetchOrderById = async (orderId: string) => {
-        try {
-            const response = await axios.get(
-                `${BASE_URL}/orders/order/${orderId}`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
+    const handleSalesCalculation = (orders: Order[]) => {
+        const {
+            dayTotal,
+            yesterdayTotal,
+            weekTotal,
+            lastWeekTotal,
+            monthTotal,
+            lastMonthTotal,
+        } = calculateSales(orders);
+
+        setDailySales(dayTotal);
+        setYesterdaySales(yesterdayTotal);
+        setWeeklySales(weekTotal);
+        setLastWeekSales(lastWeekTotal);
+        setMonthlySales(monthTotal);
+        setLastMonthSales(lastMonthTotal);
+    };
+
+
+
+    const mapOrdersResponse = (response: any): Order[] => {
+        return response.map((order: any) => ({
+            _id: order._id,
+            props: {
+                userId: order.props.userId,
+                items: order.props.items.map((item: any) => ({
+                    _id: item._id,
+                    props: {
+                        orderId: item.props.orderId,
+                        productId: item.props.productId,
+                        productName: item.props.productName,
+                        imageUrl: item.props.imageUrl,
+                        quantity: item.props.quantity,
+                        price: item.props.price,
                     },
-                }
-            );
-            setSelectedOrder(response.data);
-        } catch (err) {
-            console.error('Erro ao buscar detalhes do pedido:', err);
-        }
+                })),
+                status: order.props.status,
+                paymentId: order.props.paymentId,
+                paymentStatus: order.props.paymentStatus,
+                paymentMethod: order.props.paymentMethod,
+                paymentDate: order.props.paymentDate,
+            },
+        }));
     };
 
     const fetchColors = useCallback(async () => {
@@ -846,10 +888,22 @@ const AdminPage = () => {
                             </TabsTrigger>
                         </TabsList>
                         <TabsContent value="vendas">
-                            <SalesTab />
+                            <SalesTab
+                               
+                                dailySales={dailySales}
+                                yesterdaySales={yesterdaySales}
+                                weeklySales={weeklySales}
+                                lastWeekSales={lastWeekSales}
+                                monthlySales={monthlySales}
+                                lastMonthSales={lastMonthSales}
+                                chartData={chartData}
+                                weeklyChartData={weeklyChartData}
+                                monthlyChartData={monthlyChartData}
+                            />
                         </TabsContent>
                         <TabsContent value="produto">
-                            <ProductTab ordersTable={ordersTable}/>
+                            <ProductTab 
+                            orders={orders} />
                         </TabsContent>
                     </Tabs>
                 </div>

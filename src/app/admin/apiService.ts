@@ -151,6 +151,20 @@ export const fetchOrdersApi = async () => {
     }
 };
 
+export const fetchOrdersIdApi = async (orderId: string) => {
+    try {
+        const response = await axios.get(`${BASE_URL}/orders/order/${orderId}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao buscar os clientes: ', error);
+        throw error;
+    }
+};
+
 export const fetchOrdersByProductApi = async () => {
     try {
         const response = await axios.get(`${BASE_URL}/orders/all`, {

@@ -1,5 +1,4 @@
 export interface ItemTableProps {
-    orderId: string;
     productId: string;
     productName: string;
     imageUrl: string;
@@ -15,6 +14,29 @@ export interface OrderTableProps {
     status: string;
     paymentStatus: string;
     paymentMethod: string;
+    items?: ItemTableProps[]; 
+}
+
+
+
+export interface Order {
+    id: string;
+    userId: string;
+    userName: string;
+    cartId: string;
+    customerId: string;
+    items: Array<{
+        productId: string;
+        productName: string;
+        imageUrl: string;
+        quantity: number;
+        price: number;
+    }>;
+    status: string;
+    paymentId: string;
+    paymentStatus: string;
+    paymentMethod: string;
+    paymentDate: string;
 }
 
 export interface Color {
@@ -104,25 +126,7 @@ export interface Product {
     deletedAt?: Date | null;
 }
 
-export interface Order {
-    id: string;
-    userId: string;
-    userName: string;
-    cartId: string;
-    customerId: string;
-    items: Array<{
-        productId: string;
-        productName: string;
-        imageUrl: string;
-        quantity: number;
-        price: number;
-    }>;
-    status: string;
-    paymentId: string;
-    paymentStatus: string;
-    paymentMethod: string;
-    paymentDate: string;
-}
+
 
 export interface Item {
     _id: {
@@ -204,8 +208,15 @@ export interface AdminPanelProps {
 }
 
 export interface SalesTabProps {
-    ordersTable:OrderTableProps
-    fetchOrderById; 
+    dailySales: number;
+    yesterdaySales: number;
+    weeklySales: number;
+    lastWeekSales: number;
+    monthlySales: number;
+    lastMonthSales: number;
+    chartData: any;
+    weeklyChartData: any;
+    monthlyChartData: any;
 }
 
 export interface OrderItemProps {
@@ -213,7 +224,7 @@ export interface OrderItemProps {
     productId: string;
     productName: string;
     imageUrl: string;
-    quantity: number;
+    quantity: string;
     price: number;
 }
 

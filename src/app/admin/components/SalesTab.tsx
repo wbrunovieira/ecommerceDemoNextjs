@@ -16,108 +16,21 @@ import {
 } from 'recharts';
 import { Order, OrderTableProps, SalesTabProps } from '../interfaces';
 import OrderTable from '@/components/OrderTable';
-import { fetchOrdersApi } from '../apiService';
-import {
-    calculatePercentageChange,
-    calculateSales,
-    prepareLast7DaysData,
-    prepareLast7MonthsData,
-    prepareLast7WeeksData,
-} from '../calculate';
+
+import { calculatePercentageChange, calculateSales } from '../calculate';
 import axios from 'axios';
 
-const SalesTab: React.FC<SalesTabProps> = ({ordersTable}) => {
- 
-    const [dailySales, setDailySales] = useState(0);
-    const [yesterdaySales, setYesterdaySales] = useState(0);
-    const [weeklySales, setWeeklySales] = useState(0);
-    const [lastWeekSales, setLastWeekSales] = useState(0);
-    const [monthlySales, setMonthlySales] = useState(0);
-    const [lastMonthSales, setLastMonthSales] = useState(0);
-
-    const [chartData, setChartData] = useState<any[]>([]);
-    const [weeklyChartData, setWeeklyChartData] = useState<any[]>([]);
-    const [monthlyChartData, setMonthlyChartData] = useState<any[]>([]);
-    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
-
-    const fetchOrderById = async (orderId: string) => {
-        try {
-            const response = await axios.get(
-                `${BASE_URL}/orders/order/${orderId}`,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
-            setSelectedOrder(response.data);
-        } catch (err) {
-            console.error('Erro ao buscar detalhes do pedido:', err);
-        }
-    };
-
-    const handleSalesCalculation = (orders: Order[]) => {
-        const {
-            dayTotal,
-            yesterdayTotal,
-            weekTotal,
-            lastWeekTotal,
-            monthTotal,
-            lastMonthTotal,
-        } = calculateSales(orders);
-
-        setDailySales(dayTotal);
-        setYesterdaySales(yesterdayTotal);
-        setWeeklySales(weekTotal);
-        setLastWeekSales(lastWeekTotal);
-        setMonthlySales(monthTotal);
-        setLastMonthSales(lastMonthTotal);
-    };
-
-    const mapOrdersToTableProps = (orders: Order[]): OrderTableProps[] => {
-        return orders.map((order) => ({
-            id: order.id,
-            userName: order.userName,
-            paymentDate: new Date(order.paymentDate).toLocaleDateString(),
-            total: order.items.reduce(
-                (sum, item) => sum + item.price * item.quantity,
-                0
-            ),
-            status: order.status,
-            paymentStatus: order.paymentStatus,
-            paymentMethod: order.paymentMethod,
-        }));
-    };
-
-    const mapOrdersResponse = (response: any): Order[] => {
-        return response.map((order: any) => ({
-            _id: order._id,
-            props: {
-                userId: order.props.userId,
-                items: order.props.items.map((item: any) => ({
-                    _id: item._id,
-                    props: {
-                        orderId: item.props.orderId,
-                        productId: item.props.productId,
-                        productName: item.props.productName,
-                        imageUrl: item.props.imageUrl,
-                        quantity: item.props.quantity,
-                        price: item.props.price,
-                    },
-                })),
-                status: order.props.status,
-                paymentId: order.props.paymentId,
-                paymentStatus: order.props.paymentStatus,
-                paymentMethod: order.props.paymentMethod,
-                paymentDate: order.props.paymentDate,
-            },
-        }));
-    };
-
-  
-
+const SalesTab: React.FC<SalesTabProps> = ({
+    dailySales,
+    yesterdaySales,
+    weeklySales,
+    lastWeekSales,
+    monthlySales,
+    lastMonthSales,
+    chartData,
+    weeklyChartData,
+    monthlyChartData,
+}) => {
     return (
         <div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
@@ -241,7 +154,7 @@ const SalesTab: React.FC<SalesTabProps> = ({ordersTable}) => {
                 </div>
             </div>
 
-            <OrderTable ordersTable={ordersTable} fetchOrderById={fetchOrderById} />
+            <OrderTable />
         </div>
     );
 };
