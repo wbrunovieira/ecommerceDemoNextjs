@@ -654,10 +654,14 @@ const AdminPage = () => {
     };
 
     const handleProductInputChange = (
-        e: React.ChangeEvent<HTMLInputElement>
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
-        const { name, type, checked, value } = e.target;
-        const newValue = type === 'checkbox' ? checked : value;
+        const { name, value } = e.target;
+
+        const newValue =
+            e.target instanceof HTMLInputElement && e.target.type === 'checkbox'
+                ? e.target.checked
+                : value;
 
         setEditProductData((prevState) => ({ ...prevState, [name]: newValue }));
     };
@@ -743,55 +747,6 @@ const AdminPage = () => {
         setProducts([]);
     };
 
-    const handleAddCategoryToProduct = async (productId: string) => {
-        try {
-            if (selectedCategories.length === 0) {
-                alert('Selecione ao menos uma categoria para adicionar!');
-                return;
-            }
-            console.log(
-                'handleAddCategoryToProduct selectedCategories',
-                selectedCategories
-            );
-            console.log('handleAddCategoryToProduct productId', productId);
-
-            const response = await axios.post(
-                `${BASE_URL}/products/add-categories/${productId}`,
-
-                { categories: [selectedCategories] },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer {{AUTH_TOKEN}}`,
-                    },
-                }
-            );
-
-            console.log('handleAddCategoryToProduct response', response);
-            if (response.status === 201) {
-                alert('Categoria adicionada com sucesso!');
-            } else {
-                alert('Falha ao adicionar categoria.');
-            }
-        } catch (error) {
-            console.error('Error adding category to product:', error);
-            alert('Erro ao adicionar categoria.');
-        }
-    };
-
-    const handleCategorySelection = (e, categoryId) => {
-        if (e.target.checked) {
-            setSelectedCategories((prevSelected) => [
-                ...prevSelected,
-                categoryId,
-            ]);
-        } else {
-            setSelectedCategories((prevSelected) =>
-                prevSelected.filter((id) => id !== categoryId)
-            );
-        }
-    };
-
     if (status === 'loading') {
         return <div>Carregando...</div>;
     }
@@ -829,8 +784,6 @@ const AdminPage = () => {
                     handleProductInputChange={handleProductInputChange}
                     categories={categories}
                     selectedCategories={selectedCategories}
-                    handleCategorySelection={handleCategorySelection}
-                    handleAddCategoryToProduct={handleAddCategoryToProduct}
                     notification={notification}
                     setNotification={setNotification}
                     editingCategoryId={null}
@@ -856,6 +809,7 @@ const AdminPage = () => {
                     handleBrandInputChange={() => {}}
                     handleSaveBrandClick={handleSaveBrandClick}
                     handleEditBrandClick={handleEditBrandClick}
+                    setSelectedCategories={setSelectedCategories}
                 />
             </div>
 

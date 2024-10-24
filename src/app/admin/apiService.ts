@@ -153,11 +153,14 @@ export const fetchOrdersApi = async () => {
 
 export const fetchOrdersIdApi = async (orderId: string) => {
     try {
-        const response = await axios.get(`${BASE_URL}/orders/order/${orderId}`, {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        });
+        const response = await axios.get(
+            `${BASE_URL}/orders/order/${orderId}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
         return response.data;
     } catch (error) {
         console.error('Erro ao buscar os clientes: ', error);
@@ -175,6 +178,27 @@ export const fetchOrdersByProductApi = async () => {
         return response.data;
     } catch (error) {
         console.error('Erro ao buscar os clientes: ', error);
+        throw error;
+    }
+};
+
+export const addCategoriesToProductApi = async (
+    productId,
+    selectedCategories
+) => {
+    try {
+        const response = await axios.post(
+            `${BASE_URL}/products/add-categories/${productId}`,
+            { categories: selectedCategories },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Erro ao adicionar categorias ao produto: ', error);
         throw error;
     }
 };

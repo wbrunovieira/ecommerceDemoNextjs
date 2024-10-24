@@ -14,10 +14,8 @@ export interface OrderTableProps {
     status: string;
     paymentStatus: string;
     paymentMethod: string;
-    items?: ItemTableProps[]; 
+    items?: ItemTableProps[];
 }
-
-
 
 export interface Order {
     id: string;
@@ -126,8 +124,6 @@ export interface Product {
     deletedAt?: Date | null;
 }
 
-
-
 export interface Item {
     _id: {
         value: string;
@@ -172,14 +168,12 @@ export interface AdminPanelProps {
     handleEditProductClick: (product: any) => void;
     handleCancelEdit: () => void;
     editProductData: any;
-    handleProductInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleProductInputChange: (
+        e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ) => void;
     categories: any[];
     selectedCategories: string[];
-    handleCategorySelection: (
-        e: React.ChangeEvent<HTMLInputElement>,
-        categoryId: string
-    ) => void;
-    handleAddCategoryToProduct: (productId: string) => void;
+
     notification: any;
     setNotification: React.Dispatch<React.SetStateAction<any>>;
     editingCategoryId: string | null;
@@ -205,6 +199,7 @@ export interface AdminPanelProps {
     handleBrandInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSaveBrandClick: (brandId: string) => void;
     handleEditBrandClick: (brand: any) => void;
+    setSelectedCategories: any;
 }
 
 export interface SalesTabProps {

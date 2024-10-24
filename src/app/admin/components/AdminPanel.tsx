@@ -11,6 +11,7 @@ import {
     SheetTitle,
 } from '@/components/ui/sheet';
 import { AdminPanelProps } from '../interfaces';
+import { addCategoriesToProductApi } from '../apiService';
 
 const AdminPanel: React.FC<AdminPanelProps> = ({
     isSheetOpen,
@@ -58,10 +59,53 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     handleBrandInputChange,
     handleSaveBrandClick,
     handleEditBrandClick,
+    selectedCategories,
+    setSelectedCategories,
 }) => {
+    const handleCategorySelection = (e, categoryId) => {
+        if (e.target.checked) {
+            setSelectedCategories((prevSelected) => [
+                ...prevSelected,
+                categoryId,
+            ]);
+        } else {
+            setSelectedCategories((prevSelected) =>
+                prevSelected.filter((id) => id !== categoryId)
+            );
+        }
+    };
+
+    const handleAddCategoryToProduct = async (productId: string) => {
+        try {
+            if (selectedCategories.length === 0) {
+                alert('Selecione ao menos uma categoria para adicionar!');
+                return;
+            }
+            console.log(
+                'handleAddCategoryToProduct selectedCategories',
+                selectedCategories
+            );
+            console.log('handleAddCategoryToProduct productId', productId);
+
+            const response = await addCategoriesToProductApi(
+                productId,
+                selectedCategories
+            );
+
+            console.log('handleAddCategoryToProduct response', response);
+            if (response.status === 201) {
+                alert('Categoria adicionada com sucesso!');
+            } else {
+                alert('Falha ao adicionar categoria.');
+            }
+        } catch (error) {
+            console.error('Error adding category to product:', error);
+            alert('Erro ao adicionar categoria.');
+        }
+    };
+
     return (
         <nav className="w-full px-2 space-y-1 z-20">
-            {/* Produtos */}
             <div className="min-w-full bg-primaryLight dark:bg-primaryDark rounded overflow-hidden">
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <button
@@ -98,7 +142,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                         className="px-2 py-1 border border-gray-300 rounded text-primaryDark w-5/6 md:w-3/5"
                                     />
                                     <button
-                                        onClick={() => fetchProductById(searchId)} 
+                                        onClick={() =>
+                                            fetchProductById(searchId)
+                                        }
                                         className="px-4 py-2 bg-primary text-white rounded w-5/6 md:w-auto hover:scale-105 transition duration-300 ease-in-out"
                                     >
                                         Buscar
@@ -224,24 +270,154 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                     </table>
                                 </div>
 
-                                {/* Edição de Produtos */}
                                 {editingProductId && (
-                                    <div className="mt-4 min-w-full overflow-x-hidden">
+                                    <div className="mt-4 min-w-full overflow-x-hidden ">
                                         <h3 className="text-lg font-medium text-primaryDark dark:text-primaryLight">
                                             Editar Produto
                                         </h3>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 overflow-x-hidden">
-                                            {/* Inputs de Edição */}
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                value={editProductData.name}
-                                                onChange={
-                                                    handleProductInputChange
-                                                }
-                                                className="text-primaryDark px-4 py-1 border border-gray-300 rounded w-4/5"
-                                            />
-                                            {/* Outros campos de edição */}
+                                        <div className="flex flex-col gap-2">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4 overflow-x-hidden text-lg">
+                                                <input
+                                                    type="text"
+                                                    name="name"
+                                                    value={editProductData.name}
+                                                    onChange={
+                                                        handleProductInputChange
+                                                    }
+                                                    className="text-primaryDark px-4 py-1 border border-gray-300 rounded w-4/5"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    Descrição
+                                                </label>
+                                                <textarea
+                                                    name="description"
+                                                    value={
+                                                        editProductData.description
+                                                    }
+                                                    onChange={
+                                                        handleProductInputChange
+                                                    }
+                                                    className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5 text-xs"
+                                                    onInput={(e) => {
+                                                        const target =
+                                                            e.target as HTMLTextAreaElement;
+                                                        target.style.height =
+                                                            'auto';
+                                                        target.style.height = `${target.scrollHeight}px`;
+                                                    }}
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    Preço
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="price"
+                                                    value={
+                                                        editProductData.price
+                                                    }
+                                                    onChange={
+                                                        handleProductInputChange
+                                                    }
+                                                    className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-48 text-xs"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    Estoque
+                                                </label>
+                                                <input
+                                                    type="number"
+                                                    name="stock"
+                                                    disabled
+                                                    value={
+                                                        editProductData.stock
+                                                    }
+                                                    onChange={
+                                                        handleProductInputChange
+                                                    }
+                                                    className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-48 text-xs"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    Categoria
+                                                </label>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mt-4">
+                                                    {categories.map(
+                                                        (category) => (
+                                                            <div
+                                                                key={
+                                                                    category._id
+                                                                        .value
+                                                                }
+                                                                className="flex items-center text-xs"
+                                                            >
+                                                                <input
+                                                                    type="checkbox"
+                                                                    id={
+                                                                        category
+                                                                            ._id
+                                                                            .value
+                                                                    }
+                                                                    value={
+                                                                        category
+                                                                            ._id
+                                                                            .value
+                                                                    }
+                                                                    checked={selectedCategories.includes(
+                                                                        category
+                                                                            ._id
+                                                                            .value
+                                                                    )}
+                                                                    onChange={(
+                                                                        e
+                                                                    ) =>
+                                                                        handleCategorySelection(
+                                                                            e,
+                                                                            category
+                                                                                ._id
+                                                                                .value
+                                                                        )
+                                                                    }
+                                                                    className="mr-2"
+                                                                />
+                                                                <label
+                                                                    htmlFor={
+                                                                        category
+                                                                            ._id
+                                                                            .value
+                                                                    }
+                                                                    className="text-primaryDark dark:text-primaryLight"
+                                                                >
+                                                                    {
+                                                                        category
+                                                                            .props
+                                                                            .name
+                                                                    }
+                                                                </label>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                                <button
+                                                    className="bg-secondary hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryLight dark:text-primaryLight mt-4"
+                                                    onClick={() =>
+                                                        handleAddCategoryToProduct(
+                                                            editingProductId
+                                                        )
+                                                    }
+                                                >
+                                                    Adcionar Categoria
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
@@ -252,299 +428,287 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             </div>
 
             <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
-    <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <button
-            onClick={() => {
-                setIsSheetOpen(true);
-                setCurrentView('categories');
-            }}
-            className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
-        >
-            Categorias
-        </button>
+                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                    <button
+                        onClick={() => {
+                            setIsSheetOpen(true);
+                            setCurrentView('categories');
+                        }}
+                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                    >
+                        Categorias
+                    </button>
 
-        {currentView === 'categories' && (
-            <SheetContent
-                side="special"
-                size="special"
-                className="min-w-full "
-            >
-                <SheetHeader>
-                    <SheetTitle>Categorias</SheetTitle>
-                    <SheetDescription>
-                        Descrição da categoria
-                    </SheetDescription>
-                </SheetHeader>
-                <div className="w-full md:p-4">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                            <tr>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                >
-                                    ID
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                >
-                                    Nome
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                >
-                                    imagem
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                >
-                                    ERP ID
-                                </th>
-                                <th
-                                    scope="col"
-                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                >
-                                    Ações
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                            {categories.map((category) => (
-                                <tr
-                                    key={category._id.value}
-                                >
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {category._id.value}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {editingCategoryId ===
-                                        category._id
-                                            .value ? (
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                value={
-                                                    editCategoryData.name
-                                                }
-                                                onChange={
-                                                    handleCategoryInputChange
-                                                }
-                                                className="px-2 py-1 border border-gray-300 rounded"
-                                            />
-                                        ) : (
-                                            category.props
-                                                .name
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {editingCategoryId ===
-                                        category._id
-                                            .value ? (
-                                            <input
-                                                type="text"
-                                                name="description"
-                                                value={
-                                                    editCategoryData.imageUrl
-                                                }
-                                                onChange={
-                                                    handleCategoryInputChange
-                                                }
-                                                className="px-2 py-1 border border-gray-300 rounded"
-                                            />
-                                        ) : (
-                                            category.props
-                                                .imageUrl
-                                        )}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {
-                                            category.props
-                                                .erpId
-                                        }
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                        {editingCategoryId ===
-                                        category._id
-                                            .value ? (
-                                            <button
-                                                onClick={() =>
-                                                    handleSaveCategoryClick(
-                                                        category
-                                                            ._id
-                                                            .value
-                                                    )
-                                                }
-                                                className="px-4 py-2 bg-secondary text-white rounded"
+                    {currentView === 'categories' && (
+                        <SheetContent
+                            side="special"
+                            size="special"
+                            className="min-w-full "
+                        >
+                            <SheetHeader>
+                                <SheetTitle>Categorias</SheetTitle>
+                                <SheetDescription>
+                                    Descrição da categoria
+                                </SheetDescription>
+                            </SheetHeader>
+                            <div className="w-full md:p-4">
+                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                        <tr>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
                                             >
-                                                Salvar
-                                            </button>
-                                        ) : (
-                                            <button
-                                                onClick={() =>
-                                                    handleEditCategoryClick(
-                                                        category
-                                                    )
-                                                }
-                                                className="px-4 py-2 bg-primary text-white rounded"
+                                                ID
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
                                             >
-                                                Editar
-                                            </button>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </SheetContent>
-        )}
-    </Sheet>
+                                                Nome
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                            >
+                                                imagem
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                            >
+                                                ERP ID
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                            >
+                                                Ações
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                        {categories.map((category) => (
+                                            <tr key={category._id.value}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {category._id.value}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {editingCategoryId ===
+                                                    category._id.value ? (
+                                                        <input
+                                                            type="text"
+                                                            name="name"
+                                                            value={
+                                                                editCategoryData.name
+                                                            }
+                                                            onChange={
+                                                                handleCategoryInputChange
+                                                            }
+                                                            className="px-2 py-1 border border-gray-300 rounded"
+                                                        />
+                                                    ) : (
+                                                        category.props.name
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {editingCategoryId ===
+                                                    category._id.value ? (
+                                                        <input
+                                                            type="text"
+                                                            name="description"
+                                                            value={
+                                                                editCategoryData.imageUrl
+                                                            }
+                                                            onChange={
+                                                                handleCategoryInputChange
+                                                            }
+                                                            className="px-2 py-1 border border-gray-300 rounded"
+                                                        />
+                                                    ) : (
+                                                        category.props.imageUrl
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {category.props.erpId}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {editingCategoryId ===
+                                                    category._id.value ? (
+                                                        <button
+                                                            onClick={() =>
+                                                                handleSaveCategoryClick(
+                                                                    category._id
+                                                                        .value
+                                                                )
+                                                            }
+                                                            className="px-4 py-2 bg-secondary text-white rounded"
+                                                        >
+                                                            Salvar
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() =>
+                                                                handleEditCategoryClick(
+                                                                    category
+                                                                )
+                                                            }
+                                                            className="px-4 py-2 bg-primary text-white rounded"
+                                                        >
+                                                            Editar
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </SheetContent>
+                    )}
+                </Sheet>
             </div>
 
             <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-                <button
-                    onClick={() => {
-                        setIsSheetOpen(true);
-                        setCurrentView('colors');
-                    }}
-                    className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
-                >
-                    Cores
-                </button>
-                <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2"></div>
-                {currentView === 'colors' && (
-                    <SheetContent
-                        side="special"
-                        size="special"
-                        className="min-w-full "
+                <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                    <button
+                        onClick={() => {
+                            setIsSheetOpen(true);
+                            setCurrentView('colors');
+                        }}
+                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
                     >
-                        <SheetHeader>
-                            <SheetTitle>Cores</SheetTitle>
-                            <SheetDescription>
-                                Descrição das cores
-                            </SheetDescription>
-                        </SheetHeader>
-                        <div className="w-full md:p-4">
-                            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                <thead className="bg-primaryLight dark:bg-primaryDark rounded">
-                                    <tr>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                        >
-                                            ID
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                        >
-                                            Nome
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                        >
-                                            Hex
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                        >
-                                            ERP ID
-                                        </th>
-                                        <th
-                                            scope="col"
-                                            className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
-                                        >
-                                            Ações
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
-                                    {colors.map((color) => (
-                                        <tr key={color._id.value}>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                {color._id.value}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                {editingColorId ===
-                                                color._id.value ? (
-                                                    <input
-                                                        type="text"
-                                                        name="name"
-                                                        value={
-                                                            editColorData.name
-                                                        }
-                                                        onChange={
-                                                            handleInputChange
-                                                        }
-                                                        className="px-2 py-1 border border-gray-300 rounded"
-                                                    />
-                                                ) : (
-                                                    color.props.name
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                {editingColorId ===
-                                                color._id.value ? (
-                                                    <input
-                                                        type="text"
-                                                        name="hex"
-                                                        value={
-                                                            editColorData.hex
-                                                        }
-                                                        onChange={
-                                                            handleInputChange
-                                                        }
-                                                        className="px-2 py-1 border border-gray-300 rounded"
-                                                    />
-                                                ) : (
-                                                    color.props.hex
-                                                )}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                {color.props.erpId}
-                                            </td>
-                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
-                                                {editingColorId ===
-                                                color._id.value ? (
-                                                    <button
-                                                        onClick={() =>
-                                                            handleSaveClick(
-                                                                color
-                                                                    ._id
-                                                                    .value
-                                                            )
-                                                        }
-                                                        className="px-4 py-2 bg-secondary dark:bg-primarytext-white rounded"
-                                                    >
-                                                        Salvar
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        onClick={() =>
-                                                            handleEditClick(
-                                                                color
-                                                            )
-                                                        }
-                                                        className="px-4 py-2 bg-primary dark:bg-primary text-white rounded"
-                                                    >
-                                                        Editar
-                                                    </button>
-                                                )}
-                                            </td>
+                        Cores
+                    </button>
+                    <div className=" hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2"></div>
+                    {currentView === 'colors' && (
+                        <SheetContent
+                            side="special"
+                            size="special"
+                            className="min-w-full "
+                        >
+                            <SheetHeader>
+                                <SheetTitle>Cores</SheetTitle>
+                                <SheetDescription>
+                                    Descrição das cores
+                                </SheetDescription>
+                            </SheetHeader>
+                            <div className="w-full md:p-4">
+                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                        <tr>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                            >
+                                                ID
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                            >
+                                                Nome
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                            >
+                                                Hex
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                            >
+                                                ERP ID
+                                            </th>
+                                            <th
+                                                scope="col"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                            >
+                                                Ações
+                                            </th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-            </SheetContent>
-        )}
-    </Sheet>
+                                    </thead>
+                                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                        {colors.map((color) => (
+                                            <tr key={color._id.value}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {color._id.value}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {editingColorId ===
+                                                    color._id.value ? (
+                                                        <input
+                                                            type="text"
+                                                            name="name"
+                                                            value={
+                                                                editColorData.name
+                                                            }
+                                                            onChange={
+                                                                handleInputChange
+                                                            }
+                                                            className="px-2 py-1 border border-gray-300 rounded"
+                                                        />
+                                                    ) : (
+                                                        color.props.name
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {editingColorId ===
+                                                    color._id.value ? (
+                                                        <input
+                                                            type="text"
+                                                            name="hex"
+                                                            value={
+                                                                editColorData.hex
+                                                            }
+                                                            onChange={
+                                                                handleInputChange
+                                                            }
+                                                            className="px-2 py-1 border border-gray-300 rounded"
+                                                        />
+                                                    ) : (
+                                                        color.props.hex
+                                                    )}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {color.props.erpId}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    {editingColorId ===
+                                                    color._id.value ? (
+                                                        <button
+                                                            onClick={() =>
+                                                                handleSaveClick(
+                                                                    color._id
+                                                                        .value
+                                                                )
+                                                            }
+                                                            className="px-4 py-2 bg-secondary dark:bg-primarytext-white rounded"
+                                                        >
+                                                            Salvar
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            onClick={() =>
+                                                                handleEditClick(
+                                                                    color
+                                                                )
+                                                            }
+                                                            className="px-4 py-2 bg-primary dark:bg-primary text-white rounded"
+                                                        >
+                                                            Editar
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </SheetContent>
+                    )}
+                </Sheet>
             </div>
 
             <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
@@ -637,8 +801,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         <button
                                                             onClick={() =>
                                                                 handleSaveSizeClick(
-                                                                    size
-                                                                        ._id
+                                                                    size._id
                                                                         .value
                                                                 )
                                                             }
@@ -767,8 +930,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                             className="px-2 py-1 border border-gray-300 rounded"
                                                         />
                                                     ) : (
-                                                        brand.props
-                                                            .imageUrl
+                                                        brand.props.imageUrl
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
@@ -780,8 +942,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         <button
                                                             onClick={() =>
                                                                 handleSaveBrandClick(
-                                                                    brand
-                                                                        ._id
+                                                                    brand._id
                                                                         .value
                                                                 )
                                                             }
@@ -811,9 +972,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                     )}
                 </Sheet>
             </div>
-
-
-
 
             {/* Outras seções para Categorias, Cores, Tamanhos, Marcas, etc. */}
         </nav>
