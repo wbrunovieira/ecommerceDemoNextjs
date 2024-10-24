@@ -126,9 +126,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                         >
                             <SheetHeader>
                                 <SheetTitle>Produtos</SheetTitle>
-                                <SheetDescription>
-                                    Descrição do produto
-                                </SheetDescription>
+                                <SheetDescription></SheetDescription>
                             </SheetHeader>
                             <div className="w-screen flex flex-col align-center justify-center p-2 md:p-4">
                                 <div className="flex flex-col md:flex-row gap-2 mb-4 w-5/6 md:w-3/5">
@@ -226,6 +224,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                                         {product.erpId}
                                                     </td>
+
                                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
                                                         {editingProductId ===
                                                         product.id ? (
@@ -245,7 +244,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                                     onClick={
                                                                         handleCancelEdit
                                                                     }
-                                                                    className="ml-2 px-4 py-2 bg-red-500 text-white rounded"
+                                                                    className="ml-2 px-4 py-2 bg-red-500 text-white rounded "
                                                                 >
                                                                     Sair da
                                                                     Edição
@@ -275,18 +274,49 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                         <h3 className="text-lg font-medium text-primaryDark dark:text-primaryLight">
                                             Editar Produto
                                         </h3>
+
                                         <div className="flex flex-col gap-2">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4 overflow-x-hidden text-lg">
-                                                <input
-                                                    type="text"
-                                                    name="name"
-                                                    value={editProductData.name}
-                                                    onChange={
-                                                        handleProductInputChange
-                                                    }
-                                                    className="text-primaryDark px-4 py-1 border border-gray-300 rounded w-4/5"
-                                                />
+                                            <div className="flex items-center gap-2 w-4/5">
+                                                <div>
+                                                    <div className="flex space-x-2 mt-2">
+                                                        {editProductData.images.map(
+                                                            (
+                                                                imageUrl,
+                                                                index
+                                                            ) => (
+                                                                <Image
+                                                                    key={index}
+                                                                    src={
+                                                                        imageUrl
+                                                                    }
+                                                                    alt={`Produto imagem ${
+                                                                        index +
+                                                                        1
+                                                                    }`}
+                                                                    width={64}
+                                                                    height={64}
+                                                                    className="object-cover border border-gray-300 rounded"
+                                                                />
+                                                            )
+                                                        )}
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4 overflow-x-hidden text-lg w-4/5 ">
+                                                    <input
+                                                        type="text"
+                                                        name="name"
+                                                        value={
+                                                            editProductData.name
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="text-primaryDark px-4 py-1 border border-gray-300 rounded w-4/5 flex-1"
+                                                    />
+                                                </div>
                                             </div>
+
                                             <div>
                                                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                     Descrição
@@ -310,44 +340,46 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                 />
                                             </div>
 
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                    Preço
-                                                </label>
-                                                <input
-                                                    type="number"
-                                                    name="price"
-                                                    value={
-                                                        editProductData.price
-                                                    }
-                                                    onChange={
-                                                        handleProductInputChange
-                                                    }
-                                                    className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-48 text-xs"
-                                                />
+                                            <div className="flex items-center gap-2 w-4/5">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Preço
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        name="price"
+                                                        value={
+                                                            editProductData.price
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-48 text-xs"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Estoque
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        name="stock"
+                                                        disabled
+                                                        value={
+                                                            editProductData.stock
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-48 text-xs"
+                                                    />
+                                                </div>
                                             </div>
 
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                    Estoque
-                                                </label>
-                                                <input
-                                                    type="number"
-                                                    name="stock"
-                                                    disabled
-                                                    value={
-                                                        editProductData.stock
-                                                    }
-                                                    onChange={
-                                                        handleProductInputChange
-                                                    }
-                                                    className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-48 text-xs"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                    Categoria
+                                            <div className="border-2 p-4">
+                                                <label className="block text-xl font-medium text-gray-700 dark:text-gray-300">
+                                                    Categorias
                                                 </label>
 
                                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-2 mt-4">
@@ -408,14 +440,289 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                     )}
                                                 </div>
                                                 <button
-                                                    className="bg-secondary hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryLight dark:text-primaryLight mt-4"
+                                                    className="bg-secondary hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryLight dark:text-primaryLight mt-4 whitespace-nowrap"
                                                     onClick={() =>
                                                         handleAddCategoryToProduct(
                                                             editingProductId
                                                         )
                                                     }
                                                 >
-                                                    Adcionar Categoria
+                                                    Salvar Alterações na
+                                                    Categoria
+                                                </button>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Marca
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        name="brand"
+                                                        disabled
+                                                        value={
+                                                            editProductData.brand
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        ERP ID
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        name="erpId"
+                                                        value={
+                                                            editProductData.erpId
+                                                        }
+                                                        disabled
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    Tags
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="tags"
+                                                    value={editProductData.tags.join(
+                                                        ', '
+                                                    )}
+                                                    onChange={
+                                                        handleProductInputChange
+                                                    }
+                                                    className="px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    Título SEO
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="seoTitle"
+                                                    value={
+                                                        editProductData.seoTitle
+                                                    }
+                                                    onChange={
+                                                        handleProductInputChange
+                                                    }
+                                                    className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    Descrição SEO
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="seoDescription"
+                                                    value={
+                                                        editProductData.seoDescription
+                                                    }
+                                                    onChange={
+                                                        handleProductInputChange
+                                                    }
+                                                    className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    Palavras-chave SEO
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="seoKeywords"
+                                                    value={
+                                                        editProductData.seoKeywords
+                                                    }
+                                                    onChange={
+                                                        handleProductInputChange
+                                                    }
+                                                    className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                />
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <div className="w-32">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Altura
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        name="height"
+                                                        value={
+                                                            editProductData.height
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                    />
+                                                </div>
+                                                <div className="w-32">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Largura
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        name="width"
+                                                        value={
+                                                            editProductData.width
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                    />
+                                                </div>
+                                                <div className="w-32">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Comprimento
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        name="length"
+                                                        value={
+                                                            editProductData.length
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                    />
+                                                </div>
+                                                <div className="w-32">
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Peso
+                                                    </label>
+                                                    <input
+                                                        type="number"
+                                                        name="weight"
+                                                        value={
+                                                            editProductData.weight
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="text-primaryDark px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div className="w-32">
+                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    Status
+                                                </label>
+                                                <select
+                                                    name="status"
+                                                    value={
+                                                        editProductData.status
+                                                    }
+                                                    className="text-primaryDark  px-2 py-1 border border-gray-300 rounded w-4/5"
+                                                >
+                                                    <option value="ACTIVE">
+                                                        Ativo
+                                                    </option>
+                                                    <option value="INACTIVE">
+                                                        Inativo
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <div className="flex flex-col gap-8 border-2 p-4 mt-4 rounded-lg w-3/4 md:flex-row">
+                                                <div className="flex gap-1 items-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="showInSite"
+                                                        checked={
+                                                            editProductData.showInSite
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="h-4 w-4"
+                                                    />
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                                        Dísponivel no Site
+                                                    </label>
+                                                </div>
+
+                                                <div className="flex gap-1 items-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="onSale"
+                                                        checked={
+                                                            editProductData.onSale
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="h-4 w-4"
+                                                    />
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                                        Em Promoção
+                                                    </label>
+                                                </div>
+                                                <div className="flex gap-1  items-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="isNew"
+                                                        disabled
+                                                        checked={
+                                                            editProductData.isNew
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="h-4 w-4"
+                                                    />
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                                        Novo
+                                                    </label>
+                                                </div>
+                                                <div className="flex gap-1  items-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="isFeatured"
+                                                        checked={
+                                                            editProductData.isFeatured
+                                                        }
+                                                        onChange={
+                                                            handleProductInputChange
+                                                        }
+                                                        className="h-4 w-4"
+                                                    />
+                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                                        Destaque
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div className="flex justify-end gap-2 mt-8 mr-48">
+                                                <button
+                                                    onClick={() =>
+                                                        handleSaveProductClick(
+                                                            editingProductId
+                                                        )
+                                                    }
+                                                    className="px-4 py-2 bg-secondary text-white rounded"
+                                                >
+                                                    Salvar
+                                                </button>
+                                                <button
+                                                    onClick={handleCancelEdit}
+                                                    className="ml-2 px-4 py-2 bg-red-500 text-white rounded"
+                                                >
+                                                    Sair da Edição
                                                 </button>
                                             </div>
                                         </div>
