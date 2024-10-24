@@ -42,34 +42,48 @@ const AdminPage = () => {
     const router = useRouter();
 
     const { data: session, status } = useSession();
-
-    const [orders, setOrders] = useState<Order[]>([]);
-
-    const [colors, setColors] = useState<Color[]>([]);
-    const [sizes, setSizes] = useState<Size[]>([]);
-
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [brands, setBrands] = useState<Brand[]>([]);
+    const [currentView, setCurrentView] = useState('products');
+    const [searchId, setSearchId] = useState('');
+    const [searchName, setSearchName] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
-
-    const [customers, setCustomers] = useState<Customer[]>([]);
-
-    const [editingColorId, setEditingColorId] = useState<string | null>(null);
-    const [editColorData, setEditColorData] = useState({ name: '', hex: '' });
-    const [editingSizeId, setEditingSizeId] = useState<string | null>(null);
-    const [editSizeData, setEditSizeData] = useState({
-        name: '',
-        description: '',
-    });
-
     const [editingBrandId, setEditingBrandId] = useState<string | null>(null);
     const [editBrandData, setEditBrandData] = useState({
         name: '',
         imageUrl: '',
     });
+
+    const [orders, setOrders] = useState<Order[]>([]);
+
+    const [sizes, setSizes] = useState<Size[]>([]);
+
+    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [brands, setBrands] = useState<Brand[]>([]);
+
+    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const [editingSizeId, setEditingSizeId] = useState<string | null>(null);
+
+    const [chartData, setChartData] = useState<any[]>([]);
+    const [weeklyChartData, setWeeklyChartData] = useState<any[]>([]);
+    const [monthlyChartData, setMonthlyChartData] = useState<any[]>([]);
+
+    const [dailySales, setDailySales] = useState(0);
+    const [yesterdaySales, setYesterdaySales] = useState(0);
+    const [weeklySales, setWeeklySales] = useState(0);
+    const [lastWeekSales, setLastWeekSales] = useState(0);
+    const [monthlySales, setMonthlySales] = useState(0);
+    const [lastMonthSales, setLastMonthSales] = useState(0);
+
+    const [notification, setNotification] = useState<NotificationState | null>(
+        null
+    );
     const [editingProductId, setEditingProductId] = useState<string | null>(
         null
     );
+    const [editSizeData, setEditSizeData] = useState({
+        name: '',
+        description: '',
+    });
 
     const [editProductData, setEditProductData] = useState<Product>({
         id: '',
@@ -112,27 +126,6 @@ const AdminPage = () => {
         updatedAt: null,
         deletedAt: null,
     });
-
-    const [searchId, setSearchId] = useState('');
-    const [searchName, setSearchName] = useState('');
-
-    const [currentView, setCurrentView] = useState('products');
-    const [isSheetOpen, setIsSheetOpen] = useState(false);
-
-    const [chartData, setChartData] = useState<any[]>([]);
-    const [weeklyChartData, setWeeklyChartData] = useState<any[]>([]);
-    const [monthlyChartData, setMonthlyChartData] = useState<any[]>([]);
-
-    const [dailySales, setDailySales] = useState(0);
-    const [yesterdaySales, setYesterdaySales] = useState(0);
-    const [weeklySales, setWeeklySales] = useState(0);
-    const [lastWeekSales, setLastWeekSales] = useState(0);
-    const [monthlySales, setMonthlySales] = useState(0);
-    const [lastMonthSales, setLastMonthSales] = useState(0);
-
-    const [notification, setNotification] = useState<NotificationState | null>(
-        null
-    );
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -217,15 +210,6 @@ const AdminPage = () => {
         }));
     };
 
-    const fetchColors = useCallback(async () => {
-        try {
-            const fetchedColors = await fetchColorsApi();
-            setColors(fetchedColors);
-        } catch (error) {
-            console.error('Erro ao buscar as cores: ', error);
-        }
-    }, []);
-
     const fetchSizes = useCallback(async () => {
         try {
             const fetchedSizes = await fetchSizesApi();
@@ -255,11 +239,11 @@ const AdminPage = () => {
 
     useEffect(() => {
         fetchBrands();
-        fetchColors();
+
         fetchSizes();
 
         fetchCustomers();
-    }, [fetchBrands, fetchColors, fetchSizes, fetchCustomers]);
+    }, [fetchBrands, fetchSizes, fetchCustomers]);
 
     const handleEditProductClick = async (product) => {
         try {
@@ -336,44 +320,6 @@ const AdminPage = () => {
             }
         } catch (error) {
             console.error('Erro ao buscar o produto:', error);
-        }
-    };
-
-    const handleEditClick = (color: Color) => {
-        setEditingColorId(color._id.value);
-        setEditColorData({ name: color.props.name, hex: color.props.hex });
-    };
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setEditColorData((prevState) => ({ ...prevState, [name]: value }));
-    };
-
-    const handleSaveClick = async (colorId: string) => {
-        try {
-            await axios.put(
-                `${BASE_URL}/colors/${colorId}`,
-                { name: editColorData.name, hex: editColorData.hex },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${session?.accessToken}`,
-                    },
-                }
-            );
-            setColors((prevColors) =>
-                prevColors.map((color) =>
-                    color._id.value === colorId
-                        ? {
-                              ...color,
-                              props: { ...color.props, ...editColorData },
-                          }
-                        : color
-                )
-            );
-            setEditingColorId(null);
-        } catch (error) {
-            console.error('Erro ao salvar a cor: ', error);
         }
     };
 
@@ -720,17 +666,12 @@ const AdminPage = () => {
                     handleCancelEdit={handleCancelEdit}
                     editProductData={editProductData}
                     handleProductInputChange={handleProductInputChange}
-                    
                     notification={notification}
                     setNotification={setNotification}
                     session={session}
                     status={status}
-                    colors={colors}
                     editingColorId={null}
                     editColorData={{}}
-                    handleInputChange={() => {}}
-                    handleSaveClick={handleSaveClick}
-                    handleEditClick={handleEditClick}
                     sizes={sizes}
                     editingSizeId={null}
                     editSizeData={{}}

@@ -10,8 +10,12 @@ import {
     SheetHeader,
     SheetTitle,
 } from '@/components/ui/sheet';
-import { AdminPanelProps, Category } from '../interfaces';
-import { addCategoriesToProductApi, fetchCategoriesApi } from '../apiService';
+import { AdminPanelProps, Category, Color } from '../interfaces';
+import {
+    addCategoriesToProductApi,
+    fetchCategoriesApi,
+    fetchColorsApi,
+} from '../apiService';
 import axios from 'axios';
 
 const AdminPanel: React.FC<AdminPanelProps> = ({
@@ -36,12 +40,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     notification,
     setNotification,
 
-    colors,
-    editingColorId,
-    editColorData,
-    handleInputChange,
-    handleSaveClick,
-    handleEditClick,
     sizes,
     editingSizeId,
     editSizeData,
@@ -68,8 +66,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         imageUrl: '',
     });
     const [categories, setCategories] = useState<Category[]>([]);
+    const [colors, setColors] = useState<Color[]>([]);
+    const [editingColorId, setEditingColorId] = useState<string | null>(null);
+    const [editColorData, setEditColorData] = useState({ name: '', hex: '' });
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setEditColorData((prevState) => ({ ...prevState, [name]: value }));
+    };
     const handleCategorySelection = (e, categoryId) => {
         if (e.target.checked) {
             setSelectedCategories((prevSelected) => [
@@ -120,6 +126,33 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         const { name, value } = e.target;
         setEditCategoryData((prevState) => ({ ...prevState, [name]: value }));
     };
+    const handleSaveColorClick = async (colorId: string) => {
+        try {
+            await axios.put(
+                `${BASE_URL}/colors/${colorId}`,
+                { name: editColorData.name, hex: editColorData.hex },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session?.accessToken}`,
+                    },
+                }
+            );
+            setColors((prevColors) =>
+                prevColors.map((color) =>
+                    color._id.value === colorId
+                        ? {
+                              ...color,
+                              props: { ...color.props, ...editColorData },
+                          }
+                        : color
+                )
+            );
+            setEditingColorId(null);
+        } catch (error) {
+            console.error('Erro ao salvar a cor: ', error);
+        }
+    };
 
     const handleEditCategoryClick = (category: Category) => {
         console.log('Categoria a ser editada:', category);
@@ -139,6 +172,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             setCategories(fetchedCategories);
         } catch (error) {
             console.error('Erro ao buscar as categorias:', error);
+        }
+    }, []);
+
+    const fetchColors = useCallback(async () => {
+        try {
+            const fetchedColors = await fetchColorsApi();
+            setColors(fetchedColors);
+        } catch (error) {
+            console.error('Erro ao buscar as cores: ', error);
         }
     }, []);
 
@@ -171,9 +213,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         }
     };
 
+    const handleEditColorClick = (color: Color) => {
+        setEditingColorId(color._id.value);
+        setEditColorData({ name: color.props.name, hex: color.props.hex });
+    };
+
     useEffect(() => {
         fetchCategories();
-    }, [fetchCategories]);
+        fetchColors();
+    }, [fetchCategories, fetchColors]);
 
     return (
         <nav className="w-full px-2 space-y-1 z-20">
@@ -965,9 +1013,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                         >
                             <SheetHeader>
                                 <SheetTitle>Cores</SheetTitle>
-                                <SheetDescription>
-                                    Descrição das cores
-                                </SheetDescription>
+                                <SheetDescription></SheetDescription>
                             </SheetHeader>
                             <div className="w-full md:p-4">
                                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -1055,7 +1101,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                     color._id.value ? (
                                                         <button
                                                             onClick={() =>
-                                                                handleSaveClick(
+                                                                handleSaveColorClick(
                                                                     color._id
                                                                         .value
                                                                 )
@@ -1067,7 +1113,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                     ) : (
                                                         <button
                                                             onClick={() =>
-                                                                handleEditClick(
+                                                                handleEditColorClick(
                                                                     color
                                                                 )
                                                             }

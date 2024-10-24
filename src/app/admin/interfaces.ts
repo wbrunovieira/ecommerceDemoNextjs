@@ -175,14 +175,12 @@ export interface AdminPanelProps {
     ) => void;
 
     notification: any;
-    colors: any;
+
     setNotification: React.Dispatch<React.SetStateAction<any>>;
 
     editingColorId: string | null;
     editColorData: any;
-    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleSaveClick: (colorId: string) => void;
-    handleEditClick: (color: any) => void;
+
     sizes: any[];
     editingSizeId: string | null;
     editSizeData: any;
