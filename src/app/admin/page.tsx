@@ -47,7 +47,6 @@ const AdminPage = () => {
 
     const [colors, setColors] = useState<Color[]>([]);
     const [sizes, setSizes] = useState<Size[]>([]);
-    const [categories, setCategories] = useState<Category[]>([]);
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
@@ -62,13 +61,7 @@ const AdminPage = () => {
         name: '',
         description: '',
     });
-    const [editingCategoryId, setEditingCategoryId] = useState<string | null>(
-        null
-    );
-    const [editCategoryData, setEditCategoryData] = useState({
-        name: '',
-        imageUrl: '',
-    });
+
     const [editingBrandId, setEditingBrandId] = useState<string | null>(null);
     const [editBrandData, setEditBrandData] = useState({
         name: '',
@@ -242,15 +235,6 @@ const AdminPage = () => {
         }
     }, []);
 
-    const fetchCategories = useCallback(async () => {
-        try {
-            const fetchedCategories = await fetchCategoriesApi();
-            setCategories(fetchedCategories);
-        } catch (error) {
-            console.error('Erro ao buscar as categorias:', error);
-        }
-    }, []);
-
     const fetchBrands = useCallback(async () => {
         try {
             const fetchedBrands = await fetchBrandsApi();
@@ -273,9 +257,9 @@ const AdminPage = () => {
         fetchBrands();
         fetchColors();
         fetchSizes();
-        fetchCategories();
+
         fetchCustomers();
-    }, [fetchBrands, fetchColors, fetchSizes, fetchCategories, fetchCustomers]);
+    }, [fetchBrands, fetchColors, fetchSizes, fetchCustomers]);
 
     const handleEditProductClick = async (product) => {
         try {
@@ -428,52 +412,6 @@ const AdminPage = () => {
             setEditingSizeId(null);
         } catch (error) {
             console.error('Erro ao salvar o tamanho: ', error);
-        }
-    };
-
-    const handleEditCategoryClick = (category: Category) => {
-        setEditingCategoryId(category._id.value);
-        setEditCategoryData({
-            name: category.props.name,
-            imageUrl: category.props.imageUrl,
-        });
-    };
-
-    const handleCategoryInputChange = (
-        e: React.ChangeEvent<HTMLInputElement>
-    ) => {
-        const { name, value } = e.target;
-        setEditCategoryData((prevState) => ({ ...prevState, [name]: value }));
-    };
-
-    const handleSaveCategoryClick = async (categoryId: string) => {
-        try {
-            await axios.put(
-                `${BASE_URL}/category/${categoryId}`,
-                {
-                    name: editCategoryData.name,
-                    imageUrl: editCategoryData.imageUrl,
-                },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${session?.accessToken}`,
-                    },
-                }
-            );
-            setCategories((prevCategories) =>
-                prevCategories.map((category) =>
-                    category._id.value === categoryId
-                        ? {
-                              ...category,
-                              props: { ...category.props, ...editCategoryData },
-                          }
-                        : category
-                )
-            );
-            setEditingCategoryId(null);
-        } catch (error) {
-            console.error('Erro ao salvar a categoria: ', error);
         }
     };
 
@@ -782,15 +720,11 @@ const AdminPage = () => {
                     handleCancelEdit={handleCancelEdit}
                     editProductData={editProductData}
                     handleProductInputChange={handleProductInputChange}
-                    categories={categories}
-                    selectedCategories={selectedCategories}
+                    
                     notification={notification}
                     setNotification={setNotification}
-                    editingCategoryId={null}
-                    editCategoryData={{}}
-                    handleCategoryInputChange={() => {}}
-                    handleSaveCategoryClick={handleSaveCategoryClick}
-                    handleEditCategoryClick={handleEditCategoryClick}
+                    session={session}
+                    status={status}
                     colors={colors}
                     editingColorId={null}
                     editColorData={{}}
@@ -810,6 +744,7 @@ const AdminPage = () => {
                     handleSaveBrandClick={handleSaveBrandClick}
                     handleEditBrandClick={handleEditBrandClick}
                     setSelectedCategories={setSelectedCategories}
+                    selectedCategories={selectedCategories}
                 />
             </div>
 

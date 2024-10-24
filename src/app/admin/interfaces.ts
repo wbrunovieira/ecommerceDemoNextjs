@@ -1,3 +1,5 @@
+import { Session } from 'next-auth';
+
 export interface ItemTableProps {
     productId: string;
     productName: string;
@@ -171,17 +173,11 @@ export interface AdminPanelProps {
     handleProductInputChange: (
         e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
     ) => void;
-    categories: any[];
-    selectedCategories: string[];
 
     notification: any;
+    colors: any;
     setNotification: React.Dispatch<React.SetStateAction<any>>;
-    editingCategoryId: string | null;
-    editCategoryData: any;
-    handleCategoryInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleSaveCategoryClick: (categoryId: string) => void;
-    handleEditCategoryClick: (category: any) => void;
-    colors: any[];
+
     editingColorId: string | null;
     editColorData: any;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -200,6 +196,10 @@ export interface AdminPanelProps {
     handleSaveBrandClick: (brandId: string) => void;
     handleEditBrandClick: (brand: any) => void;
     setSelectedCategories: any;
+    selectedCategories: any;
+    session: Session | null;
+
+    status: 'loading' | 'authenticated' | 'unauthenticated';
 }
 
 export interface SalesTabProps {

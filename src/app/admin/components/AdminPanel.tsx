@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import CustomNotification from '@/components/CustomNotification';
 
@@ -10,8 +10,9 @@ import {
     SheetHeader,
     SheetTitle,
 } from '@/components/ui/sheet';
-import { AdminPanelProps } from '../interfaces';
-import { addCategoriesToProductApi } from '../apiService';
+import { AdminPanelProps, Category } from '../interfaces';
+import { addCategoriesToProductApi, fetchCategoriesApi } from '../apiService';
+import axios from 'axios';
 
 const AdminPanel: React.FC<AdminPanelProps> = ({
     isSheetOpen,
@@ -32,15 +33,9 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     handleCancelEdit,
     editProductData,
     handleProductInputChange,
-    categories,
-
     notification,
     setNotification,
-    editingCategoryId,
-    editCategoryData,
-    handleCategoryInputChange,
-    handleSaveCategoryClick,
-    handleEditCategoryClick,
+
     colors,
     editingColorId,
     editColorData,
@@ -61,7 +56,20 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     handleEditBrandClick,
     selectedCategories,
     setSelectedCategories,
+
+    session,
+    status,
 }) => {
+    const [editingCategoryId, setEditingCategoryId] = useState<string | null>(
+        null
+    );
+    const [editCategoryData, setEditCategoryData] = useState({
+        name: '',
+        imageUrl: '',
+    });
+    const [categories, setCategories] = useState<Category[]>([]);
+
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
     const handleCategorySelection = (e, categoryId) => {
         if (e.target.checked) {
             setSelectedCategories((prevSelected) => [
@@ -74,6 +82,65 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             );
         }
     };
+
+    const handleSaveCategoryClick = async (categoryId: string) => {
+        try {
+            await axios.put(
+                `${BASE_URL}/category/${categoryId}`,
+                {
+                    name: editCategoryData.name,
+                    imageUrl: editCategoryData.imageUrl,
+                },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session?.accessToken}`,
+                    },
+                }
+            );
+            setCategories((prevCategories) =>
+                prevCategories.map((category) =>
+                    category._id.value === categoryId
+                        ? {
+                              ...category,
+                              props: { ...category.props, ...editCategoryData },
+                          }
+                        : category
+                )
+            );
+            setEditingCategoryId(null);
+        } catch (error) {
+            console.error('Erro ao salvar a categoria: ', error);
+        }
+    };
+
+    const handleCategoryInputChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const { name, value } = e.target;
+        setEditCategoryData((prevState) => ({ ...prevState, [name]: value }));
+    };
+
+    const handleEditCategoryClick = (category: Category) => {
+        console.log('Categoria a ser editada:', category);
+        console.log('category._id.value', category._id.value);
+        setEditingCategoryId(category._id.value);
+        setEditCategoryData({
+            name: category.props.name,
+            imageUrl: category.props.imageUrl,
+        });
+    };
+    console.log('Categoria em edição:', editingCategoryId);
+    console.log('Categoria em edição EditCategoryData:', editCategoryData);
+
+    const fetchCategories = useCallback(async () => {
+        try {
+            const fetchedCategories = await fetchCategoriesApi();
+            setCategories(fetchedCategories);
+        } catch (error) {
+            console.error('Erro ao buscar as categorias:', error);
+        }
+    }, []);
 
     const handleAddCategoryToProduct = async (productId: string) => {
         try {
@@ -103,6 +170,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             alert('Erro ao adicionar categoria.');
         }
     };
+
+    useEffect(() => {
+        fetchCategories();
+    }, [fetchCategories]);
 
     return (
         <nav className="w-full px-2 space-y-1 z-20">
@@ -754,9 +825,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                         >
                             <SheetHeader>
                                 <SheetTitle>Categorias</SheetTitle>
-                                <SheetDescription>
-                                    Descrição da categoria
-                                </SheetDescription>
+                                <SheetDescription></SheetDescription>
                             </SheetHeader>
                             <div className="w-full md:p-4">
                                 <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
