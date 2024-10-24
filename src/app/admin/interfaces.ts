@@ -181,7 +181,6 @@ export interface AdminPanelProps {
     editingColorId: string | null;
     editColorData: any;
 
-    sizes: any[];
     editingSizeId: string | null;
     editSizeData: any;
     handleSizeInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;

@@ -54,7 +54,7 @@ const AdminPage = () => {
 
     const [orders, setOrders] = useState<Order[]>([]);
 
-    const [sizes, setSizes] = useState<Size[]>([]);
+   
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
@@ -210,14 +210,7 @@ const AdminPage = () => {
         }));
     };
 
-    const fetchSizes = useCallback(async () => {
-        try {
-            const fetchedSizes = await fetchSizesApi();
-            setSizes(fetchedSizes);
-        } catch (error) {
-            console.error('Erro ao buscar os tamanhos:', error);
-        }
-    }, []);
+
 
     const fetchBrands = useCallback(async () => {
         try {
@@ -239,11 +232,8 @@ const AdminPage = () => {
 
     useEffect(() => {
         fetchBrands();
-
-        fetchSizes();
-
         fetchCustomers();
-    }, [fetchBrands, fetchSizes, fetchCustomers]);
+    }, [fetchBrands,  fetchCustomers]);
 
     const handleEditProductClick = async (product) => {
         try {
@@ -672,7 +662,7 @@ const AdminPage = () => {
                     status={status}
                     editingColorId={null}
                     editColorData={{}}
-                    sizes={sizes}
+
                     editingSizeId={null}
                     editSizeData={{}}
                     handleSizeInputChange={handleSizeInputChange}

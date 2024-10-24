@@ -10,11 +10,12 @@ import {
     SheetHeader,
     SheetTitle,
 } from '@/components/ui/sheet';
-import { AdminPanelProps, Category, Color } from '../interfaces';
+import { AdminPanelProps, Category, Color, Size } from '../interfaces';
 import {
     addCategoriesToProductApi,
     fetchCategoriesApi,
     fetchColorsApi,
+    fetchSizesApi,
 } from '../apiService';
 import axios from 'axios';
 
@@ -40,7 +41,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     notification,
     setNotification,
 
-    sizes,
+    
     editingSizeId,
     editSizeData,
     handleSizeInputChange,
@@ -69,6 +70,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     const [colors, setColors] = useState<Color[]>([]);
     const [editingColorId, setEditingColorId] = useState<string | null>(null);
     const [editColorData, setEditColorData] = useState({ name: '', hex: '' });
+
+    const [sizes, setSizes] = useState<Size[]>([]);
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -184,6 +187,15 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         }
     }, []);
 
+    const fetchSizes = useCallback(async () => {
+        try {
+            const fetchedSizes = await fetchSizesApi();
+            setSizes(fetchedSizes);
+        } catch (error) {
+            console.error('Erro ao buscar os tamanhos:', error);
+        }
+    }, []);
+
     const handleAddCategoryToProduct = async (productId: string) => {
         try {
             if (selectedCategories.length === 0) {
@@ -221,7 +233,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     useEffect(() => {
         fetchCategories();
         fetchColors();
-    }, [fetchCategories, fetchColors]);
+        fetchSizes();
+    }, [fetchCategories, fetchSizes, fetchColors]);
 
     return (
         <nav className="w-full px-2 space-y-1 z-20">
