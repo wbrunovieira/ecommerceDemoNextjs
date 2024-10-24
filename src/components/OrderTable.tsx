@@ -1,12 +1,13 @@
 import { fetchOrdersApi, fetchOrdersIdApi } from '@/app/admin/apiService';
+import OrderDetailsModal from '@/app/admin/components/OrderDetailsModal';
 import { Order, OrderTableProps } from '@/app/admin/interfaces';
 import React, { useEffect, useState } from 'react';
 
 const OrdersTable: React.FC = () => {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
     const [ordersTable, setOrdersTable] = useState<OrderTableProps[]>([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    
     const mapOrdersToTableProps = (orders: Order[]): OrderTableProps[] => {
         console.log('mapOrdersToTableProps input:', orders);
 
@@ -26,13 +27,11 @@ const OrdersTable: React.FC = () => {
         }));
     };
 
-    
     const fetchOrders = async () => {
         try {
             const orders = await fetchOrdersApi();
             console.log('fetchOrders response', orders);
-           
-            
+
             if (!Array.isArray(orders)) {
                 console.error('Erro: A resposta não é um array.');
                 setOrdersTable([]);
@@ -42,22 +41,22 @@ const OrdersTable: React.FC = () => {
             const mappedOrders = mapOrdersToTableProps(orders);
             console.log('fetchOrders mappedOrders', mappedOrders);
             setOrdersTable(mappedOrders);
-
         } catch (err) {
             console.error('Erro ao buscar pedidos:', err);
-            setOrdersTable([]); 
+            setOrdersTable([]);
         }
     };
 
     useEffect(() => {
         fetchOrders();
-
     }, []);
 
     const fetchOrderById = async (orderId: string) => {
         try {
             const response = await fetchOrdersIdApi(orderId);
-            setSelectedOrder(response?.data || null);
+            console.log('fetchOrderById response', response);
+            setSelectedOrder(response || null);
+            setIsModalOpen(true);
         } catch (err) {
             console.error('Erro ao buscar detalhes do pedido:', err);
         }
@@ -132,6 +131,12 @@ const OrdersTable: React.FC = () => {
                     )}
                 </tbody>
             </table>
+
+            <OrderDetailsModal
+                order={selectedOrder}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
         </div>
     );
 };
