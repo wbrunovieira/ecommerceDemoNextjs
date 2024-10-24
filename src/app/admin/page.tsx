@@ -44,7 +44,6 @@ const AdminPage = () => {
     const { data: session, status } = useSession();
 
     const [orders, setOrders] = useState<Order[]>([]);
-   
 
     const [colors, setColors] = useState<Color[]>([]);
     const [sizes, setSizes] = useState<Size[]>([]);
@@ -157,17 +156,18 @@ const AdminPage = () => {
         const fetchOrders = async () => {
             try {
                 const response = await fetchOrdersApi();
+                console.log('page fetchOrders response', response);
                 const mappedOrders = mapOrdersResponse(response);
+                console.log('page fetchOrders mappedOrders', mappedOrders);
 
-                console.log('fetchedOrders', mappedOrders);
                 setOrders(mappedOrders);
-
-                
-                
 
                 const last7DaysData = prepareLast7DaysData(mappedOrders);
                 const last7WeeksData = prepareLast7WeeksData(mappedOrders);
                 const last7MonthsData = prepareLast7MonthsData(mappedOrders);
+                console.log('last7DaysData ', last7DaysData);
+                console.log('last7WeeksData ', last7WeeksData);
+                console.log('last7MonthsData ', last7MonthsData);
 
                 setChartData(last7DaysData);
                 setWeeklyChartData(last7WeeksData);
@@ -200,30 +200,27 @@ const AdminPage = () => {
         setLastMonthSales(lastMonthTotal);
     };
 
-
-
     const mapOrdersResponse = (response: any): Order[] => {
+        console.log('mapOrdersResponse inside response', response);
         return response.map((order: any) => ({
-            _id: order._id,
-            props: {
-                userId: order.props.userId,
-                items: order.props.items.map((item: any) => ({
-                    _id: item._id,
-                    props: {
-                        orderId: item.props.orderId,
-                        productId: item.props.productId,
-                        productName: item.props.productName,
-                        imageUrl: item.props.imageUrl,
-                        quantity: item.props.quantity,
-                        price: item.props.price,
-                    },
-                })),
-                status: order.props.status,
-                paymentId: order.props.paymentId,
-                paymentStatus: order.props.paymentStatus,
-                paymentMethod: order.props.paymentMethod,
-                paymentDate: order.props.paymentDate,
-            },
+            id: order.id,
+            userId: order.userId,
+            userName: order.userName,
+            cartId: order.cartId,
+            customerId: order.customerId,
+            items: order.items.map((item: any) => ({
+                orderId: item.orderId,
+                productId: item.productId,
+                productName: item.productName,
+                imageUrl: item.imageUrl,
+                quantity: item.quantity,
+                price: item.price,
+            })),
+            status: order.status,
+            paymentId: order.paymentId,
+            paymentStatus: order.paymentStatus,
+            paymentMethod: order.paymentMethod,
+            paymentDate: order.paymentDate,
         }));
     };
 
@@ -889,7 +886,6 @@ const AdminPage = () => {
                         </TabsList>
                         <TabsContent value="vendas">
                             <SalesTab
-                               
                                 dailySales={dailySales}
                                 yesterdaySales={yesterdaySales}
                                 weeklySales={weeklySales}
@@ -902,8 +898,7 @@ const AdminPage = () => {
                             />
                         </TabsContent>
                         <TabsContent value="produto">
-                            <ProductTab 
-                            orders={orders} />
+                            <ProductTab orders={orders} />
                         </TabsContent>
                     </Tabs>
                 </div>

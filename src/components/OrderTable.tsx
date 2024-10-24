@@ -29,10 +29,10 @@ const OrdersTable: React.FC = () => {
     
     const fetchOrders = async () => {
         try {
-            const response = await fetchOrdersApi();
-            console.log('fetchOrders response', response);
-            const orders = response || [];
-            console.log('fetchOrders orders', orders);
+            const orders = await fetchOrdersApi();
+            console.log('fetchOrders response', orders);
+           
+            
             if (!Array.isArray(orders)) {
                 console.error('Erro: A resposta não é um array.');
                 setOrdersTable([]);
@@ -42,6 +42,7 @@ const OrdersTable: React.FC = () => {
             const mappedOrders = mapOrdersToTableProps(orders);
             console.log('fetchOrders mappedOrders', mappedOrders);
             setOrdersTable(mappedOrders);
+
         } catch (err) {
             console.error('Erro ao buscar pedidos:', err);
             setOrdersTable([]); 
@@ -50,6 +51,7 @@ const OrdersTable: React.FC = () => {
 
     useEffect(() => {
         fetchOrders();
+
     }, []);
 
     const fetchOrderById = async (orderId: string) => {

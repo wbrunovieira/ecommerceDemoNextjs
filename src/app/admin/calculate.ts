@@ -24,9 +24,9 @@ export const prepareLast7DaysData = (orders: Order[]) => {
         let totalSalesForDay = 0;
 
         orders.forEach((order) => {
-            const paymentDate = new Date(order.props.paymentDate);
-            const orderTotal = order.props.items.reduce(
-                (total, item) => total + item.props.price * item.props.quantity,
+            const paymentDate = new Date(order.paymentDate);
+            const orderTotal = order.items.reduce(
+                (total, item) => total + item.price * item.quantity,
                 0
             );
 
@@ -54,9 +54,9 @@ export const prepareLast7WeeksData = (orders: Order[]) => {
         let totalSalesForWeek = 0;
 
         orders.forEach((order) => {
-            const paymentDate = new Date(order.props.paymentDate);
-            const orderTotal = order.props.items.reduce(
-                (total, item) => total + item.props.price * item.props.quantity,
+            const paymentDate = new Date(order.paymentDate);
+            const orderTotal = order.items.reduce(
+                (total, item) => total + item.price * item.quantity,
                 0
             );
 
@@ -83,9 +83,9 @@ export const prepareLast7MonthsData = (orders: Order[]) => {
         let totalSalesForMonth = 0;
 
         orders.forEach((order) => {
-            const paymentDate = new Date(order.props.paymentDate);
-            const orderTotal = order.props.items.reduce(
-                (total, item) => total + item.props.price * item.props.quantity,
+            const paymentDate = new Date(order.paymentDate);
+            const orderTotal = order.items.reduce(
+                (total, item) => total + item.price * item.quantity,
                 0
             );
 
@@ -117,9 +117,9 @@ export const calculateSales = (orders: Order[]) => {
     const lastMonth = subMonths(today, 1);
 
     orders.forEach((order) => {
-        const paymentDate = new Date(order.props.paymentDate);
-        const orderTotal = order.props.items.reduce(
-            (total, item) => total + item.props.price * item.props.quantity,
+        const paymentDate = new Date(order.paymentDate);
+        const orderTotal = order.items.reduce(
+            (total, item) => total + item.price * item.quantity,
             0
         );
         console.log('orderTotal', orderTotal);
