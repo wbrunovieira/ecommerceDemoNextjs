@@ -10,9 +10,10 @@ import {
     SheetHeader,
     SheetTitle,
 } from '@/components/ui/sheet';
-import { AdminPanelProps, Category, Color, Size } from '../interfaces';
+import { AdminPanelProps, Brand, Category, Color, Size } from '../interfaces';
 import {
     addCategoriesToProductApi,
+    fetchBrandsApi,
     fetchCategoriesApi,
     fetchColorsApi,
     fetchSizesApi,
@@ -41,12 +42,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     notification,
     setNotification,
 
-    brands,
-    editingBrandId,
-    editBrandData,
-    handleBrandInputChange,
-    handleSaveBrandClick,
-    handleEditBrandClick,
     selectedCategories,
     setSelectedCategories,
 
@@ -71,6 +66,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         description: '',
     });
     const [editingSizeId, setEditingSizeId] = useState<string | null>(null);
+
+    const [brands, setBrands] = useState<Brand[]>([]);
+    const [editingBrandId, setEditingBrandId] = useState<string | null>(null);
+    const [editBrandData, setEditBrandData] = useState({
+        name: '',
+        imageUrl: '',
+    });
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -231,6 +233,16 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         }
     };
 
+    const fetchBrands = useCallback(async () => {
+        try {
+            const fetchedBrands = await fetchBrandsApi();
+            console.log('fetchedBrands', fetchedBrands);
+            setBrands(fetchedBrands);
+        } catch (error) {
+            console.error('Erro ao buscar os fabricantes:', error);
+        }
+    }, []);
+
     const handleAddCategoryToProduct = async (productId: string) => {
         try {
             if (selectedCategories.length === 0) {
@@ -265,11 +277,52 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
         setEditColorData({ name: color.props.name, hex: color.props.hex });
     };
 
+    const handleBrandInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setEditBrandData((prevState) => ({ ...prevState, [name]: value }));
+    };
+    const handleEditBrandClick = (brand: Brand) => {
+        setEditingBrandId(brand._id.value);
+        setEditBrandData({
+            name: brand.props.name,
+            imageUrl: brand.props.imageUrl,
+        });
+    };
+
+    const handleSaveBrandClick = async (brandId: string) => {
+        try {
+            await axios.put(
+                `${BASE_URL}/brands/${brandId}`,
+                { name: editBrandData.name, imageUrl: editBrandData.imageUrl },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session?.accessToken}`,
+                    },
+                }
+            );
+            setBrands((prevBrands) =>
+                prevBrands.map((brand) =>
+                    brand._id.value === brandId
+                        ? {
+                              ...brand,
+                              props: { ...brand.props, ...editBrandData },
+                          }
+                        : brand
+                )
+            );
+            setEditingBrandId(null);
+        } catch (error) {
+            console.error('Erro ao salvar o fabricante: ', error);
+        }
+    };
+
     useEffect(() => {
         fetchCategories();
         fetchColors();
         fetchSizes();
-    }, [fetchCategories, fetchSizes, fetchColors]);
+        fetchBrands();
+    }, [fetchCategories, fetchBrands, fetchSizes, fetchColors]);
 
     return (
         <nav className="w-full px-2 space-y-1 z-20">

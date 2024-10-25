@@ -180,12 +180,7 @@ export interface AdminPanelProps {
 
     editingColorId: string | null;
     editColorData: any;
-    brands: any[];
-    editingBrandId: string | null;
-    editBrandData: any;
-    handleBrandInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleSaveBrandClick: (brandId: string) => void;
-    handleEditBrandClick: (brand: any) => void;
+  
     setSelectedCategories: any;
     selectedCategories: any;
     session: Session | null;

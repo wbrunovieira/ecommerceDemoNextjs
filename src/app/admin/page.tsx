@@ -38,16 +38,10 @@ const AdminPage = () => {
     const [searchId, setSearchId] = useState('');
     const [searchName, setSearchName] = useState('');
     const [products, setProducts] = useState<Product[]>([]);
-    const [editingBrandId, setEditingBrandId] = useState<string | null>(null);
-    const [editBrandData, setEditBrandData] = useState({
-        name: '',
-        imageUrl: '',
-    });
 
     const [orders, setOrders] = useState<Order[]>([]);
 
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-    const [brands, setBrands] = useState<Brand[]>([]);
 
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -195,15 +189,6 @@ const AdminPage = () => {
         }));
     };
 
-    const fetchBrands = useCallback(async () => {
-        try {
-            const fetchedBrands = await fetchBrandsApi();
-            setBrands(fetchedBrands);
-        } catch (error) {
-            console.error('Erro ao buscar os fabricantes:', error);
-        }
-    }, []);
-
     const fetchCustomers = useCallback(async () => {
         try {
             const fetchedCustomers = await fetchCustomersApi();
@@ -214,9 +199,8 @@ const AdminPage = () => {
     }, []);
 
     useEffect(() => {
-        fetchBrands();
         fetchCustomers();
-    }, [fetchBrands, fetchCustomers]);
+    }, [fetchCustomers]);
 
     const handleEditProductClick = async (product) => {
         try {
@@ -293,47 +277,6 @@ const AdminPage = () => {
             }
         } catch (error) {
             console.error('Erro ao buscar o produto:', error);
-        }
-    };
-
-    const handleEditBrandClick = (brand: Brand) => {
-        setEditingBrandId(brand._id.value);
-        setEditBrandData({
-            name: brand.props.name,
-            imageUrl: brand.props.imageUrl,
-        });
-    };
-
-    const handleBrandInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setEditBrandData((prevState) => ({ ...prevState, [name]: value }));
-    };
-
-    const handleSaveBrandClick = async (brandId: string) => {
-        try {
-            await axios.put(
-                `${BASE_URL}/brands/${brandId}`,
-                { name: editBrandData.name, imageUrl: editBrandData.imageUrl },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${session?.accessToken}`,
-                    },
-                }
-            );
-            setBrands((prevBrands) =>
-                prevBrands.map((brand) =>
-                    brand._id.value === brandId
-                        ? {
-                              ...brand,
-                              props: { ...brand.props, ...editBrandData },
-                          }
-                        : brand
-                )
-            );
-            setEditingBrandId(null);
-        } catch (error) {
-            console.error('Erro ao salvar o fabricante: ', error);
         }
     };
 
@@ -607,12 +550,6 @@ const AdminPage = () => {
                     status={status}
                     editingColorId={null}
                     editColorData={{}}
-                    brands={brands}
-                    editingBrandId={null}
-                    editBrandData={{}}
-                    handleBrandInputChange={() => {}}
-                    handleSaveBrandClick={handleSaveBrandClick}
-                    handleEditBrandClick={handleEditBrandClick}
                     setSelectedCategories={setSelectedCategories}
                     selectedCategories={selectedCategories}
                 />
