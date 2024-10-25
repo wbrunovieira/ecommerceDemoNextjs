@@ -41,18 +41,8 @@ const ProductList = () => {
     const [loading, setLoading] = useState(true);
     const router = useRouter();
 
-    const handleButtonClick = (
-        e: React.MouseEvent<HTMLButtonElement>,
-        slug: string
-    ) => {
-        const button = e.currentTarget;
-
-        button.classList.add('loading');
-        button.setAttribute('disabled', 'true');
-        console.log('Navigating to product:', slug);
+    const handleButtonClick = (slug: string) => {
         router.push(`/product/${slug}`);
-        button.classList.remove('loading');
-        button.removeAttribute('disabled');
     };
 
     const getSlug = (slug: any): string => {
@@ -146,9 +136,7 @@ const ProductList = () => {
                                 width={produto.width}
                                 length={produto.length}
                                 weight={produto.weight}
-                                onButtonClick={(e) =>
-                                    handleButtonClick(e, produto.slug)
-                                }
+                                onButtonClick={handleButtonClick}
                             />
                         </a>
                     </Link>

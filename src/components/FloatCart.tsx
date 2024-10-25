@@ -170,11 +170,6 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
         }
     };
 
-    const handleAddNewAddresses = (address: Address) => {
-        setAddresses((prevAddresses) => [...prevAddresses, address]);
-        setShowAddressModal(true);
-    };
-
     useEffect(() => {
         const initializeUserCart = async () => {
             if (session?.user?.id) {
@@ -307,6 +302,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                     addresses={addresses}
                     onClose={handleModalClose}
                     onConfirm={handleModalConfirm}
+                    setAddresses={setAddresses}
                 />
             )}
             {isLoading && (

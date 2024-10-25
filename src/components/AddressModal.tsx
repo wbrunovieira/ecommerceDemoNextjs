@@ -21,6 +21,7 @@ interface Address {
 
 interface AddressModalProps {
     addresses: Address[];
+    setAddresses: React.Dispatch<React.SetStateAction<Address[]>>;
     onClose: () => void;
     onConfirm: (address: Address) => void;
 }
@@ -29,6 +30,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
     addresses,
     onClose,
     onConfirm,
+    setAddresses,
 }) => {
     const [isAddingNew, setIsAddingNew] = useState(addresses.length === 0);
     const [newAddress, setNewAddress] = useState<Partial<Address['props']>>({});
@@ -77,7 +79,12 @@ const AddressModal: React.FC<AddressModalProps> = ({
                     console.log('entrou no if (response.ok');
 
                     console.log('savedAddressa', savedAddress);
+                    setAddresses((prevAddresses) => [
+                        ...prevAddresses,
+                        savedAddress,
+                    ]);
                     setNewAddress({});
+                    setIsAddingNew(false);
                     setIsAddingNew(false);
                     onConfirm(savedAddress);
                     onClose();
@@ -320,7 +327,7 @@ const AddressModal: React.FC<AddressModalProps> = ({
                                         }}
                                         className="bg-primaryDark text-white px-4 py-2 rounded transform hover:scale-105 hover:shadow-lg transition duration-300 ease-in-out whitespace-nowrap"
                                     >
-                                        Adicionar Outro Endereço
+                                        Adcionar Outro Endereço
                                     </button>
                                     <button
                                         onClick={handleCancel}

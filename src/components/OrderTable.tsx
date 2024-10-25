@@ -1,7 +1,7 @@
 import { fetchOrdersApi, fetchOrdersIdApi } from '@/app/admin/apiService';
 import OrderDetailsModal from '@/app/admin/components/OrderDetailsModal';
 import { Order, OrderTableProps } from '@/app/admin/interfaces';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 const OrdersTable: React.FC = () => {
     const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -27,7 +27,7 @@ const OrdersTable: React.FC = () => {
         }));
     };
 
-    const fetchOrders = async () => {
+    const fetchOrders = useCallback(async () => {
         try {
             const orders = await fetchOrdersApi();
             console.log('fetchOrders response', orders);
@@ -45,11 +45,11 @@ const OrdersTable: React.FC = () => {
             console.error('Erro ao buscar pedidos:', err);
             setOrdersTable([]);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchOrders();
-    }, []);
+    }, [fetchOrders]);
 
     const fetchOrderById = async (orderId: string) => {
         try {

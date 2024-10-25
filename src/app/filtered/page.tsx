@@ -1,6 +1,8 @@
+
+
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
@@ -16,35 +18,11 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 
-import { NextPage } from 'next';
 import { useColorStore, useSelectionStore } from '@/context/store';
-
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import SuspenseWrapper from '@/components/SuspenseWrapper';
-
-interface ProductCategory {
-    category: {
-        id: {
-            value: string;
-        };
-        name: string;
-    };
-}
-interface ProductColor {
-    color: {
-        id: {
-            value: string;
-        };
-        name: string;
-    };
-}
-interface ProductSize {
-    id: {
-        value: string;
-    };
-    name: string;
-}
+import fetchProducts from '@/utils/fetchProducts';
 
 interface Product {
     id: string;
@@ -52,7 +30,7 @@ interface Product {
     description: string;
     price: number;
     slug: string;
-    FinalPrice: number;
+    finalPrice: number;
     productCategories: ProductCategory[];
     productColors: ProductColor[];
     productSizes: ProductSize[];
@@ -60,8 +38,6 @@ interface Product {
     isNew: boolean;
     discount: number;
     images: string[];
-    finalPrice: number;
-    materialId: string;
     brandId: string;
     brandName: string;
     brandUrl: string;
@@ -72,25 +48,26 @@ interface Product {
     hasVariants: boolean;
 }
 
-const FilteredResults: NextPage = () => {
+interface ProductCategory {
+    category: { id: { value: string }; name: string };
+}
+interface ProductColor {
+    color: { id: { value: string }; name: string };
+}
+interface ProductSize {
+    id: { value: string };
+    name: string;
+}
+
+const FilteredResults = () => {
     const searchParams = useSearchParams();
-
-    const category = searchParams.get('category');
-    const brand = searchParams.get('brand');
-
-    const color = searchParams.get('color');
-    const size = searchParams.get('size');
-    const minPrice = searchParams.get('minPrice');
-    const maxPrice = searchParams.get('maxPrice');
+    const router = useRouter();
+    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     const [products, setProducts] = useState<Product[]>([]);
-    const [allProducts, setAllProducts] = useState<Product[]>([]);
-    const [initialLoad, setInitialLoad] = useState(true);
     const [filterName, setFilterName] = useState('');
-
-    const router = useRouter();
-
     const [sortType, setSortType] = useState<string>('');
+    const containerRef = useRef<HTMLElement>(null);
 
     const selectedCategory = useSelectionStore(
         (state) => state.selectedCategory
@@ -111,7 +88,6 @@ const FilteredResults: NextPage = () => {
     const setSelectedBrand = useSelectionStore(
         (state) => state.setSelectedBrand
     );
-
     const setSelectedSize = useSelectionStore((state) => state.setSelectedSize);
     const setSelectedColor = useColorStore((state) => state.setSelectedColor);
     const setSelectedMinPrice = useSelectionStore(
@@ -121,97 +97,7 @@ const FilteredResults: NextPage = () => {
         (state) => state.setSelectedMaxPrice
     );
 
-    const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
-
     gsap.registerPlugin(useGSAP);
-
-    const handleButtonClick = (slug: string) => {
-        router.push(`/product/${slug}`);
-    };
-
-  
-    const fetchProducts = useCallback(async (url: string) => {
-        const getFilterName = (products: Product[]) => {
-            if (category) {
-                const selectedCategoryObj = products.flatMap((product) =>
-                    product.productCategories.filter(
-                        (cat) => cat.category.id.value === category
-                    )
-                )[0];
-                return selectedCategoryObj
-                    ? selectedCategoryObj.category.name
-                    : category;
-            } else if (brand) {
-                const selectedBrandObj = products.find(
-                    (product) => product.brandId === brand
-                );
-                return selectedBrandObj ? selectedBrandObj.brandName : brand;
-            } else if (color) {
-                const selectedColorObj = products.flatMap((product) =>
-                    product.productColors.filter(
-                        (col) => col.color.id.value === color
-                    )
-                )[0];
-                return selectedColorObj ? selectedColorObj.color.name : color;
-            }
-            return '';
-        };
-    
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-    
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-    
-            const mappedProducts = data.map((product: any) => ({
-                id: product._id?.value,
-                name: product.props.name,
-                description: product.props.description,
-                price: product.props.price,
-                slug: product.props.slug.value,
-                hasVariants: product.props.hasVariants,
-                finalPrice: product.props.finalPrice,
-                onSale: product.props.onSale,
-                isNew: product.props.isNew,
-                discount: product.props.discount,
-                images: product.props.images,
-                productCategories: product.props.productCategories.map(
-                    (category: any) => ({
-                        category: { id: category.id, name: category.name },
-                    })
-                ),
-                productColors: product.props.productColors.map(
-                    (color: any) => ({
-                        color: { id: color.id, name: color.name },
-                    })
-                ),
-                productSizes: product.props.productSizes.map((size: any) => ({
-                    id: size.id,
-                    name: size.name,
-                })),
-                brandId: product.props.brandId.value,
-                brandName: product.props.brandName,
-                brandUrl: product.props.brandUrl,
-            }));
-    
-            setAllProducts(mappedProducts);
-            setProducts(mappedProducts);
-            setInitialLoad(false);
-            setFilterName(getFilterName(mappedProducts));
-        } catch (error) {
-            console.error('Error fetching search results:', error);
-        }
-    }, [setAllProducts, setProducts, setInitialLoad, setFilterName,brand,category,color]);
-    
-
-  
 
     const sortProducts = (products: Product[], type: string) => {
         switch (type) {
@@ -232,87 +118,55 @@ const FilteredResults: NextPage = () => {
         }
     };
 
-    useEffect(() => {
-        if (!initialLoad) {
-            const filterProducts = () => {
-                let filteredProducts = allProducts;
-
-                if (selectedCategory) {
-                    filteredProducts = filteredProducts.filter((product) =>
-                        product.productCategories.some((cat) => {
-                            return cat.category.id.value === selectedCategory;
-                        })
-                    );
-                }
-
-                if (selectedBrand) {
-                    filteredProducts = filteredProducts.filter(
-                        (product) => product.brandId === selectedBrand
-                    );
-                }
-
-                if (selectedColor) {
-                    filteredProducts = filteredProducts.filter((product) =>
-                        product.productColors.some((cat) => {
-                            return cat.color.id.value === selectedColor.id;
-                        })
-                    );
-                }
-
-                if (selectedSize) {
-                    filteredProducts = filteredProducts.filter((product) =>
-                        product.productSizes.some(
-                            (siz) => siz.id.value === selectedSize.id
-                        )
-                    );
-                }
-
-                if (selectedMinPrice !== null && selectedMaxPrice !== null) {
-                    filteredProducts = filteredProducts.filter(
-                        (product) =>
-                            product.finalPrice >= selectedMinPrice &&
-                            product.finalPrice <= selectedMaxPrice
-                    );
-                }
-
-                // Apply sorting
-                filteredProducts = sortProducts(filteredProducts, sortType);
-
-                setProducts(filteredProducts);
-            };
-
-            filterProducts();
-        }
-    }, [
-        selectedCategory,
-        selectedBrand,
-        selectedColor,
-        selectedSize,
-        allProducts,
-        initialLoad,
-        selectedMinPrice,
-        selectedMaxPrice,
-        sortType,
-    ]);
+    const handleButtonClick = (slug: string) => {
+        router.push(`/product/${slug}`);
+    };
 
     useEffect(() => {
+        const category = searchParams.get('category');
+        const brand = searchParams.get('brand');
+        const color = searchParams.get('color');
+        const size = searchParams.get('size');
+        const minPrice = searchParams.get('minPrice');
+        const maxPrice = searchParams.get('maxPrice');
+
+        const fetchAndSetProducts = async (url: string) => {
+            const products = await fetchProducts(url);
+
+            setProducts(products);
+            setFilterName(
+                selectedCategory
+                    ? products[0]?.productCategories[0]?.category.name
+                    : selectedBrand
+                    ? products[0]?.brandName
+                    : selectedColor
+                    ? products[0]?.productColors[0]?.color.name
+                    : ''
+            );
+        };
+
         if (category) {
-            fetchProducts(
+            fetchAndSetProducts(
                 `${BASE_URL}/products/category/${encodeURIComponent(category)}`
             );
             setSelectedCategory(category);
         } else if (brand) {
-            fetchProducts(
+            fetchAndSetProducts(
                 `${BASE_URL}/products/brand/${encodeURIComponent(brand)}`
             );
             setSelectedBrand(brand);
+        } else if (color) {
+            fetchAndSetProducts(
+                `${BASE_URL}/products/color/${encodeURIComponent(color)}`
+            );
+            setSelectedColor({ id: color, name: color, hex: color });
         } else if (size) {
-            fetchProducts(
+            fetchAndSetProducts(
                 `${BASE_URL}/products/size/${encodeURIComponent(size)}`
             );
             setSelectedSize({ id: size, name: size });
         } else if (minPrice && maxPrice) {
-            fetchProducts(
+            fetchAndSetProducts(
                 `${BASE_URL}/products/price-range?minPrice=${encodeURIComponent(
                     minPrice
                 )}&maxPrice=${encodeURIComponent(maxPrice)}`
@@ -321,118 +175,35 @@ const FilteredResults: NextPage = () => {
             setSelectedMaxPrice(Number(maxPrice));
         }
     }, [
-        category, 
-        brand, 
-        size, 
-        minPrice, 
-        maxPrice, 
-        BASE_URL, 
-        fetchProducts, 
-        setSelectedCategory, 
-        setSelectedBrand, 
-        setSelectedSize, 
-        setSelectedMinPrice, 
-        setSelectedMaxPrice
+        searchParams,
+        BASE_URL,
+        setSelectedCategory,
+        setSelectedBrand,
+        setSelectedColor,
+        setSelectedSize,
+        setSelectedMinPrice,
+        setSelectedMaxPrice,
     ]);
-    
+
     useEffect(() => {
-        if (color) {
-            fetchProducts(
-                `${BASE_URL}/products/color/${encodeURIComponent(color)}`
+        if (containerRef?.current) {
+            const sections = containerRef.current.querySelectorAll('.card');
+            gsap.fromTo(
+                sections,
+                { x: 500, opacity: 0 },
+                {
+                    x: 0,
+                    opacity: 1,
+                    stagger: 0.5,
+                    duration: 2,
+                    ease: 'power3.out',
+                }
             );
-            setSelectedColor({ id: color, name: color, hex: color });
         }
-    }, [color, BASE_URL, fetchProducts, setSelectedColor]);
-    
-
-    useEffect(() => {
-        if (!initialLoad) {
-            const filterProducts = () => {
-                let filteredProducts = allProducts;
-
-                if (selectedCategory) {
-                    filteredProducts = filteredProducts.filter((product) =>
-                        product.productCategories.some((cat) => {
-                            return cat.category.id.value === selectedCategory;
-                        })
-                    );
-                }
-
-                if (selectedBrand) {
-                    filteredProducts = filteredProducts.filter(
-                        (product) => product.brandId === selectedBrand
-                    );
-                }
-
-                if (selectedColor) {
-                    filteredProducts = filteredProducts.filter((product) =>
-                        product.productColors.some((cat) => {
-                            return cat.color.id.value === selectedColor.id;
-                        })
-                    );
-                }
-
-                if (selectedSize) {
-                    filteredProducts = filteredProducts.filter((product) =>
-                        product.productSizes.some(
-                            (siz) => siz.id.value === selectedSize.id
-                        )
-                    );
-                }
-
-                if (selectedMinPrice !== null && selectedMaxPrice !== null) {
-                    filteredProducts = filteredProducts.filter(
-                        (product) =>
-                            product.finalPrice >= selectedMinPrice &&
-                            product.finalPrice <= selectedMaxPrice
-                    );
-                }
-
-                setProducts(filteredProducts);
-            };
-
-            filterProducts();
-        }
-    }, [
-        selectedCategory,
-        selectedBrand,
-        selectedColor,
-        selectedSize,
-
-        allProducts,
-        initialLoad,
-        selectedMinPrice,
-        selectedMaxPrice,
-    ]);
-
-    const containerRef = useRef<HTMLElement>(null);
-
-    useGSAP(
-        () => {
-            if (containerRef?.current) {
-                const sections =
-                    containerRef?.current.querySelectorAll('.card');
-                gsap.fromTo(
-                    sections,
-                    { x: 500, opacity: 0 },
-                    {
-                        x: 0,
-                        opacity: 1,
-                        stagger: 0.5,
-                        duration: 2,
-                        ease: 'power3.out',
-                    }
-                );
-            }
-        },
-        { scope: containerRef }
-    );
+    }, [products]);
 
     return (
-
         <SuspenseWrapper>
-
-            
             <Container>
                 <section
                     className="flex mt-2"
@@ -441,24 +212,27 @@ const FilteredResults: NextPage = () => {
                     <div className="flex flex-col">
                         <Sidebar />
                     </div>
-                    <div className="flex flex-col "></div>
                     <div className="container mx-auto card">
                         <h1 className="text-2xl font-bold mb-4">
                             {filterName && (
                                 <CardS className="text-primaryDark">
-                                <CardHeader>
-                                    <CardTitle>
-                                        Produtos filtrados por :
-                                        <span className="text-secondary mt-2">
-                                            &quot;{filterName}&quot;
-                                        </span>
-                                    </CardTitle>
-                                </CardHeader>
+                                    <CardHeader>
+                                        <CardTitle>
+                                            Produtos filtrados por:
+                                            <span className="text-secondary mt-2">
+                                                {' '}
+                                                &quot;{filterName}&quot;
+                                            </span>
+                                        </CardTitle>
+                                    </CardHeader>
                                 </CardS>
                             )}
                         </h1>
                         <div>
-                            <Select value={sortType} onValueChange={setSortType}>
+                            <Select
+                                value={sortType}
+                                onValueChange={setSortType}
+                            >
                                 <SelectTrigger className="w-[180px]">
                                     <SelectValue placeholder="Ordenar por" />
                                 </SelectTrigger>
@@ -466,7 +240,7 @@ const FilteredResults: NextPage = () => {
                                     <SelectItem value="alphabetical">
                                         Ordem Alfabética
                                     </SelectItem>
-                                    <SelectItem value="dark">
+                                    <SelectItem value="priceAsc">
                                         Menor Preço
                                     </SelectItem>
                                     <SelectItem value="priceDesc">
@@ -476,46 +250,54 @@ const FilteredResults: NextPage = () => {
                             </Select>
                             {products.length > 0 ? (
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
-                                    {products.map((product) => (
-                                        <Link
-                                            key={product.id}
-                                            className="card"
-                                            href={`/product/${product.slug}`}
-                                            passHref
-                                        >
-                                            <Card
-                                                id={product.id}
-                                                title={product.name}
-                                                categories={
-                                                    product.productCategories
-                                                }
-                                                precoAntigo={
-                                                    product.onSale
-                                                        ? product.price
-                                                        : undefined
-                                                }
-                                                precoNovo={
-                                                    product.finalPrice ||
-                                                    product.price
-                                                }
-                                                emPromocao={product.onSale}
-                                                desconto={product.discount}
-                                                imageSRC={product.images[0]}
-                                                eNovidade={product.isNew}
-                                                brandName={product.brandName}
-                                                brandLogo={product.brandUrl}
-                                                hasVariants={product.hasVariants}
-                                                slug={product.slug}
-                                                height={product.height}
-                                                width={product.width}
-                                                length={product.length}
-                                                weight={product.weight}
-                                                onButtonClick={() =>
-                                                    handleButtonClick(product.slug)
-                                                }
-                                            />
-                                        </Link>
-                                    ))}
+                                    {sortProducts(products, sortType).map(
+                                        (product) => (
+                                            <Link
+                                                key={product.id}
+                                                className="card"
+                                                href={`/product/${product.slug}`}
+                                                passHref
+                                            >
+                                                <Card
+                                                    id={product.id}
+                                                    title={product.name}
+                                                    categories={
+                                                        product.productCategories
+                                                    }
+                                                    precoAntigo={
+                                                        product.onSale
+                                                            ? product.price
+                                                            : undefined
+                                                    }
+                                                    precoNovo={
+                                                        product.finalPrice ||
+                                                        product.price
+                                                    }
+                                                    emPromocao={product.onSale}
+                                                    desconto={product.discount}
+                                                    imageSRC={product.images[0]}
+                                                    eNovidade={product.isNew}
+                                                    brandName={
+                                                        product.brandName
+                                                    }
+                                                    brandLogo={product.brandUrl}
+                                                    hasVariants={
+                                                        product.hasVariants
+                                                    }
+                                                    slug={product.slug}
+                                                    height={product.height}
+                                                    width={product.width}
+                                                    length={product.length}
+                                                    weight={product.weight}
+                                                    onButtonClick={() =>
+                                                        handleButtonClick(
+                                                            product.slug
+                                                        )
+                                                    }
+                                                />
+                                            </Link>
+                                        )
+                                    )}
                                 </div>
                             ) : (
                                 <p className="text-lg text-center mt-4">

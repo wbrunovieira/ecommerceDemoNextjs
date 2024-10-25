@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import Button from './Button';
@@ -31,7 +32,7 @@ interface CardProps {
     width: number;
     length: number;
     weight: number;
-    onButtonClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    onButtonClick: (slug: string) => void;
 }
 
 interface ProductCart {
@@ -169,7 +170,7 @@ const Card: React.FC<CardProps> = ({
                         <Button
                             variant="secondary"
                             size="small"
-                            onClick={onButtonClick}
+                            onClick={() => onButtonClick(slug)}
                         >
                             Saber mais
                         </Button>

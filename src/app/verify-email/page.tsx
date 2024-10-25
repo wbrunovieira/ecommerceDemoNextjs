@@ -7,13 +7,17 @@ import { useEffect, useState } from 'react';
 
 const VerifyEmail = () => {
     const searchParams = useSearchParams();
-    const token = searchParams.get('token');
-    const [verificationStatus, setVerificationStatus] = useState<'verifying' | 'success' | 'failure'>('verifying');
     const { toast } = useToast();
+
+    const [verificationStatus, setVerificationStatus] = useState<
+        'verifying' | 'success' | 'failure'
+    >('verifying');
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     useEffect(() => {
+        const token = searchParams.get('token');
+
         if (token) {
             const url = `${BASE_URL}/accounts/verify/${token}`;
             fetch(url)
@@ -30,7 +34,8 @@ const VerifyEmail = () => {
                         setVerificationStatus('failure');
                         toast({
                             title: 'Falha na verificação do e-mail.',
-                            description: 'Não conseguimos verificar seu e-mail. Por favor, tente novamente.',
+                            description:
+                                'Não conseguimos verificar seu e-mail. Por favor, tente novamente.',
                             style: { background: '#ff6961' },
                         });
                     }
@@ -40,7 +45,8 @@ const VerifyEmail = () => {
                     setVerificationStatus('failure');
                     toast({
                         title: 'Erro na verificação do e-mail.',
-                        description: 'Ocorreu um erro durante a verificação. Por favor, tente novamente.',
+                        description:
+                            'Ocorreu um erro durante a verificação. Por favor, tente novamente.',
                         style: { background: '#ff6961' },
                     });
                 });
@@ -48,16 +54,15 @@ const VerifyEmail = () => {
             setVerificationStatus('failure');
             toast({
                 title: 'Token não encontrado.',
-                description: 'Parece que o link de verificação está incompleto. Por favor, verifique o link e tente novamente.',
+                description:
+                    'Parece que o link de verificação está incompleto. Por favor, verifique o link e tente novamente.',
                 style: { background: '#ff6961' },
             });
         }
-    }, [token, toast,BASE_URL]);
+    }, [toast, BASE_URL]);
 
     return (
         <SuspenseWrapper>
-        
-
             <div className="flex md:min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 mt-6 p-10 sm:p-6 lg:p-8">
                 <div className="bg-white dark:bg-dark-secondary-gradient p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5 text-center">
                     {verificationStatus === 'verifying' && (
