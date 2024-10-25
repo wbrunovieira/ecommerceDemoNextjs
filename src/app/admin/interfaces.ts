@@ -180,12 +180,6 @@ export interface AdminPanelProps {
 
     editingColorId: string | null;
     editColorData: any;
-
-    editingSizeId: string | null;
-    editSizeData: any;
-    handleSizeInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleSaveSizeClick: (sizeId: string) => void;
-    handleEditSizeClick: (size: any) => void;
     brands: any[];
     editingBrandId: string | null;
     editBrandData: any;

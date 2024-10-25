@@ -9,15 +9,10 @@ import AdminMobileMenu from '@/components/MobileMenuAdm';
 
 import {
     Brand,
-    Category,
-    Color,
     Customer,
     NotificationState,
     Order,
-    OrderApi,
-    OrderTableProps,
     Product,
-    Size,
 } from './interfaces';
 
 import AdminPanel from './components/AdminPanel';
@@ -25,11 +20,8 @@ import SalesTab from './components/SalesTab';
 import ProductTab from './components/ProductTab';
 import {
     fetchBrandsApi,
-    fetchCategoriesApi,
-    fetchColorsApi,
     fetchCustomersApi,
     fetchOrdersApi,
-    fetchSizesApi,
 } from './apiService';
 import {
     calculateSales,
@@ -54,14 +46,11 @@ const AdminPage = () => {
 
     const [orders, setOrders] = useState<Order[]>([]);
 
-   
-
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [brands, setBrands] = useState<Brand[]>([]);
 
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [isSheetOpen, setIsSheetOpen] = useState(false);
-    const [editingSizeId, setEditingSizeId] = useState<string | null>(null);
 
     const [chartData, setChartData] = useState<any[]>([]);
     const [weeklyChartData, setWeeklyChartData] = useState<any[]>([]);
@@ -80,10 +69,6 @@ const AdminPage = () => {
     const [editingProductId, setEditingProductId] = useState<string | null>(
         null
     );
-    const [editSizeData, setEditSizeData] = useState({
-        name: '',
-        description: '',
-    });
 
     const [editProductData, setEditProductData] = useState<Product>({
         id: '',
@@ -210,8 +195,6 @@ const AdminPage = () => {
         }));
     };
 
-
-
     const fetchBrands = useCallback(async () => {
         try {
             const fetchedBrands = await fetchBrandsApi();
@@ -233,7 +216,7 @@ const AdminPage = () => {
     useEffect(() => {
         fetchBrands();
         fetchCustomers();
-    }, [fetchBrands,  fetchCustomers]);
+    }, [fetchBrands, fetchCustomers]);
 
     const handleEditProductClick = async (product) => {
         try {
@@ -310,44 +293,6 @@ const AdminPage = () => {
             }
         } catch (error) {
             console.error('Erro ao buscar o produto:', error);
-        }
-    };
-
-    const handleEditSizeClick = (size: Size) => {
-        setEditingSizeId(size._id.value);
-        setEditSizeData({
-            name: size.props.name,
-            description: size.props.description,
-        });
-    };
-
-    const handleSizeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setEditSizeData((prevState) => ({ ...prevState, [name]: value }));
-    };
-
-    const handleSaveSizeClick = async (sizeId: string) => {
-        try {
-            await axios.put(
-                `${BASE_URL}/size/${sizeId}`,
-                { name: editSizeData.name },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${session?.accessToken}`,
-                    },
-                }
-            );
-            setSizes((prevSizes) =>
-                prevSizes.map((size) =>
-                    size._id.value === sizeId
-                        ? { ...size, props: { ...size.props, ...editSizeData } }
-                        : size
-                )
-            );
-            setEditingSizeId(null);
-        } catch (error) {
-            console.error('Erro ao salvar o tamanho: ', error);
         }
     };
 
@@ -662,12 +607,6 @@ const AdminPage = () => {
                     status={status}
                     editingColorId={null}
                     editColorData={{}}
-
-                    editingSizeId={null}
-                    editSizeData={{}}
-                    handleSizeInputChange={handleSizeInputChange}
-                    handleSaveSizeClick={handleSaveSizeClick}
-                    handleEditSizeClick={handleEditSizeClick}
                     brands={brands}
                     editingBrandId={null}
                     editBrandData={{}}

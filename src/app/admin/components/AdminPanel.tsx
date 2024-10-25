@@ -41,12 +41,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     notification,
     setNotification,
 
-    
-    editingSizeId,
-    editSizeData,
-    handleSizeInputChange,
-    handleSaveSizeClick,
-    handleEditSizeClick,
     brands,
     editingBrandId,
     editBrandData,
@@ -72,6 +66,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
     const [editColorData, setEditColorData] = useState({ name: '', hex: '' });
 
     const [sizes, setSizes] = useState<Size[]>([]);
+    const [editSizeData, setEditSizeData] = useState({
+        name: '',
+        description: '',
+    });
+    const [editingSizeId, setEditingSizeId] = useState<string | null>(null);
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -166,8 +165,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             imageUrl: category.props.imageUrl,
         });
     };
-    console.log('Categoria em edição:', editingCategoryId);
-    console.log('Categoria em edição EditCategoryData:', editCategoryData);
 
     const fetchCategories = useCallback(async () => {
         try {
@@ -195,6 +192,44 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
             console.error('Erro ao buscar os tamanhos:', error);
         }
     }, []);
+
+    const handleSizeInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setEditSizeData((prevState) => ({ ...prevState, [name]: value }));
+    };
+
+    const handleEditSizeClick = (size: Size) => {
+        setEditingSizeId(size._id.value);
+        setEditSizeData({
+            name: size.props.name,
+            description: size.props.description,
+        });
+    };
+
+    const handleSaveSizeClick = async (sizeId: string) => {
+        try {
+            await axios.put(
+                `${BASE_URL}/size/${sizeId}`,
+                { name: editSizeData.name },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${session?.accessToken}`,
+                    },
+                }
+            );
+            setSizes((prevSizes) =>
+                prevSizes.map((size) =>
+                    size._id.value === sizeId
+                        ? { ...size, props: { ...size.props, ...editSizeData } }
+                        : size
+                )
+            );
+            setEditingSizeId(null);
+        } catch (error) {
+            console.error('Erro ao salvar o tamanho: ', error);
+        }
+    };
 
     const handleAddCategoryToProduct = async (productId: string) => {
         try {
