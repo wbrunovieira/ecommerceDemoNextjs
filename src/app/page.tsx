@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+'use client';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -7,14 +7,7 @@ import Sidebar from '@/components/SideBar';
 import ProductList from '@/components/ProductList';
 import { ImagesSlider } from '@/components/ui/images-slider';
 
-interface Category {
-    id: string;
-    name: string;
-    slug: string;
-    imageUrl: string;
-}
-
-const Home: NextPage = () => {
+const Home = () => {
     return (
         <>
             <Container>

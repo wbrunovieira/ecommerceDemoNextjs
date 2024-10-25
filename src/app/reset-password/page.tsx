@@ -1,7 +1,7 @@
 'use client';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { useSearchParams } from 'next/navigation';
+
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import Link from 'next/link';
@@ -14,7 +14,6 @@ interface ErrorMessages {
 }
 
 const ResetPassword = () => {
-    const searchParams = useSearchParams();
     const [token, setToken] = useState<string | null>(null);
     const [newPassword, setNewPassword] = useState<string>('');
     const [repeatPassword, setRepeatPassword] = useState<string>('');
@@ -30,10 +29,10 @@ const ResetPassword = () => {
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     useEffect(() => {
-        // Obtém o token do searchParams apenas no client-side
+        const searchParams = new URLSearchParams(window.location.search);
         const tokenParam = searchParams.get('token');
         setToken(tokenParam);
-    }, [searchParams]);
+    }, []);
 
     const togglePasswordVisibility = (e: SyntheticEvent) => {
         e.preventDefault();

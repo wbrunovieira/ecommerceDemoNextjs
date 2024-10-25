@@ -1,9 +1,7 @@
-
-
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+
 import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
 import { CardS, CardHeader, CardTitle } from '@/components/ui/card';
@@ -60,7 +58,6 @@ interface ProductSize {
 }
 
 const FilteredResults = () => {
-    const searchParams = useSearchParams();
     const router = useRouter();
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -123,6 +120,8 @@ const FilteredResults = () => {
     };
 
     useEffect(() => {
+        const searchParams = new URLSearchParams(window.location.search);
+
         const category = searchParams.get('category');
         const brand = searchParams.get('brand');
         const color = searchParams.get('color');
@@ -175,7 +174,6 @@ const FilteredResults = () => {
             setSelectedMaxPrice(Number(maxPrice));
         }
     }, [
-        searchParams,
         BASE_URL,
         setSelectedCategory,
         setSelectedBrand,

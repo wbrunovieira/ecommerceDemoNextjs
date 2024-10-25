@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+
 import Card from '@/components/Card';
 import Link from 'next/link';
 import Container from '@/components/Container';
@@ -41,13 +41,7 @@ interface Product {
     hasVariants: boolean;
 }
 
-interface SidebarData {
-    categories: { slug: string; name: string }[];
-}
-
 const SearchResults: NextPage = () => {
-    const searchParams = useSearchParams();
-    const query = searchParams.get('query');
     const [products, setProducts] = useState<Product[]>([]);
 
     gsap.registerPlugin(useGSAP);
@@ -65,13 +59,17 @@ const SearchResults: NextPage = () => {
     const handleButtonClick = (slug: string) => {
         router.push(`/product/${slug}`);
     };
+    let searchQuery;
     useEffect(() => {
+        const query = new URLSearchParams(window.location.search);
+        searchQuery = query.get('name') ?? '';
+
         if (query) {
             const fetchProducts = async () => {
                 try {
                     const response = await fetch(
                         `${BASE_URL}/products/search?name=${encodeURIComponent(
-                            query
+                            searchQuery
                         )}`,
                         {
                             method: 'GET',
@@ -118,7 +116,7 @@ const SearchResults: NextPage = () => {
 
             fetchProducts();
         }
-    }, [query, BASE_URL]);
+    }, [BASE_URL]);
 
     const containerRef = useRef<HTMLElement>(null);
 
@@ -144,9 +142,7 @@ const SearchResults: NextPage = () => {
     );
 
     return (
-
         <SuspenseWrapper>
-        
             <Container>
                 <section
                     className="flex mt-2 gap-8"
@@ -155,7 +151,7 @@ const SearchResults: NextPage = () => {
                     <div className="flex flex-col card"></div>
                     <div className="container mx-auto card">
                         <h1 className="text-2xl font-bold mb-4">
-                            Resultados da pesquisa para {query}
+                            Resultados da pesquisa para {searchQuery}
                         </h1>
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             {products.map((product) => (
@@ -169,7 +165,9 @@ const SearchResults: NextPage = () => {
                                         title={product.name}
                                         categories={product.productCategories.map(
                                             (category) => ({
-                                                category: { name: category.name },
+                                                category: {
+                                                    name: category.name,
+                                                },
                                             })
                                         )}
                                         precoAntigo={

@@ -4,13 +4,9 @@ import Image from 'next/image';
 
 import PriceFilter from './PriceFilter';
 import { useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { usePathname } from 'next/navigation';
-import {
-    useColorStore,
-    useLoadingStore,
-    useSelectionStore,
-} from '@/context/store';
+import { useColorStore, useSelectionStore } from '@/context/store';
 
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -48,7 +44,6 @@ const Sidebar: React.FC = () => {
 
     const [showMoreCategories, setShowMoreCategories] = useState(false);
     const [showMoreSizes, setShowMoreSizes] = useState(false);
-    const searchParams = useSearchParams();
 
     gsap.registerPlugin(useGSAP);
 
@@ -314,7 +309,7 @@ const Sidebar: React.FC = () => {
         setSelectedSize,
         setSelectedMinPrice,
         setSelectedMaxPrice,
-        setSelectedColor
+        setSelectedColor,
     ]);
 
     const containerRef = useRef<HTMLElement>(null);
@@ -342,7 +337,6 @@ const Sidebar: React.FC = () => {
 
     return (
         <SuspenseWrapper>
-        
             <nav
                 className="hidden md:flex flex-col gap-2 mr-4 rounded"
                 ref={containerRef as React.RefObject<HTMLDivElement>}
@@ -390,7 +384,9 @@ const Sidebar: React.FC = () => {
                     </div>
                     <button
                         className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out"
-                        onClick={() => setShowMoreCategories(!showMoreCategories)}
+                        onClick={() =>
+                            setShowMoreCategories(!showMoreCategories)
+                        }
                     >
                         {showMoreCategories ? 'Ver menos' : 'Ver mais'}
                     </button>

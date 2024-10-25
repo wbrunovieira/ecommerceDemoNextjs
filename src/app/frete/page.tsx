@@ -1,6 +1,6 @@
 'use client';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+
 import { getSession, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
@@ -37,7 +37,6 @@ interface ShippingOption {
 }
 
 const FretePage = () => {
-    const searchParams = useSearchParams();
     const router = useRouter();
     const cartItems = useCartStore((state: any) => state.cartItems);
     const cartId = useCartStore((state) => state.cartId);
@@ -72,8 +71,6 @@ const FretePage = () => {
 
         initializeUserCart();
     }, [session, setUser, initializeCart]);
-
-
 
     const calculateShipmentApi = useCallback(async () => {
         console.log('entrou calculateShipment cartItems', cartItems);
@@ -129,7 +126,7 @@ const FretePage = () => {
             console.error('Error calculating shipment:', error);
             throw error;
         }
-    }, [cartItems,BASE_URL]);
+    }, [cartItems, BASE_URL]);
 
     const calculateShipment = useCallback(async () => {
         const result = await calculateShipmentApi();
@@ -139,9 +136,6 @@ const FretePage = () => {
             setLoadingin(false);
         }
     }, [calculateShipmentApi, setLoading, setShippingOptions, setLoadingin]);
-
-
-  
 
     useEffect(() => {
         if (isCartInitialized) {
@@ -221,9 +215,7 @@ const FretePage = () => {
     console.log('frete isLoading', isLoading);
 
     return (
-
         <SuspenseWrapper>
-             
             <div className="flex items-center justify-center ">
                 <div className="bg-white p-8 rounded-lg shadow-lg z-10 relative overflow-hidden overflow-auto max-w-full md:w-3/5 md:p-12 sm:w-full ">
                     <div className="relative z-10  p-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
@@ -231,7 +223,9 @@ const FretePage = () => {
                             vamos escolher uma opção de frete:
                         </h2>
                         {loadingin ? (
-                            <p className="text-primaryDark mb-4">Carregando...</p>
+                            <p className="text-primaryDark mb-4">
+                                Carregando...
+                            </p>
                         ) : error ? (
                             <p className="text-red-500 text-xs italic mb-4">
                                 {error}
@@ -247,7 +241,9 @@ const FretePage = () => {
                                         <li
                                             key={index}
                                             onClick={() =>
-                                                handleSelectShippingOption(option)
+                                                handleSelectShippingOption(
+                                                    option
+                                                )
                                             }
                                             className="mb-2 p-2 border border-secondary rounded cursor-pointer hover:scale-105 hover:shadow-lg transition duration-300 ease-in-out whitespace-nowrap flex w-full"
                                         >
@@ -262,7 +258,9 @@ const FretePage = () => {
                                                     <span className="font-semibold">
                                                         Prazo:
                                                         <span className="ml-2 font-normal">
-                                                            {option.delivery_time}{' '}
+                                                            {
+                                                                option.delivery_time
+                                                            }{' '}
                                                         </span>
                                                         <span className="font-normal">
                                                             dias

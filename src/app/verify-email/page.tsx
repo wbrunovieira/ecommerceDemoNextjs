@@ -6,7 +6,6 @@ import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const VerifyEmail = () => {
-    const searchParams = useSearchParams();
     const { toast } = useToast();
 
     const [verificationStatus, setVerificationStatus] = useState<
@@ -16,6 +15,7 @@ const VerifyEmail = () => {
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     useEffect(() => {
+        const searchParams = new URLSearchParams(window.location.search);
         const token = searchParams.get('token');
 
         if (token) {
