@@ -35,6 +35,7 @@ const Header = () => {
                         height={96}
                         alt="logo"
                         className="mr-2 max-w-full"
+                        style={{ height: 'auto' }}
                     />
                     <div className="flex gap-2 items-center justify-center rounded-md bg-primaryLight px-2 py-1 hover:scale-110 transition duration-300 ease-in-out ">
                         <Home width="12" height="12" />

@@ -2,13 +2,15 @@
 import React, { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import Flower from '/public/images/flower.svg';
 
 gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(MotionPathPlugin);
 
 const AnimatedFlower = () => {
     const container = useRef<HTMLElement>(null);
-    
+    const petala1Ref = useRef(null);
 
     useGSAP(
         () => {

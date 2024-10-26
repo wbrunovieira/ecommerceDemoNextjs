@@ -11,8 +11,6 @@ interface PixelData {
     color: string;
 }
 
-
-
 export function PlaceholdersAndVanishInput({
     placeholders,
     onChange,
@@ -25,7 +23,7 @@ export function PlaceholdersAndVanishInput({
     const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
 
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
-    
+
     const startAnimation = useCallback(() => {
         intervalRef.current = setInterval(() => {
             setCurrentPlaceholder((prev) => (prev + 1) % placeholders.length);
@@ -33,10 +31,10 @@ export function PlaceholdersAndVanishInput({
     }, [placeholders]);
     const handleVisibilityChange = useCallback(() => {
         if (document.visibilityState !== 'visible' && intervalRef.current) {
-            clearInterval(intervalRef.current); // Clear the interval when the tab is not visible
+            clearInterval(intervalRef.current);
             intervalRef.current = null;
         } else if (document.visibilityState === 'visible') {
-            startAnimation(); // Restart the interval when the tab becomes visible
+            startAnimation();
         }
     }, [startAnimation]);
 
@@ -50,7 +48,8 @@ export function PlaceholdersAndVanishInput({
         if (!inputRef.current) return;
         const canvas = canvasRef.current;
         if (!canvas) return;
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
         if (!ctx) return;
 
         canvas.width = 800;

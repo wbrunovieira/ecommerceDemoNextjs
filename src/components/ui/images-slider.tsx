@@ -65,7 +65,7 @@ export const ImagesSlider = ({
         if (!imageLoaded[currentIndex]) {
             setImageLoaded((prev) => ({
                 ...prev,
-                [currentIndex]: false,
+                [currentIndex]: true,
             }));
         }
     }, [currentIndex, imageLoaded]);
