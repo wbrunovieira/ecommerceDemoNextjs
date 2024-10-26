@@ -1,4 +1,3 @@
-import Logo from '/public/images/LogoStylos.png';
 import Home from '/public/icons/home.svg';
 import Image from 'next/image';
 import CartButton from './CartButton';
@@ -24,7 +23,6 @@ const Header = () => {
                 </div>
             </div>
 
-            {/* Segunda linha com logo, SearchBox e ícones - Desktop */}
             <div className="hidden md:flex justify-between items-center w-full">
                 <Link
                     href="/"
