@@ -13,7 +13,7 @@ import MobileMenu from './MobileMenu';
 
 const Header = () => {
     return (
-        <header className="bg-header-bg dark:bg-header-bg-dark bg-cover py-2 px-4 w-full">
+        <header className="bg-header-bg dark:bg-header-bg-dark bg-cover py-2 px-4 w-full relative">
             <div className="flex justify-between items-center w-full mb-2 md:mb-4">
                 <div className="flex items-center">
                     <SocialIcons className="flex gap-2 md:gap-3" />
@@ -86,7 +86,7 @@ const Header = () => {
                 <SearchBox />
             </div>
 
-            <div className="hidden md:flex justify-center mt-4">
+            <div className="md:flex justify-center mt-48 absolute ">
                 <AnimatedFlower />
             </div>
         </header>
