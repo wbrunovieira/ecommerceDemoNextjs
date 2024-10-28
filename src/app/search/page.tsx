@@ -63,6 +63,7 @@ const SearchResults: NextPage = () => {
     useEffect(() => {
         const query = new URLSearchParams(window.location.search);
         searchQuery = query.get('name') ?? '';
+        console.log('searchQuery', searchQuery);
 
         if (query) {
             const fetchProducts = async () => {
@@ -77,6 +78,10 @@ const SearchResults: NextPage = () => {
                                 'Content-Type': 'application/json',
                             },
                         }
+                    );
+                    console.log(
+                        'encodeURIComponent(searchQuery)',
+                        encodeURIComponent(searchQuery)
                     );
                     if (!response.ok) {
                         throw new Error('Network response was not ok');

@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image'; 
+import Image from 'next/image';
 
 import PriceFilter from './PriceFilter';
 import { useEffect, useRef, useState } from 'react';
@@ -34,8 +34,10 @@ interface Size {
     name: string;
 }
 
-const Sidebar: React.FC = () => {
-    const [products, setProducts] = useState<any[]>([]);
+const Sidebar = () => {
+
+    const containerRef = useRef<HTMLElement>(null);
+
     const [brands, setBrands] = useState<Brand[]>([]);
 
     const [colors, setColors] = useState<Color[]>([]);
@@ -311,8 +313,6 @@ const Sidebar: React.FC = () => {
         setSelectedMaxPrice,
         setSelectedColor,
     ]);
-
-    const containerRef = useRef<HTMLElement>(null);
 
     useGSAP(
         () => {

@@ -3,12 +3,14 @@ import { cn } from '@/utils/cn';
 import { motion, AnimatePresence } from 'framer-motion';
 import React, { useEffect, useState, useCallback } from 'react';
 
+
 export const ImagesSlider = ({
     images,
     children,
     overlay = true,
     overlayClassName,
     className,
+
     autoplay = true,
     direction = 'up',
 }: {
@@ -17,6 +19,7 @@ export const ImagesSlider = ({
     overlay?: boolean;
     overlayClassName?: string;
     className?: string;
+
     autoplay?: boolean;
     direction?: 'up' | 'down';
 }) => {

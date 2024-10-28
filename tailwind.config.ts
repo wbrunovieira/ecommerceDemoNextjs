@@ -17,6 +17,7 @@ const config: Config = {
             },
         },
         extend: {
+          
             colors: {
                 primary: '#F0B1CC',
                 primary2: '#c73e89',
@@ -38,6 +39,7 @@ const config: Config = {
                 'dark-secondary-gradient':
                     'linear-gradient(45deg, #7c3d3d, #4b2c2c)',
             },
+
             keyframes: {
                 accordionDown: {
                     from: { height: '0' },
@@ -57,11 +59,33 @@ const config: Config = {
                         transform: 'translate(-50%, -40%) scale(1)',
                     },
                 },
+                circle: {
+                    '0%': {
+                        top: '60px',
+                        height: '5px',
+                        borderRadius: '50px 50px 25px 25px',
+                        transform: 'scaleX(1.7)',
+                    },
+                    '40%': {
+                        height: '20px',
+                        borderRadius: '50%',
+                        transform: 'scaleX(1)',
+                    },
+                    '100%': { top: '0%' },
+                },
+                shadow: {
+                    '0%': { transform: 'scaleX(1.5)', opacity: '1' },
+                    '40%': { transform: 'scaleX(1)', opacity: '0.7' },
+                    '100%': { transform: 'scaleX(0.2)', opacity: '0.4' },
+                },
             },
+
             animation: {
                 accordionDown: 'accordion-down 0.2s ease-out',
                 accordionUp: 'accordion-up 0.2s ease-out',
                 spotlight: 'spotlight 2s ease .75s 1 forwards',
+                circle: 'circle 0.5s alternate infinite ease',
+                shadow: 'shadow 0.5s alternate infinite ease',
             },
         },
     },
