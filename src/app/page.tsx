@@ -8,6 +8,7 @@ import ProductList from '@/components/ProductList';
 import { ImagesSlider } from '@/components/ui/images-slider';
 import { useEffect, useRef, useState } from 'react';
 import Loader from '@/components/Loader';
+import CookieConsent from '@/components/AcceptCookies';
 
 type SidebarRef = HTMLDivElement | null;
 
@@ -56,6 +57,7 @@ const Home = () => {
                                 </p>
                             </div>
                         </ImagesSlider>
+                        <CookieConsent />
                     </div>
                     <div className="max-w-7xl  mt-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
