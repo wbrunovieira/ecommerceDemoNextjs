@@ -23,12 +23,12 @@ const Home = () => {
     };
 
     useEffect(() => {
-        setIsLoading(false); // Define isLoading como false após a montagem inicial
+        setIsLoading(false); 
     }, []);
 
     return (
         <>
-            {isLoading ? ( // Exibe o loader se a página ainda estiver carregando ou se os componentes filhos não estiverem prontos
+            {isLoading ? ( 
                 <div className="flex items-center justify-center h-screen">
                     <Loader />
                 </div>
