@@ -45,11 +45,11 @@ const Header = () => {
                     </div>
                 </Link>
 
-                <div className="flex flex-1 justify-center">
+                <div className="flex flex-1 justify-center mx-4">
                     <SearchBox />
                 </div>
 
-                <div className="flex items-center gap-2 md:gap-4">
+                <div className="flex items-center gap-4 md:gap-6">
                     <LogginButton />
                     <ToggleMode />
                     <CartButton />
