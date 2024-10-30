@@ -7,10 +7,11 @@ import Container from '@/components/Container';
 
 import { NextPage } from 'next';
 import { useSelectionStore } from '@/context/store';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import SuspenseWrapper from '@/components/SuspenseWrapper';
+import Loader from '@/components/Loader';
 
 interface ProductCategory {
     id: {
@@ -43,6 +44,9 @@ interface Product {
 
 const SearchResults: NextPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
+ 
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     gsap.registerPlugin(useGSAP);
 
@@ -53,75 +57,91 @@ const SearchResults: NextPage = () => {
         (state) => state.setSelectedBrand
     );
     const router = useRouter();
+    const pathname = usePathname();
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
     const handleButtonClick = (slug: string) => {
         router.push(`/product/${slug}`);
     };
-    let searchQuery;
-    useEffect(() => {
-        const query = new URLSearchParams(window.location.search);
-        searchQuery = query.get('name') ?? '';
-        console.log('searchQuery', searchQuery);
 
-        if (query) {
-            const fetchProducts = async () => {
-                try {
-                    const response = await fetch(
-                        `${BASE_URL}/products/search?name=${encodeURIComponent(
-                            searchQuery
-                        )}`,
-                        {
-                            method: 'GET',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                        }
-                    );
-                    console.log(
-                        'encodeURIComponent(searchQuery)',
-                        encodeURIComponent(searchQuery)
-                    );
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    const data = await response.json();
+    const fetchProducts = async (nameQuery: string) => {
+        try {
+            setIsLoading(true);
+            const url = `${BASE_URL}/products/search?name=${encodeURIComponent(
+                nameQuery
+            )}`;
+            console.log('URL da requisição:', url);
 
-                    const mappedProducts = data.products.map(
-                        (product: any) => ({
-                            id: product._id.value,
-                            name: product.props.name,
-                            description: product.props.description,
-                            price: product.props.price,
-                            slug: product.props.slug.value,
-                            finalPrice: product.props.finalPrice,
-                            onSale: product.props.onSale,
-                            isNew: product.props.isNew,
-                            hasVariants: product.props.hasVariants,
-                            discount: product.props.discount,
-                            images: product.props.images,
-                            productCategories:
-                                product.props.productCategories.map(
-                                    (category: any) => ({
-                                        id: category.id.value,
-                                        name: category.name,
-                                    })
-                                ),
-                            brandName: product.props.brandName,
-                            brandLogo: product.props.brandUrl,
-                        })
-                    );
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-                    setProducts(mappedProducts);
-                } catch (error) {
-                    console.error('Error fetching search results:', error);
-                }
-            };
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
 
-            fetchProducts();
+            const data = await response.json();
+            console.log('data', data);
+
+            const mappedProducts = data.products.map((product: any) => ({
+                id: product._id.value,
+                name: product.props.name,
+                description: product.props.description,
+                price: product.props.price,
+                slug: product.props.slug.value,
+                finalPrice: product.props.finalPrice,
+                onSale: product.props.onSale,
+                isNew: product.props.isNew,
+                hasVariants: product.props.hasVariants,
+                discount: product.props.discount,
+                images: product.props.images,
+                productCategories: product.props.productCategories.map(
+                    (category: any) => ({
+                        id: category.id.value,
+                        name: category.name,
+                    })
+                ),
+                brandName: product.props.brandName,
+                brandLogo: product.props.brandUrl,
+            }));
+
+            setProducts(mappedProducts);
+        } catch (error) {
+            console.error('Error fetching search results:', error);
+        } finally {
+            setIsLoading(false);
         }
-    }, [BASE_URL]);
+    };
+
+    const updateQueryAndFetch = () => {
+        const searchParams = new URLSearchParams(window.location.search);
+        const name = searchParams.get('name') || '';
+        console.log('Updated query:', name);
+
+        if (name) {
+            fetchProducts(name);
+        }
+    };
+
+    useEffect(() => {
+        // Atualiza a query e faz a busca inicialmente
+        updateQueryAndFetch();
+
+        // Listener para detectar mudanças no histórico (navegação para trás/avançar)
+        const handlePopState = () => {
+            updateQueryAndFetch();
+        };
+
+        window.addEventListener('popstate', handlePopState);
+
+        return () => {
+            window.removeEventListener('popstate', handlePopState);
+        };
+    }, [pathname]);
 
     const containerRef = useRef<HTMLElement>(null);
 
@@ -149,61 +169,71 @@ const SearchResults: NextPage = () => {
     return (
         <SuspenseWrapper>
             <Container>
-                <section
-                    className="flex mt-2 gap-8"
-                    ref={containerRef as React.RefObject<HTMLDivElement>}
-                >
-                    <div className="flex flex-col card"></div>
-                    <div className="container mx-auto card">
-                        <h1 className="text-2xl font-bold mb-4">
-                            Resultados da pesquisa para {searchQuery}
-                        </h1>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            {products.map((product) => (
-                                <Link
-                                    key={product.id}
-                                    href={`/product/${product.slug}`}
-                                    passHref
-                                >
-                                    <Card
-                                        id={product.id}
-                                        title={product.name}
-                                        categories={product.productCategories.map(
-                                            (category) => ({
-                                                category: {
-                                                    name: category.name,
-                                                },
-                                            })
-                                        )}
-                                        precoAntigo={
-                                            product.onSale
-                                                ? product.price
-                                                : undefined
-                                        }
-                                        precoNovo={
-                                            product.FinalPrice || product.price
-                                        }
-                                        emPromocao={product.onSale}
-                                        desconto={product.discount}
-                                        imageSRC={product.images[0]}
-                                        eNovidade={product.isNew}
-                                        brandName={product.brandName}
-                                        brandLogo={product.brandLogo}
-                                        slug={product.slug}
-                                        hasVariants={product.hasVariants}
-                                        height={product.height}
-                                        width={product.width}
-                                        length={product.length}
-                                        weight={product.weight}
-                                        onButtonClick={() =>
-                                            handleButtonClick(product.slug)
-                                        }
-                                    />
-                                </Link>
-                            ))}
-                        </div>
+                {isLoading ? (
+                    <div className="flex items-center justify-center h-screen">
+                        <Loader />
                     </div>
-                </section>
+                ) : (
+                    <section
+                        className="flex mt-2 gap-8"
+                        ref={containerRef as React.RefObject<HTMLDivElement>}
+                    >
+                        <div className="flex flex-col card"></div>
+                        <div className="container mx-auto card">
+                            <h1 className="text-2xl font-bold mb-4">
+                                Resultados da pesquisa para:{' '}
+                                {new URLSearchParams(
+                                    window.location.search
+                                ).get('name')}
+                            </h1>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {products.map((product) => (
+                                    <Link
+                                        key={product.id}
+                                        href={`/product/${product.slug}`}
+                                        passHref
+                                    >
+                                        <Card
+                                            id={product.id}
+                                            title={product.name}
+                                            categories={product.productCategories.map(
+                                                (category) => ({
+                                                    category: {
+                                                        name: category.name,
+                                                    },
+                                                })
+                                            )}
+                                            precoAntigo={
+                                                product.onSale
+                                                    ? product.price
+                                                    : undefined
+                                            }
+                                            precoNovo={
+                                                product.FinalPrice ||
+                                                product.price
+                                            }
+                                            emPromocao={product.onSale}
+                                            desconto={product.discount}
+                                            imageSRC={product.images[0]}
+                                            eNovidade={product.isNew}
+                                            brandName={product.brandName}
+                                            brandLogo={product.brandLogo}
+                                            slug={product.slug}
+                                            hasVariants={product.hasVariants}
+                                            height={product.height}
+                                            width={product.width}
+                                            length={product.length}
+                                            weight={product.weight}
+                                            onButtonClick={() =>
+                                                handleButtonClick(product.slug)
+                                            }
+                                        />
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                )}
             </Container>
         </SuspenseWrapper>
     );

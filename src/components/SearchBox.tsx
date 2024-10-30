@@ -1,8 +1,8 @@
 'use client';
 
-import { BsSearch } from 'react-icons/bs';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+
 import { PlaceholdersAndVanishInput } from './ui/placeholders-and-vanish-input';
 import { useLoadingStore } from '@/context/store';
 import LoadingModal from './LoadingModal';
@@ -10,9 +10,11 @@ import LoadingModal from './LoadingModal';
 const SearchBox = () => {
     const [query, setQuery] = useState('');
     const isLoading = useLoadingStore((state) => state.isLoading);
-    console.log('SearchBox isLoading',isLoading)
-
+    console.log('SearchBox isLoading', isLoading);
     const router = useRouter();
+    const pathname = usePathname();
+
+    const NEXTAUTH_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
@@ -24,8 +26,25 @@ const SearchBox = () => {
         const trimmedQuery = query.trim().toLowerCase();
 
         if (trimmedQuery) {
-            router.push(`/search?query=${encodeURIComponent(trimmedQuery)}`);
-            setQuery('');
+            try {
+                const url = `${NEXTAUTH_URL}/search?name=${encodeURIComponent(
+                    trimmedQuery
+                )}`;
+
+                if (pathname === '/search') {
+                    router.replace(url);
+                    window.location.reload();
+                } else {
+                    router.push(url);
+                }
+
+                console.log('BASE_URL:', NEXTAUTH_URL);
+                console.log('url:', url);
+
+                setQuery('');
+            } catch (error) {
+                console.error('Erro ao fazer a pesquisa:', error);
+            }
         }
     };
 

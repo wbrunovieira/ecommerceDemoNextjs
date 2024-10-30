@@ -443,8 +443,6 @@ const Product: React.FC<ProductProps> = ({
                     <div className="flex flex-col gap-2 md:gap-4 p-4 mt-1 md:mt-0 w-full md:w-1/2">
                         <ExpandableText description={description} />
 
-                     
-
                         <button
                             onClick={handleToggleFavorite}
                             className="mt-4 flex items-center gap-2 text-base text-primaryDark dark:text-primaryLight font-semibold"
