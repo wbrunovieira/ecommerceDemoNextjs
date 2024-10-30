@@ -23,12 +23,12 @@ const Home = () => {
     };
 
     useEffect(() => {
-        setIsLoading(false); 
+        setIsLoading(false);
     }, []);
 
     return (
         <>
-            {isLoading ? ( 
+            {isLoading ? (
                 <div className="flex items-center justify-center h-screen">
                     <Loader />
                 </div>
@@ -61,13 +61,14 @@ const Home = () => {
                     </div>
                     <div className="max-w-7xl  mt-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
-                            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
-                                <div className="flex">
+                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
+                                <div className="flex ">
                                     <Image
-                                        src="/icons/lingeries.svg"
+                                        src="/icons/lingerie-mini.svg"
                                         alt="icone de lingerie"
-                                        width={50}
-                                        height={50}
+                                        width={100}
+                                        height={100}
+                                        className="object-contain"
                                     />
                                 </div>
 
@@ -76,12 +77,13 @@ const Home = () => {
                                     className="text-xs font-regular uppercase pl-2 self-center "
                                 >
                                     Lingeries
-                                    <p className="text-secondary text-[11px] capitalize font-normal">
+                                    <p className="text-secondary  text-[11px] capitalize font-normal ">
                                         Mostrar Todas
                                     </p>
                                 </Link>
                             </div>
-                            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
+
+                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
                                 <div className="flex ">
                                     <Image
                                         src="/icons/pijamas.svg"
@@ -101,7 +103,8 @@ const Home = () => {
                                     </p>
                                 </Link>
                             </div>
-                            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
+
+                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
                                 <div className="flex text-primaryDark dark:text-primaryLight">
                                     <Image
                                         src="/icons/boy.svg"
@@ -121,7 +124,8 @@ const Home = () => {
                                     </p>
                                 </Link>
                             </div>
-                            <div className="flex rounded-md border border-light hover:bg-primary p-2 bg-primaryLight dark:bg-dark-secondary-gradient transition duration-300 ease-in-out">
+
+                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
                                 <div className="flex">
                                     <Image
                                         src="/icons/acessorios.svg"
