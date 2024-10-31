@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-
 import { useRouter } from 'next/navigation';
 import Card from '@/components/Card';
 import { CardS, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,6 +20,7 @@ import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import SuspenseWrapper from '@/components/SuspenseWrapper';
 import fetchProducts from '@/utils/fetchProducts';
+import Loader from '@/components/Loader';
 
 interface Product {
     id: string;
@@ -64,6 +64,7 @@ const FilteredResults = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [filterName, setFilterName] = useState('');
     const [sortType, setSortType] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(true);
     const containerRef = useRef<HTMLElement>(null);
 
     const selectedCategory = useSelectionStore(
@@ -120,29 +121,35 @@ const FilteredResults = () => {
     };
 
     useEffect(() => {
-        const searchParams = new URLSearchParams(window.location.search);
+        const fetchAndSetProducts = async (url: string) => {
+            try {
+                setIsLoading(true);
+                const products = await fetchProducts(url);
+                setProducts(products);
 
+                // Define o filtro usado, se houver
+                setFilterName(
+                    selectedCategory
+                        ? products[0]?.productCategories[0]?.category.name
+                        : selectedBrand
+                        ? products[0]?.brandName
+                        : selectedColor
+                        ? products[0]?.productColors[0]?.color.name
+                        : ''
+                );
+            } finally {
+                setIsLoading(false); // garante que o loader será removido
+            }
+        };
+
+        // Configura a URL com base nos parâmetros de busca
+        const searchParams = new URLSearchParams(window.location.search);
         const category = searchParams.get('category');
         const brand = searchParams.get('brand');
         const color = searchParams.get('color');
         const size = searchParams.get('size');
         const minPrice = searchParams.get('minPrice');
         const maxPrice = searchParams.get('maxPrice');
-
-        const fetchAndSetProducts = async (url: string) => {
-            const products = await fetchProducts(url);
-
-            setProducts(products);
-            setFilterName(
-                selectedCategory
-                    ? products[0]?.productCategories[0]?.category.name
-                    : selectedBrand
-                    ? products[0]?.brandName
-                    : selectedColor
-                    ? products[0]?.productColors[0]?.color.name
-                    : ''
-            );
-        };
 
         if (category) {
             fetchAndSetProducts(
@@ -172,6 +179,8 @@ const FilteredResults = () => {
             );
             setSelectedMinPrice(Number(minPrice));
             setSelectedMaxPrice(Number(maxPrice));
+        } else {
+            setIsLoading(false); // Caso nenhum filtro seja aplicado, define isLoading como false
         }
     }, [
         BASE_URL,
@@ -183,22 +192,28 @@ const FilteredResults = () => {
         setSelectedMaxPrice,
     ]);
 
-    useEffect(() => {
-        if (containerRef?.current) {
-            const sections = containerRef.current.querySelectorAll('.card');
-            gsap.fromTo(
-                sections,
-                { x: 500, opacity: 0 },
-                {
-                    x: 0,
-                    opacity: 1,
-                    stagger: 0.5,
-                    duration: 2,
-                    ease: 'power3.out',
+    useGSAP(
+        () => {
+            if (!isLoading && products.length > 0) {
+                const sections =
+                    containerRef.current?.querySelectorAll('.card');
+                if (sections && sections.length > 0) {
+                    gsap.fromTo(
+                        sections,
+                        { x: 500, opacity: 0 },
+                        {
+                            x: 0,
+                            opacity: 1,
+                            stagger: 0.5,
+                            duration: 2,
+                            ease: 'power3.out',
+                        }
+                    );
                 }
-            );
-        }
-    }, [products]);
+            }
+        },
+        { scope: containerRef, dependencies: [products] }
+    );
 
     return (
         <SuspenseWrapper>
@@ -210,43 +225,49 @@ const FilteredResults = () => {
                     <div className="flex flex-col">
                         <Sidebar />
                     </div>
+
                     <div className="container mx-auto card">
-                        <h1 className="text-2xl font-bold mb-4">
-                            {filterName && (
-                                <CardS className="text-primaryDark">
-                                    <CardHeader>
-                                        <CardTitle>
-                                            Produtos filtrados por:
-                                            <span className="text-secondary mt-2">
-                                                {' '}
-                                                &quot;{filterName}&quot;
-                                            </span>
-                                        </CardTitle>
-                                    </CardHeader>
-                                </CardS>
-                            )}
-                        </h1>
-                        <div>
-                            <Select
-                                value={sortType}
-                                onValueChange={setSortType}
-                            >
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Ordenar por" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="alphabetical">
-                                        Ordem Alfabética
-                                    </SelectItem>
-                                    <SelectItem value="priceAsc">
-                                        Menor Preço
-                                    </SelectItem>
-                                    <SelectItem value="priceDesc">
-                                        Maior Preço
-                                    </SelectItem>
-                                </SelectContent>
-                            </Select>
-                            {products.length > 0 ? (
+                        {isLoading ? (
+                            <div className="flex items-center justify-center h-screen">
+                                <Loader />
+                            </div>
+                        ) : products.length > 0 ? (
+                            <div>
+                                <h1 className="text-2xl font-bold mb-4">
+                                    {filterName && (
+                                        <CardS className="text-primaryDark">
+                                            <CardHeader>
+                                                <CardTitle>
+                                                    Produtos filtrados por:
+                                                    <span className="text-secondary mt-2">
+                                                        &quot;{filterName}&quot;
+                                                    </span>
+                                                </CardTitle>
+                                            </CardHeader>
+                                        </CardS>
+                                    )}
+                                </h1>
+
+                                <Select
+                                    value={sortType}
+                                    onValueChange={setSortType}
+                                >
+                                    <SelectTrigger className="w-[180px]">
+                                        <SelectValue placeholder="Ordenar por" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="alphabetical">
+                                            Ordem Alfabética
+                                        </SelectItem>
+                                        <SelectItem value="priceAsc">
+                                            Menor Preço
+                                        </SelectItem>
+                                        <SelectItem value="priceDesc">
+                                            Maior Preço
+                                        </SelectItem>
+                                    </SelectContent>
+                                </Select>
+
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 mt-4">
                                     {sortProducts(products, sortType).map(
                                         (product) => (
@@ -297,13 +318,13 @@ const FilteredResults = () => {
                                         )
                                     )}
                                 </div>
-                            ) : (
-                                <p className="text-lg text-center mt-4">
-                                    Não há produtos disponíveis com os filtros
-                                    selecionados.
-                                </p>
-                            )}
-                        </div>
+                            </div>
+                        ) : (
+                            <p className="text-lg text-center mt-4">
+                                Não há produtos disponíveis com os filtros
+                                selecionados.
+                            </p>
+                        )}
                     </div>
                 </section>
             </Container>
