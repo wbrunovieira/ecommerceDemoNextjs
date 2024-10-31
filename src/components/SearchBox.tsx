@@ -10,7 +10,7 @@ import LoadingModal from './LoadingModal';
 const SearchBox = () => {
     const [query, setQuery] = useState('');
     const isLoading = useLoadingStore((state) => state.isLoading);
-    console.log('SearchBox isLoading', isLoading);
+
     const router = useRouter();
     const pathname = usePathname();
 
@@ -24,24 +24,15 @@ const SearchBox = () => {
         event.preventDefault();
 
         const trimmedQuery = query.trim().toLowerCase();
-
         if (trimmedQuery) {
             try {
-                const url = `${NEXTAUTH_URL}/search?name=${encodeURIComponent(
-                    trimmedQuery
-                )}`;
+                const url = `/search?name=${encodeURIComponent(trimmedQuery)}`;
 
-                if (pathname === '/search') {
-                    router.replace(url);
-                    window.location.reload();
-                } else {
-                    router.push(url);
-                }
+                router.replace(url);
 
-                console.log('BASE_URL:', NEXTAUTH_URL);
                 console.log('url:', url);
 
-                setQuery('');
+                setQuery(''); 
             } catch (error) {
                 console.error('Erro ao fazer a pesquisa:', error);
             }

@@ -7,7 +7,7 @@ import Container from '@/components/Container';
 
 import { NextPage } from 'next';
 import { useSelectionStore } from '@/context/store';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import SuspenseWrapper from '@/components/SuspenseWrapper';
@@ -44,9 +44,9 @@ interface Product {
 
 const SearchResults: NextPage = () => {
     const [products, setProducts] = useState<Product[]>([]);
- 
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     gsap.registerPlugin(useGSAP);
 
@@ -57,7 +57,9 @@ const SearchResults: NextPage = () => {
         (state) => state.setSelectedBrand
     );
     const router = useRouter();
-    const pathname = usePathname();
+
+    const searchParams = useSearchParams();
+    const nameQuery = searchParams.get('name') || '';
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
@@ -66,27 +68,43 @@ const SearchResults: NextPage = () => {
     };
 
     const fetchProducts = async (nameQuery: string) => {
-        try {
-            setIsLoading(true);
-            const url = `${BASE_URL}/products/search?name=${encodeURIComponent(
-                nameQuery
-            )}`;
-            console.log('URL da requisição:', url);
+        setIsLoading(true);
+        setErrorMessage(null);
+        const url = `${BASE_URL}/products/search?name=${encodeURIComponent(
+            nameQuery
+        )}`;
+        console.log('URL da requisição:', url);
 
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+        if (response.status === 404) {
+          
+            
+            setErrorMessage('Produto não encontrado');
+            setProducts([]);
+            setIsLoading(false);
+            return;
+        }
 
-            const data = await response.json();
-            console.log('data', data);
+       
+        if (!response.ok) {
+            const errorData = await response.json();
+            setErrorMessage(errorData.message || 'Erro ao buscar produtos');
+            setIsLoading(false);
+            return;
+        }
 
+        const data = await response.json();
+        console.log('data', data);
+
+        if (data.products.length === 0) {
+            setErrorMessage('Produto não encontrado');
+        } else {
             const mappedProducts = data.products.map((product: any) => ({
                 id: product._id.value,
                 name: product.props.name,
@@ -108,40 +126,17 @@ const SearchResults: NextPage = () => {
                 brandName: product.props.brandName,
                 brandLogo: product.props.brandUrl,
             }));
-
             setProducts(mappedProducts);
-        } catch (error) {
-            console.error('Error fetching search results:', error);
-        } finally {
-            setIsLoading(false);
         }
-    };
 
-    const updateQueryAndFetch = () => {
-        const searchParams = new URLSearchParams(window.location.search);
-        const name = searchParams.get('name') || '';
-        console.log('Updated query:', name);
-
-        if (name) {
-            fetchProducts(name);
-        }
+        setIsLoading(false);
     };
 
     useEffect(() => {
-        // Atualiza a query e faz a busca inicialmente
-        updateQueryAndFetch();
-
-        // Listener para detectar mudanças no histórico (navegação para trás/avançar)
-        const handlePopState = () => {
-            updateQueryAndFetch();
-        };
-
-        window.addEventListener('popstate', handlePopState);
-
-        return () => {
-            window.removeEventListener('popstate', handlePopState);
-        };
-    }, [pathname]);
+        if (nameQuery) {
+            fetchProducts(nameQuery);
+        }
+    }, [nameQuery]);
 
     const containerRef = useRef<HTMLElement>(null);
 
@@ -173,18 +168,15 @@ const SearchResults: NextPage = () => {
                     <div className="flex items-center justify-center h-screen">
                         <Loader />
                     </div>
+                ) : errorMessage ? (
+                    <div className="flex items-center justify-center h-screen">
+                        <h1 className="text-2xl font-bold">{errorMessage}</h1>
+                    </div>
                 ) : (
-                    <section
-                        className="flex mt-2 gap-8"
-                        ref={containerRef as React.RefObject<HTMLDivElement>}
-                    >
-                        <div className="flex flex-col card"></div>
+                    <section className="flex mt-2 gap-8">
                         <div className="container mx-auto card">
                             <h1 className="text-2xl font-bold mb-4">
-                                Resultados da pesquisa para:{' '}
-                                {new URLSearchParams(
-                                    window.location.search
-                                ).get('name')}
+                                Resultados da pesquisa para: {nameQuery}
                             </h1>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                 {products.map((product) => (
