@@ -116,14 +116,14 @@ const ResetPassword = () => {
     return (
         <SuspenseWrapper>
             <div className="flex md:min-h-screen items-center justify-center bg-linear-gradient p-4 sm:p-6 lg:p-8">
-                <div className="bg-white dark:bg-dark-secondary-gradient p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5">
-                    <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+                <div className="bg-white  p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5">
+                    <h2 className="text-xl font-semibold text-gray-800  mb-4">
                         Vamos redefinir sua senha
                     </h2>
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm text-gray-600 ">
                         Por favor, insira sua nova senha e confirme-a abaixo.
                     </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
+                    <p className="text-sm text-gray-600  mb-6">
                         Não se preocupe, estamos aqui para garantir que sua nova
                         senha seja segura e fácil de lembrar.
                     </p>
@@ -135,7 +135,7 @@ const ResetPassword = () => {
                         <div className="relative w-full">
                             <label
                                 htmlFor="password"
-                                className="text-primaryDark dark:text-white-important text-xs"
+                                className="text-primaryDark -important text-xs"
                             >
                                 Senha
                             </label>
@@ -149,7 +149,7 @@ const ResetPassword = () => {
                                 }
                                 placeholder="Senha"
                                 required
-                                className="mt-1 px-4 py-2 pr-10 rounded-lg border border-gray-300 shadow-sm dark:border-gray-700 w-full focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-gray-300 text-sm"
+                                className="mt-1 px-4 py-2 pr-10 rounded-lg border border-gray-300 shadow-sm  w-full focus:ring-secondary focus:border-secondary   text-sm"
                             />
                             <span className="absolute inset-y-0 right-0 flex items-center pr-3">
                                 {showPassword ? (
@@ -174,7 +174,7 @@ const ResetPassword = () => {
                         <div className="relative w-full">
                             <label
                                 htmlFor="repeatPassword"
-                                className="text-primaryDark dark:text-white-important text-xs"
+                                className="text-primaryDark -important text-xs"
                             >
                                 Repetir a senha
                             </label>
@@ -190,7 +190,7 @@ const ResetPassword = () => {
                                 }
                                 placeholder="Repetir a senha"
                                 required
-                                className="mt-1 px-4 py-2 pr-10 rounded-lg border border-gray-300 shadow-sm dark:border-gray-700 w-full focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-gray-300 text-sm"
+                                className="mt-1 px-4 py-2 pr-10 rounded-lg border border-gray-300 shadow-sm  w-full focus:ring-secondary focus:border-secondary   text-sm"
                             />
                             <span className="absolute inset-y-0 right-0 flex items-center pr-3">
                                 {showPassword ? (

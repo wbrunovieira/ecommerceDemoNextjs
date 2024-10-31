@@ -24,7 +24,7 @@ const ExpandableText = ({ description }) => {
 
     return (
         <div className="text-container">
-            <p className="border-r-4 border-secondary shadow-2xl p-1 md:p-4 rounded-md dark:bg-secondary dark:border-primaryLight text-xs ">
+            <p className="border-r-4 border-secondary shadow-2xl p-1 md:p-4 rounded-md   text-xs ">
                 {isExpanded ? (
                     formatTextWithBreaks(description)
                 ) : (

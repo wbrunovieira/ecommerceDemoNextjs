@@ -34,7 +34,7 @@ const LogginButton = () => {
         return (
             <div className="flex items-center gap-1">
                 <Link href={`/user/${session.user.id}`} passHref>
-                    <div className="flex items-center gap-2 text-primary2 dark:text-darkFontColor transition duration-300 hover:scale-110 text-[0.6rem] md:text-xs font-semibold border px-2 py-0 md:px-3 md:py-2 rounded-md bg-primaryLight dark:bg-dark-secondary-gradient h-10">
+                    <div className="flex items-center gap-2 text-primary2  transition duration-300 hover:scale-110 text-[0.6rem] md:text-xs font-semibold border px-2 py-0 md:px-3 md:py-2 rounded-md bg-primaryLight  h-10">
                         {session.user?.image ? (
                             <Image
                                 src={session.user.image}
@@ -44,7 +44,7 @@ const LogginButton = () => {
                                 className="w-2 md:w-4 h-4 rounded-full items-center border border-secondary"
                             />
                         ) : (
-                            <FaUserAlt className="w-3 h-3 md:w-6 md:h-6 text-primary2 dark:text-primaryLight text-xs" />
+                            <FaUserAlt className="w-3 h-3 md:w-6 md:h-6 text-primary2  text-xs" />
                         )}
                         Olá, {userName}
                     </div>
@@ -53,7 +53,7 @@ const LogginButton = () => {
                     className="hover:scale-110 text-xs bg-primaryLight p-2 rounded-md flex items-center justify-center h-10 w-10"
                     onClick={() => signOut()}
                 >
-                    <FiLogOut className="w-6 h-6 text-primary2 dark:text-primaryLight" />
+                    <FiLogOut className="w-6 h-6 text-primary2 " />
                 </button>
             </div>
         );

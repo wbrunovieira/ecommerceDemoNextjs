@@ -53,9 +53,6 @@ const ProductTab = ({ orders }) => {
         0
     );
 
- 
-    
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -81,8 +78,8 @@ const ProductTab = ({ orders }) => {
     return (
         <div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                <div className="bg-primaryDark Light p-6 rounded-lg shadow">
+                    <h2 className="text-lg text-primaryLight  font-semibold mb-4">
                         Vendas por Categoria
                     </h2>
                     {categoryData.length > 0 ? (
@@ -113,7 +110,7 @@ const ProductTab = ({ orders }) => {
                                     isAnimationActive={true}
                                     animationDuration={800}
                                     animationBegin={0}
-                                    animationEasing="ease-out" 
+                                    animationEasing="ease-out"
                                 >
                                     {categoryData.map((entry, index) => (
                                         <Cell
@@ -182,8 +179,8 @@ const ProductTab = ({ orders }) => {
                     )}
                 </div>
 
-                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                <div className="bg-primaryDark Light p-6 rounded-lg shadow">
+                    <h2 className="text-lg text-primaryLight  font-semibold mb-4">
                         Vendas por Produto
                     </h2>
                     {productData.length > 0 ? (
@@ -215,8 +212,7 @@ const ProductTab = ({ orders }) => {
                                     isAnimationActive={true}
                                     animationDuration={800}
                                     animationBegin={0}
-                                    animationEasing="ease-out" 
-
+                                    animationEasing="ease-out"
                                 >
                                     {productData.map((entry, index) => (
                                         <React.Fragment
@@ -291,8 +287,8 @@ const ProductTab = ({ orders }) => {
                     )}
                 </div>
 
-                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                <div className="bg-primaryDark Light p-6 rounded-lg shadow">
+                    <h2 className="text-lg text-primaryLight  font-semibold mb-4">
                         Vendas por Marca
                     </h2>
                     {brandData.length > 0 ? (
@@ -323,7 +319,7 @@ const ProductTab = ({ orders }) => {
                                     isAnimationActive={true}
                                     animationDuration={800}
                                     animationBegin={0}
-                                    animationEasing="ease-out" 
+                                    animationEasing="ease-out"
                                 >
                                     {brandData.map((entry, index) => (
                                         <React.Fragment
@@ -397,8 +393,6 @@ const ProductTab = ({ orders }) => {
                         </p>
                     )}
                 </div>
-
-              
             </div>
             <OrderTable />
         </div>

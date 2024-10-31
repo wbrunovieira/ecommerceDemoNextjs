@@ -120,7 +120,6 @@ const UserPage: NextPage = () => {
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
-
     const validatePhoneNumber = (phone: string) => {
         const phoneRegex = /^(?:\+55\s?)?\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/;
         return phoneRegex.test(phone);
@@ -162,7 +161,7 @@ const UserPage: NextPage = () => {
         } catch (error) {
             console.error('Error fetching orders', error);
         }
-    }, [session?.user?.id, session?.accessToken,BASE_URL]);
+    }, [session?.user?.id, session?.accessToken, BASE_URL]);
 
     const handleSaveAddress = async (address: Address) => {
         const removeEmptyFields = (obj: any) => {
@@ -239,7 +238,7 @@ const UserPage: NextPage = () => {
         } catch (error) {
             console.error('Error fetching addresses', error);
         }
-    }, [session?.user?.id, session?.accessToken,BASE_URL]);
+    }, [session?.user?.id, session?.accessToken, BASE_URL]);
 
     const handleDeleteAddress = async (addressId: string) => {
         try {
@@ -273,6 +272,7 @@ const UserPage: NextPage = () => {
         setUserDetails(originalUserDetails);
         setIsEditingUser(false);
     };
+
     const handleSaveUserPhoto = async (newProfileImageUrl?: string) => {
         try {
             const response = await fetch(
@@ -290,7 +290,6 @@ const UserPage: NextPage = () => {
             );
 
             if (response.ok) {
-             
             } else {
                 console.error(
                     'Falha ao atualizar o usuário:',
@@ -388,7 +387,6 @@ const UserPage: NextPage = () => {
         }
     };
 
-
     const handleCreateAddress = async () => {
         try {
             const url = `${BASE_URL}/adress/${session?.user?.id}/addresses`;
@@ -464,8 +462,7 @@ const UserPage: NextPage = () => {
         } catch (error) {
             console.error('Error fetching user details', error);
         }
-    }, [session?.user?.id, session?.accessToken,BASE_URL]);
-
+    }, [session?.user?.id, session?.accessToken, BASE_URL]);
 
     useEffect(() => {
         if (session?.user?.id) {
@@ -473,7 +470,7 @@ const UserPage: NextPage = () => {
             fetchAddresses();
             fetchOrders();
         }
-    }, [session?.user?.id,fetchAddresses,fetchOrders,fetchUserDetails]);
+    }, [session?.user?.id, fetchAddresses, fetchOrders, fetchUserDetails]);
 
     if (status === 'loading') {
         return <p>Carregando...</p>;
@@ -485,8 +482,8 @@ const UserPage: NextPage = () => {
     }
 
     return (
-        <div className=" max-w-4xl mx-auto mt-10 px-4 bg-primaryLight dark:bg-dark-secondary-gradient rounded-xl shadow-lg z-10">
-            <h1 className="text-2xl pt-4 text-primaryDark dark:text-primary dark:bg-dark-secondary-gradient font-bold text-center mb-4 z-10">
+        <div className=" max-w-4xl mx-auto mt-10 px-4 bg-primaryLight  rounded-xl shadow-lg z-10">
+            <h1 className="text-2xl pt-4 text-primaryDark   font-bold text-center mb-4 z-10">
                 Perfil do Usuário
             </h1>
             <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
@@ -533,11 +530,9 @@ const UserPage: NextPage = () => {
                 </Link>
             </div>
 
-            <div className="flex flex-col md:flex-row gap-4 bg-primaryLight dark:bg-dark-secondary-gradient max-w-4xl z-10 ">
-                <div className="bg-primaryLight dark:bg-dark-secondary-gradient pt-2 z-10 rounded p-4">
-                    <p className="text-primaryDark dark:text-primary pt-2">
-                        Favoritos :
-                    </p>
+            <div className="flex flex-col md:flex-row gap-4 bg-primaryLight  max-w-4xl z-10 ">
+                <div className="bg-primaryLight  pt-2 z-10 rounded p-4">
+                    <p className="text-primaryDark  pt-2">Favoritos :</p>
                     <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
                     <div>
                         <div className="flex flex-col w-72 gap-4  bg-primaryLight rounded-md p-2 z-10">
@@ -611,9 +606,7 @@ const UserPage: NextPage = () => {
                 </div>
 
                 <div className="flex-1 pt-2 ">
-                    <p className="text-primaryDark dark:text-primary pt-2">
-                        Dados :
-                    </p>
+                    <p className="text-primaryDark  pt-2">Dados :</p>
                     <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
                     {isEditingUser ? (
                         <form className="text-lg text-primaryDark w-[450px] bg-primary p-2 rounded-md flex-1">
@@ -635,7 +628,7 @@ const UserPage: NextPage = () => {
                                                 name: e.target.value,
                                             })
                                         }
-                                        className="mt-1 bg-primaryLight dark:bg-primary w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                        className="mt-1 bg-primaryLight  w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
                                     />
                                 </div>
 
@@ -656,7 +649,7 @@ const UserPage: NextPage = () => {
                                                 email: e.target.value,
                                             })
                                         }
-                                        className="mt-1  bg-primaryLight dark:bg-primary text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
+                                        className="mt-1  bg-primaryLight  text-primaryDark w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primaryDark focus:border-primaryDark caret-secondary"
                                     />
                                 </div>
 
@@ -752,7 +745,7 @@ const UserPage: NextPage = () => {
                             </div>
                         </form>
                     ) : (
-                        <div className="mt-2 max-w-[800px] text-primaryDark dark:text-primary border border-secondary p-4 rounded-md flex-1">
+                        <div className="mt-2 max-w-[800px] text-primaryDark  border border-secondary p-4 rounded-md flex-1">
                             <p>
                                 Nome: <strong>{userDetails.name}</strong>
                             </p>
@@ -782,9 +775,9 @@ const UserPage: NextPage = () => {
                 </div>
             </div>
 
-            <div className="flex justify-between ">
+            <div className="flex justify-between gap-2">
                 <div className="mt-10">
-                    <h2 className="text-xl font-bold text-primaryDark dark:text-primary">
+                    <h2 className="text-xl font-bold text-primaryDark ">
                         Endereços:
                     </h2>
 
@@ -1339,7 +1332,7 @@ const UserPage: NextPage = () => {
                 </div>
 
                 <div className="mt-10">
-                    <h2 className="text-xl font-bold text-primaryDark dark:text-primary">
+                    <h2 className="text-xl font-bold text-primaryDark ">
                         Pedidos:
                     </h2>
 

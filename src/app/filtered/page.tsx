@@ -127,7 +127,7 @@ const FilteredResults = () => {
                 const products = await fetchProducts(url);
                 setProducts(products);
 
-                // Define o filtro usado, se houver
+              
                 setFilterName(
                     selectedCategory
                         ? products[0]?.productCategories[0]?.category.name
@@ -138,11 +138,11 @@ const FilteredResults = () => {
                         : ''
                 );
             } finally {
-                setIsLoading(false); // garante que o loader será removido
+                setIsLoading(false); 
             }
         };
 
-        // Configura a URL com base nos parâmetros de busca
+       
         const searchParams = new URLSearchParams(window.location.search);
         const category = searchParams.get('category');
         const brand = searchParams.get('brand');
@@ -180,7 +180,7 @@ const FilteredResults = () => {
             setSelectedMinPrice(Number(minPrice));
             setSelectedMaxPrice(Number(maxPrice));
         } else {
-            setIsLoading(false); // Caso nenhum filtro seja aplicado, define isLoading como false
+            setIsLoading(false); 
         }
     }, [
         BASE_URL,

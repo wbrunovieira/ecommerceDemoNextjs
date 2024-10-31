@@ -61,7 +61,7 @@ const Home = () => {
                     </div>
                     <div className="max-w-7xl  mt-4">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 ">
-                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
+                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight  z-10 transition duration-300 ease-in-out">
                                 <div className="flex ">
                                     <Image
                                         src="/icons/lingerie-mini.svg"
@@ -83,7 +83,7 @@ const Home = () => {
                                 </Link>
                             </div>
 
-                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
+                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight z-10 transition duration-300 ease-in-out">
                                 <div className="flex ">
                                     <Image
                                         src="/icons/pijamas.svg"
@@ -104,8 +104,8 @@ const Home = () => {
                                 </Link>
                             </div>
 
-                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
-                                <div className="flex text-primaryDark dark:text-primaryLight">
+                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight  z-10 transition duration-300 ease-in-out">
+                                <div className="flex text-primaryDark ">
                                     <Image
                                         src="/icons/boy.svg"
                                         alt="icone de lingerie"
@@ -125,7 +125,7 @@ const Home = () => {
                                 </Link>
                             </div>
 
-                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight dark:bg-dark-secondary-gradient z-10 transition duration-300 ease-in-out">
+                            <div className="flex rounded-md border border-light hover:scale-105 hover:shadow-lg p-2 bg-primaryLight  z-10 transition duration-300 ease-in-out">
                                 <div className="flex">
                                     <Image
                                         src="/icons/acessorios.svg"

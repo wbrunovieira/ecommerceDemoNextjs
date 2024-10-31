@@ -519,9 +519,9 @@ const AdminPage = () => {
 
     return (
         <div className="flex flex-col md:flex-row md:min-h-screen z-20 divide-x w-full overflow-hidden">
-            <div className="hidden md:flex  bg-primaryLight dark:bg-primaryDark text-primaryDark dark:text-primaryLight flex-col z-20">
+            <div className="hidden md:flex  bg-primaryLight  text-primaryDark  flex-col z-20">
                 <div className="flex items-center justify-center h-16 border-b border-gray-700 z-20 ">
-                    <span className="text-xl text-primaryDark dark:text-primaryLight font-semibold z-20">
+                    <span className="text-xl text-primaryDark  font-semibold z-20">
                         Admin
                     </span>
                 </div>
@@ -555,13 +555,13 @@ const AdminPage = () => {
                 />
             </div>
 
-            <main className=" p-8 bg-primaryLight dark:bg-primaryDark z-20  ">
+            <main className=" p-8 bg-primaryLight  z-20  ">
                 <div className="flex gap-2">
                     <div className="flex flex-col gap-2">
-                        <h1 className="text-2xl text-primaryDark dark:text-primaryLight font-semibold text-gray-900">
+                        <h1 className="text-2xl text-primaryDark font-semibold text-gray-900">
                             Admin Dashboard
                         </h1>
-                        <p className="mt-4 text-primaryDark dark:text-primaryLight mb-4">
+                        <p className="mt-4 text-primaryDark  mb-4">
                             Bem vindo a area de Adm do Site Stylos
                         </p>
                     </div>

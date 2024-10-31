@@ -326,14 +326,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
     return (
         <nav className="w-full px-2 space-y-1 z-20">
-            <div className="min-w-full bg-primaryLight dark:bg-primaryDark rounded overflow-hidden">
+            <div className="min-w-full bg-primaryLight  rounded overflow-hidden">
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <button
                         onClick={() => {
                             setIsSheetOpen(true);
                             setCurrentView('products');
                         }}
-                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  "
                     >
                         Produtos
                     </button>
@@ -394,30 +394,30 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                 </button>
 
                                 <div className="overflow-x-auto ">
-                                    <table className="divide-y divide-gray-200 dark:divide-gray-700 ">
-                                        <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                    <table className="divide-y divide-gray-200 ">
+                                        <thead className="bg-primaryLight rounded">
                                             <tr>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                                 >
                                                     ID
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                                 >
                                                     Nome
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                                 >
                                                     ERP ID
                                                 </th>
                                                 <th
                                                     scope="col"
-                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                    className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                                 >
                                                     Ações
                                                 </th>
@@ -432,20 +432,20 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                 }
                                             />
                                         )}
-                                        <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                        <tbody className="bg-primaryLight  divide-y divide-gray-200 ">
                                             {products.map((product) => (
                                                 <tr key={product.id}>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                         {product.id}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                         {product.name}
                                                     </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                         {product.erpId}
                                                     </td>
 
-                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                         {editingProductId ===
                                                         product.id ? (
                                                             <>
@@ -491,7 +491,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
                                 {editingProductId && (
                                     <div className="mt-4 min-w-full overflow-x-hidden ">
-                                        <h3 className="text-lg font-medium text-primaryDark dark:text-primaryLight">
+                                        <h3 className="text-lg font-medium text-primaryDark ">
                                             Editar Produto
                                         </h3>
 
@@ -538,7 +538,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                             </div>
 
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <label className="block text-sm font-medium text-gray-700 ">
                                                     Descrição
                                                 </label>
                                                 <textarea
@@ -562,7 +562,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
 
                                             <div className="flex items-center gap-2 w-4/5">
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block text-sm font-medium text-gray-700 ">
                                                         Preço
                                                     </label>
                                                     <input
@@ -579,7 +579,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block text-sm font-medium text-gray-700 ">
                                                         Estoque
                                                     </label>
                                                     <input
@@ -598,7 +598,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                             </div>
 
                                             <div className="border-2 p-4">
-                                                <label className="block text-xl font-medium text-gray-700 dark:text-gray-300">
+                                                <label className="block text-xl font-medium text-gray-700 ">
                                                     Categorias
                                                 </label>
 
@@ -647,7 +647,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                                             ._id
                                                                             .value
                                                                     }
-                                                                    className="text-primaryDark dark:text-primaryLight"
+                                                                    className="text-primaryDark "
                                                                 >
                                                                     {
                                                                         category
@@ -660,7 +660,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                     )}
                                                 </div>
                                                 <button
-                                                    className="bg-secondary hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryLight dark:text-primaryLight mt-4 whitespace-nowrap"
+                                                    className="bg-secondary hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryLight mt-4 whitespace-nowrap"
                                                     onClick={() =>
                                                         handleAddCategoryToProduct(
                                                             editingProductId
@@ -673,7 +673,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                             </div>
                                             <div className="flex gap-2">
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block text-sm font-medium text-gray-700 ">
                                                         Marca
                                                     </label>
                                                     <input
@@ -691,7 +691,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                 </div>
 
                                                 <div>
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block text-sm font-medium text-gray-700 ">
                                                         ERP ID
                                                     </label>
                                                     <input
@@ -709,7 +709,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                 </div>
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <label className="block text-sm font-medium text-gray-700 ">
                                                     Tags
                                                 </label>
                                                 <input
@@ -725,7 +725,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <label className="block text-sm font-medium text-gray-700 ">
                                                     Título SEO
                                                 </label>
                                                 <input
@@ -741,7 +741,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <label className="block text-sm font-medium text-gray-700 ">
                                                     Descrição SEO
                                                 </label>
                                                 <input
@@ -757,7 +757,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                 />
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <label className="block text-sm font-medium text-gray-700 ">
                                                     Palavras-chave SEO
                                                 </label>
                                                 <input
@@ -774,7 +774,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                             </div>
                                             <div className="flex gap-2">
                                                 <div className="w-32">
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block text-sm font-medium text-gray-700 ">
                                                         Altura
                                                     </label>
                                                     <input
@@ -790,7 +790,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                     />
                                                 </div>
                                                 <div className="w-32">
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block text-sm font-medium text-gray-700 ">
                                                         Largura
                                                     </label>
                                                     <input
@@ -806,7 +806,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                     />
                                                 </div>
                                                 <div className="w-32">
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block text-sm font-medium text-gray-700 ">
                                                         Comprimento
                                                     </label>
                                                     <input
@@ -822,7 +822,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                     />
                                                 </div>
                                                 <div className="w-32">
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block text-sm font-medium text-gray-700 ">
                                                         Peso
                                                     </label>
                                                     <input
@@ -840,7 +840,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                             </div>
 
                                             <div className="w-32">
-                                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                <label className="block text-sm font-medium text-gray-700 text-gray-300">
                                                     Status
                                                 </label>
                                                 <select
@@ -872,7 +872,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         }
                                                         className="h-4 w-4"
                                                     />
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                                    <label className="block text-sm font-medium text-gray-700  whitespace-nowrap">
                                                         Dísponivel no Site
                                                     </label>
                                                 </div>
@@ -889,7 +889,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         }
                                                         className="h-4 w-4"
                                                     />
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                                    <label className="block text-sm font-medium text-gray-700 whitespace-nowrap">
                                                         Em Promoção
                                                     </label>
                                                 </div>
@@ -906,7 +906,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         }
                                                         className="h-4 w-4"
                                                     />
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                                    <label className="block text-sm font-medium text-gray-700 whitespace-nowrap">
                                                         Novo
                                                     </label>
                                                 </div>
@@ -922,7 +922,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         }
                                                         className="h-4 w-4"
                                                     />
-                                                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 whitespace-nowrap">
+                                                    <label className="block text-sm font-medium text-gray-700 whitespace-nowrap">
                                                         Destaque
                                                     </label>
                                                 </div>
@@ -954,14 +954,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 </Sheet>
             </div>
 
-            <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
+            <div className="bg-primaryLight  p-2 rounded">
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <button
                         onClick={() => {
                             setIsSheetOpen(true);
                             setCurrentView('categories');
                         }}
-                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark "
                     >
                         Categorias
                     </button>
@@ -977,48 +977,48 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                 <SheetDescription></SheetDescription>
                             </SheetHeader>
                             <div className="w-full md:p-4">
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                <table className="min-w-full divide-y divide-gray-200 ">
+                                    <thead className="bg-primaryLight  rounded">
                                         <tr>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 ID
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Nome
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark uppercase tracking-wider"
                                             >
                                                 imagem
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 ERP ID
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Ações
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tbody className="bg-primaryLight  divide-y divide-gray-200 ">
                                         {categories.map((category) => (
                                             <tr key={category._id.value}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {category._id.value}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingCategoryId ===
                                                     category._id.value ? (
                                                         <input
@@ -1036,7 +1036,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         category.props.name
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingCategoryId ===
                                                     category._id.value ? (
                                                         <input
@@ -1054,10 +1054,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         category.props.imageUrl
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {category.props.erpId}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingCategoryId ===
                                                     category._id.value ? (
                                                         <button
@@ -1094,14 +1094,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 </Sheet>
             </div>
 
-            <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
+            <div className="bg-primaryLight  p-2 rounded">
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <button
                         onClick={() => {
                             setIsSheetOpen(true);
                             setCurrentView('colors');
                         }}
-                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  "
                     >
                         Cores
                     </button>
@@ -1117,48 +1117,48 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                 <SheetDescription></SheetDescription>
                             </SheetHeader>
                             <div className="w-full md:p-4">
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                <table className="min-w-full divide-y divide-gray-200 ">
+                                    <thead className="bg-primaryLight  rounded">
                                         <tr>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 ID
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Nome
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Hex
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 ERP ID
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Ações
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tbody className="bg-primaryLight  divide-y divide-gray-200 ">
                                         {colors.map((color) => (
                                             <tr key={color._id.value}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {color._id.value}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingColorId ===
                                                     color._id.value ? (
                                                         <input
@@ -1176,7 +1176,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         color.props.name
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingColorId ===
                                                     color._id.value ? (
                                                         <input
@@ -1194,10 +1194,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         color.props.hex
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {color.props.erpId}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingColorId ===
                                                     color._id.value ? (
                                                         <button
@@ -1207,7 +1207,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                                         .value
                                                                 )
                                                             }
-                                                            className="px-4 py-2 bg-secondary dark:bg-primarytext-white rounded"
+                                                            className="px-4 py-2 bg-secondary  rounded"
                                                         >
                                                             Salvar
                                                         </button>
@@ -1218,7 +1218,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                                     color
                                                                 )
                                                             }
-                                                            className="px-4 py-2 bg-primary dark:bg-primary text-white rounded"
+                                                            className="px-4 py-2 bg-primary  text-white rounded"
                                                         >
                                                             Editar
                                                         </button>
@@ -1234,14 +1234,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 </Sheet>
             </div>
 
-            <div className="bg-primaryLight dark:bg-primaryDark  p-2 rounded">
+            <div className="bg-primaryLight   p-2 rounded">
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <button
                         onClick={() => {
                             setIsSheetOpen(true);
                             setCurrentView('sizes');
                         }}
-                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  "
                     >
                         Tamanhos
                     </button>
@@ -1256,47 +1256,47 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                 <SheetTitle>Tamanhos</SheetTitle>
                             </SheetHeader>
                             <div className="p-4">
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                <table className="min-w-full divide-y divide-gray-200 ">
+                                    <thead className="bg-primaryLight  rounded">
                                         <tr>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 ID
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Nome
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             ></th>
 
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 ERP ID
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Ações
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tbody className="bg-primaryLight  divide-y divide-gray-200 ">
                                         {sizes.map((size) => (
                                             <tr key={size._id.value}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {size._id.value}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingSizeId ===
                                                     size._id.value ? (
                                                         <input
@@ -1314,11 +1314,11 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         size.props.name
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200"></td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 "></td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {size.props.erpId}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingSizeId ===
                                                     size._id.value ? (
                                                         <button
@@ -1355,14 +1355,14 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                 </Sheet>
             </div>
 
-            <div className="bg-primaryLight dark:bg-primaryDark p-2 rounded">
+            <div className="bg-primaryLight  p-2 rounded">
                 <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                     <button
                         onClick={() => {
                             setIsSheetOpen(true);
                             setCurrentView('brands');
                         }}
-                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight "
+                        className="hover:bg-primary hover:scale-105 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  "
                     >
                         Marcas
                     </button>
@@ -1379,48 +1379,48 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                 </SheetDescription>
                             </SheetHeader>
                             <div className="p-4">
-                                <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                                    <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+                                <table className="min-w-full divide-y divide-gray-200 ">
+                                    <thead className="bg-primaryLight  rounded">
                                         <tr>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 ID
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Nome
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Imagem
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 ERP ID
                                             </th>
                                             <th
                                                 scope="col"
-                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider"
+                                                className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider"
                                             >
                                                 Ações
                                             </th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                                    <tbody className="bg-primaryLight  divide-y divide-gray-200 ">
                                         {brands.map((brand) => (
                                             <tr key={brand._id.value}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {brand._id.value}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingBrandId ===
                                                     brand._id.value ? (
                                                         <input
@@ -1438,7 +1438,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         brand.props.name
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingBrandId ===
                                                     brand._id.value ? (
                                                         <input
@@ -1456,10 +1456,10 @@ const AdminPanel: React.FC<AdminPanelProps> = ({
                                                         brand.props.imageUrl
                                                     )}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {brand.props.erpId}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                                     {editingBrandId ===
                                                     brand._id.value ? (
                                                         <button

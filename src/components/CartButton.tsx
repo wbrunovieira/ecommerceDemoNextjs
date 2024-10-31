@@ -42,7 +42,7 @@ const CartButton = () => {
                 className="flex items-center justify-center hover:scale-110 transition duration-300 bg-primaryLight rounded-md p-2 h-10 w-12"
             >
                 <div className="relative text-primary2">
-                    <BsCart4 className="text-primary2 dark:text-primaryDark w-5 h-5 md:w-6 md:h-6" />
+                    <BsCart4 className="text-primary2  w-5 h-5 md:w-6 md:h-6" />
                     {isCartLoaded && (
                         <span className="absolute text-primary2 -bottom-2 -right-4 opacity-70 bg-primaryLight border border-primary2 font-bold text-[10px] rounded-full px-2 py-2 min-w-[20px] h-[20px] flex items-center justify-center">
                             {cartItems.length}

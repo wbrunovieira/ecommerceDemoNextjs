@@ -4,7 +4,6 @@ import '../globals.css';
 
 import { Montserrat } from 'next/font/google';
 
-import { ThemeProvider } from '@/components/theme-provider';
 import HeaderAdmin from '@/components/HeaderAdmin';
 
 const montserrat = Montserrat({ subsets: ['latin'] });
@@ -22,16 +21,9 @@ export default function AdminLayout({
     return (
         <html lang="pt-BR">
             <body className={montserrat.className}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="light"
-                    enableSystem
-                    disableTransitionOnChange
-                >
-                    <HeaderAdmin />
+                <HeaderAdmin />
 
-                    <main>{children}</main>
-                </ThemeProvider>
+                <main>{children}</main>
             </body>
         </html>
     );

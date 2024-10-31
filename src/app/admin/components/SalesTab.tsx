@@ -87,8 +87,8 @@ const SalesTab: React.FC<SalesTabProps> = ({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
-                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                <div className="bg-primaryDark Light p-6 rounded-lg shadow">
+                    <h2 className="text-lg text-primaryLight  font-semibold mb-4">
                         Vendas dos últimos 7 dias
                     </h2>
                     <BarChart width={300} height={300} data={chartData}>
@@ -109,8 +109,8 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </BarChart>
                 </div>
 
-                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                <div className="bg-primaryDark Light p-6 rounded-lg shadow">
+                    <h2 className="text-lg text-primaryLight  font-semibold mb-4">
                         Vendas das últimas 7 semanas
                     </h2>
                     <BarChart width={300} height={300} data={weeklyChartData}>
@@ -131,8 +131,8 @@ const SalesTab: React.FC<SalesTabProps> = ({
                     </BarChart>
                 </div>
 
-                <div className="bg-primaryDark dark:bg-primaryLight p-6 rounded-lg shadow">
-                    <h2 className="text-lg text-primaryLight dark:text-primaryDark font-semibold mb-4">
+                <div className="bg-primaryDark Light p-6 rounded-lg shadow">
+                    <h2 className="text-lg text-primaryLight  font-semibold mb-4">
                         Vendas dos últimos 7 meses
                     </h2>
                     <BarChart width={300} height={300} data={monthlyChartData}>

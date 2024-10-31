@@ -7,7 +7,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 import NextAuthSessionProvider from '@/providers/sessionProvider';
 import ClearCartOnLogout from '@/utils/ClearCartOnLogout';
-import { ThemeProvider } from '@/components/theme-provider';
+
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
@@ -26,12 +26,7 @@ export default function RootLayout({
     return (
         <html lang="pt-BR">
             <body className={montserrat.className}>
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="light"
-                    enableSystem
-                    disableTransitionOnChange
-                >
+             
                     <NextAuthSessionProvider>
                         <Header />
                         <main>{children}</main>
@@ -39,7 +34,7 @@ export default function RootLayout({
                         <Footer />
                         <ClearCartOnLogout />
                     </NextAuthSessionProvider>
-                </ThemeProvider>
+              
             </body>
         </html>
     );

@@ -25,7 +25,7 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
     return (
         <div className="md:hidden">
             <button
-                className="text-primaryDark dark:text-primaryLight p-2"
+                className="text-primaryDark  p-2"
                 onClick={toggleMenu}
                 aria-label="Toggle menu"
             >
@@ -42,14 +42,14 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                     animate={{ x: 0 }}
                     exit={{ x: '100%' }}
                     transition={{ duration: 0.3 }}
-                    className=" fixed top-0 right-0 h-full w-full bg-primaryLight dark:bg-primaryDark z-50 shadow-lg"
+                    className=" fixed top-0 right-0 h-full w-full bg-primaryLight  z-50 shadow-lg"
                 >
                     <div className="flex justify-between items-center p-4">
-                        <h2 className="text-lg font-bold text-primaryDark dark:text-primaryLight">
+                        <h2 className="text-lg font-bold text-primaryDark ">
                             Admin Menu
                         </h2>
                         <button
-                            className="text-primaryDark dark:text-primaryLight p-2 z-50"
+                            className="text-primaryDark  p-2 z-50"
                             onClick={toggleMenu}
                             aria-label="Close menu"
                         >
@@ -62,12 +62,12 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                     >
                         {/* Sidebar Options */}
                         <div className="flex flex-col gap-2 w-full">
-                            <h2 className="text-lg font-bold text-primaryDark dark:text-primaryLight">
+                            <h2 className="text-lg font-bold text-primaryDark ">
                                 Admin
                             </h2>
                             <div className="flex  flex-col gap-2 text-left">
                                 <button
-                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  text-left"
                                     onClick={() => {
                                         setIsSheetOpen(true);
                                         setCurrentView('products');
@@ -79,7 +79,7 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                                     Produtos
                                 </button>
                                 <button
-                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  text-left"
                                     onClick={() => {
                                         setIsSheetOpen(true);
                                         setCurrentView('categories');
@@ -88,7 +88,7 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                                     Categorias
                                 </button>
                                 <button
-                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  text-left"
                                     onClick={() => {
                                         setIsSheetOpen(true);
                                         setCurrentView('colors');
@@ -97,7 +97,7 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                                     Cores
                                 </button>
                                 <button
-                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  text-left"
                                     onClick={() => {
                                         setIsSheetOpen(true);
                                         setCurrentView('sizes');
@@ -106,7 +106,7 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                                     Tamanhos
                                 </button>
                                 <button
-                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  text-left"
                                     onClick={() => {
                                         setIsSheetOpen(true);
                                         setCurrentView('brands');
@@ -116,7 +116,7 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                                 </button>
 
                                 <button
-                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  text-left"
                                     onClick={() => {
                                         setIsSheetOpen(true);
                                         setCurrentView('sizes');
@@ -125,7 +125,7 @@ const AdminMobileMenu = ({ setCurrentView, setIsSheetOpen }) => {
                                     Tamanhos
                                 </button>
                                 <button
-                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark dark:text-primaryLight text-left"
+                                    className="hover:bg-primary hover:scale-110 hover:text-primaryDark transition duration-300 ease-in-out rounded p-2 text-primaryDark  text-left"
                                     onClick={() => {
                                         setIsSheetOpen(true);
                                         setCurrentView('orders');

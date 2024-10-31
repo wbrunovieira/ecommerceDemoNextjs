@@ -112,7 +112,7 @@ const Card: React.FC<CardProps> = ({
         .join(', ');
 
     return (
-        <div className="max-w-sm rounded-md shadow-lg bg-white border-2 border-y-primaryDark  dark:bg-dark-secondary-gradient m-2 h-96 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-400 ease-in-out">
+        <div className="max-w-sm rounded-md shadow-lg bg-white border-2 border-y-primaryDark   m-2 h-96 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-400 ease-in-out">
             <div className="relative overflow-hidden flex-shrink-0 rounded-md h-[200px]">
                 <Image
                     src={validImageSRC}
@@ -146,7 +146,7 @@ const Card: React.FC<CardProps> = ({
                         {formattedCategories}
                     </h3>
                     <div className="relative group">
-                        <h2 className="text-xl font-semibold mb-2 text-fontColor dark:text-darkFontColor truncate">
+                        <h2 className="text-xl font-semibold mb-2 text-fontColor  truncate">
                             {title}
                         </h2>
                         <div className="absolute hidden group-hover:block bg-primaryDark text-white text-[10px] rounded-lg py-1 px-2 z-10 -top-6 left-1/2 transform -translate-x-1/2 transition-opacity duration-600 ease-in-out opacity-0 group-hover:opacity-100">
@@ -154,13 +154,13 @@ const Card: React.FC<CardProps> = ({
                         </div>
                     </div>
 
-                    <p className="text-gray-700 text-sm font-bold text-fontColor dark:text-dark ">
+                    <p className="text-gray-700 text-sm font-bold text-fontColor  ">
                         {precoAntigo && (
                             <span className="line-through mr-2 font-extralight">
                                 R${precoAntigo.toFixed(2)}
                             </span>
                         )}
-                        <span className="text-primaryDark dark:text-dark FontColor">
+                        <span className="text-primaryDark  FontColor">
                             R${precoNovo.toFixed(2)}
                         </span>
                     </p>
@@ -231,7 +231,7 @@ const Card: React.FC<CardProps> = ({
                                 alt={brandName}
                                 className="mr-2 object-contain w-5 h-5"
                             />
-                            <span className="text-xs text-gray-600 dark:text-darkFontColor">
+                            <span className="text-xs text-gray-600 ">
                                 {brandName}
                             </span>
                         </div>

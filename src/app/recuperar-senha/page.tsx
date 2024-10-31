@@ -15,7 +15,6 @@ const RecuperarSenha: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState<ErrorMessages>({
         email: '',
     });
-    
 
     const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
     const { toast } = useToast();
@@ -87,11 +86,11 @@ const RecuperarSenha: React.FC = () => {
 
     return (
         <div className="flex md:min-h-screen items-center justify-center  bg-linear-gradient  p-4 sm:p-6 lg:p-8">
-            <div className="bg-white dark:bg-dark-secondary-gradient p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
+            <div className="bg-white  p-6 sm:p-8 lg:p-10 border-y-primaryDark rounded-lg shadow-lg z-10 relative overflow-hidden w-full md:w-3/5">
+                <h2 className="text-xl font-semibold text-gray-800  mb-4">
                     Esqueceu a senha?
                 </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">
+                <p className="text-sm text-gray-600  mb-6">
                     Sem problemas! Digite seu e-mail abaixo e nós vamos ajudar
                     você a recuperar o acesso.
                 </p>
@@ -102,7 +101,7 @@ const RecuperarSenha: React.FC = () => {
                 >
                     <label
                         htmlFor="email"
-                        className="block text-sm font-medium text-primaryDark dark:text-white-important text-xs"
+                        className="block text-sm font-medium text-primaryDark -important text-xs"
                     >
                         Email
                         <input
@@ -113,7 +112,7 @@ const RecuperarSenha: React.FC = () => {
                             placeholder="Email"
                             onBlur={() => handleBlur('email', email)}
                             value={email}
-                            className="mt-1 px-4 py-2 rounded-lg border border-gray-300 shadow-sm bg-white bg-opacity-80 dark:border-gray-700 w-full max-w-full focus:ring-secondary focus:border-secondary dark:bg-gray-700 dark:text-gray-300"
+                            className="mt-1 px-4 py-2 rounded-lg border border-gray-300 shadow-sm bg-white bg-opacity-80  w-full max-w-full focus:ring-secondary focus:border-secondary  "
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </label>

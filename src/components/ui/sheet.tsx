@@ -21,7 +21,7 @@ const SheetOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <SheetPrimitive.Overlay
         className={cn(
-            'w-full fixed inset-0 z-50 bg-primaryLight dark:bg-primaryDark data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+            'w-full fixed inset-0 z-50 bg-primaryLight  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
             className
         )}
         {...props}
@@ -50,8 +50,8 @@ const sheetVariants = cva(
                 extraLarge: 'w-[1200px]',
             },
             colorScheme: {
-                light: 'bg-primaryLight dark:text-primaryDark',
-                dark: 'bg-primaryDark dark:text-primaryLight',
+                light: 'bg-primaryLight ',
+                dark: 'bg-primaryDark ',
             },
         },
         defaultVariants: {
@@ -138,7 +138,7 @@ const SheetTitle = React.forwardRef<
     <SheetPrimitive.Title
         ref={ref}
         className={cn(
-            'text-lg font-semibold text-primaryDark text-4xl dark:text-primary-light ',
+            'text-lg font-semibold text-primaryDark text-4xl -light ',
             className
         )}
         {...props}
@@ -152,10 +152,7 @@ const SheetDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <SheetPrimitive.Description
         ref={ref}
-        className={cn(
-            'text-sm   text-primaryDark dark:text-primary-light ',
-            className
-        )}
+        className={cn('text-sm   text-primaryDark -light ', className)}
         {...props}
     />
 ));

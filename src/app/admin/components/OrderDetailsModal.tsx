@@ -15,7 +15,7 @@ const OrderDetailsModal: React.FC<OrderDetailsModalProps> = ({
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-primaryDark dark:text-primaryLight">
+            <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-primaryDark ">
                 <h2 className="text-xl font-semibold mb-4">
                     Detalhes do Pedido
                 </h2>

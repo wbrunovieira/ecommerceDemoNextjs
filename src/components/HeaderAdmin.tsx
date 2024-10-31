@@ -6,7 +6,7 @@ import ToggleMode from './ToggleMode';
 
 const Header = () => {
     return (
-        <header className="pt-2 pb-2 md:p-8 bg-primaryLight dark:bg-primaryDark  flex justify-between items-center flex-col w-screen ">
+        <header className="pt-2 pb-2 md:p-8 bg-primaryLight   flex justify-between items-center flex-col w-screen ">
             <div className='flex p-4 items-center justify-between w-full text-secondary "'>
                 <div className="flex justify-start left w-32 ">
                     <Link href="/" passHref className="w-32 cursor-pointer">

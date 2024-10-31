@@ -122,8 +122,8 @@ const Login = () => {
 
     return (
         <div className="flex items-center justify-center min-h-max py-8">
-            <div className="bg-primaryLight dark:bg-dark-secondary-gradient  rounded-lg shadow-lg z-10 relative overflow-hidden w-full max-w-md lg:max-w-lg ">
-                <div className="relative z-10 bg-primary dark:bg-dark-secondary-gradient px-16 py-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
+            <div className="bg-primaryLight   rounded-lg shadow-lg z-10 relative overflow-hidden w-full max-w-md lg:max-w-lg ">
+                <div className="relative z-10 bg-primary  px-16 py-8 border-2 border-y-primaryDark rounded-lg shadow-lg">
                     <h2 className="text-3xl font-bold text-secondary mb-4 ">
                         Login
                     </h2>

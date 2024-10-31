@@ -35,7 +35,6 @@ interface Size {
 }
 
 const Sidebar = () => {
-
     const containerRef = useRef<HTMLElement>(null);
 
     const [brands, setBrands] = useState<Brand[]>([]);
@@ -341,8 +340,8 @@ const Sidebar = () => {
                 className="hidden md:flex flex-col gap-2 mr-4 rounded"
                 ref={containerRef as React.RefObject<HTMLDivElement>}
             >
-                <div className="sidebar-section flex flex-col w-48 border border-light bg-primaryLight dark:bg-dark-secondary-gradient rounded p-4 mt-2 z-10">
-                    <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider mb-2">
+                <div className="sidebar-section flex flex-col w-48 border border-light bg-primaryLight  rounded p-4 mt-2 z-10">
+                    <h2 className="bg-primaryLight  text-base tracking-wider mb-2">
                         Categorias
                     </h2>
 
@@ -383,7 +382,7 @@ const Sidebar = () => {
                         ))}
                     </div>
                     <button
-                        className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out"
+                        className="mt-2 bg-primaryLight  hover:text-primary transition duration-300 ease-in-out"
                         onClick={() =>
                             setShowMoreCategories(!showMoreCategories)
                         }
@@ -393,8 +392,8 @@ const Sidebar = () => {
                     <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 z-10" />
                 </div>
 
-                <div className=" sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded z-10">
-                    <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
+                <div className=" sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight  rounded z-10">
+                    <h2 className="bg-primaryLight  text-base tracking-wider rounded mb-2 ">
                         Marcas
                     </h2>
                     <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4 " />
@@ -425,8 +424,8 @@ const Sidebar = () => {
                     ))}
                 </div>
 
-                <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
-                    <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
+                <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight  rounded">
+                    <h2 className="bg-primaryLight  text-base tracking-wider rounded mb-2 ">
                         Cores
                     </h2>
                     <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
@@ -450,8 +449,8 @@ const Sidebar = () => {
                     </div>
                 </div>
 
-                <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight dark:bg-dark-secondary-gradient rounded">
-                    <h2 className="bg-primaryLight dark:bg-dark-secondary-gradient text-base tracking-wider rounded mb-2 ">
+                <div className="sidebar-section flex flex-col w-48 border border-light p-4 mt-2 bg-primaryLight  rounded">
+                    <h2 className="bg-primaryLight  text-base tracking-wider rounded mb-2 ">
                         Tamanhos
                     </h2>
                     <hr className="border-0 h-[2px] bg-gradient-to-r from-primary to-primary-light mb-4" />
@@ -475,7 +474,7 @@ const Sidebar = () => {
                         ))}
                     </div>
                     <button
-                        className="mt-2 bg-primaryLight dark:bg-dark-secondary-gradient hover:text-primary transition duration-300 ease-in-out"
+                        className="mt-2 bg-primaryLight  hover:text-primary transition duration-300 ease-in-out"
                         onClick={() => setShowMoreSizes(!showMoreSizes)}
                     >
                         {showMoreSizes ? 'Ver menos' : 'Ver mais'}

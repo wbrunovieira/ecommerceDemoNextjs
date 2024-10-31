@@ -6,7 +6,6 @@ import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { useRef, useEffect, useState } from 'react';
 import { register } from 'swiper/element/bundle';
 
-
 register();
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -396,7 +395,7 @@ const Product: React.FC<ProductProps> = ({
         <section>
             <div className="flex flex-col w-full md:ml-2">
                 <div className="w-full border-primary ">
-                    <div className="border-r-4 border-secondary shadow-2xl p-4 rounded-md text-base md:text-3xl w-1/3 md:w-1/2 text-primaryDark dark:text-primaryLight dark:bg-secondary dark:border-primaryLight">
+                    <div className="border-r-4 border-secondary shadow-2xl p-4 rounded-md text-base md:text-3xl w-1/3 md:w-1/2 text-primaryDark   ">
                         {title}
                     </div>
                 </div>
@@ -448,14 +447,14 @@ const Product: React.FC<ProductProps> = ({
 
                     <div className="flex flex-col gap-2 p-2 mt-4 md:mt-0 md:w-1/2">
                         <div className="flex w-full md:w-96">
-                            <p className=" border-r-4 border-secondary shadow-2xl p-4 rounded-md dark:bg-secondary dark:border-primaryLight">
+                            <p className=" border-r-4 border-secondary shadow-2xl p-4 rounded-md  ">
                                 {description}
                             </p>
                         </div>
                         <div className="flex gap-2 mt-4">
                             <button
                                 onClick={handleToggleFavorite}
-                                className="flex items-center gap-2 text-base text-primaryDark dark:text-primaryLight font-semibold"
+                                className="flex items-center gap-2 text-base text-primaryDark  font-semibold"
                                 aria-label={
                                     isFavorited
                                         ? ' Remover dos favoritos'
@@ -475,7 +474,7 @@ const Product: React.FC<ProductProps> = ({
                             </button>
                         </div>
                         <div></div>
-                        <div className="text-left w-full text-primaryDark dark:text-primaryLight border-x-primary mb-4">
+                        <div className="text-left w-full text-primaryDark  border-x-primary mb-4">
                             <ShareButtons
                                 product={{
                                     slug,
@@ -488,7 +487,7 @@ const Product: React.FC<ProductProps> = ({
                         {hasVariants && (
                             <>
                                 <div className="mt-2 rounded px-2 py-2 max-w-48">
-                                    <h3 className="text-base text-primaryDark dark:text-primaryLight  font-semibold">
+                                    <h3 className="text-base text-primaryDark   font-semibold">
                                         Cores
                                     </h3>
                                     <div className="flex gap-2 mt-2">
@@ -514,7 +513,7 @@ const Product: React.FC<ProductProps> = ({
                                 </div>
 
                                 <div className="mt-2 flex-initial rounded px-2 py-2 max-w-64">
-                                    <h3 className="text-base font-semibold text-primaryDark dark:text-primaryLight ">
+                                    <h3 className="text-base font-semibold text-primaryDark  ">
                                         Tamanhos
                                     </h3>
                                     <div className="flex gap-2 justify-start p-2 w-60 cursor-pointer">
@@ -552,13 +551,13 @@ const Product: React.FC<ProductProps> = ({
 
                                 <div className="flex ml-2">
                                     <button
-                                        className="w-8 h-8 flex justify-center items-center text-primaryDark dark:text-primaryLight font-semibold border-r-2"
+                                        className="w-8 h-8 flex justify-center items-center text-primaryDark  font-semibold border-r-2"
                                         onClick={decrementQuantity}
                                     >
                                         -
                                     </button>
                                     <button
-                                        className="w-8 h-8 flex justify-center items-center text-primaryDark dark:text-primaryLight  font-semibold  border-primaryDark"
+                                        className="w-8 h-8 flex justify-center items-center text-primaryDark   font-semibold  border-primaryDark"
                                         onClick={incrementQuantity}
                                     >
                                         +
@@ -628,7 +627,7 @@ const Product: React.FC<ProductProps> = ({
             </div>
             <div className="flex flex-col gap-2 w-auto border-t-2 border-primary mt-4">
                 <div className="w-full flex mt-4 ">
-                    <h2 className="text-lg text-primaryDark dark:text-primaryLight shadow-lg font-semibold border-r-4 border-secondary rounded p-4 whitespace-nowrap">
+                    <h2 className="text-lg text-primaryDark  shadow-lg font-semibold border-r-4 border-secondary rounded p-4 whitespace-nowrap">
                         Produtos Parecidos
                     </h2>
                 </div>

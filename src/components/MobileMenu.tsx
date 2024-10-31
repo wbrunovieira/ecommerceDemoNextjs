@@ -27,7 +27,7 @@ const MobileMenu = () => {
     return (
         <div className="md:hidden">
             <button
-                className="text-primaryDark dark:text-primaryLight p-2"
+                className="text-primaryDark  p-2"
                 onClick={toggleMenu}
                 aria-label="Toggle menu"
             >
@@ -44,14 +44,14 @@ const MobileMenu = () => {
                     animate={{ x: 0 }}
                     exit={{ x: '100%' }}
                     transition={{ duration: 0.3 }}
-                    className="fixed top-0 right-0 h-full w-2/3 bg-primaryLight dark:bg-primaryDark z-50 shadow-lg"
+                    className="fixed top-0 right-0 h-full w-2/3 bg-primaryLight  z-50 shadow-lg"
                 >
                     <div className="flex justify-between items-center p-4">
-                        <h2 className="text-lg font-bold text-primaryDark dark:text-primaryLight">
+                        <h2 className="text-lg font-bold text-primaryDark ">
                             Menu
                         </h2>
                         <button
-                            className="text-primaryDark dark:text-primaryLight p-2 z-50"
+                            className="text-primaryDark  p-2 z-50"
                             onClick={toggleMenu}
                             aria-label="Close menu"
                         >
@@ -65,51 +65,51 @@ const MobileMenu = () => {
                         <div className="flex flex-col gap-2">
                             <Link
                                 href="/"
-                                className="text-primaryDark dark:text-primaryLight text-sm"
+                                className="text-primaryDark  text-sm"
                                 onClick={toggleMenu}
                             >
                                 Home
                             </Link>
                             <Link
                                 href="/cart"
-                                className="text-primaryDark dark:text-primaryLight text-sm"
+                                className="text-primaryDark  text-sm"
                                 onClick={toggleMenu}
                             >
                                 Cart
                             </Link>
                             <Link
                                 href="/login"
-                                className="text-primaryDark dark:text-primaryLight text-sm"
+                                className="text-primaryDark  text-sm"
                                 onClick={toggleMenu}
                             >
                                 Login
                             </Link>
                         </div>
 
-                        <hr className="border-primaryDark dark:border-primaryLight" />
+                        <hr className="border-primaryDark " />
 
                         {/* Sidebar Options */}
                         <div className="flex flex-col gap-2">
-                            <h2 className="text-lg font-bold text-primaryDark dark:text-primaryLight">
+                            <h2 className="text-lg font-bold text-primaryDark ">
                                 Filtros
                             </h2>
                             <SideBarMobile toggleMenu={toggleMenu} />
 
                             <Link
                                 href="/category/lingeries"
-                                className="text-primaryDark dark:text-primaryLight text-sm"
+                                className="text-primaryDark  text-sm"
                             >
                                 Lingeries
                             </Link>
                             <Link
                                 href="/category/pijamas"
-                                className="text-primaryDark dark:text-primaryLight text-sm"
+                                className="text-primaryDark  text-sm"
                             >
                                 Pijamas
                             </Link>
                             <Link
                                 href="/category/acessorios"
-                                className="text-primaryDark dark:text-primaryLight text-sm"
+                                className="text-primaryDark  text-sm"
                             >
                                 Acessórios
                             </Link>

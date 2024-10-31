@@ -23,21 +23,21 @@ export const SocialIcons = ({ className }) => {
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <BsInstagram className="text-sm md:text-base lg:text-lg rounded bg-primaryLight dark:bg-primaryLight text-primary2 dark:text-primaryDark transition duration-300 hover:scale-110 md:hover:scale-125" />
+                    <BsInstagram className="text-sm md:text-base lg:text-lg rounded bg-primaryLight Light text-primary2  transition duration-300 hover:scale-110 md:hover:scale-125" />
                 </a>
                 <a
                     href="https://facebook.com"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <BsFacebook className="text-sm md:text-base lg:text-lg rounded  bg-primaryLight dark:bg-primaryLight text-primary2 dark:text-primaryDark transition duration-300 hover:scale-110 md:hover:scale-125" />
+                    <BsFacebook className="text-sm md:text-base lg:text-lg rounded  bg-primaryLight Light text-primary2  transition duration-300 hover:scale-110 md:hover:scale-125" />
                 </a>
                 <a
                     href="https://tiktok.com"
                     target="_blank"
                     rel="noopener noreferrer"
                 >
-                    <BsTiktok className="text-sm md:text-base lg:text-lg rounded  bg-primaryLight dark:bg-primaryLight  text-primary2 dark:text-primaryDark transition duration-300 hover:scale-110 md:hover:scale-125" />
+                    <BsTiktok className="text-sm md:text-base lg:text-lg rounded  bg-primaryLight Light  text-primary2  transition duration-300 hover:scale-110 md:hover:scale-125" />
                 </a>
             </div>
         </div>

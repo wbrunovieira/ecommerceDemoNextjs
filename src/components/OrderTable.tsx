@@ -65,30 +65,30 @@ const OrdersTable: React.FC = () => {
     return (
         <div className="mt-8">
             <h2 className="text-xl font-semibold">Últimos Pedidos</h2>
-            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 mt-4">
-                <thead className="bg-primaryLight dark:bg-primaryDark rounded">
+            <table className="min-w-full divide-y divide-gray-200  mt-4">
+                <thead className="bg-primaryLight  rounded">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider">
                             ID
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider">
                             Cliente
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider">
                             Data
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider">
                             Total
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider">
                             Status Pagamento
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark dark:text-primaryLight uppercase tracking-wider">
+                        <th className="px-6 py-3 text-left text-xs font-medium text-primaryDark  uppercase tracking-wider">
                             Método de Pagamento
                         </th>
                     </tr>
                 </thead>
-                <tbody className="bg-primaryLight dark:bg-primaryDark divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody className="bg-primaryLight  divide-y divide-gray-200 ">
                     {ordersTable.length > 0 ? (
                         ordersTable.map((order) => (
                             <tr
@@ -96,25 +96,25 @@ const OrdersTable: React.FC = () => {
                                 className="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700"
                                 onClick={() => fetchOrderById(order.id)}
                             >
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                     {order.id}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                     {order.userName}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                     {order.paymentDate}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                     {order.total.toLocaleString('pt-BR', {
                                         style: 'currency',
                                         currency: 'BRL',
                                     })}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                     {order.paymentStatus}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-200">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 ">
                                     {order.paymentMethod}
                                 </td>
                             </tr>
@@ -123,7 +123,7 @@ const OrdersTable: React.FC = () => {
                         <tr>
                             <td
                                 colSpan={6}
-                                className="px-6 py-4 text-center text-sm text-gray-900 dark:text-gray-200"
+                                className="px-6 py-4 text-center text-sm text-gray-900 "
                             >
                                 Nenhum pedido encontrado.
                             </td>
