@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import Card from '@/components/Card';
 import Link from 'next/link';
@@ -67,7 +67,7 @@ const SearchResults: NextPage = () => {
         router.push(`/product/${slug}`);
     };
 
-    const fetchProducts = async (nameQuery: string) => {
+    const fetchProducts = useCallback(async (nameQuery: string) => {
         setIsLoading(true);
         setErrorMessage(null);
         const url = `${BASE_URL}/products/search?name=${encodeURIComponent(
@@ -83,15 +83,12 @@ const SearchResults: NextPage = () => {
         });
 
         if (response.status === 404) {
-          
-            
             setErrorMessage('Produto não encontrado');
             setProducts([]);
             setIsLoading(false);
             return;
         }
 
-       
         if (!response.ok) {
             const errorData = await response.json();
             setErrorMessage(errorData.message || 'Erro ao buscar produtos');
@@ -130,13 +127,13 @@ const SearchResults: NextPage = () => {
         }
 
         setIsLoading(false);
-    };
+    }, [BASE_URL]);
 
     useEffect(() => {
         if (nameQuery) {
             fetchProducts(nameQuery);
         }
-    }, [nameQuery]);
+    }, [nameQuery, fetchProducts]);
 
     const containerRef = useRef<HTMLElement>(null);
 
