@@ -190,6 +190,9 @@ const FilteredResults = () => {
         setSelectedSize,
         setSelectedMinPrice,
         setSelectedMaxPrice,
+        selectedCategory,
+        selectedBrand,
+        selectedColor,
     ]);
 
     useGSAP(
