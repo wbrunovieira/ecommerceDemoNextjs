@@ -2,8 +2,6 @@ import Logo from '/public/images/LogoStylos.svg';
 
 import Link from 'next/link';
 
-import ToggleMode from './ToggleMode';
-
 const Header = () => {
     return (
         <header className="pt-2 pb-2 md:p-8 bg-primaryLight   flex justify-between items-center flex-col w-screen ">
@@ -15,9 +13,7 @@ const Header = () => {
                 </div>
 
                 <div className="flex justify-center search"></div>
-                <div className="flex justify-end gap-4 right">
-                    <ToggleMode />
-                </div>
+                <div className="flex justify-end gap-4 right"></div>
             </div>
         </header>
     );

@@ -6,8 +6,6 @@ import {
     WhatsappIcon,
     EmailIcon,
 } from 'react-share';
-import { FaInstagram } from 'react-icons/fa';
-import InstagramShareButton from './InstagramShareButton';
 
 interface Product {
     slug: string;

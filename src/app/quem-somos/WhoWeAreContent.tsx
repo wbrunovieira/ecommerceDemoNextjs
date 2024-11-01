@@ -412,7 +412,7 @@ const WhoWeAreContent = () => {
                                                 ))}
                                             </div>
                                             <p className="text-gray-600 mb-4">
-                                                "{testimonial.comment}"
+                                            &quot;{testimonial.comment}&quot;
                                             </p>
                                             <p className="font-semibold">
                                                 {testimonial.name}

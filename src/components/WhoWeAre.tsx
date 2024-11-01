@@ -5,7 +5,7 @@ import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-import { ShoppingBag, Heart, Award, Truck, Star } from 'lucide-react';
+import { Heart, Award, Truck, Star } from 'lucide-react';
 
 if (typeof window !== 'undefined') {
     gsap.registerPlugin(ScrollTrigger);
@@ -203,11 +203,11 @@ const WhoWeAre = () => {
                     <div className="max-w-3xl mx-auto text-center">
                         <h2 className="text-4xl font-bold mb-6">Our Story</h2>
                         <p className="text-gray-600 mb-12">
-                            Founded in 2020, we're passionate about creating
-                            lingerie that makes every woman feel beautiful and
-                            confident. Our designs combine timeless elegance
-                            with modern comfort, using only the finest materials
-                            and expert craftsmanship.
+                            Founded in 2020, we&apos;re passionate about
+                            creating lingerie that makes every woman feel
+                            beautiful and confident. Our designs combine
+                            timeless elegance with modern comfort, using only
+                            the finest materials and expert craftsmanship.
                         </p>
                         <div className="grid md:grid-cols-3 gap-8">
                             {benefits.map((benefit, index) => (
@@ -253,7 +253,7 @@ const WhoWeAre = () => {
                                     )}
                                 </div>
                                 <p className="text-gray-600 mb-4">
-                                    "{testimonial.comment}"
+                                    &quot;{testimonial.comment}&quot;
                                 </p>
                                 <p className="font-semibold">
                                     {testimonial.name}
