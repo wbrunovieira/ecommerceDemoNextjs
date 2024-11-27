@@ -6,7 +6,15 @@ WORKDIR /app
 
 
 COPY package.json package-lock.json ./
-RUN npm install --production
+COPY tsconfig.json ./
+COPY tailwind.config.ts ./
+COPY postcss.config.js ./
+
+COPY load-ssm-env.sh ./load-ssm-env.sh
+
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
+RUN npm install
 
 
 COPY . .
@@ -20,6 +28,10 @@ FROM node:20-alpine
 
 WORKDIR /app
 
+RUN curl -sSfL -o /usr/local/bin/ssm-env https://github.com/remind101/ssm-env/releases/download/v0.0.5/ssm-env && \
+    echo "babf40382bcd260f0d8d4575a32d5ec33fb08fefd29f12ffd800fbe738c41021  /usr/local/bin/ssm-env" | sha256sum -c - && \
+    chmod +x /usr/local/bin/ssm-env && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /app/package.json /app/package-lock.json /app/
 COPY --from=builder /app/.next /app/.next
@@ -28,7 +40,11 @@ COPY --from=builder /app/public /app/public
 
 
 ENV NODE_ENV=production
+ENV AWS_REGION=us-east-1
 
+RUN chmod +x /app/load-ssm-env.sh
+
+ENTRYPOINT ["/app/load-ssm-env.sh"]
 
 EXPOSE 3000
 

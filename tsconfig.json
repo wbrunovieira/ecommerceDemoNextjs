@@ -2,7 +2,7 @@
     "compilerOptions": {
         "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
-
+          "baseUrl": ".",
         "noImplicitAny": false,
         "noEmitOnError": true,
         "removeComments": false,
@@ -25,7 +25,8 @@
             }
         ],
         "paths": {
-            "@/*": ["./src/*"]
+            "@/*": ["./src/*"],
+             "@/components/*": ["src/components/*"]
         }
     },
     "include": [
