@@ -35,3 +35,19 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+#ansible
+
+ansible-config/secrets.yml
+secrets.yml
+.vault-password
+ansible-config/.vault-password
+ansible-config/ansible.cfg
+
+group_vars/*
+host_vars/*
+*.retry
+*.log
+tmp/
+debug.txt
