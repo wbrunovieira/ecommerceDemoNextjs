@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+     "install": "pnpm install",
     "build": "next build",
     "start": "next start",
     "restart": "kill $(lsof -t -i:3000) && npm run dev",
