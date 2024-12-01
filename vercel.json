@@ -1,6 +1,4 @@
 {
-  "name": "stylosfront",
-  "version": 2,
   "builds": [
     {
       "src": "package.json",
@@ -8,6 +6,10 @@
     }
   ],
   "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://api.styloslingerie.com.br/api/$1"
+    },
     {
       "src": "/(.*)",
       "dest": "/"

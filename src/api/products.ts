@@ -243,7 +243,7 @@ export async function getProducts(): Promise<ProductProps[]> {
     try {
   
         const response = await fetch(`${BASE_URL}/products/all`);
-
+        console.log('getProducts BASE_URL',BASE_URL)
         if (!response.ok) {
             throw new Error(`Erro ao buscar produtos: ${response.statusText}`);
         }
