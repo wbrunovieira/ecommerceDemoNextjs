@@ -125,10 +125,13 @@ const ProductPage = async ({ params }: ParamsProps) => {
         const productDetails = await getProductBySlug(params.slug);
 
         if (!productDetails) {
+            console.error('Produto não encontrado:', params.slug);
             return <div>Desculpe, não encontramos a página do produto.</div>;
+        } else {
+            console.log('Detalhes do produto:', productDetails);
         }
 
-        console.log('productDetails veio do getProductBySlug',productDetails)
+        console.log('productDetails veio do getProductBySlug', productDetails);
 
         const productId = productDetails.id;
 
@@ -157,10 +160,10 @@ const ProductPage = async ({ params }: ParamsProps) => {
                                 id={productDetails.id}
                                 title={productDetails.name}
                                 description={productDetails.description}
-                                material="N/A" 
-                                fabricante={productDetails.brandName} 
+                                material="N/A"
+                                fabricante={productDetails.brandName}
                                 price={productDetails.finalPrice}
-                                colors={productDetails.productColors ?? []} 
+                                colors={productDetails.productColors ?? []}
                                 sizes={productDetails.productSizes}
                                 categories={productDetails.productCategories}
                                 images={productDetails.images}
@@ -175,7 +178,6 @@ const ProductPage = async ({ params }: ParamsProps) => {
                                 weight={productDetails.weight}
                                 slug={productDetails.slug}
                             />
-                         
                         </div>
                     </section>
                 </Container>

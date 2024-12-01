@@ -1,4 +1,25 @@
 {
+
+"workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#F0B1CC",  // Cor suave de fundo para a atividade
+    "activityBar.background": "#F0B1CC",  // Fundo suave para o front
+    "activityBar.foreground": "#540002",  // Texto de destaque em tom escuro
+    "activityBar.inactiveForeground": "#54000299",  // Ícones inativos mais suaves
+    "activityBarBadge.background": "#c73e89",  // Badge em tom de rosa mais vibrante
+    "activityBarBadge.foreground": "#e7e7e7",  // Texto no badge em cinza claro
+    "commandCenter.border": "#54000299",  // Borda suave para o centro de comando
+    "sash.hoverBorder": "#F0B1CC",  // Borda de destaque mais suave
+    "statusBar.background": "#D3686C",  // Barra de status em tom de coral suave
+    "statusBar.foreground": "#540002",  // Texto da barra de status em tom escuro
+    "statusBarItem.hoverBackground": "#fcf3f7",  // Background mais claro para hover
+    "statusBarItem.remoteBackground": "#D3686C",  // Barra de status remota em coral
+    "statusBarItem.remoteForeground": "#540002",  // Texto na barra remota escuro
+    "titleBar.activeBackground": "#D3686C",  // Fundo da title bar mais suave
+    "titleBar.activeForeground": "#540002",  // Texto da title bar escuro
+    "titleBar.inactiveBackground": "#D3686C99",  // Fundo inativo mais suave
+    "titleBar.inactiveForeground": "#54000299"  // Texto inativo mais suave
+},
+
   "github.copilot.chat.localeOverride": "pt-br",
   "ansible.python.interpreterPath": "/bin/python3"
 }

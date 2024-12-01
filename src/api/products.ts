@@ -238,15 +238,32 @@ export async function getProductsByCategoriesId(
     return { products };
 }
 
-export async function getProducts(): Promise<ProductProps[]> {
-    const response = await fetch(`${BASE_URL}/products/all`);
-    const data: ProductsResponse = await response.json();
 
-    if (!Array.isArray(data.products)) {
-        throw new Error('Expected an array of products');
+export async function getProducts(): Promise<ProductProps[]> {
+    try {
+  
+        const response = await fetch(`${BASE_URL}/products/all`);
+
+        if (!response.ok) {
+            throw new Error(`Erro ao buscar produtos: ${response.statusText}`);
+        }
+
+       
+        const data: ProductsResponse = await response.json();
+
+        if (!Array.isArray(data.products)) {
+            throw new Error('Esperado um array de produtos');
+        }
+
+   
+        return data.products;
+    } catch (error) {
+     
+        console.error('Erro ao obter os produtos:', error);
+        throw error;
     }
-    return data.products;
 }
+
 
 export async function getProduct(id: string) {
     const response = await fetch(`${BASE_URL}/products/${id}`);
