@@ -1,4 +1,3 @@
-
 const nextConfig = {
     images: {
         domains: ['lh3.googleusercontent.com', 'cdn.connectplug.com.br'],
@@ -10,6 +9,17 @@ const nextConfig = {
         });
 
         return config;
+    },
+    async headers() {
+        return [
+            {
+                source: '/(.*).(js|css|png|jpg|svg)',
+                headers: [
+                    { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+                    { key: 'Content-Type', value: 'application/javascript' }, 
+                ],
+            },
+        ];
     },
 };
 

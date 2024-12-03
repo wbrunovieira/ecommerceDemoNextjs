@@ -175,10 +175,16 @@ export interface ProductsByCategorieResponse {
     }[];
 }
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+console.log('BASE_URL no products.ts', BASE_URL);
+if (!process.env.NEXT_PUBLIC_BASE_URL_BACKEND) {
+    throw new Error('BASE_URL não definida no .env');
+}
 
 export async function getCategoriesId(): Promise<string[]> {
     const response = await fetch(`${BASE_URL}/category/all?page=1&pageSize=10`);
     const data: CategoriesResponse = await response.json();
+
+    console.log('Response JSON:', JSON.stringify(data, null, 2));
 
     if (!Array.isArray(data.categories)) {
         throw new Error('Expected an array of categories');
@@ -238,32 +244,33 @@ export async function getProductsByCategoriesId(
     return { products };
 }
 
-
 export async function getProducts(): Promise<ProductProps[]> {
     try {
-  
         const response = await fetch(`${BASE_URL}/products/all`);
-        console.log('getProducts BASE_URL',BASE_URL)
+
+        console.log('getProducts BASE_URL', BASE_URL);
+        console.log('getProducts response', response);
+
         if (!response.ok) {
-            throw new Error(`Erro ao buscar produtos: ${response.statusText}`);
+            console.error('Response status:', response.status);
+            console.error('Response text:', await response.text());
+            throw new Error('Failed to fetch products');
         }
 
-       
         const data: ProductsResponse = await response.json();
+        console.log('getProducts data', data);
+        console.log('getProducts data.products', data.products);
 
         if (!Array.isArray(data.products)) {
             throw new Error('Esperado um array de produtos');
         }
 
-   
         return data.products;
     } catch (error) {
-     
         console.error('Erro ao obter os produtos:', error);
         throw error;
     }
 }
-
 
 export async function getProduct(id: string) {
     const response = await fetch(`${BASE_URL}/products/${id}`);
@@ -275,14 +282,34 @@ export async function getProductBySlug(
 ): Promise<ProductDetails | null> {
     try {
         const response = await fetch(`${BASE_URL}/products/slug/${slug}`);
+        console.log('Response Status:', response.status);
+
+        const responseBody = await response.text();
+
+        console.log('Response Body:', responseBody);
+        if (responseBody.includes('<html>')) {
+            console.error('Received HTML instead of JSON');
+            return null;
+        }
 
         if (!response.ok) {
+            console.error(
+                'Erro na API:',
+                response.status,
+                await response.text()
+            );
             throw new Error(
                 `Failed to fetch product. Status: ${response.status}`
             );
         }
 
-        const data = await response.json();
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            console.error('Response is not JSON:', contentType);
+            throw new Error('A resposta não é JSON');
+        }
+
+        const data = JSON.parse(responseBody);
 
         console.log('Raw Product Data:', JSON.stringify(data, null, 2));
 

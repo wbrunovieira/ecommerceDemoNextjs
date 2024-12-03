@@ -24,5 +24,6 @@
 },
 
   "github.copilot.chat.localeOverride": "pt-br",
-  "ansible.python.interpreterPath": "/bin/python3"
+  "ansible.python.interpreterPath": "/bin/python3",
+  "editor.wordWrap": "wordWrapColumn"
 }

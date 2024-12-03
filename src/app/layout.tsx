@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import './globals.css';
+import '../globals.css';
 
 import { Montserrat } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
@@ -26,15 +26,13 @@ export default function RootLayout({
     return (
         <html lang="pt-BR">
             <body className={montserrat.className}>
-             
-                    <NextAuthSessionProvider>
-                        <Header />
-                        <main>{children}</main>
-                        <Toaster />
-                        <Footer />
-                        <ClearCartOnLogout />
-                    </NextAuthSessionProvider>
-              
+                <NextAuthSessionProvider>
+                    <Header />
+                    <main>{children}</main>
+                    <Toaster />
+                    <Footer />
+                    <ClearCartOnLogout />
+                </NextAuthSessionProvider>
             </body>
         </html>
     );
