@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-   
     "build": "next build",
     "start": "next start",
     "restart": "kill $(lsof -t -i:3000) && npm run dev",
@@ -63,5 +62,4 @@
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }
-
 }
