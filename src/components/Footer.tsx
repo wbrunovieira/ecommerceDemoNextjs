@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { MdPix } from 'react-icons/md';
 import { CiBank, CiCreditCard1 } from 'react-icons/ci';
 import { RiVisaLine, RiMastercardLine } from 'react-icons/ri';

@@ -3,7 +3,6 @@ import { cn } from '@/utils/cn';
 import { motion, AnimatePresence } from 'framer-motion';
 import React, { useEffect, useState, useCallback } from 'react';
 
-
 export const ImagesSlider = ({
     images,
     children,
@@ -144,7 +143,6 @@ export const ImagesSlider = ({
                         }));
                     }}
                     onError={() => {
-                        // Em caso de erro, ainda definimos como carregada para remover o desfoque
                         setImageLoaded((prev) => ({
                             ...prev,
                             [currentIndex]: true,
