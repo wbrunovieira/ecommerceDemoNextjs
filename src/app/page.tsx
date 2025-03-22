@@ -38,18 +38,16 @@ const Home = () => {
                         <ImagesSlider
                             className="w-full max-w-full h-[20rem]"
                             images={[
-                                '/images/foto1banner2.png',
-                                '/images/foto2-2.jpg',
-                                '/images/foto3-2.jpg',
-                                '/images/foto4-3.jpg',
+                                '/images/hero1.jpg',
+                                '/images/hero2.jpg',
+                                '/images/hero3.jpg',
                             ]}
                             autoplay={true}
                             direction="up"
                         >
                             <div className="z-10  bg-primaryLight/[.7] p-4  rounded-lg">
                                 <h1 className="text-primaryDark text-xl md:text-4xl font-extrabold pb-2">
-                                    Agora também <br /> estamos juntas na
-                                    internet.
+                                    Agora também na internet.
                                 </h1>
                                 <p className="text-sm md:text-xl text-secondary font-bold">
                                     Faça o seu pedido que entregamos na sua

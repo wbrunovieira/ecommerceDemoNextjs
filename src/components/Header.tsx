@@ -3,7 +3,6 @@ import Image from 'next/image';
 import CartButton from './CartButton';
 import SearchBox from './SearchBox';
 
-import AnimatedFlower from './AnimatedFlower';
 import Link from 'next/link';
 
 import LogginButton from './LogginButton';
@@ -18,7 +17,7 @@ const Header = () => {
                 <div className="flex items-center">
                     <SocialIcons className="flex gap-2 md:gap-3" />
                 </div>
-                <div className="flex justify-center text-[0.6rem] md:text-xs text-fontColor text-primary2 ">
+                <div className="flex justify-center text-[0.6rem] md:text-xs  text-primary2 ">
                     <p>Entrega grátis a partir de R$ 200,00</p>
                 </div>
             </div>
@@ -52,15 +51,7 @@ const Header = () => {
             {/* Mobile Layout */}
             <div className="flex  flex-wrap justify-between items-center w-full max-w-full md:hidden">
                 <div className="flex items-center justify-between gap-2 md:gap-4 w-full">
-                    <Link href="/" passHref className="hover:scale-110">
-                        <Image
-                            src="/images/LogoStylos.png"
-                            width={96}
-                            height={96}
-                            alt="logo"
-                            className="mr-2"
-                        />
-                    </Link>
+                    <Link href="/" passHref className="hover:scale-110"></Link>
                     <MobileMenu />
                 </div>
 
@@ -76,10 +67,6 @@ const Header = () => {
 
             <div className="flex justify-center mt-4 md:hidden">
                 <SearchBox />
-            </div>
-
-            <div className="md:flex justify-center mt-48 absolute ">
-                <AnimatedFlower />
             </div>
         </header>
     );
