@@ -113,16 +113,13 @@ const Card: React.FC<CardProps> = ({
 
     return (
         <div className="max-w-sm rounded-md shadow-lg bg-white border-2 border-y-primaryDark   m-2 h-96 flex flex-col transform hover:scale-105 hover:shadow-lg transition duration-400 ease-in-out">
-            <div className="relative overflow-hidden flex-shrink-0 rounded-md h-[200px]">
+            <div className="relative overflow-hidden  rounded-md h-[200px] w-full">
                 <Image
                     src={validImageSRC}
+                    alt={title}
                     width={400}
                     height={300}
-                    alt={title}
-                    style={{
-                        objectFit: 'cover',
-                        objectPosition: 'center center',
-                    }}
+                    className="object-contain object-center"
                 />
                 {emPromocao && (
                     <div className="absolute promocao1 transform rotate-45 translate-x-1/3 -translate-y-1/3 px-2 py-1 text-xs uppercase">
@@ -154,7 +151,7 @@ const Card: React.FC<CardProps> = ({
                         </div>
                     </div>
 
-                    <p className="text-gray-700 text-sm font-bold text-fontColor  ">
+                    <p className="text-sm font-bold text-fontColor  ">
                         {precoAntigo && (
                             <span className="line-through mr-2 font-extralight">
                                 R${precoAntigo.toFixed(2)}
