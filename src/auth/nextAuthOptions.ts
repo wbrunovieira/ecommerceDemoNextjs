@@ -10,6 +10,7 @@ interface ExtendedProfile extends Profile {
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
+console.log('BASE_URL', BASE_URL);
 
 export const nextAuthOptions: NextAuthOptions = {
     debug: true,

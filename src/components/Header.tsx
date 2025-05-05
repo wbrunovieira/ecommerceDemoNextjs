@@ -1,3 +1,4 @@
+// src/components/Header.tsx
 import Home from '/public/icons/home.svg';
 import Image from 'next/image';
 import CartButton from './CartButton';

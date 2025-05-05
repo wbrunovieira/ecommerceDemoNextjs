@@ -1,3 +1,4 @@
+// src/components/CartButton.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
 import { BsCart4 } from 'react-icons/bs';
@@ -19,21 +20,17 @@ const CartButton = () => {
         setIsCartModalOpen(!isCartModalOpen);
     };
 
-    useEffect(() => {
-        setIsClient(true);
 
-        const initializeUserCart = async () => {
-            if (session?.user?.id) {
-                setUser(session.user.id);
-                const cartInit = await initializeCart([], session.user.id);
-                setIsCartLoaded(true);
-                console.log('initializeUserCart no float cartInit', cartInit);
-            }
-        };
-        initializeUserCart();
-    }, [session, setUser, initializeCart]);
+useEffect(() => {
+  if (session?.user?.id) {
+    setUser(session.user.id);
+    initializeCart([], session.user.id);
+  }
+}, [session, setUser, initializeCart]);
 
-    if (!isClient) return null;
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
     return (
         <>

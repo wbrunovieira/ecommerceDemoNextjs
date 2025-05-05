@@ -1,3 +1,4 @@
+// src/components/FloatCart.tsx
 'use client';
 import { useCartStore, useLoadingStore } from '@/context/store';
 import Image from 'next/image';
@@ -121,6 +122,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     };
 
     const handleClickOutside = (event: React.MouseEvent) => {
+        console.log('[FloatCart] handleClickOutside');
         const modalElement = document.querySelector('.modal-content');
         if (modalElement && !modalElement.contains(event.target as Node)) {
             if (
@@ -136,10 +138,12 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     };
 
     const increaseQuantity = (id: string) => {
+        console.log('[FloatCart] increaseQuantity →', id);
+        console.log('[FloatCart] antes do update, cartItems =', cartItems);
         updateQuantity(id, 1);
     };
-
     const decreaseQuantity = (id: string) => {
+        console.log('[FloatCart] decreaseQuantity →', id);
         updateQuantity(id, -1);
     };
 
@@ -171,11 +175,12 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
     };
 
     useEffect(() => {
+        console.log('updateQuantity é função?', typeof updateQuantity);
         const initializeUserCart = async () => {
             if (session?.user?.id) {
                 setUser(session.user.id);
-                const cartInit = await initializeCart([], session.user.id);
-                console.log('initializeUserCart no float cartInit', cartInit);
+
+                +console.log('initializeUserCart executado');
             }
         };
         initializeUserCart();
@@ -187,7 +192,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
             onClick={handleClickOutside}
         >
             <div
-                className="relative bg-white rounded-lg shadow-xl p-6 mb-4 max-w-lg w-full modal-content"
+                className="relative bg-red rounded-lg shadow-xl p-6 mb-4 max-w-lg w-full modal-content"
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
@@ -230,8 +235,12 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                             />
                             <div className="flex items-center">
                                 <button
-                                    onClick={() => decreaseQuantity(item.id)}
-                                    className="text-sm p-1"
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        decreaseQuantity(item.id);
+                                    }}
+                                    className="text-sm p-3"
                                 >
                                     <BsDash />
                                 </button>
@@ -239,8 +248,12 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                                     {item.quantity} pç
                                 </p>
                                 <button
-                                    onClick={() => increaseQuantity(item.id)}
-                                    className="text-sm p-1"
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        increaseQuantity(item.id);
+                                    }}
+                                    className="text-sm p-3"
                                 >
                                     <BsPlus />
                                 </button>
@@ -267,6 +280,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                                 R$ {item.quantity * item.price}
                             </p>
                             <button
+                                type="button"
                                 onClick={() => handleRemoveFromCart(item.id)}
                                 className="bg-red-500 text-white p-1 rounded transition duration-300 hover:scale-105"
                             >
@@ -297,6 +311,7 @@ const FloatCart: React.FC<FloatCartProps> = ({ onClose }) => {
                     </button>
                 </div>
             </div>
+
             {showAddressModal && (
                 <AddressModal
                     addresses={addresses}

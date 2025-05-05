@@ -1,42 +1,12 @@
+// src/context/store.ts
 import { StateCreator, create } from 'zustand';
 import { persist, PersistOptions, createJSONStorage } from 'zustand/middleware';
 import { getSession } from 'next-auth/react';
-import debounce from 'lodash.debounce';
+
 import axios from 'axios';
+import debounce from 'lodash.debounce';
 
-// const debounceUpdateQuantity = debounce(
-//     async (
-//         userId: string,
-//         cartId: string,
-//         itemId: string,
-//         quantity: number
-//     ) => {
-//         if (!userId || !cartId || !itemId) {
-//             console.error('Missing parameters for debounceUpdateQuantity');
-//             return;
-//         }
-//         try {
-//             const session = await getSession();
-//             const authToken = session?.accessToken;
 
-//             const response = await axios.patch(
-//                 `${BASE_URL}/cart/${userId}/item/${itemId}`,
-//                 { quantity },
-//                 {
-//                     headers: {
-//                         Authorization: `Bearer ${authToken}`,
-//                         'Content-Type': 'application/json',
-//                     },
-//                 }
-//             );
-
-//             return response.data.cart;
-//         } catch (error) {
-//             console.error('Error updating item quantity in backend:', error);
-//         }
-//     },
-//     1500
-// );
 
 export interface Color {
     id: string;
@@ -228,6 +198,19 @@ type MyPersistCart = (
     options: PersistOptions<CartState>
 ) => StateCreator<CartState>;
 
+const debounceUpdateQuantity = debounce(
+  async (userId: string, cartId: string, itemId: string, quantity: number) => {
+    const session = await getSession();
+    const token = session?.accessToken;
+    return axios.patch(
+      `${BASE_URL}/cart/${userId}/item/${itemId}`,
+      { quantity },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+  },
+  1500
+);
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL_BACKEND;
 
 export const useLoadingStore = create<LoadingState>()(
@@ -390,79 +373,56 @@ export const useCartStore = create<CartState>(
                 sessionStorage.removeItem('cart-storage');
             },
 
-            updateQuantity: (
-                productId: string,
-                amount: number,
-                userId?: string
-            ) => {
-                const { cartId, cartItems, userId: stateUserId } = get();
-                const actualUserId = userId || stateUserId;
+updateQuantity: (
+  productId: string,
+  amount: number,
+  userIdParam?: string
+) => {
+  console.log('[store] ⚡ updateQuantity called', { productId, amount });
 
-                if (!actualUserId || !cartId) return;
+  // 1) pega o estado atual
+  const { cartItems, cartId, userId: stateUserId } = get();
+  console.log('[store]   before update, cartItems =', cartItems);
 
-                const index = cartItems.findIndex(
-                    (item) => item.id === productId
-                );
+  // 2) encontra o índice
+  const idx = cartItems.findIndex(i => i.id === productId);
+  console.log('[store]   found index =', idx);
+  if (idx === -1) {
+    console.warn('[store]   productId not found, aborting');
+    return;
+  }
 
-                if (index !== -1) {
-                    const currentItem = cartItems[index];
-                    const newQuantity = currentItem.quantity + amount;
+  // 3) calcula a nova quantidade (no mínimo 1)
+  const updatedQuantity = Math.max(1, cartItems[idx].quantity + amount);
 
-                    if (currentItem._id && currentItem._id.value) {
-                        const itemId = currentItem._id.value;
-                        set((state) => {
-                            const newCartItems = state.cartItems.map((item) =>
-                                item.id === productId
-                                    ? { ...item, quantity: newQuantity }
-                                    : item
-                            );
-                            return {
-                                cartItems: newCartItems,
-                            };
-                        });
+  // 4) atualiza somente o estado local
+  set(state => {
+    const newCartItems = state.cartItems.map(item =>
+      item.id === productId
+        ? { ...item, quantity: updatedQuantity }
+        : item
+    );
+    console.log('[store]   setting new cartItems =', newCartItems);
+    return { cartItems: newCartItems };
+  });
 
-                        if (!actualUserId && !cartId && !itemId) {
-                            console.error('cartItemId not found in cart');
-                            return;
-                        }
+  // 5) recarrega do estado para pegar o _id atualizado
+  const actualUserId = userIdParam || stateUserId;
+  const itemId = get().cartItems.find(i => i.id === productId)?._id?.value;
+  console.log('[store]   sync to backend?', { actualUserId, cartId, itemId });
 
-                        // if (actualUserId && cartId && itemId && newQuantity) {
-                        //     debounceUpdateQuantity(
-                        //         actualUserId,
-                        //         cartId,
-                        //         itemId,
-                        //         newQuantity
-                        //     )
-                        //         .then((updatedCart) => {
-                        //             if (updatedCart) {
-                        //                 const newCartItems =
-                        //                     updatedCart.items.map(
-                        //                         (item: any) => ({
-                        //                             ...item.props,
-                        //                             id: item.props.productId,
-                        //                             _id: { value: item.id },
-                        //                             cartId: item.cartId,
-                        //                         })
-                        //                     );
+  // 6) se faltar qualquer coisa, aborta o backend
+  if (!actualUserId || !cartId || !itemId) {
+    console.log('[store]   skipping backend sync');
+    return;
+  }
 
-                        //                 set({
-                        //                     cartItems: newCartItems,
-                        //                     cartId: updatedCart.id,
-                        //                 });
-                        //             }
-                        //         })
-                        //         .catch((error) => {
-                        //             console.error(
-                        //                 'Error updating cart state:',
-                        //                 error
-                        //             );
-                        //         });
-                        // }
-                    } else {
-                        console.error('Cart item ID is missing');
-                    }
-                }
-            },
+  // 7) chama o debounce para atualizar no servidor
+  debounceUpdateQuantity(actualUserId, cartId, itemId, updatedQuantity)
+    ?.then(res => console.log('[store]   backend sync ok', res?.data))
+    .catch(err => console.error('[store]   backend sync error', err));
+},
+
 
             initializeCart: async (products: Product[], userId?: string) => {
                 if (userId) {

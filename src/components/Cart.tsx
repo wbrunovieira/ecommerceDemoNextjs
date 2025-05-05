@@ -1,3 +1,4 @@
+// src/components/Cart.tsx
 'use client';
 import { useCartStore } from '@/context/store';
 import Image from 'next/image';
@@ -29,12 +30,12 @@ const Cart = () => {
     const { data: session } = useSession();
     const setUser = useCartStore((state) => state.setUser);
 
-    useEffect(() => {
-        initializeCart(cartItems);
-        if (session?.user?.id) {
-            setUser(session.user.id);
-        }
-    }, [session, setUser, cartItems, initializeCart]);
+useEffect(() => {
+  if (session?.user?.id) {
+    setUser(session.user.id)
+  
+  }
+}, [session, setUser, initializeCart])
 
     const increaseQuantity = (id: string) => {
         updateQuantity(id, 1);
