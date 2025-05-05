@@ -20,17 +20,22 @@ const CartButton = () => {
         setIsCartModalOpen(!isCartModalOpen);
     };
 
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
-useEffect(() => {
-  if (session?.user?.id) {
-    setUser(session.user.id);
-    initializeCart([], session.user.id);
-  }
-}, [session, setUser, initializeCart]);
+    useEffect(() => {
+        if (!isClient) return;
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+        const userId = session?.user?.id || 'guest';
+        setUser(userId);
+
+        const saved = localStorage.getItem('cartItems') || '[]';
+        const items = JSON.parse(saved);
+        initializeCart(items, userId);
+
+        setIsCartLoaded(true);
+    }, [isClient, session, setUser, initializeCart]);
 
     return (
         <>
